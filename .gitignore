@@ -1,0 +1,11 @@
+.DS_Store
+*.icloud
+node_modules/
+.env
+.env.*
+dist/
+
+# Бизнес-документы — НЕ публикуем (остаются локально в iCloud)
+Дамп Слаживание.md
+HANDOFF — продолжить на телефоне.md
+open-service-demo.html
