@@ -19,11 +19,24 @@ const grad = `linear-gradient(135deg, ${c.cyan}, ${c.violet})`;
 const HEALTH = { green: c.green, amber: c.amber, red: c.red };
 
 const SOL = {
-  Argus: { icon: Satellite, color: c.violet, sub: "AI Chief of Staff" },
-  Hermes: { icon: Zap, color: c.cyan, sub: "LinkedIn-автопилот" },
-  "Сводно": { icon: BarChart3, color: c.green, sub: "Финансовый дашборд" },
-  "ИИ-хостес": { icon: Mic, color: c.amber, sub: "Приём гостей" },
-  Kairos: { icon: Target, color: "#E879A6", sub: "Объекты · ограничения · спринты (ТОС)" },
+  Argus: { icon: Satellite, color: c.violet, sub: "AI Chief of Staff", cat: "Руководителю",
+    tags: ["Chief of Staff", "Память", "Брифы", "Протоколы"],
+    pitch: "Тихо слушает чаты и встречи и возвращает брифы к встречам, разборы 1:1, протоколы и находки. Растёт по грейдам — от писаря до right-hand уровня совета директоров." },
+  Kairos: { icon: Target, color: "#E879A6", sub: "Дашборд собственника · ТОС", cat: "Руководителю",
+    tags: ["ТОС", "Объекты", "Ограничения", "Спринты"],
+    pitch: "Управление по объектам, ограничениям и спринтам. Находит главное узкое место бизнеса и ведёт спринт по его снятию. Со встроенным бизнес-коучем." },
+  "Сводно": { icon: BarChart3, color: c.green, sub: "Финансовый дашборд", cat: "Финансы и учёт",
+    tags: ["ДДС", "Консолидация", "Дебиторка", "GPT-учёт"],
+    pitch: "ДДС, консолидация по сети, светофор дебиторки. Сводит факт с управленкой и ловит расхождения каждое утро." },
+  Hermes: { icon: Zap, color: c.cyan, sub: "LinkedIn-автопилот", cat: "Маркетинг",
+    tags: ["LinkedIn", "Контент", "Voice", "Авто-постинг"],
+    pitch: "Сырая мысль на входе — пост в твоём голосе на выходе, по расписанию. Правила голоса само-обновляются из аналитики." },
+  "ИИ-хостес": { icon: Mic, color: c.amber, sub: "Приём гостей", cat: "Гостям и продажам",
+    tags: ["Бронь", "Допродажа", "On-brand", "24/7"],
+    pitch: "Принимает брони, отвечает гостям в тоне заведения, делает допродажи и фиксирует всё в системе. Без выходных." },
+};
+const AGENT_CATS = {
+  "Руководителю": c.violet, "Финансы и учёт": c.green, "Маркетинг": c.cyan, "Гостям и продажам": c.amber,
 };
 const CATS = {
   "Интеграции": c.cyan, "Учёт и ЭДО": c.violet, "Госучёт": c.amber,
@@ -197,42 +210,59 @@ const Footing = ({ uses }) => (
 );
 
 /* ─────────────  CATALOG (Флот агентов)  ───────────── */
-function Catalog() {
+function Catalog({ onOpenSol }) {
   const [cat, setCat] = useState("Все");
   const [q, setQ] = useState("");
   const [conn, setConn] = useState({});
-  const items = CATALOG.filter(([t, k, d]) => (cat === "Все" || k === cat) && (t.toLowerCase().includes(q.toLowerCase()) || d.toLowerCase().includes(q.toLowerCase())));
-  const flag = ["Argus", "Hermes", "Сводно", "ИИ-хостес", "Kairos"];
+  const [role, setRole] = useState("Все");
+  const [sort, setSort] = useState("cat");
+  const items = CATALOG
+    .filter(([t, k, d]) => (cat === "Все" || k === cat) && (t.toLowerCase().includes(q.toLowerCase()) || d.toLowerCase().includes(q.toLowerCase())))
+    .sort((a, b) => sort === "name" ? a[0].localeCompare(b[0], "ru") : (a[1].localeCompare(b[1], "ru") || a[0].localeCompare(b[0], "ru")));
+  const flag = ["Argus", "Kairos", "Сводно", "Hermes", "ИИ-хостес"].filter((s) => role === "Все" || SOL[s].cat === role);
   return (
     <div>
       <Eyebrow>обзор · каталог</Eyebrow>
       <h1 style={{ fontSize: 26, fontWeight: 700, margin: "6px 0 4px" }}>Флот агентов</h1>
-      <p style={{ color: c.dim, marginBottom: 20, maxWidth: 680 }}>Всё, что можно подключить клиенту. Флагманские агенты собираются из модулей ниже; модули подключаются и по отдельности.</p>
+      <p style={{ color: c.dim, marginBottom: 18, maxWidth: 680 }}>Всё, что можно подключить клиенту. Нажми на агента — увидишь презентацию и живой демо-дашборд. Флагманы собираются из модулей ниже; модули подключаются и по отдельности.</p>
 
-      <Eyebrow style={{ marginBottom: 10 }}>флагманские агенты</Eyebrow>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(216px,1fr))", gap: 12, marginBottom: 26 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12, alignItems: "center" }}>
+        <Eyebrow style={{ marginRight: 4 }}>агенты · для кого</Eyebrow>
+        {["Все", ...Object.keys(AGENT_CATS)].map((k) => {
+          const on = role === k, col = AGENT_CATS[k] || c.dim;
+          return <button key={k} onClick={() => setRole(k)} style={{ background: on ? (k === "Все" ? "rgba(20,30,50,0.06)" : `${col}14`) : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on && k !== "Все" ? col : c.line}`, borderRadius: 99, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{k}</button>;
+        })}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: 12, marginBottom: 26 }}>
         {flag.map((s) => {
           const I = SOL[s].icon, col = SOL[s].color, n = agents.filter((x) => x.sol === s).length;
           return (
-            <Card key={s} hover>
-              <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
-                <div style={{ width: 38, height: 38, borderRadius: 10, display: "grid", placeItems: "center", background: `${col}1a`, border: `1px solid ${col}40` }}><I size={19} color={col} /></div>
-                <div><div style={{ fontWeight: 700 }}>{s}</div><div style={{ fontSize: 11.5, color: c.dim }}>{SOL[s].sub}</div></div>
+            <Card key={s} hover onClick={() => onOpenSol(s)} style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ display: "flex", gap: 11, alignItems: "center", marginBottom: 10 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 12, display: "grid", placeItems: "center", background: `linear-gradient(135deg, ${col}26, ${col}0d)`, border: `1px solid ${col}40`, flexShrink: 0 }}><I size={23} color={col} /></div>
+                <div style={{ minWidth: 0 }}><div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: 7 }}>{s} <Badge color={AGENT_CATS[SOL[s].cat]} bg={`${AGENT_CATS[SOL[s].cat]}12`}>{SOL[s].cat}</Badge></div><div style={{ fontSize: 11.5, color: c.dim }}>{SOL[s].sub}</div></div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ fontSize: 12, color: c.dim, lineHeight: 1.45, marginBottom: 10, flex: 1 }}>{SOL[s].pitch}</div>
+              <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 12 }}>{SOL[s].tags.map((t) => <span key={t} style={{ fontSize: 10.5, color: c.dim, background: "rgba(20,30,50,0.045)", border: `1px solid ${c.line}`, borderRadius: 6, padding: "2px 7px" }}>{t}</span>)}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${c.line}`, paddingTop: 10 }}>
                 <span style={{ fontSize: 11.5, color: c.dim2 }}>развёрнут · {n} внедрений</span>
-                <Badge color={col} bg={`${col}12`}>агент</Badge>
+                <span style={{ fontSize: 12.5, color: col, fontWeight: 600, display: "flex", alignItems: "center", gap: 2 }}>Смотреть <ChevronRight size={14} /></span>
               </div>
             </Card>
           );
         })}
       </div>
 
+      <Eyebrow style={{ marginBottom: 10 }}>модули · подключаются по отдельности</Eyebrow>
       <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 14, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, background: c.panel, border: `1px solid ${c.line}`, borderRadius: 10, padding: "8px 12px", flex: "1 1 220px", maxWidth: 320 }}>
           <Search size={15} color={c.dim2} />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="поиск модуля…" style={{ border: "none", outline: "none", background: "transparent", color: c.txt, fontSize: 13.5, width: "100%" }} />
         </div>
+        <select value={sort} onChange={(e) => setSort(e.target.value)} style={{ background: c.panel, color: c.txt, border: `1px solid ${c.line}`, borderRadius: 10, padding: "9px 10px", fontSize: 12.5, outline: "none", cursor: "pointer" }}>
+          <option value="cat">сортировка: по категории</option>
+          <option value="name">сортировка: по названию</option>
+        </select>
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
         {["Все", ...Object.keys(CATS)].map((k) => {
@@ -690,6 +720,40 @@ function AgentDashboards({ onOpen }) {
   );
 }
 
+/* ─────────────  SOLUTION PREVIEW (из флота)  ───────────── */
+function SolutionPreview({ sol, onBack, onOpen }) {
+  const s = SOL[sol], I = s.icon, col = s.color;
+  const order = { green: 0, amber: 1, red: 2 };
+  const deploys = agents.filter((x) => x.sol === sol);
+  const demo = [...deploys].sort((a, b) => order[a.health] - order[b.health])[0];
+  return (
+    <div>
+      <button onClick={onBack} style={{ background: "none", border: "none", color: c.dim, cursor: "pointer", fontSize: 13, marginBottom: 14 }}>← Флот агентов</button>
+      <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 18, flexWrap: "wrap" }}>
+        <div style={{ width: 64, height: 64, borderRadius: 16, display: "grid", placeItems: "center", background: `linear-gradient(135deg, ${col}2e, ${col}0d)`, border: `1px solid ${col}40`, flexShrink: 0 }}><I size={32} color={col} /></div>
+        <div style={{ flex: 1, minWidth: 240 }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+            <h1 style={{ fontSize: 26, fontWeight: 700, margin: 0 }}>{sol}</h1>
+            <Badge color={AGENT_CATS[s.cat]} bg={`${AGENT_CATS[s.cat]}12`}>{s.cat}</Badge>
+            <Badge color={col} bg={`${col}12`}>агент</Badge>
+          </div>
+          <div style={{ fontSize: 13.5, color: c.dim, marginTop: 4 }}>{s.sub} · развёрнут у {deploys.length} клиентов</div>
+        </div>
+        <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: grad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Хочу такого себе <ArrowRight size={15} /></button>
+      </div>
+      <Card style={{ marginBottom: 18, borderLeft: `3px solid ${col}` }}>
+        <div style={{ fontSize: 14.5, lineHeight: 1.55, color: c.txt }}>{s.pitch}</div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>{s.tags.map((t) => <Badge key={t} color={c.dim}>{t}</Badge>)}</div>
+      </Card>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
+        <Eyebrow>живой демо-дашборд · {cName(demo.client)}</Eyebrow>
+        <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: "transparent", border: `1px solid ${c.line}`, color: c.cyan, borderRadius: 9, padding: "6px 12px", cursor: "pointer", fontSize: 12.5, fontWeight: 600 }}>Открыть внедрение в кокпите <ChevronRight size={14} /></button>
+      </div>
+      <Card style={{ padding: 20 }}><SolutionDashboard a={demo} /></Card>
+    </div>
+  );
+}
+
 /* ─────────────  AGENT DETAIL  ───────────── */
 function AgentDetail({ id, onBack, go }) {
   const a = agents.find((x) => x.id === id);
@@ -766,11 +830,13 @@ const NAV = [
 export default function App() {
   const [view, setView] = useState("fleet");
   const [agent, setAgent] = useState(null);
+  const [solName, setSolName] = useState(null);
   const [client, setClient] = useState("all");
   const [navOpen, setNavOpen] = useState(false);
   const [narrow, setNarrow] = useState(false);
   useEffect(() => { const f = () => setNarrow(window.innerWidth < 860); f(); window.addEventListener("resize", f); return () => window.removeEventListener("resize", f); }, []);
   const open = (id) => { setAgent(id); setView("agent"); };
+  const openSol = (s) => { setSolName(s); setView("solution"); };
   const goto = (v) => { setView(v); setAgent(null); setNavOpen(false); };
 
   const Sidebar = (
@@ -782,7 +848,7 @@ export default function App() {
       {NAV.map((g) => (
         <div key={g.sec}>
           <Eyebrow style={{ padding: "0 8px 8px" }}>{g.sec}</Eyebrow>
-          {g.items.map(([v, label, Icon]) => { const active = view === v || (v === "myagents" && view === "agent"); return (
+          {g.items.map(([v, label, Icon]) => { const active = view === v || (v === "myagents" && view === "agent") || (v === "fleet" && view === "solution"); return (
             <div key={v} onClick={() => goto(v)} style={{ display: "flex", gap: 10, alignItems: "center", padding: "9px 10px", borderRadius: 9, cursor: "pointer", marginBottom: 2, fontSize: 13.5, background: active ? "rgba(20,30,50,0.05)" : "transparent", color: active ? c.txt : c.dim, borderLeft: `2px solid ${active ? c.cyan : "transparent"}` }}><Icon size={16} color={active ? c.cyan : c.dim2} /> {label}</div>); })}
         </div>
       ))}
@@ -803,7 +869,8 @@ export default function App() {
           <div style={{ marginLeft: "auto", display: "flex", gap: 16, alignItems: "center", fontSize: 12.5, color: c.dim, fontFamily: mono }}><span>5 клиентов</span><span>11 агентов</span><span style={{ color: c.red, display: "flex", gap: 5, alignItems: "center" }}><HealthDot s="red" size={7} /> 3 деградации</span></div>
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: narrow ? "20px 16px" : "28px 32px" }}>
-          {view === "fleet" && <Catalog />}
+          {view === "fleet" && <Catalog onOpenSol={openSol} />}
+          {view === "solution" && <SolutionPreview sol={solName} onBack={() => goto("fleet")} onOpen={open} />}
           {view === "myagents" && <MyAgents filter={client} onOpen={open} />}
           {view === "dashboards" && <AgentDashboards onOpen={open} />}
           {view === "connectors" && <Connectors />}
