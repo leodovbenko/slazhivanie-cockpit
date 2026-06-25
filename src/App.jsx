@@ -20,24 +20,47 @@ const HEALTH = { green: c.green, amber: c.amber, red: c.red };
 
 const SOL = {
   Argus: { icon: Satellite, color: c.violet, sub: "AI Chief of Staff", cat: "Руководителю",
-    tags: ["Chief of Staff", "Память", "Брифы", "Протоколы"],
+    task: "Тонешь в чатах и встречах — договорённости теряются",
+    result: "Брифы, протоколы и находки каждый день. Ничего не теряется.",
+    effect: "Больше контроля", speed: "С нашим спецом",
+    tags: ["Брифы", "Протоколы", "Память"],
     pitch: "Тихо слушает чаты и встречи и возвращает брифы к встречам, разборы 1:1, протоколы и находки. Растёт по грейдам — от писаря до right-hand уровня совета директоров." },
   Kairos: { icon: Target, color: "#E879A6", sub: "Дашборд собственника · ТОС", cat: "Руководителю",
-    tags: ["ТОС", "Объекты", "Ограничения", "Спринты"],
+    task: "Не видно, какое узкое место тормозит весь бизнес",
+    result: "Находит ограничение и ведёт спринт по его снятию.",
+    effect: "Больше выручки", speed: "С нашим спецом",
+    tags: ["ТОС", "Объекты", "Спринты"],
     pitch: "Управление по объектам, ограничениям и спринтам. Находит главное узкое место бизнеса и ведёт спринт по его снятию. Со встроенным бизнес-коучем." },
   "Сводно": { icon: BarChart3, color: c.green, sub: "Финансовый дашборд", cat: "Финансы и учёт",
-    tags: ["ДДС", "Консолидация", "Дебиторка", "GPT-учёт"],
+    task: "Деньги считаются руками, расхождения всплывают поздно",
+    result: "ДДС и дебиторка сходятся каждое утро. Расхождения — сразу.",
+    effect: "Больше контроля", speed: "В пару кликов",
+    tags: ["ДДС", "Дебиторка", "Консолидация"],
     pitch: "ДДС, консолидация по сети, светофор дебиторки. Сводит факт с управленкой и ловит расхождения каждое утро." },
   Hermes: { icon: Zap, color: c.cyan, sub: "LinkedIn-автопилот", cat: "Маркетинг",
-    tags: ["LinkedIn", "Контент", "Voice", "Авто-постинг"],
+    task: "Нет времени на контент, голос бренда плывёт",
+    result: "Посты в твоём голосе по расписанию — без тебя.",
+    effect: "Меньше рутины", speed: "В пару кликов",
+    tags: ["LinkedIn", "Контент", "Voice"],
     pitch: "Сырая мысль на входе — пост в твоём голосе на выходе, по расписанию. Правила голоса само-обновляются из аналитики." },
   "ИИ-хостес": { icon: Mic, color: c.amber, sub: "Приём гостей", cat: "Гостям и продажам",
-    tags: ["Бронь", "Допродажа", "On-brand", "24/7"],
+    task: "Гостям не отвечают вовремя — брони и допродажи теряются",
+    result: "Брони и ответы 24/7 в тоне заведения. Плюс допродажи.",
+    effect: "Больше выручки", speed: "В пару кликов",
+    tags: ["Бронь", "Допродажа", "24/7"],
     pitch: "Принимает брони, отвечает гостям в тоне заведения, делает допродажи и фиксирует всё в системе. Без выходных." },
 };
 const AGENT_CATS = {
   "Руководителю": c.violet, "Финансы и учёт": c.green, "Маркетинг": c.cyan, "Гостям и продажам": c.amber,
 };
+const EFFECT_COL = { "Больше выручки": c.green, "Меньше рутины": c.cyan, "Больше контроля": c.violet };
+const SPEED_COL = { "В пару кликов": c.green, "С нашим спецом": c.amber };
+const DIMS = {
+  role:   { label: "по отделу",   key: "cat",    values: ["Руководителю", "Финансы и учёт", "Маркетинг", "Гостям и продажам"] },
+  effect: { label: "по эффекту",  key: "effect", values: ["Больше выручки", "Меньше рутины", "Больше контроля"] },
+  speed:  { label: "по скорости", key: "speed",  values: ["В пару кликов", "С нашим спецом"] },
+};
+const dimColor = (dim, v) => dim === "role" ? AGENT_CATS[v] : dim === "effect" ? EFFECT_COL[v] : SPEED_COL[v];
 const CATS = {
   "Интеграции": c.cyan, "Учёт и ЭДО": c.violet, "Госучёт": c.amber,
   "Лояльность": c.green, "Аналитика": c.blue, "Коммуникации": "#E879A6", "Контроль": c.red,
@@ -214,36 +237,53 @@ function Catalog({ onOpenSol }) {
   const [cat, setCat] = useState("Все");
   const [q, setQ] = useState("");
   const [conn, setConn] = useState({});
-  const [role, setRole] = useState("Все");
+  const [dim, setDim] = useState("role");
+  const [pick, setPick] = useState("Все");
   const [sort, setSort] = useState("cat");
   const items = CATALOG
     .filter(([t, k, d]) => (cat === "Все" || k === cat) && (t.toLowerCase().includes(q.toLowerCase()) || d.toLowerCase().includes(q.toLowerCase())))
     .sort((a, b) => sort === "name" ? a[0].localeCompare(b[0], "ru") : (a[1].localeCompare(b[1], "ru") || a[0].localeCompare(b[0], "ru")));
-  const flag = ["Argus", "Kairos", "Сводно", "Hermes", "ИИ-хостес"].filter((s) => role === "Все" || SOL[s].cat === role);
+  const flag = ["Argus", "Kairos", "Сводно", "Hermes", "ИИ-хостес"].filter((s) => pick === "Все" || SOL[s][DIMS[dim].key] === pick);
   return (
     <div>
-      <Eyebrow>обзор · каталог</Eyebrow>
+      <Eyebrow>обзор · задачи бизнеса</Eyebrow>
       <h1 style={{ fontSize: 26, fontWeight: 700, margin: "6px 0 4px" }}>Флот агентов</h1>
-      <p style={{ color: c.dim, marginBottom: 18, maxWidth: 680 }}>Всё, что можно подключить клиенту. Нажми на агента — увидишь презентацию и живой демо-дашборд. Флагманы собираются из модулей ниже; модули подключаются и по отдельности.</p>
+      <p style={{ color: c.dim, marginBottom: 16, maxWidth: 700 }}>Не лента ботов, а навигация по задачам бизнеса. Выбери срез — отдел, эффект или скорость внедрения — и увидишь, какую задачу агент закрывает и какой даёт результат.</p>
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12, alignItems: "center" }}>
-        <Eyebrow style={{ marginRight: 4 }}>агенты · для кого</Eyebrow>
-        {["Все", ...Object.keys(AGENT_CATS)].map((k) => {
-          const on = role === k, col = AGENT_CATS[k] || c.dim;
-          return <button key={k} onClick={() => setRole(k)} style={{ background: on ? (k === "Все" ? "rgba(20,30,50,0.06)" : `${col}14`) : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on && k !== "Все" ? col : c.line}`, borderRadius: 99, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{k}</button>;
+      <div style={{ display: "flex", gap: 7, alignItems: "center", marginBottom: 11, flexWrap: "wrap" }}>
+        <Eyebrow style={{ marginRight: 4 }}>смотреть</Eyebrow>
+        {Object.entries(DIMS).map(([k, v]) => {
+          const on = dim === k;
+          return <button key={k} onClick={() => { setDim(k); setPick("Все"); }} style={{ background: on ? "rgba(20,30,50,0.06)" : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on ? c.lineHi : c.line}`, borderRadius: 8, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{v.label}</button>;
         })}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: 12, marginBottom: 26 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16, alignItems: "center" }}>
+        {["Все", ...DIMS[dim].values].map((k) => {
+          const on = pick === k, col = k === "Все" ? c.dim : dimColor(dim, k);
+          return <button key={k} onClick={() => setPick(k)} style={{ background: on ? (k === "Все" ? "rgba(20,30,50,0.06)" : `${col}14`) : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on && k !== "Все" ? col : c.line}`, borderRadius: 99, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{k}</button>;
+        })}
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(290px,1fr))", gap: 12, marginBottom: 26 }}>
         {flag.map((s) => {
-          const I = SOL[s].icon, col = SOL[s].color, n = agents.filter((x) => x.sol === s).length;
+          const S = SOL[s], I = S.icon, col = S.color, n = agents.filter((x) => x.sol === s).length;
           return (
             <Card key={s} hover onClick={() => onOpenSol(s)} style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ display: "flex", gap: 11, alignItems: "center", marginBottom: 10 }}>
-                <div style={{ width: 46, height: 46, borderRadius: 12, display: "grid", placeItems: "center", background: `linear-gradient(135deg, ${col}26, ${col}0d)`, border: `1px solid ${col}40`, flexShrink: 0 }}><I size={23} color={col} /></div>
-                <div style={{ minWidth: 0 }}><div style={{ fontWeight: 700, display: "flex", alignItems: "center", gap: 7 }}>{s} <Badge color={AGENT_CATS[SOL[s].cat]} bg={`${AGENT_CATS[SOL[s].cat]}12`}>{SOL[s].cat}</Badge></div><div style={{ fontSize: 11.5, color: c.dim }}>{SOL[s].sub}</div></div>
+              <div style={{ display: "flex", gap: 9, alignItems: "center", marginBottom: 11 }}>
+                <div style={{ width: 34, height: 34, borderRadius: 9, display: "grid", placeItems: "center", background: `linear-gradient(135deg, ${col}26, ${col}0d)`, border: `1px solid ${col}40`, flexShrink: 0 }}><I size={17} color={col} /></div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 10, color: c.dim2, textTransform: "uppercase", letterSpacing: ".05em" }}>для кого · {S.cat}</div>
+                  <div style={{ fontSize: 12, color: c.dim, fontWeight: 600 }}>{s} · {S.sub}</div>
+                </div>
               </div>
-              <div style={{ fontSize: 12, color: c.dim, lineHeight: 1.45, marginBottom: 10, flex: 1 }}>{SOL[s].pitch}</div>
-              <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 12 }}>{SOL[s].tags.map((t) => <span key={t} style={{ fontSize: 10.5, color: c.dim, background: "rgba(20,30,50,0.045)", border: `1px solid ${c.line}`, borderRadius: 6, padding: "2px 7px" }}>{t}</span>)}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.3, marginBottom: 9 }}>{S.task}</div>
+              <div style={{ display: "flex", gap: 7, alignItems: "flex-start", marginBottom: 12, flex: 1 }}>
+                <ArrowRight size={15} color={col} style={{ flexShrink: 0, marginTop: 2 }} />
+                <div style={{ fontSize: 12.5, color: c.txt, lineHeight: 1.4 }}>{S.result}</div>
+              </div>
+              <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 12 }}>
+                <Badge color={EFFECT_COL[S.effect]} bg={`${EFFECT_COL[S.effect]}12`}>{S.effect}</Badge>
+                <Badge color={SPEED_COL[S.speed]} bg={`${SPEED_COL[S.speed]}12`}>{S.speed}</Badge>
+              </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${c.line}`, paddingTop: 10 }}>
                 <span style={{ fontSize: 11.5, color: c.dim2 }}>развёрнут · {n} внедрений</span>
                 <span style={{ fontSize: 12.5, color: col, fontWeight: 600, display: "flex", alignItems: "center", gap: 2 }}>Смотреть <ChevronRight size={14} /></span>
