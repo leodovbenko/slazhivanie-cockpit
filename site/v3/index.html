@@ -22,7 +22,7 @@
   <meta name="twitter:image" content="https://slazhivanie.ru/og.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
       --dark:#0E1413; --darker:#0A100F; --ink-dark:#18191B;
@@ -36,10 +36,14 @@
     *{margin:0;padding:0;box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
-      font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+      font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
       background:var(--light); color:var(--t1);
       font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
+    }
+    /* крупные заголовки / hero — Manrope (аналог Gilroy) */
+    h1,h2,h3,.h-sec,.hero h1,.about-lead,.stat .num,.case .metric,.logo{
+      font-family:'Manrope','IBM Plex Sans',sans-serif;
     }
     a{color:inherit;text-decoration:none}
     img{max-width:100%}
@@ -101,14 +105,14 @@
       background:rgba(23,199,135,.10);border:1px solid rgba(23,199,135,.25);
       padding:7px 14px;border-radius:999px;margin-bottom:28px;
     }
-    .hero h1{font-size:clamp(38px,6.4vw,72px);font-weight:900;letter-spacing:-.03em}
+    .hero h1{font-size:clamp(38px,6.4vw,72px);font-weight:800;letter-spacing:-.03em}
     .hero .sub{margin-top:26px;font-size:clamp(17px,2.1vw,21px);color:var(--t2d);max-width:620px;line-height:1.5}
     .hero-btns{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
 
     /* ---------- stats ---------- */
     .stats{background:var(--ink-dark);color:var(--t1d)}
     .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:36px;padding:48px 0}
-    .stat .num{font-size:clamp(30px,3.6vw,42px);font-weight:900;color:var(--green);letter-spacing:-.02em}
+    .stat .num{font-size:clamp(30px,3.6vw,42px);font-weight:800;color:var(--green);letter-spacing:-.02em}
     .stat .lbl{margin-top:8px;font-size:14px;color:var(--t2d);line-height:1.4}
 
     /* ---------- generic cards ---------- */
@@ -147,7 +151,7 @@
 
     /* ---------- results ---------- */
     .case .meta{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
-    .case .metric{font-size:clamp(24px,2.6vw,30px);font-weight:900;color:var(--green-d);letter-spacing:-.02em;line-height:1.1}
+    .case .metric{font-size:clamp(24px,2.6vw,30px);font-weight:800;color:var(--green-d);letter-spacing:-.02em;line-height:1.1}
     .case h3{font-size:16px;font-weight:700;margin:12px 0 8px}
     .case p{font-size:14px;color:var(--t2)}
 
