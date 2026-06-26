@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Слаживание — дороги для ваших ИИ-агентов</title>
+  <meta name="description" content="Агенты у вас уже есть. Не хватает инфраструктуры, по которой данные безопасно проходят между отделами, людьми и системами. Слаживание — операционный слой ИИ для среднего и крупного бизнеса.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://slazhivanie.ru/v2">
+  <meta name="robots" content="noindex">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Слаживание">
+  <meta property="og:title" content="Слаживание — дороги для ваших ИИ-агентов">
+  <meta property="og:description" content="Не флот ботов, а дорожная сеть для них: коннекторы, права, приватность, память, аудит. Операционный слой ИИ для бизнеса 200–1 000 человек.">
+  <meta property="og:url" content="https://slazhivanie.ru/v2">
+  <meta property="og:image" content="https://slazhivanie.ru/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Слаживание — дороги для ваших ИИ-агентов">
+  <meta name="twitter:image" content="https://slazhivanie.ru/og.png">
+  <style>
+    :root{
+      --bg:#0E1413; --bg2:#121A18; --card:#16201E; --line:#243330;
+      --ink:#F4F7F6; --muted:#9FB0AB; --dim:#6E817C;
+      --green:#17C787; --green-d:#0FA06C; --amber:#F2B441; --red:#F2685A;
+      --maxw:1080px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+    .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+    h1,h2,h3{line-height:1.12;letter-spacing:-.01em}
+    .sec{padding:84px 0;border-top:1px solid var(--line)}
+    .sec-title{font-size:clamp(26px,4vw,40px);font-weight:800;margin:10px 0 14px}
+    .sec-lead{font-size:18px;color:var(--muted);max-width:680px}
+    .grid{display:grid;gap:18px}
+    .g2{grid-template-columns:repeat(2,1fr)}
+    .g3{grid-template-columns:repeat(3,1fr)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+    .card h3{font-size:19px;font-weight:700;margin-bottom:8px}
+    .card p{color:var(--muted);font-size:15px}
+    .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#04201A;font-weight:700;font-size:16px;padding:15px 26px;border-radius:999px;transition:transform .15s ease,background .15s}
+    .btn:hover{background:#1ee09a;transform:translateY(-1px)}
+    .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .btn-ghost:hover{background:var(--card)}
+
+    /* nav */
+    nav{position:sticky;top:0;z-index:50;background:rgba(14,20,19,.82);backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line)}
+    nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+    .logo svg{width:26px;height:26px}
+    .nav-cta{font-size:14px;font-weight:700;padding:9px 18px;border-radius:999px;background:var(--green);color:#04201A}
+
+    /* hero */
+    .hero{position:relative;overflow:hidden;padding:96px 0 84px}
+    .hero::before{content:"";position:absolute;inset:0;background:
+      radial-gradient(900px 460px at 78% -8%, rgba(23,199,135,.16), transparent 60%);pointer-events:none}
+    /* дорожная разметка как фоновый мотив */
+    .lanes{position:absolute;left:0;right:0;bottom:0;height:140px;opacity:.5;pointer-events:none}
+    .lane{position:absolute;left:0;right:0;height:2px;background:repeating-linear-gradient(90deg,var(--green) 0 26px,transparent 26px 54px);opacity:.35}
+    .hero h1{font-size:clamp(34px,6vw,62px);font-weight:850;max-width:880px}
+    .hero .sub{font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:660px;margin:22px 0 32px}
+    .hero .cta-row{display:flex;gap:14px;flex-wrap:wrap}
+    .pill{display:inline-block;font-size:13px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 14px;margin-bottom:22px}
+
+    /* deux columns village/city */
+    .vc{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .vc .card .big{font-size:15px;font-weight:800;margin-bottom:10px}
+    .vc ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+    .vc li{display:flex;gap:10px;color:var(--muted);font-size:15px}
+    .vc li::before{content:"";flex:0 0 8px;height:8px;border-radius:2px;margin-top:7px;background:var(--green)}
+    .accent-violet li::before{background:#9B8CF5}
+
+    /* flows */
+    .flow{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+    .flow .from{flex:0 0 230px;font-weight:700;color:var(--ink);font-size:16px}
+    .flow .arrow{color:var(--green);font-weight:800}
+    .flow .desc{color:var(--muted);font-size:15px}
+
+    /* substrate */
+    .sub-card .tag{color:var(--green)}
+    .sub-card h3{font-size:17px}
+    .sub-card .name{font-size:13px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+
+    /* scenarios */
+    .scen{display:flex;gap:14px;align-items:flex-start}
+    .scen .n{flex:0 0 34px;height:34px;border-radius:50%;background:var(--green);color:#04201A;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+    /* proof */
+    .stat{font-size:34px;font-weight:850;color:var(--green);line-height:1}
+    .proof-note{color:var(--dim);font-size:14px;margin-top:6px}
+
+    /* plans */
+    .plan{display:flex;flex-direction:column}
+    .plan .price{font-size:26px;font-weight:850;margin:6px 0 2px}
+    .plan ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:9px}
+    .plan li{color:var(--muted);font-size:14px;padding-left:20px;position:relative}
+    .plan li::before{content:"→";position:absolute;left:0;color:var(--green)}
+    .plan.featured{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+    .ribbon{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#04201A;background:var(--green);padding:4px 10px;border-radius:999px;margin-bottom:10px}
+
+    /* cta band */
+    .band{background:linear-gradient(120deg,#0FA06C,#17C787);color:#04201A;border-radius:22px;padding:46px 40px;text-align:center}
+    .band h2{font-size:clamp(24px,3.6vw,36px);font-weight:850}
+    .band p{font-size:17px;margin:12px 0 24px;color:#063027;font-weight:500}
+    .band .btn{background:#04201A;color:#fff}
+    .band .btn:hover{background:#0a3328}
+
+    footer{border-top:1px solid var(--line);padding:42px 0;color:var(--dim);font-size:14px}
+    footer a{color:var(--muted)}
+    .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+    .muted-note{font-size:13px;color:var(--dim);margin-top:30px}
+
+    @media(max-width:760px){
+      .g2,.g3,.vc{grid-template-columns:1fr}
+      .sec{padding:60px 0}
+      .flow{flex-direction:column;align-items:flex-start;gap:8px}
+      .flow .from{flex:none}
+      .foot-row{flex-direction:column}
+      .hero{padding:64px 0 60px}
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="wrap">
+      <a class="logo" href="/v2">
+        <svg viewBox="0 0 400 400" aria-hidden="true"><rect width="400" height="400" rx="80" fill="#16201E"/><path d="M120 256 C 120 256, 160 132, 200 132 C 240 132, 280 256, 280 256" stroke="#17C787" stroke-width="26" stroke-linecap="round" fill="none"/><circle cx="200" cy="256" r="22" fill="#17C787"/></svg>
+        Слаживание
+      </a>
+      <a class="nav-cta" href="#start">Обсудить пилот</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <span class="pill">Операционный слой ИИ · бизнес 200–1 000 человек</span>
+      <h1>Дороги для ваших ИИ-агентов</h1>
+      <p class="sub">Агенты у вас уже есть. Не хватает инфраструктуры, по которой данные безопасно проходят между отделами, людьми и системами. Это и есть Слаживание.</p>
+      <div class="cta-row">
+        <a class="btn" href="#start">Диагностика 60 минут — бесплатно</a>
+        <a class="btn btn-ghost" href="#substrate">Что внутри</a>
+      </div>
+    </div>
+    <div class="lanes">
+      <div class="lane" style="bottom:30px"></div>
+      <div class="lane" style="bottom:64px"></div>
+      <div class="lane" style="bottom:98px"></div>
+    </div>
+  </header>
+
+  <!-- REFRAME: village vs city -->
+  <section class="sec" id="why">
+    <div class="wrap">
+      <span class="eyebrow">Главная мысль</span>
+      <h2 class="sec-title">Отдельный агент — это коммодити</h2>
+      <p class="sec-lead">На GitHub их раздают пачками по 40–100 штук, бесплатно. Вопрос не «сколько у вас агентов». Вопрос — что заставляет их работать вместе на реальных данных компании.</p>
+      <div class="vc" style="margin-top:30px">
+        <div class="card">
+          <div class="big" style="color:var(--green)">🏍 Деревня — один человек, один отдел</div>
+          <ul>
+            <li>Садишься на мотоцикл и едешь куда угодно. Светофоры не нужны.</li>
+            <li>Запускаешь себе агента — кажется, что «ИИ просто работает».</li>
+            <li>Бесплатная папка с GitHub здесь честно справляется.</li>
+          </ul>
+        </div>
+        <div class="card accent-violet">
+          <div class="big" style="color:#9B8CF5">🏙 Город — компания 200–1 000 человек</div>
+          <ul>
+            <li>Маркетинг → продажи → бухгалтерия. Данные пересекают границы.</li>
+            <li>Без полос, светофоров и правил — затор и аварии, а не движение.</li>
+            <li>40 «мотоциклов» на одном перекрёстке — это не транспортная система.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="muted-note">Слаживание — дорожная сеть города: то, без чего промышленное движение невозможно. <em>(Военный термин: слаживание — превратить отдельных бойцов в действующее как одно целое.)</em></p>
+    </div>
+  </section>
+
+  <!-- WHERE IT BURNS -->
+  <section class="sec" id="pain">
+    <div class="wrap">
+      <span class="eyebrow">Где сегодня горит</span>
+      <h2 class="sec-title">Боль не внутри отдела — она на переходах между ними</h2>
+      <div class="grid" style="margin-top:30px;gap:14px">
+        <div class="flow"><div class="from">Маркетинг <span class="arrow">→</span> Продажи</div><div class="desc">Лид пришёл, но менеджер не видит контекста кампании. Передача теряется, скорость ответа падает.</div></div>
+        <div class="flow"><div class="from">Продажи <span class="arrow">→</span> Бухгалтерия</div><div class="desc">КП не сходится с договором и счётом. Данные перебивают руками — ошибки и задержки.</div></div>
+        <div class="flow"><div class="from">Поддержка <span class="arrow">→</span> Продукт</div><div class="desc">Сигнал об оттоке живёт в тикетах. Пока дойдёт до того, кто решает — клиент уже у конкурента.</div></div>
+      </div>
+      <p class="muted-note">Бесплатная папка агентов умирает ровно здесь: у неё нет права пересечь границу отдела, нет памяти о прошлом проезде и нет «таможни» для чувствительных данных.</p>
+    </div>
+  </section>
+
+  <!-- SUBSTRATE -->
+  <section class="sec" id="substrate" style="background:var(--bg2)">
+    <div class="wrap">
+      <span class="eyebrow">Что такое Слаживание</span>
+      <h2 class="sec-title">Не флот агентов. Дорожная сеть для них.</h2>
+      <p class="sec-lead">Слой над вашими инструментами — 1С, CRM, телефония, диск, почта. Готовый продукт, подключается за 4–6 недель. Вот что физически внутри — и почему это нельзя «склонировать» за 5 минут.</p>
+      <div class="grid g3" style="margin-top:30px">
+        <div class="card sub-card"><div class="name">Полосы</div><h3>Коннекторы</h3><p>1С, Bitrix24/amoCRM, Mango, Telegram, диск, почта — по ним идут данные.</p></div>
+        <div class="card sub-card"><div class="name">Светофоры и ПДД</div><h3>Права + approval</h3><p>Кто куда въезжает. Действие наружу — только после подтверждения человека.</p></div>
+        <div class="card sub-card"><div class="name">Таможня</div><h3>Privacy + 152-ФЗ</h3><p>Чувствительное пересекает периметр только обезличенным. On-prem доступен.</p></div>
+        <div class="card sub-card"><div class="name">Знаки с памятью</div><h3>Клиентская память</h3><p>Перекрёсток помнит прошлый проезд — агент не стартует «с нуля» каждый раз.</p></div>
+        <div class="card sub-card"><div class="name">Камеры</div><h3>Eval, логи, аудит</h3><p>Каждое действие записано: кто запросил, что сделано, кто подтвердил. SIEM-готово.</p></div>
+        <div class="card sub-card"><div class="name">Развязки</div><h3>Роутинг моделей</h3><p>Claude, DeepSeek, GigaChat, YandexGPT — задача уходит на нужную по цене и классу данных.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENARIOS -->
+  <section class="sec" id="routes">
+    <div class="wrap">
+      <span class="eyebrow">Что теперь поедет</span>
+      <h2 class="sec-title">Шесть маршрутов, которым нужны дороги</h2>
+      <p class="sec-lead">Не кастомная разработка и не каталог из 40 ботов. Каждый сценарий пересекает границы отделов с реальными данными. Берёте все шесть или начинаете с одного.</p>
+      <div class="grid g2" style="margin-top:30px">
+        <div class="card"><div class="scen"><div class="n">1</div><div><h3>Встречи → задачи</h3><p>Запись Zoom/Mango → сводка, поручения, дедлайны в CRM. −30–45 минут на каждой встрече.</p></div></div></div>
+        <div class="card"><div class="scen"><div class="n">2</div><div><h3>Документы и КП</h3><p>Договоры, КП, презентации по шаблону компании. Цикл КП: с 3 дней до 30 минут.</p></div></div></div>
+        <div class="card"><div class="scen"><div class="n">3</div><div><h3>Sales-ассистент</h3><p>Подсказки менеджеру в реальном времени во время звонка. Онбординг sales — с 6 до 2 месяцев.</p></div></div></div>
+        <div class="card"><div class="scen"><div class="n">4</div><div><h3>Пульс клиентов</h3><p>Анализ переписок, сигналы об оттоке, скоринг сделок. Отток ниже на 15–25%.</p></div></div></div>
+        <div class="card"><div class="scen"><div class="n">5</div><div><h3>Эффективность встреч</h3><p>Какие встречи двигают сделки, какие — пустые. Время лидера: +5–8 часов в неделю.</p></div></div></div>
+        <div class="card"><div class="scen"><div class="n">6</div><div><h3>Скрининг CV</h3><p>200 резюме → шортлист + черновики приглашений. Скрининг: с недели до 2 часов.</p></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section class="sec" id="proof" style="background:var(--bg2)">
+    <div class="wrap">
+      <span class="eyebrow">Доказательства · уже работает в России</span>
+      <h2 class="sec-title">Передовики, по которым к 2027 будет работать средний бизнес</h2>
+      <div class="grid g3" style="margin-top:30px">
+        <div class="card"><div class="stat">350 → 0</div><div class="proof-note">ПРАВОТЕХ · 500 чел.</div><p style="margin-top:10px">План найма 2025: +350. Факт: 0. ИИ-сотрудники с именами. Целевая экономия ФОТ ~92 млн ₽/мес.</p></div>
+        <div class="card"><div class="stat">6 недель</div><div class="proof-note">DocsInBox · AI-Тендерист</div><p style="margin-top:10px">От идеи до первого платящего клиента (вместо 6 месяцев), команда 2 человека, конверсия встреча→пилот ~100%.</p></div>
+        <div class="card"><div class="stat">110 чел.</div><div class="proof-note">DocsInBox · «едим свою еду»</div><p style="margin-top:10px">ИИ встроен во всю операционку: разработка, продажи, поддержка, контент. Кто продаёт — тот и главный пользователь.</p></div>
+      </div>
+      <p class="muted-note">Бесплатные агенты — это Linux: ценный, копируемый, бесплатный. Бизнес стоит на дистрибутиве Red Hat: поддерживаемый, интегрированный, сертифицированный. Платят за дистрибутив, не за код.</p>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="sec" id="start">
+    <div class="wrap">
+      <span class="eyebrow">Как начать</span>
+      <h2 class="sec-title">Три способа войти — от мягкого к полному</h2>
+      <div class="grid g3" style="margin-top:30px">
+        <div class="card plan">
+          <h3>«Слаживание» · интенсив</h3>
+          <div class="price">1 млн ₽</div>
+          <div class="proof-note">за команду из 4 человек</div>
+          <ul>
+            <li>5 рабочих дней, любые роли</li>
+            <li>Каждый выходит с 3–5 AI-сценариями</li>
+            <li>Точка входа в воронку</li>
+          </ul>
+        </div>
+        <div class="card plan featured">
+          <span class="ribbon">Рекомендуем</span>
+          <h3>Пилот · 1 сценарий, 1 отдел</h3>
+          <div class="price">от 800 тыс. ₽</div>
+          <div class="proof-note">за пилот · 4–8 недель</div>
+          <ul>
+            <li>1 из 6 сценариев в одном отделе</li>
+            <li>Полное внедрение + обучение</li>
+            <li>Цель — доказать ROI до развёртывания</li>
+          </ul>
+        </div>
+        <div class="card plan">
+          <h3>Подписка · вся компания</h3>
+          <div class="price">2 500–5 000 ₽</div>
+          <div class="proof-note">на человека в месяц</div>
+          <ul>
+            <li>Все 6 сценариев и 7 интеграций</li>
+            <li>SLA, поддержка, обновления</li>
+            <li>On-prem и 152-ФЗ для регулируемых</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="band" style="margin-top:40px">
+        <h2>Один разговор на 60 минут</h2>
+        <p>Без подготовки с вашей стороны. Без обязательств. Разберём 1–2 ваших процесса вживую и покажем, какой маршрут их закрывает.</p>
+        <a class="btn" href="mailto:leonid@slazhivanie.ru?subject=Слаживание%20—%20диагностика">Запросить диагностику</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot-row">
+      <div>
+        <div class="logo" style="margin-bottom:8px"><svg viewBox="0 0 400 400" aria-hidden="true" style="width:24px;height:24px"><rect width="400" height="400" rx="80" fill="#16201E"/><path d="M120 256 C 120 256, 160 132, 200 132 C 240 132, 280 256, 280 256" stroke="#17C787" stroke-width="26" stroke-linecap="round" fill="none"/><circle cx="200" cy="256" r="22" fill="#17C787"/></svg> Слаживание</div>
+        Дороги для ваших ИИ-агентов · slazhivanie.ru
+      </div>
+      <div>
+        Леонид Довбенко · сооснователь<br>
+        <a href="mailto:leonid@slazhivanie.ru">leonid@slazhivanie.ru</a> · <a href="https://t.me/ldovbenko">@ldovbenko</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
