@@ -248,13 +248,44 @@
     </div>
   </section>
 
-  <!-- ============ CTA / КОНТАКТЫ ============ -->
-  <section class="sec cta" id="contacts">
-    <div class="wrap">
-      <span class="eyebrow on-dark">Контакты</span>
-      <h2 class="h-sec">Покажем эффект на вашем процессе</h2>
-      <p>Начинаем с диагностики, где ИИ и смена поведения дают деньги. Модель оплаты — процент от достигнутой экономии. Отвечаем в течение рабочего дня.</p>
-      <a href="mailto:leo@dovbenko.me" class="btn btn-green">Обсудить внедрение</a>
+  <!-- ============ КОНТАКТЫ / ФОРМА ============ -->
+  <section class="sec light-block" id="contacts">
+    <div class="wrap" style="max-width:760px">
+      <div style="text-align:center;margin-bottom:36px">
+        <span class="eyebrow">Контакты</span>
+        <h2 class="h-sec">Начнём с диагностики</h2>
+        <p class="lead" style="margin:16px auto 0">Расскажите, где процесс упёрся в стену. Вернёмся с оценкой эффекта и планом первого шага. Отвечаем в течение рабочего дня.</p>
+      </div>
+
+      <div class="form-wrap">
+        <form id="leadform">
+          <div class="form-row">
+            <div class="field">
+              <label for="f-name">Как к вам обращаться</label>
+              <input id="f-name" name="name" type="text" required placeholder="Имя">
+            </div>
+            <div class="field">
+              <label for="f-company">Название и сфера</label>
+              <input id="f-company" name="company" type="text" placeholder="Компания, отрасль">
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-contact">Куда вернуться с ответом</label>
+            <input id="f-contact" name="contact" type="text" required placeholder="Почта или телефон">
+          </div>
+          <div class="field">
+            <label for="f-task">Где процесс упёрся в стену</label>
+            <textarea id="f-task" name="task" placeholder="Коротко опишите задачу или процесс"></textarea>
+          </div>
+          <button type="submit" class="btn btn-green" style="width:100%">Отправить заявку</button>
+          <p class="form-consent">Нажимая кнопку, вы соглашаетесь на обработку контактных данных для ответа на заявку.</p>
+        </form>
+        <div class="form-ok" id="formok">
+          <div class="ic-ok"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0FA06C" stroke-width="2.4"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Заявка отправлена</h3>
+          <p>Спасибо. Свяжемся с вами в течение рабочего дня и предложим время для диагностики.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -277,6 +308,17 @@
     var b=document.getElementById('burger'),m=document.getElementById('mmenu');
     b.addEventListener('click',function(){m.classList.toggle('open')});
     m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
+
+    // форма заявки: собираем письмо и показываем подтверждение
+    var lf=document.getElementById('leadform');
+    if(lf){lf.addEventListener('submit',function(e){
+      e.preventDefault();
+      var d=new FormData(lf);
+      var body='Имя: '+(d.get('name')||'')+'\nКомпания/сфера: '+(d.get('company')||'')+'\nКонтакт: '+(d.get('contact')||'')+'\nЗадача: '+(d.get('task')||'');
+      window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Заявка на диагностику — Слаживание')+'&body='+encodeURIComponent(body);
+      lf.style.display='none';
+      document.getElementById('formok').classList.add('show');
+    });}
   </script>
 </body>
 </html>
