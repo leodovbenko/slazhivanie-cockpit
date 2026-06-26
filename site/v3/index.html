@@ -269,7 +269,11 @@
       </div>
 
       <div class="form-wrap">
-        <form id="leadform">
+        <form id="leadform" action="https://formsubmit.co/leo@dovbenko.me" method="POST">
+          <input type="hidden" name="_subject" value="Заявка на диагностику — Слаживание (сайт)">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://slazhivanie.ru/v3/?sent=1">
           <div class="form-row">
             <div class="field">
               <label for="f-name">Как к вам обращаться</label>
@@ -321,29 +325,11 @@
     b.addEventListener('click',function(){m.classList.toggle('open')});
     m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
 
-    // форма заявки → FormSubmit.co (без бэкенда, заявки приходят на почту)
-    var lf=document.getElementById('leadform');
-    if(lf){lf.addEventListener('submit',function(e){
-      e.preventDefault();
-      var btn=lf.querySelector('button[type=submit]');
-      btn.disabled=true; btn.textContent='Отправляем…';
-      var fd=new FormData(lf);
-      fd.append('_subject','Заявка на диагностику — Слаживание (сайт)');
-      fd.append('_captcha','false');
-      fd.append('_template','table');
-      fetch('https://formsubmit.co/ajax/leo@dovbenko.me',{
-        method:'POST', headers:{'Accept':'application/json'}, body:fd
-      }).then(function(r){return r.json();}).then(function(){
-        lf.style.display='none';
-        document.getElementById('formok').classList.add('show');
-      }).catch(function(){
-        // запасной путь: открыть почтовый клиент
-        btn.disabled=false; btn.textContent='Отправить заявку';
-        var d=new FormData(lf);
-        var body='Имя: '+(d.get('name')||'')+'\nКомпания/сфера: '+(d.get('company')||'')+'\nКонтакт: '+(d.get('contact')||'')+'\nЗадача: '+(d.get('task')||'');
-        window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Заявка на диагностику — Слаживание')+'&body='+encodeURIComponent(body);
-      });
-    });}
+    // после успешной отправки FormSubmit возвращает на ?sent=1 — показываем подтверждение
+    if(location.search.indexOf('sent=1')>-1){
+      var lf=document.getElementById('leadform'), ok=document.getElementById('formok');
+      if(lf&&ok){lf.style.display='none'; ok.classList.add('show'); ok.scrollIntoView({block:'center'});}
+    }
   </script>
 </body>
 </html>
