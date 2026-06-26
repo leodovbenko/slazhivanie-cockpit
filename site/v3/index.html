@@ -310,15 +310,28 @@
     b.addEventListener('click',function(){m.classList.toggle('open')});
     m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
 
-    // форма заявки: собираем письмо и показываем подтверждение
+    // форма заявки → FormSubmit.co (без бэкенда, заявки приходят на почту)
     var lf=document.getElementById('leadform');
     if(lf){lf.addEventListener('submit',function(e){
       e.preventDefault();
-      var d=new FormData(lf);
-      var body='Имя: '+(d.get('name')||'')+'\nКомпания/сфера: '+(d.get('company')||'')+'\nКонтакт: '+(d.get('contact')||'')+'\nЗадача: '+(d.get('task')||'');
-      window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Заявка на диагностику — Слаживание')+'&body='+encodeURIComponent(body);
-      lf.style.display='none';
-      document.getElementById('formok').classList.add('show');
+      var btn=lf.querySelector('button[type=submit]');
+      btn.disabled=true; btn.textContent='Отправляем…';
+      var fd=new FormData(lf);
+      fd.append('_subject','Заявка на диагностику — Слаживание (сайт)');
+      fd.append('_captcha','false');
+      fd.append('_template','table');
+      fetch('https://formsubmit.co/ajax/leo@dovbenko.me',{
+        method:'POST', headers:{'Accept':'application/json'}, body:fd
+      }).then(function(r){return r.json();}).then(function(){
+        lf.style.display='none';
+        document.getElementById('formok').classList.add('show');
+      }).catch(function(){
+        // запасной путь: открыть почтовый клиент
+        btn.disabled=false; btn.textContent='Отправить заявку';
+        var d=new FormData(lf);
+        var body='Имя: '+(d.get('name')||'')+'\nКомпания/сфера: '+(d.get('company')||'')+'\nКонтакт: '+(d.get('contact')||'')+'\nЗадача: '+(d.get('task')||'');
+        window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Заявка на диагностику — Слаживание')+'&body='+encodeURIComponent(body);
+      });
     });}
   </script>
 </body>
