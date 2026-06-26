@@ -1,4 +1,30 @@
+# Слаживание — robots.txt
 User-agent: *
+Allow: /
+
+# ИИ-краулеры (GEO) — разрешены явно
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: YandexBot
 Allow: /
 
 Sitemap: https://slazhivanie.ru/sitemap.xml
