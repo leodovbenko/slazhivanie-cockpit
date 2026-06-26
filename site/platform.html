@@ -17,6 +17,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Слаживание Платформа",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, On-premise",
+    "url": "https://slazhivanie.ru/platform.html",
+    "description": "Корпоративный ИИ-ассистент над 1С, CRM, телефонией, диском и почтой: 6 сценариев из коробки, 4 модели под капотом, 7 интеграций, соответствие 152-ФЗ.",
+    "provider": {"@type":"Organization","name":"Слаживание","url":"https://slazhivanie.ru/"},
+    "offers": [
+      {"@type":"Offer","name":"Интенсив «Слаживание»","price":"1000000","priceCurrency":"RUB","description":"AI-интенсив для топ-команды из 4 человек, 5 рабочих дней"},
+      {"@type":"Offer","name":"Пилот","price":"800000","priceCurrency":"RUB","description":"Один из 6 сценариев в одном отделе, 4–8 недель"},
+      {"@type":"Offer","name":"Подписка","priceCurrency":"RUB","priceSpecification":{"@type":"UnitPriceSpecification","minPrice":"500","maxPrice":"5000","priceCurrency":"RUB","unitText":"на человека в месяц"},"description":"Все 6 сценариев и 7 интеграций, SLA и поддержка"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Что такое Слаживание Платформа?","acceptedAnswer":{"@type":"Answer","text":"Корпоративный ИИ-ассистент, который обрабатывает информационный поток компании — звонки, встречи, лиды, документы. Это слой над вашими 1С, CRM, телефонией, диском и почтой, а не отдельный чат-бот."}},
+      {"@type":"Question","name":"Какие сценарии работают из коробки?","acceptedAnswer":{"@type":"Answer","text":"Шесть: встречи → задачи (сводка и поручения в CRM), документы и КП, помощник на звонке в реальном времени, пульс клиентов (скоринг и сигналы оттока), эффективность встреч, скрининг резюме. Можно внедрить все сразу или начать с одного."}},
+      {"@type":"Question","name":"Какие ИИ-модели использует платформа?","acceptedAnswer":{"@type":"Answer","text":"Четыре под капотом — Claude, DeepSeek, GigaChat, YandexGPT. Маршрутизатор выбирает модель под задачу: стратегия — лучшей моделью, рутина — самой дешёвой, регулируемые данные не покидают РФ."}},
+      {"@type":"Question","name":"С какими системами интегрируется?","acceptedAnswer":{"@type":"Answer","text":"Семь интеграций в первом релизе: 1С, CRM (amoCRM, Bitrix24), телефония, Telegram/Пачка, Яндекс Диск / Mail Cloud, Сбер / Тинькофф Бизнес, бизнес-почта. Дополнительные — на этапе пилота."}},
+      {"@type":"Question","name":"Платформа соответствует 152-ФЗ и безопасна?","acceptedAnswer":{"@type":"Answer","text":"Да. Данные не покидают периметр клиента, любое действие наружу — только после подтверждения сотрудника, доступ по правам, полный аудит каждого действия. Для регулируемых данных доступны GigaChat/YandexGPT и on-prem, зарубежная обработка запрещена (fail-closed)."}},
+      {"@type":"Question","name":"Сколько стоит и сколько занимает развёртывание?","acceptedAnswer":{"@type":"Answer","text":"Интенсив — 1 млн ₽ за команду из 4 человек; пилот — от 800 тыс. ₽; подписка — 500–5 000 ₽ на человека в месяц. Развёртывание: облако ~1 неделя, гибрид 3–4 недели, on-prem 8–12 недель."}}
+    ]
+  }
+  </script>
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
@@ -268,6 +299,42 @@
         </div>
       </div>
       <p class="lead" style="margin-top:24px;font-size:15px;color:var(--t3)">Тарифы подписки: Бизнес — 2 500 ₽/чел/мес · Корпоративный — от 5 000 ₽/чел/мес (152-ФЗ, от 200 пользователей). 25% подписки аллоцируется в бюджет на токены.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec light-block" id="faq">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:40px">
+        <span class="eyebrow">Частые вопросы</span>
+        <h2 class="h-sec">О платформе коротко</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Что такое Слаживание Платформа?</summary>
+          <div class="faq-a">Корпоративный ИИ-ассистент, который обрабатывает информационный поток компании — звонки, встречи, лиды, документы. Это слой над вашими 1С, CRM, телефонией, диском и почтой, а не отдельный чат-бот.</div>
+        </details>
+        <details>
+          <summary>Какие сценарии работают из коробки?</summary>
+          <div class="faq-a">Шесть: встречи → задачи (сводка и поручения в CRM), документы и КП, помощник на звонке в реальном времени, пульс клиентов (скоринг и сигналы оттока), эффективность встреч, скрининг резюме. Можно внедрить все сразу или начать с одного.</div>
+        </details>
+        <details>
+          <summary>Какие ИИ-модели использует платформа?</summary>
+          <div class="faq-a">Четыре под капотом — Claude, DeepSeek, GigaChat, YandexGPT. Маршрутизатор выбирает модель под задачу: стратегия — лучшей моделью, рутина — самой дешёвой, регулируемые данные не покидают РФ.</div>
+        </details>
+        <details>
+          <summary>С какими системами интегрируется?</summary>
+          <div class="faq-a">Семь интеграций в первом релизе: 1С, CRM (amoCRM, Bitrix24), телефония, Telegram/Пачка, Яндекс Диск / Mail Cloud, Сбер / Тинькофф Бизнес, бизнес-почта. Дополнительные — на этапе пилота.</div>
+        </details>
+        <details>
+          <summary>Платформа соответствует 152-ФЗ и безопасна?</summary>
+          <div class="faq-a">Да. Данные не покидают периметр клиента, любое действие наружу — только после подтверждения сотрудника, доступ по правам, полный аудит каждого действия. Для регулируемых данных доступны GigaChat/YandexGPT и on-prem, зарубежная обработка запрещена (fail-closed).</div>
+        </details>
+        <details>
+          <summary>Сколько стоит и сколько занимает развёртывание?</summary>
+          <div class="faq-a">Интенсив — 1 млн ₽ за команду из 4 человек; пилот — от 800 тыс. ₽; подписка — 500–5 000 ₽ на человека в месяц. Развёртывание: облако ~1 неделя, гибрид 3–4 недели, on-prem 8–12 недель.</div>
+        </details>
+      </div>
     </div>
   </section>
 
