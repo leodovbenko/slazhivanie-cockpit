@@ -1,0 +1,37 @@
+{
+  "defaultMode": "acceptEdits",
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "WebFetch",
+      "WebSearch",
+      "mcp__publora__list_posts",
+      "mcp__publora__list_connections"
+    ],
+    "ask": [
+      "Bash(rm -rf*)",
+      "Bash(rm -fr*)",
+      "Bash(rm -r *)",
+      "Bash(sudo rm*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(dd *)",
+      "Bash(mkfs*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guardrail.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -5,6 +5,10 @@ node_modules/
 .env.*
 dist/
 
+# Claude Code: локальный кэш permissions и загрузки — машинно-локальное, не в публичный репо
+.claude/settings.local.json
+.claude/uploads/
+
 # Бизнес-документы — НЕ публикуем (остаются локально в iCloud)
 Дамп Слаживание.md
 HANDOFF — продолжить на телефоне.md
