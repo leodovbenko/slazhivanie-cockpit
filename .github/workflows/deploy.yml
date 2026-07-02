@@ -10,9 +10,13 @@ permissions:
   pages: write
   id-token: write
 
+# Рекомендация GitHub Pages: один деплой за раз, НО не отменять in-progress —
+# отмена прогона не отменяет уже созданный на бэкенде деплой, они коллизят и
+# дают транзиентное «Deployment failed, try again later». false = деплои встают
+# в очередь и каждый доходит до конца.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
