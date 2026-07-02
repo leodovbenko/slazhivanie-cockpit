@@ -8,6 +8,7 @@ set -euo pipefail
 REPO="${1:-${CLAUDE_PROJECT_DIR:-$PWD}}"
 GATE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/verify-gate.py"
 H=$(python3 "$GATE" --hash "$REPO")
+[ -n "$H" ] || { echo "verify-mark: пустой хеш (repo=$REPO) — маркер не ставлю" >&2; exit 1; }
 DIR="${CLAUDE_PROJECT_DIR:-$PWD}/.claude/verify"
 mkdir -p "$DIR"
 : > "$DIR/$H.ok"
