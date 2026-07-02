@@ -39,9 +39,17 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.retry.outputs.page_url }}
     steps:
+      # Бэкенд GitHub Pages иногда отдаёт «Deployment failed, try again later» —
+      # это не наша ошибка (build и артефакт валидны). Первую попытку не роняем,
+      # при транзиентном отказе повторяем в том же прогоне — деплой самолечится.
       - id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - id: retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
