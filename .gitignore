@@ -9,6 +9,8 @@ dist/
 .claude/settings.local.json
 .claude/uploads/
 .claude/verify/
+# локальные дев-ритуалы (напр. /halas) — внутренние id/боты/сервер, не в публичный репо
+.claude/skills/
 
 # Живое рабочее состояние задач (GSD-дисциплина) — локальное, не актив, публичную историю не засоряет
 STATE.md
