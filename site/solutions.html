@@ -3,20 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Решения — ИИ в HR-функции | Слаживание</title>
-  <meta name="description" content="Контроль над функциями, которые держатся на людях. Семь блоков HR, и в каждом: боль → ИИ-решение → роль Слаживания. ИИ масштабирует хаос, если процессы не согласованы.">
+  <title>Решения — ИИ в поддерживающих функциях | Слаживание</title>
+  <meta name="description" content="Контроль над функциями, которые держатся на людях: HR, служба безопасности, финансы и вертикаль строительства. В каждой — боль → ИИ-решение → роль Слаживания.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="canonical" href="https://slazhivanie.ru/solutions.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Слаживание">
-  <meta property="og:title" content="Решения — ИИ в HR-функции | Слаживание">
-  <meta property="og:description" content="Семь блоков HR, и в каждом: боль → ИИ-решение → роль Слаживания.">
+  <meta property="og:title" content="Решения — ИИ в поддерживающих функциях | Слаживание">
+  <meta property="og:description" content="HR, безопасность, финансы, строительство — каждая функция раскрывается отдельно: боль → ИИ-решение → роль Слаживания.">
   <meta property="og:image" content="https://slazhivanie.ru/og.png">
   <meta property="og:locale" content="ru_RU">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Аккордеон доменов (HR / Безопасность / Финансы / Стройка) — страница не простыня */
+    .dnav{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+    .dnav a{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:var(--t1);
+      border:1px solid var(--line-light);border-radius:999px;padding:9px 16px;background:var(--white);transition:.15s}
+    .dnav a:hover{border-color:var(--green);color:var(--green-d)}
+    .dnav a span{color:var(--t3);font-weight:600}
+    .domain{border-top:1px solid var(--line-light)}
+    .domain>summary{list-style:none;cursor:pointer;padding:30px 0;display:flex;align-items:baseline;gap:20px}
+    .domain>summary::-webkit-details-marker{display:none}
+    .domain>summary .wrap{display:flex;align-items:baseline;gap:20px;width:100%}
+    .domain .d-main{flex:1;min-width:0}
+    .domain .d-eyebrow{display:block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green-d);margin-bottom:8px}
+    .domain .d-title{font-family:'Manrope','IBM Plex Sans',sans-serif;font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--t1)}
+    .domain .d-teaser{margin-top:10px;font-size:15.5px;color:var(--t2);max-width:720px;line-height:1.5}
+    .domain .d-sign{flex-shrink:0;width:34px;height:34px;border-radius:50%;border:1px solid var(--line-light);
+      display:grid;place-items:center;color:var(--green-d);font-size:22px;font-weight:400;line-height:1;transition:.2s}
+    .domain>summary:hover .d-sign{border-color:var(--green);background:var(--green-soft)}
+    .domain[open]>summary .d-sign{transform:rotate(45deg)}
+    .domain[open]>summary{padding-bottom:6px}
+    /* внутри раскрытого домена секции чуть плотнее, без лишнего верхнего воздуха */
+    .domain .sec{padding:44px 0 64px}
+    .domain .sec.light-block{border-top:1px solid var(--line-light)}
+    .domain>summary:hover .d-title{color:var(--green-d)}
+    @media(max-width:560px){
+      .domain>summary{padding:24px 0}
+      .domain .d-teaser{font-size:14.5px}
+    }
+  </style>
   <!-- Yandex.Metrika counter -->
   <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
@@ -78,6 +107,33 @@
       <p class="about-lead">Заходим от нестрашного: ИИ не получает паролей и не лезет в системы напрямую. Сначала — <span class="green">советник и аналитика</span>, доверие наращиваем поэтапно.</p>
     </div>
   </section>
+
+  <!-- БЫСТРЫЙ ВЫБОР ФУНКЦИИ -->
+  <section class="sec tight">
+    <div class="wrap">
+      <span class="eyebrow">Выберите функцию</span>
+      <p class="lead" style="margin-top:8px">Четыре направления, каждое раскрывается отдельно — чтобы страница не превращалась в простыню.</p>
+      <div class="dnav">
+        <a href="#hr">HR <span>· 7 блоков</span></a>
+        <a href="#security">Служба безопасности <span>· слой над всеми</span></a>
+        <a href="#finance">Финансы <span>· скоро</span></a>
+        <a href="#stroyka">Строительство <span>· вертикаль</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ДОМЕН: HR ============ -->
+  <details class="domain" id="hr">
+    <summary>
+      <div class="wrap">
+        <div class="d-main">
+          <span class="d-eyebrow">ИИ в HR-функции</span>
+          <div class="d-title">HR — жизненный цикл сотрудника</div>
+          <p class="d-teaser">Семь блоков: аналитика, онбординг, обучение, оценка, грейды и ФОТ, кадровое право, рекрутинг. В каждом: боль → ИИ-решение → роль Слаживания.</p>
+        </div>
+        <div class="d-sign">+</div>
+      </div>
+    </summary>
 
   <!-- ВВЕДЕНИЕ HR -->
   <section class="sec">
@@ -246,11 +302,23 @@
       </div>
     </div>
   </section>
+  </details>
 
-  <hr class="vert-divider">
+  <!-- ============ ДОМЕН: БЕЗОПАСНОСТЬ ============ -->
+  <details class="domain" id="security">
+    <summary>
+      <div class="wrap">
+        <div class="d-main">
+          <span class="d-eyebrow">ИИ в службе безопасности</span>
+          <div class="d-title">Служба безопасности — слой над всеми подразделениями</div>
+          <p class="d-teaser">Единственная функция, что опирается на данные всех остальных. Единый аналитический слой: руководитель получает не документы, а готовые решения. Экономическая, кадровая, внутренний контроль, ИБ.</p>
+        </div>
+        <div class="d-sign">+</div>
+      </div>
+    </summary>
 
   <!-- БЕЗОПАСНОСТЬ -->
-  <section class="sec" id="security">
+  <section class="sec">
     <div class="wrap">
       <span class="eyebrow">ИИ в службе безопасности</span>
       <h2 class="h-sec">Безопасность — единственная функция, которая опирается на данные всех остальных</h2>
@@ -366,6 +434,20 @@
       </div>
     </div>
   </section>
+  </details>
+
+  <!-- ============ ДОМЕН: ФИНАНСЫ ============ -->
+  <details class="domain" id="finance">
+    <summary>
+      <div class="wrap">
+        <div class="d-main">
+          <span class="d-eyebrow">ИИ в финансах</span>
+          <div class="d-title">Финансы — следующая функция</div>
+          <p class="d-teaser">Контроль над деньгами, договорённостями и сметами в ИИ-слое: план-факт, сверки, риски. Готовим детальный раздел.</p>
+        </div>
+        <div class="d-sign">+</div>
+      </div>
+    </summary>
 
   <!-- ФИНАНСЫ -->
   <section class="sec">
@@ -380,11 +462,23 @@
       </div>
     </div>
   </section>
+  </details>
 
-  <hr class="vert-divider">
+  <!-- ============ ДОМЕН: СТРОИТЕЛЬСТВО ============ -->
+  <details class="domain" id="stroyka">
+    <summary>
+      <div class="wrap">
+        <div class="d-main">
+          <span class="d-eyebrow">Вертикаль · Строительство</span>
+          <div class="d-title">Строительство — первая готовая вертикаль</div>
+          <p class="d-teaser">Три точки, где стройка теряет деньги каждый день: сметы, фиксация договорённостей, финконтроль. Плюс безопасность данных при проверке и как мы входим.</p>
+        </div>
+        <div class="d-sign">+</div>
+      </div>
+    </summary>
 
   <!-- ВЕРТИКАЛЬ: СТРОИТЕЛЬСТВО -->
-  <section class="sec" id="stroyka">
+  <section class="sec">
     <div class="wrap">
       <span class="eyebrow">Вертикаль · Строительство</span>
       <h2 class="h-sec">Пока стройка теряет деньги на ошибках и устных договорённостях — ИИ уже умеет это фиксировать</h2>
@@ -540,6 +634,7 @@
       </div>
     </div>
   </section>
+  </details>
 
   <!-- CTA -->
   <section class="sec cta" id="cta">
@@ -571,6 +666,32 @@
     var b=document.getElementById('burger'),m=document.getElementById('mmenu');
     b.addEventListener('click',function(){m.classList.toggle('open')});
     m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
+
+    // Аккордеон доменов: любой якорь внутрь свёрнутого раздела сначала раскрывает его,
+    // потом скроллит. Работает и для ссылок вида #stroy-security (вложенный якорь).
+    function openTarget(id){
+      var el=document.getElementById(id);
+      if(!el) return null;
+      var d=el.closest('details.domain');
+      if(d && !d.open) d.open=true;
+      return el;
+    }
+    document.addEventListener('click',function(e){
+      var a=e.target.closest('a[href^="#"]');
+      if(!a) return;
+      var id=a.getAttribute('href').slice(1);
+      if(!id) return;
+      var el=openTarget(id);
+      if(el){
+        e.preventDefault();
+        el.scrollIntoView({behavior:'smooth',block:'start'});
+        history.replaceState(null,'','#'+id);
+      }
+    });
+    if(location.hash.length>1){
+      var el=openTarget(location.hash.slice(1));
+      if(el) setTimeout(function(){el.scrollIntoView();},60);
+    }
   </script>
 </body>
 </html>
