@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import {
   LayoutGrid, Plug, ShieldCheck, Route, Brain, Activity, History,
   Satellite, Zap, BarChart3, Mic, Target, Plus, ChevronRight, Menu,
-  CircleDot, ArrowRight, Bot, Search, Check, Send, Link2,
+  CircleDot, ArrowRight, Bot, Search, Check, Send, Link2, UserCheck,
 } from "lucide-react";
 
 /* ─────────────  TOKENS (светлая тема)  ───────────── */
@@ -24,7 +24,13 @@ const SOL = {
     result: "Брифы, протоколы и находки каждый день. Ничего не теряется.",
     effect: "Больше контроля", speed: "С нашим спецом",
     tags: ["Брифы", "Протоколы", "Память"],
-    pitch: "Тихо слушает чаты и встречи и возвращает брифы к встречам, разборы 1:1, протоколы и находки. Растёт по грейдам — от писаря до right-hand уровня совета директоров." },
+    pitch: "Тихо слушает чаты и встречи и возвращает брифы к встречам, разборы 1:1, протоколы и находки. Растёт по грейдам — от писаря до right-hand уровня совета директоров.",
+    landing: {
+      situation: "У руководителя десятки чатов, встреч и голосовых в день. Всё важное проговаривается устно и в переписке — и там же тонет.",
+      problem: "Договорённости теряются. К встрече готовиться некогда, а протокол после неё пишет тот, у кого дошли руки, — то есть чаще всего никто. Цели незаметно уходят из фокуса.",
+      solution: "Аргус тихо слушает чаты и встречи. Возвращает бриф перед встречей, разбор 1:1, протокол сразу участникам и находки: забытые цели, риски, скрытые таланты. Растёт по грейдам — от писаря до правой руки.",
+      benefit: "−34% времени руководителя на операционку, 95% задач с владельцем и сроком, ничего не теряется. Меньше ручного контроля — больше видно.",
+    } },
   Kairos: { icon: Target, color: "#E879A6", sub: "Дашборд собственника · ТОС", cat: "Руководителю",
     task: "Не видно, какое узкое место тормозит весь бизнес",
     result: "Находит ограничение и ведёт спринт по его снятию.",
@@ -42,7 +48,25 @@ const SOL = {
     result: "Посты в твоём голосе по расписанию — без тебя.",
     effect: "Меньше рутины", speed: "В пару кликов",
     tags: ["LinkedIn", "Контент", "Voice"],
-    pitch: "Сырая мысль на входе — пост в твоём голосе на выходе, по расписанию. Правила голоса само-обновляются из аналитики." },
+    pitch: "Сырая мысль на входе — пост в твоём голосе на выходе, по расписанию. Правила голоса само-обновляются из аналитики.",
+    landing: {
+      situation: "Ты знаешь, что регулярное присутствие в LinkedIn работает на продажи, найм и репутацию. Но руки не доходят: писать часто, в своём голосе, да ещё и попадать в то, что заходит аудитории.",
+      problem: "Контент откладывается неделями. Когда всё же садишься писать — уходит час на один пост, а голос плывёт от настроения. Аналитику никто не смотрит, поэтому охват не растёт.",
+      solution: "Кидаешь сырую мысль голосом или текстом в Telegram. Гермес пишет пост в твоём голосе, ты правишь в один тап — и он выходит по расписанию, дважды в будни. Правила голоса подтягивает сам из аналитики прошлых постов.",
+      benefit: "Регулярный контент почти без твоего времени: минута на одобрение вместо часа на текст. В демо — 24 500 охвата и до 83 000 показов на топ-пост по MENA, 100% в твоём голосе.",
+    } },
+  Recruiter: { icon: UserCheck, color: c.blue, sub: "AI-агент-рекрутер", cat: "Найм и HR", soon: true,
+    task: "Сотни откликов на вакансию — прочитать всех невозможно",
+    result: "Читает каждое резюме целиком и раскладывает по светофору с обоснованием.",
+    effect: "Меньше рутины", speed: "С нашим спецом",
+    tags: ["hh.ru", "Скрининг", "Светофор"],
+    pitch: "Читает полный текст резюме — не только поля — и раскладывает кандидатов по трём зонам светофора с обоснованием и цитатами. Критерии не выдумывает: применяет те, что задал рекрутер под конкретный наём. Одно ядро настраивается под любую вакансию.",
+    landing: {
+      situation: "Каждый наём — сотни откликов на hh.ru. Рекрутер вручную открывает резюме одно за другим и решает по каждому: смотреть дальше или нет.",
+      problem: "Прочитать всех невозможно, поэтому смотрят по верхам и по формальным полям. Сильных кандидатов пропускают, слабых зовут на интервью. Критерии у каждого рекрутера свои, в голове и нигде не записаны.",
+      solution: "Агент читает полный текст каждого резюме и раскладывает по трём зонам светофора — с обоснованием и цитатами из резюме. Критерии не придумывает сам: применяет те, что рекрутер задал под конкретный наём.",
+      benefit: "Рекрутер смотрит зелёную зону первой и не тратит время на явные «мимо». Критерии найма перестают жить в голове — их видно и можно править. Один настроенный агент работает на любую вакансию.",
+    } },
   "ИИ-хостес": { icon: Mic, color: c.amber, sub: "Приём гостей", cat: "Гостям и продажам",
     task: "Гостям не отвечают вовремя — брони и допродажи теряются",
     result: "Брони и ответы 24/7 в тоне заведения. Плюс допродажи.",
@@ -51,12 +75,12 @@ const SOL = {
     pitch: "Принимает брони, отвечает гостям в тоне заведения, делает допродажи и фиксирует всё в системе. Без выходных." },
 };
 const AGENT_CATS = {
-  "Руководителю": c.violet, "Финансы и учёт": c.green, "Маркетинг": c.cyan, "Гостям и продажам": c.amber,
+  "Руководителю": c.violet, "Финансы и учёт": c.green, "Маркетинг": c.cyan, "Гостям и продажам": c.amber, "Найм и HR": c.blue,
 };
 const EFFECT_COL = { "Больше выручки": c.green, "Меньше рутины": c.cyan, "Больше контроля": c.violet };
 const SPEED_COL = { "В пару кликов": c.green, "С нашим спецом": c.amber };
 const DIMS = {
-  role:   { label: "по отделу",   key: "cat",    values: ["Руководителю", "Финансы и учёт", "Маркетинг", "Гостям и продажам"] },
+  role:   { label: "по отделу",   key: "cat",    values: ["Руководителю", "Финансы и учёт", "Маркетинг", "Гостям и продажам", "Найм и HR"] },
   effect: { label: "по эффекту",  key: "effect", values: ["Больше выручки", "Меньше рутины", "Больше контроля"] },
   speed:  { label: "по скорости", key: "speed",  values: ["В пару кликов", "С нашим спецом"] },
 };
@@ -243,7 +267,7 @@ function Catalog({ onOpenSol }) {
   const items = CATALOG
     .filter(([t, k, d]) => (cat === "Все" || k === cat) && (t.toLowerCase().includes(q.toLowerCase()) || d.toLowerCase().includes(q.toLowerCase())))
     .sort((a, b) => sort === "name" ? a[0].localeCompare(b[0], "ru") : (a[1].localeCompare(b[1], "ru") || a[0].localeCompare(b[0], "ru")));
-  const flag = ["Argus", "Kairos", "Сводно", "Hermes", "ИИ-хостес"].filter((s) => pick === "Все" || SOL[s][DIMS[dim].key] === pick);
+  const flag = ["Argus", "Kairos", "Сводно", "Hermes", "ИИ-хостес", "Recruiter"].filter((s) => pick === "Все" || SOL[s][DIMS[dim].key] === pick);
   return (
     <div>
       <Eyebrow>обзор · задачи бизнеса</Eyebrow>
@@ -285,7 +309,7 @@ function Catalog({ onOpenSol }) {
                 <Badge color={SPEED_COL[S.speed]} bg={`${SPEED_COL[S.speed]}12`}>{S.speed}</Badge>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${c.line}`, paddingTop: 10 }}>
-                <span style={{ fontSize: 11.5, color: c.dim2 }}>развёрнут · {n} внедрений</span>
+                <span style={{ fontSize: 11.5, color: c.dim2 }}>{S.soon ? "скоро в кокпите" : `развёрнут · ${n} внедрений`}</span>
                 <span style={{ fontSize: 12.5, color: col, fontWeight: 600, display: "flex", alignItems: "center", gap: 2 }}>Смотреть <ChevronRight size={14} /></span>
               </div>
             </Card>
@@ -761,8 +785,29 @@ function AgentDashboards({ onOpen }) {
 }
 
 /* ─────────────  SOLUTION PREVIEW (из флота)  ───────────── */
+function Landing({ data, col }) {
+  const steps = [
+    ["01 · Ситуация", data.situation, c.dim2],
+    ["02 · Проблема", data.problem, c.red],
+    ["03 · Решение", data.solution, col],
+    ["04 · Выгода", data.benefit, c.green],
+  ];
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <Eyebrow style={{ marginBottom: 12 }}>ситуация → проблема → решение → выгода</Eyebrow>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(268px,1fr))", gap: 12 }}>
+        {steps.map(([label, txt, ac], i) => (
+          <Card key={i} style={{ borderLeft: `3px solid ${ac}`, display: "flex", flexDirection: "column", gap: 8 }}>
+            <span style={{ fontFamily: mono, fontSize: 11, fontWeight: 700, letterSpacing: 1, color: ac, textTransform: "uppercase" }}>{label}</span>
+            <div style={{ fontSize: 13.5, lineHeight: 1.55, color: c.txt }}>{txt}</div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
 function SolutionPreview({ sol, onBack, onOpen }) {
-  const s = SOL[sol], I = s.icon, col = s.color;
+  const s = SOL[sol], I = s.icon, col = s.color, soon = !!s.soon;
   const [copied, setCopied] = useState(false);
   const copyLink = () => {
     const url = window.location.origin + window.location.pathname + "#/solution/" + encodeURIComponent(sol);
@@ -780,24 +825,34 @@ function SolutionPreview({ sol, onBack, onOpen }) {
           <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
             <h1 style={{ fontSize: 26, fontWeight: 700, margin: 0 }}>{sol}</h1>
             <Badge color={AGENT_CATS[s.cat]} bg={`${AGENT_CATS[s.cat]}12`}>{s.cat}</Badge>
-            <Badge color={col} bg={`${col}12`}>агент</Badge>
+            <Badge color={col} bg={`${col}12`}>{soon ? "скоро" : "агент"}</Badge>
           </div>
-          <div style={{ fontSize: 13.5, color: c.dim, marginTop: 4 }}>{s.sub} · развёрнут у {deploys.length} клиентов</div>
+          <div style={{ fontSize: 13.5, color: c.dim, marginTop: 4 }}>{s.sub} · {soon ? "скоро в кокпите" : `развёрнут у ${deploys.length} клиентов`}</div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           <button onClick={copyLink} title="Скопировать ссылку на карточку" style={{ display: "flex", gap: 6, alignItems: "center", background: "transparent", border: `1px solid ${c.line}`, color: copied ? c.green : c.dim, borderRadius: 10, padding: "10px 14px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>{copied ? <><Check size={15} /> Скопировано</> : <><Link2 size={15} /> Ссылка</>}</button>
-          <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: grad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Хочу такого себе <ArrowRight size={15} /></button>
+          {soon
+            ? <span style={{ display: "flex", gap: 6, alignItems: "center", background: `${col}12`, color: col, border: `1px solid ${col}40`, borderRadius: 10, padding: "10px 16px", fontWeight: 700, fontSize: 13 }}>Скоро в кокпите</span>
+            : <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: grad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Хочу такого себе <ArrowRight size={15} /></button>}
         </div>
       </div>
       <Card style={{ marginBottom: 18, borderLeft: `3px solid ${col}` }}>
         <div style={{ fontSize: 14.5, lineHeight: 1.55, color: c.txt }}>{s.pitch}</div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>{s.tags.map((t) => <Badge key={t} color={c.dim}>{t}</Badge>)}</div>
       </Card>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
-        <Eyebrow>живой демо-дашборд · {cName(demo.client)}</Eyebrow>
-        <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: "transparent", border: `1px solid ${c.line}`, color: c.cyan, borderRadius: 9, padding: "6px 12px", cursor: "pointer", fontSize: 12.5, fontWeight: 600 }}>Открыть внедрение в кокпите <ChevronRight size={14} /></button>
-      </div>
-      <Card style={{ padding: 20 }}><SolutionDashboard a={demo} /></Card>
+      {s.landing && <Landing data={s.landing} col={col} />}
+      {soon ? (
+        <Card style={{ borderLeft: `3px solid ${col}`, background: c.panelHi }}>
+          <Eyebrow style={{ marginBottom: 8 }}>статус разработки</Eyebrow>
+          <div style={{ fontSize: 14, lineHeight: 1.55, color: c.txt }}>Фаза 1 — коннектор к hh.ru и зеркало откликов — уже на проде. Модуль оценки (светофор по резюме) проектируется по ТЗ. Живой демо-дашборд появится здесь, как только оценка выйдет в кокпит.</div>
+        </Card>
+      ) : (<>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
+          <Eyebrow>живой демо-дашборд · {cName(demo.client)}</Eyebrow>
+          <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: "transparent", border: `1px solid ${c.line}`, color: c.cyan, borderRadius: 9, padding: "6px 12px", cursor: "pointer", fontSize: 12.5, fontWeight: 600 }}>Открыть внедрение в кокпите <ChevronRight size={14} /></button>
+        </div>
+        <Card style={{ padding: 20 }}><SolutionDashboard a={demo} /></Card>
+      </>)}
     </div>
   );
 }
