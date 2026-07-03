@@ -986,12 +986,12 @@ export default function App() {
       {Sidebar}
       {narrow && navOpen && <div onClick={() => setNavOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 30 }} />}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 20px", borderBottom: `1px solid ${c.line}`, background: c.bg2, position: "sticky", top: 0, zIndex: 20 }}>
-          {narrow && <Menu size={20} color={c.dim} style={{ cursor: "pointer" }} onClick={() => setNavOpen(true)} />}
-          <select value={client} onChange={(e) => setClient(e.target.value)} style={{ background: c.panel, color: c.txt, border: `1px solid ${c.lineHi}`, borderRadius: 8, padding: "7px 10px", fontSize: 13, outline: "none" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 20px", borderBottom: `1px solid ${c.line}`, background: c.bg2, position: "sticky", top: 0, zIndex: 20, flexWrap: "wrap", minWidth: 0 }}>
+          {narrow && <Menu size={20} color={c.dim} style={{ cursor: "pointer", flexShrink: 0 }} onClick={() => setNavOpen(true)} />}
+          <select value={client} onChange={(e) => setClient(e.target.value)} style={{ background: c.panel, color: c.txt, border: `1px solid ${c.lineHi}`, borderRadius: 8, padding: "7px 10px", fontSize: 13, outline: "none", minWidth: 0, maxWidth: narrow ? 200 : "none" }}>
             <option value="all">Все клиенты</option>{clients.map((cl) => <option key={cl.id} value={cl.id}>{cl.name}</option>)}
           </select>
-          <div style={{ marginLeft: "auto", display: "flex", gap: 16, alignItems: "center", fontSize: 12.5, color: c.dim, fontFamily: mono }}><span>5 клиентов</span><span>11 агентов</span><span style={{ color: c.red, display: "flex", gap: 5, alignItems: "center" }}><HealthDot s="red" size={7} /> 3 деградации</span></div>
+          {!narrow && <div style={{ marginLeft: "auto", display: "flex", gap: 16, alignItems: "center", fontSize: 12.5, color: c.dim, fontFamily: mono }}><span>5 клиентов</span><span>11 агентов</span><span style={{ color: c.red, display: "flex", gap: 5, alignItems: "center" }}><HealthDot s="red" size={7} /> 3 деградации</span></div>}
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: narrow ? "20px 16px" : "28px 32px" }}>
           {view === "fleet" && <Catalog onOpenSol={openSol} />}
