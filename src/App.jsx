@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import {
   LayoutGrid, Plug, ShieldCheck, Route, Brain, Activity, History,
   Satellite, Zap, BarChart3, Mic, Target, Plus, ChevronRight, Menu,
-  CircleDot, ArrowRight, Bot, Search, Check, Send,
+  CircleDot, ArrowRight, Bot, Search, Check, Send, Link2,
 } from "lucide-react";
 
 /* ─────────────  TOKENS (светлая тема)  ───────────── */
@@ -763,6 +763,11 @@ function AgentDashboards({ onOpen }) {
 /* ─────────────  SOLUTION PREVIEW (из флота)  ───────────── */
 function SolutionPreview({ sol, onBack, onOpen }) {
   const s = SOL[sol], I = s.icon, col = s.color;
+  const [copied, setCopied] = useState(false);
+  const copyLink = () => {
+    const url = window.location.origin + window.location.pathname + "#/solution/" + encodeURIComponent(sol);
+    navigator.clipboard?.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600); });
+  };
   const order = { green: 0, amber: 1, red: 2 };
   const deploys = agents.filter((x) => x.sol === sol);
   const demo = [...deploys].sort((a, b) => order[a.health] - order[b.health])[0];
@@ -779,7 +784,10 @@ function SolutionPreview({ sol, onBack, onOpen }) {
           </div>
           <div style={{ fontSize: 13.5, color: c.dim, marginTop: 4 }}>{s.sub} · развёрнут у {deploys.length} клиентов</div>
         </div>
-        <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: grad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Хочу такого себе <ArrowRight size={15} /></button>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <button onClick={copyLink} title="Скопировать ссылку на карточку" style={{ display: "flex", gap: 6, alignItems: "center", background: "transparent", border: `1px solid ${c.line}`, color: copied ? c.green : c.dim, borderRadius: 10, padding: "10px 14px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>{copied ? <><Check size={15} /> Скопировано</> : <><Link2 size={15} /> Ссылка</>}</button>
+          <button onClick={() => onOpen(demo.id)} style={{ display: "flex", gap: 6, alignItems: "center", background: grad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>Хочу такого себе <ArrowRight size={15} /></button>
+        </div>
       </div>
       <Card style={{ marginBottom: 18, borderLeft: `3px solid ${col}` }}>
         <div style={{ fontSize: 14.5, lineHeight: 1.55, color: c.txt }}>{s.pitch}</div>
@@ -875,6 +883,28 @@ export default function App() {
   const [navOpen, setNavOpen] = useState(false);
   const [narrow, setNarrow] = useState(false);
   useEffect(() => { const f = () => setNarrow(window.innerWidth < 860); f(); window.addEventListener("resize", f); return () => window.removeEventListener("resize", f); }, []);
+
+  // deep-link через hash: прямая ссылка на карточку агента, напр. #/solution/Hermes или #/agent/a5
+  const views = NAV.flatMap((g) => g.items.map(([v]) => v));
+  useEffect(() => {
+    const apply = () => {
+      let raw = window.location.hash.replace(/^#\/?/, "");
+      try { raw = decodeURIComponent(raw); } catch { return; }
+      const [seg, arg] = raw.split("/");
+      if (seg === "solution" && arg && Object.prototype.hasOwnProperty.call(SOL, arg)) { setSolName(arg); setAgent(null); setView("solution"); }
+      else if (seg === "agent" && arg && agents.some((a) => a.id === arg)) { setAgent(arg); setView("agent"); }
+      else if (seg && views.includes(seg)) { setAgent(null); setView(seg); }
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, []);
+  useEffect(() => {
+    const h = view === "solution" && solName ? `/solution/${encodeURIComponent(solName)}`
+      : view === "agent" && agent ? `/agent/${agent}` : `/${view}`;
+    if ("#" + h !== window.location.hash) window.history.replaceState(null, "", "#" + h);
+  }, [view, solName, agent]);
+
   const open = (id) => { setAgent(id); setView("agent"); };
   const openSol = (s) => { setSolName(s); setView("solution"); };
   const goto = (v) => { setView(v); setAgent(null); setNavOpen(false); };
