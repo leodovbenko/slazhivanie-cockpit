@@ -207,6 +207,11 @@ if code_lines <= THRESHOLD:
 
 mdir = marker_dir()
 marker = os.path.join(mdir, h + ".ok")
+# Кросс-репо/воркдерево: ревьюер с пустым CLAUDE_PROJECT_DIR кладёт маркер в .claude/verify
+# ЦЕЛЕВОГО репо (или воркдерева), а не главного проекта — split-brain, вечный deny. Смотрим
+# и там тоже: маркер всё равно хеш-совпадающий (настоящий, от code-reviewer), .claude/verify
+# в платформенном репо гитигнорится и хеш не пачкает. Убирает рецидив ручного cp каждый слайс.
+repo_marker = os.path.join(repo, ".claude", "verify", h + ".ok")
 
 # уборка протухших маркеров (>1 суток)
 try:
@@ -218,7 +223,7 @@ try:
 except Exception:
     pass
 
-if os.path.isfile(marker):
+if os.path.isfile(marker) or os.path.isfile(repo_marker):
     allow()
 
 deny(
