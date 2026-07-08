@@ -368,13 +368,14 @@
             <label for="f-task">Где процесс упёрся в стену</label>
             <textarea id="f-task" name="task" placeholder="Коротко опишите задачу или процесс"></textarea>
           </div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
           <button type="submit" class="btn btn-green" style="width:100%">Отправить заявку</button>
-          <p class="form-consent">Кнопка откроет письмо в вашей почте с заполненными полями — останется нажать «Отправить». Так вы соглашаетесь на обработку контактных данных для ответа на заявку.</p>
+          <p class="form-consent">Отправляя заявку, вы соглашаетесь на обработку контактных данных для ответа на неё.</p>
         </form>
         <div class="form-ok" id="formok">
           <div class="ic-ok"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0FA06C" stroke-width="2.4"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Письмо готово к отправке</h3>
-          <p>Мы открыли заполненное письмо в вашей почте — осталось нажать «Отправить». Если оно не открылось, напишите нам напрямую: <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
+          <h3>Заявка у нас — спасибо</h3>
+          <p>Вернёмся в течение рабочего дня. Если срочно — напишите напрямую: <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
         </div>
       </div>
       <p style="text-align:center;margin-top:24px;font-size:15px;color:var(--t3)">127006, Москва, ул. Долгоруковская, 27с1 · <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
@@ -402,15 +403,24 @@
     b.addEventListener('click',function(){m.classList.toggle('open')});
     m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
 
-    // форма заявки → открываем готовое письмо в почтовом клиенте (надёжно в РФ, без серверов)
+    // Форма заявки → шлём на сервер (uklad.ai/lead): заявка попадает в платформу и нам сразу
+    // приходит уведомление. Если сервер недоступен (сеть/РФ) — надёжный запасной путь через почту.
     var lf=document.getElementById('leadform');
     if(lf){lf.addEventListener('submit',function(e){
       e.preventDefault();
       var d=new FormData(lf);
-      var body='Имя: '+(d.get('name')||'')+'\nКомпания и сфера: '+(d.get('company')||'')+'\nКонтакт: '+(d.get('contact')||'')+'\nГде упёрся процесс: '+(d.get('task')||'');
-      window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Заявка на диагностику — Слаживание')+'&body='+encodeURIComponent(body);
-      lf.style.display='none';
-      document.getElementById('formok').classList.add('show');
+      var payload={name:d.get('name')||'',company:d.get('company')||'',contact:d.get('contact')||'',task:d.get('task')||'',website:d.get('website')||'',lang:'ru',source:'slazhivanie.ru'};
+      var btn=lf.querySelector('button[type=submit]'); if(btn){btn.disabled=true;btn.textContent='Отправляем…';}
+      function done(){lf.style.display='none';document.getElementById('formok').classList.add('show');}
+      function fallbackMail(){
+        var body='Имя: '+payload.name+'\nКомпания и сфера: '+payload.company+'\nКонтакт: '+payload.contact+'\nГде упёрся процесс: '+payload.task;
+        window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Заявка на диагностику — Слаживание')+'&body='+encodeURIComponent(body);
+        done();
+      }
+      fetch('https://uklad.ai/lead',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)})
+        .then(function(r){return r.ok?r.json():Promise.reject();})
+        .then(function(){done();})
+        .catch(fallbackMail);
     });}
   </script>
 </body>
