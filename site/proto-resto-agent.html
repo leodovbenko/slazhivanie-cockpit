@@ -63,8 +63,14 @@
   .metric .num{font-size:30px;font-weight:800;color:var(--green);line-height:1}
   .metric .lbl{font-size:13px;color:var(--muted);margin-top:8px}
   .note{background:var(--soft);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--ink)}
+  .sitenav{padding-top:6px;margin-bottom:20px}
+  .sitenav a{color:#a8d8c5;text-decoration:none;font-size:14px;font-weight:600}
+  .sitenav a:hover{color:#fff}
   footer{padding:44px 0;color:var(--muted);font-size:14px}
   footer b{color:var(--ink)}
+  .foot-nav{margin:16px 0 0;display:flex;gap:18px;flex-wrap:wrap}
+  .foot-nav a{color:var(--green);text-decoration:none;font-weight:600;font-size:13.5px}
+  .foot-nav a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -72,6 +78,7 @@
 
 <header>
   <div class="wrap">
+    <div class="sitenav"><a href="index.html">Весь сайт слаживание.ру</a></div>
     <p class="eyebrow">Разрез платформы «Слаживание», HoReCa</p>
     <h1>ИИ-сотрудник для ресторана. На базе Claude, живёт в вашем Telegram.</h1>
     <p>Он уже подключён к вашей кассе и учёту - <span class="brand">iiko, 1С, Docsinbox, Ревви, Сервис Инспектор</span> - и работает по преднастроенным сценариям ресторатора. Вы пишете ему как человеку, он собирает ответ из ваших систем и приносит результат в чат.</p>
@@ -189,6 +196,15 @@
   <div class="wrap">
     <b>Платформа «Слаживание»</b>, среда, где люди и ИИ-агенты делают больше работы вместе. Разрез HoReCa.<br>
     Прототип лендинга. Источники тематических сценариев: restorium.su, getit.rest. Коннекторы: iiko, 1С, Docsinbox, Ревви, Сервис Инспектор.
+    <nav class="foot-nav">
+      <a href="index.html">Главная</a>
+      <a href="approach.html">Подход</a>
+      <a href="platform.html">Платформа</a>
+      <a href="solutions.html">Решения</a>
+      <a href="cases.html">Кейсы</a>
+      <a href="team.html">Команда</a>
+      <a href="index.html#contacts">Контакты</a>
+    </nav>
   </div>
 </footer>
 
