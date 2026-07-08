@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>ИИ-сотрудник для ресторана - прототип лендинга (разрез HoReCa)</title>
+<style>
+  :root{
+    --ink:#06251A; --green:#0FA06C; --paper:#F7FBF9; --card:#fff;
+    --line:#dfe9e4; --muted:#5c7267; --soft:#E4F7EF; --warm:#B4472C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"IBM Plex Sans","Segoe UI",Roboto,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.55}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  .proto-badge{position:fixed;top:0;left:0;right:0;background:var(--warm);color:#fff;
+    text-align:center;font-size:13px;padding:6px;z-index:99;letter-spacing:.02em}
+  header{background:var(--ink);color:#fff;padding:66px 0 46px;margin-top:30px}
+  header .eyebrow{color:var(--green);font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 12px}
+  header h1{font-size:34px;margin:0 0 14px;line-height:1.18;max-width:760px}
+  header p{color:#a8d8c5;margin:0 0 26px;max-width:660px;font-size:17px}
+  .brand{color:var(--green);font-weight:700}
+  .cta{display:inline-block;background:var(--green);color:#fff;text-decoration:none;
+    font-weight:700;border-radius:999px;padding:14px 28px;font-size:16px}
+  .cta.ghost{background:transparent;border:1px solid #2f5e4e;color:#cdeede;margin-left:10px}
+  section{padding:42px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:24px;margin:0 0 6px}
+  .sub{color:var(--muted);margin:0 0 24px;font-size:15px;max-width:720px}
+  .grid{display:grid;gap:14px}
+  .g5{grid-template-columns:repeat(5,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:760px){.g5,.g3,.g2{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card .tag{font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.03em}
+  .card b{display:block;font-size:16px;margin:8px 0 6px}
+  .card span{font-size:13.5px;color:var(--muted)}
+  .flow{display:flex;gap:10px;flex-wrap:wrap}
+  .step{flex:1;min-width:160px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:16px}
+  .step .n{display:inline-block;width:24px;height:24px;border-radius:50%;
+    background:var(--soft);color:var(--ink);text-align:center;font-size:13px;font-weight:700;line-height:24px}
+  .step b{display:block;margin:10px 0 4px}
+  .step span{font-size:13px;color:var(--muted)}
+  .tabs{display:flex;gap:8px;margin:0 0 20px;flex-wrap:wrap}
+  .tab{border:1px solid var(--line);background:var(--card);border-radius:999px;
+    padding:9px 18px;cursor:pointer;font-size:14px;font-weight:600}
+  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .hidden{display:none}
+  .scen{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .scen h4{margin:0 0 4px;font-size:16px}
+  .scen p{margin:0 0 8px;font-size:14px;color:var(--muted)}
+  .scen .src{font-size:12px;color:var(--green);font-weight:600}
+  .dialog{background:#0c2d21;border-radius:16px;padding:20px;max-width:560px}
+  .bubble{border-radius:14px;padding:11px 14px;margin:0 0 10px;font-size:14.5px;max-width:82%}
+  .bubble.user{background:#1f5140;color:#eafff4;margin-left:auto;border-bottom-right-radius:4px}
+  .bubble.bot{background:#eafff4;color:var(--ink);border-bottom-left-radius:4px}
+  .bubble .who{display:block;font-size:11px;opacity:.7;margin:0 0 3px;font-weight:700}
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:760px){.metrics{grid-template-columns:repeat(2,1fr)}}
+  .metric{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+  .metric .num{font-size:30px;font-weight:800;color:var(--green);line-height:1}
+  .metric .lbl{font-size:13px;color:var(--muted);margin-top:8px}
+  .note{background:var(--soft);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--ink)}
+  footer{padding:44px 0;color:var(--muted);font-size:14px}
+  footer b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="proto-badge">ПРОТОТИП, разрез «ИИ-сотрудник для ресторана». Цифры и сценарии - образец вывода, не данные клиента.</div>
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Разрез платформы «Слаживание», HoReCa</p>
+    <h1>Русский ИИ-сотрудник для ресторана. На базе Claude, говорит по-русски, живёт в вашем Telegram.</h1>
+    <p>Он уже подключён к вашей кассе и учёту - <span class="brand">iiko, 1С, Docsinbox, Ревви, Сервис Инспектор</span> - и работает по преднастроенным сценариям ресторатора. Вы пишете ему как человеку, он собирает ответ из ваших систем и приносит результат в чат.</p>
+    <a class="cta" href="#cta">Запросить пилот</a>
+    <a class="cta ghost" href="#scenarios">Смотреть сценарии</a>
+  </div>
+</header>
+
+<!-- СИТУАЦИЯ -->
+<section>
+  <div class="wrap">
+    <h2>Ситуация: данные есть, а времени на них нет</h2>
+    <p class="sub">У ресторана уже стоят системы: касса iiko, бухгалтерия 1С, ЭДО с поставщиками, отзывы гостей, проверки сервиса. Данные копятся в пяти окнах. Ответ на вопрос «где мы теряем деньги на этой неделе» - это вечер управляющего с выгрузками в Excel.</p>
+    <div class="grid g3">
+      <div class="card"><span class="tag">Боль</span><b>Отчёты собираются руками</b><span>P&L, фудкост, ABC - каждый из своей системы, сведение вручную по выходным.</span></div>
+      <div class="card"><span class="tag">Боль</span><b>Контроль запаздывает</b><span>Недостачу, просроченную приёмку, невыход смены видно постфактум, когда деньги уже потеряны.</span></div>
+      <div class="card"><span class="tag">Боль</span><b>Пять логинов вместо одного чата</b><span>Каждая система - отдельный вход и обучение. Управляющий живёт в Telegram, а не в пяти кабинетах.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- РЕШЕНИЕ: коннекторы -->
+<section>
+  <div class="wrap">
+    <h2>Решение: один сотрудник, подключённый к вашим системам</h2>
+    <p class="sub">Коннекторы - это «руки» агента. Он читает из ваших систем и сводит ответ за вас, ничего не заменяя. Всё под гейтом: агент предлагает, человек подтверждает то, что уходит наружу или меняет деньги.</p>
+    <div class="grid g5">
+      <div class="card"><span class="tag">Касса, склад</span><b>iiko</b><span>Продажи, остатки, себестоимость, управленческие отчёты. Источник цифр по выручке и складу.</span></div>
+      <div class="card"><span class="tag">Учёт</span><b>1С</b><span>Бухгалтерия и финданные: сверка, зарплата по факту, закрытие периода.</span></div>
+      <div class="card"><span class="tag">ЭДО</span><b>Docsinbox</b><span>Электронные накладные и приёмка от поставщиков, контроль цен и расхождений.</span></div>
+      <div class="card"><span class="tag">Гости</span><b>Ревви</b><span>Отзывы и обратная связь гостей, репутация, реакция на негатив в срок.</span></div>
+      <div class="card"><span class="tag">Стандарты</span><b>Сервис Инспектор</b><span>Проверки сервиса и чек-листы: тайный гость, стандарты зала и кухни.</span></div>
+    </div>
+    <p style="margin-top:16px" class="note">Подключение на стороне платформы: коннектор к каждому сервису настраивается один раз при онбординге. Ресторатор не трогает API, он получает готового сотрудника, который уже видит его данные.</p>
+  </div>
+</section>
+
+<!-- СЦЕНАРИИ -->
+<section id="scenarios">
+  <div class="wrap">
+    <h2>Преднастроенные сценарии</h2>
+    <p class="sub">Сотрудник приходит с двумя наборами сценариев. Общебизнесовые - наш каркас координатора для любой команды. Ресторанные - заточены под кухню, зал и закупки.</p>
+    <div class="tabs">
+      <div class="tab on" onclick="show(this,'resto')">Ресторанные сценарии</div>
+      <div class="tab" onclick="show(this,'base')">Общие (наш каркас)</div>
+    </div>
+
+    <div id="tab-resto" class="grid g2">
+      <div class="scen"><h4>Фудкост-контроль</h4><p>Считает себестоимость блюд из iiko и накладных Docsinbox, показывает, где рецептура поплыла, предлагает, что пересобрать без потери качества.</p><span class="src">iiko + Docsinbox, идея из Ресториума</span></div>
+      <div class="scen"><h4>P&L и управленческие отчёты</h4><p>Собирает ОПиУ, анализ продаж и ликвидность из кассы и 1С. В чат, по запросу или каждое утро, без ручных выгрузок.</p><span class="src">iiko + 1С</span></div>
+      <div class="scen"><h4>ABC-анализ и недостачи</h4><p>Находит убыточные позиции и расхождения по складу, называет причину: списание, пересорт или недостача, а не просто минус в остатках.</p><span class="src">iiko, идея из Ресториума</span></div>
+      <div class="scen"><h4>Приёмка и цены поставщиков</h4><p>Ловит расхождения в электронных накладных: подняли цену, недовезли, пересорт. Сообщает до того, как накладную подписали.</p><span class="src">Docsinbox</span></div>
+      <div class="scen"><h4>ТТК и план заготовок</h4><p>Готовит техкарты и заготовки под банкет или предзаказ: сколько закупить и заготовить, чтобы не встать в стоп-лист.</p><span class="src">iiko, идея из Ресториума</span></div>
+      <div class="scen"><h4>Учёт смен и зарплата по факту</h4><p>Сводит план смен с фактической явкой, ловит опоздания и невыходы, считает зарплату по отработанным часам.</p><span class="src">1С и графики, идея из Гет Персонал</span></div>
+      <div class="scen"><h4>Отзывы гостей без задержки</h4><p>Видит новый негатив в Ревви, поднимает управляющему в тот же день с черновиком ответа. Реакция в срок, а не через неделю.</p><span class="src">Ревви</span></div>
+      <div class="scen"><h4>Стандарты и проверки</h4><p>Разбирает результаты проверок Сервис Инспектора и чек-листы: где сервис или СанПиН просели, кому и что поправить к смене.</p><span class="src">Сервис Инспектор</span></div>
+    </div>
+
+    <div id="tab-base" class="grid g2 hidden">
+      <div class="scen"><h4>Координатор в вашем чате</h4><p>Живёт в Telegram команды. Держит контекст: кто что решил, кто чего ждёт, что обещали гостю или поставщику.</p><span class="src">каркас платформы</span></div>
+      <div class="scen"><h4>Итоги дня</h4><p>Каждый вечер короткая сводка: выручка, что просело, что требует решения завтра. Три строки по делу.</p><span class="src">каркас платформы</span></div>
+      <div class="scen"><h4>Хвосты не проскальзывают</h4><p>Помнит недооформленную приёмку, неотвеченный отзыв, невыставленный счёт. Напоминает вовремя, а не постфактум.</p><span class="src">каркас платформы</span></div>
+      <div class="scen"><h4>Встречи в задачи</h4><p>Планёрка или разговор с поставщиком превращаются в список задач с ответственными автоматически.</p><span class="src">каркас платформы</span></div>
+      <div class="scen"><h4>Память команды</h4><p>Копит знание о заведении: постоянные гости, договорённости с поставщиками, цели по точкам. Чем дольше работает, тем полезнее.</p><span class="src">каркас платформы</span></div>
+      <div class="scen"><h4>Хотелки и вопросы из чата</h4><p>Ловит «а давай сделаем» и открытые вопросы прямо в переписке, доводит их до решения.</p><span class="src">каркас платформы</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- КАК РАБОТАЕТ -->
+<section>
+  <div class="wrap">
+    <h2>Как это выглядит в жизни</h2>
+    <p class="sub">Никакого нового кабинета. Управляющий пишет сотруднику в Telegram обычными словами, тот сам решает, из какой системы взять данные.</p>
+    <div class="dialog">
+      <div class="bubble user"><span class="who">Управляющий</span>Что по фудкосту на этой неделе? Где просели?</div>
+      <div class="bubble bot"><span class="who">ИИ-сотрудник</span>Средний фудкост 31% (было 28%). Вырос из-за горячего цеха: цена на говядину в последней накладной Docsinbox выросла на 14%, а цена в меню не менялась. Топ-3 блюда с просевшей маржой приложил. Пересобрать рецептуру или поднять цену?</div>
+      <div class="bubble user"><span class="who">Управляющий</span>Покажи, что с сервисом на Профсоюзной</div>
+      <div class="bubble bot"><span class="who">ИИ-сотрудник</span>Последняя проверка Сервис Инспектора 78 из 100, просели «скорость подачи» и «допродажа». В Ревви за неделю 2 негатива про ожидание. Собрал чек-лист для смены на завтра, подтвердить отправку старшему?</div>
+    </div>
+    <div class="flow" style="margin-top:22px">
+      <div class="step"><span class="n">1</span><b>Пишете в чат</b><span>Обычными словами, как человеку. Без выгрузок и логинов в пять систем.</span></div>
+      <div class="step"><span class="n">2</span><b>Агент читает источники</b><span>Берёт данные из iiko, 1С, Docsinbox, Ревви, Сервис Инспектора под конкретный вопрос.</span></div>
+      <div class="step"><span class="n">3</span><b>Приносит ответ и предложение</b><span>Не только цифра, но и «вот что просело и что с этим сделать».</span></div>
+      <div class="step"><span class="n">4</span><b>Вы подтверждаете</b><span>Всё, что меняет деньги или уходит наружу, идёт под ваше «ок». Агент не действует молча.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ВЫГОДА -->
+<section>
+  <div class="wrap">
+    <h2>Выгода операторскими цифрами</h2>
+    <p class="sub">Мы возвращаем часы, которые сейчас уходят на сведение данных, и делаем контроль ежедневным вместо «по итогам месяца». Цифры ниже - иллюстрация целевого эффекта, не данные клиента.</p>
+    <div class="metrics">
+      <div class="metric"><div class="num">-19%</div><div class="lbl">себестоимость блюд при контроле рецептур</div></div>
+      <div class="metric"><div class="num">20 мин</div><div class="lbl">на разбор остатков вместо смены</div></div>
+      <div class="metric"><div class="num">каждый день</div><div class="lbl">P&L и фудкост, а не раз в месяц</div></div>
+      <div class="metric"><div class="num">0</div><div class="lbl">новых окон, всё в вашем Telegram</div></div>
+    </div>
+    <p style="margin-top:16px" class="note">Честная рамка: 152-ФЗ и резидентность данных под контролем платформы. Агент работает внутри вашего периметра, доступ по ролям, все действия в журнале. Финансовые сценарии идут под подтверждением человека.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="wrap">
+    <h2>Пилот на одном заведении</h2>
+    <p class="sub">Подключаем к вашим системам, зашиваем сценарии под вашу кухню, запускаем сотрудника в чат команды. Первую пользу видно на первой неделе.</p>
+    <a class="cta" href="mailto:leo@dovbenko.me?subject=Пилот%20ИИ-сотрудника%20для%20ресторана">Запросить пилот</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <b>Платформа «Слаживание»</b>, среда, где люди и ИИ-агенты делают больше работы вместе. Разрез HoReCa.<br>
+    Прототип лендинга. Источники тематических сценариев: restorium.su, getit.rest. Коннекторы: iiko, 1С, Docsinbox, Ревви, Сервис Инспектор.
+  </div>
+</footer>
+
+<script>
+function show(el,which){
+  document.getElementById('tab-resto').classList.toggle('hidden', which!=='resto');
+  document.getElementById('tab-base').classList.toggle('hidden', which!=='base');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+}
+</script>
+</body>
+</html>
