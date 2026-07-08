@@ -1,8 +1,6 @@
 # Слаживание — robots.txt
 User-agent: *
 Allow: /
-# прототипы/ревью-страницы — вне индекса
-Disallow: /proto-resto-agent.html
 
 # ИИ-краулеры (GEO) — разрешены явно
 User-agent: GPTBot

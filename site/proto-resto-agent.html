@@ -3,8 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>ИИ-сотрудник для ресторана - прототип лендинга (разрез HoReCa)</title>
+<title>ИИ-сотрудник для ресторана — iiko, 1С, Docsinbox, Ревви, Сервис Инспектор | Слаживание</title>
+<meta name="description" content="Русский ИИ-сотрудник для ресторана на базе Claude. Подключён к iiko, 1С, Docsinbox, Ревви и Сервис Инспектору, живёт в Telegram, работает по преднастроенным сценариям ресторатора: фудкост, P&L, приёмка, смены, отзывы, стандарты.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://slazhivanie.ru/proto-resto-agent.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Слаживание">
+<meta property="og:title" content="ИИ-сотрудник для ресторана | Слаживание">
+<meta property="og:description" content="Подключён к iiko, 1С, Docsinbox, Ревви и Сервис Инспектору, живёт в Telegram, работает по сценариям ресторатора.">
+<meta property="og:image" content="https://slazhivanie.ru/og.png">
+<meta property="og:locale" content="ru_RU">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+  (function(m,e,t,r,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+  })(window, document,"script","https://mc.yandex.ru/metrika/tag.js?id=110175627", "ym");
+  ym(110175627, "init", {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/110175627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 <style>
   :root{
     --ink:#06251A; --green:#0FA06C; --paper:#F7FBF9; --card:#fff;
@@ -14,9 +34,7 @@
   body{margin:0;font-family:-apple-system,"IBM Plex Sans","Segoe UI",Roboto,sans-serif;
     background:var(--paper);color:var(--ink);line-height:1.55}
   .wrap{max-width:960px;margin:0 auto;padding:0 20px}
-  .proto-badge{position:fixed;top:0;left:0;right:0;background:var(--warm);color:#fff;
-    text-align:center;font-size:13px;padding:6px;z-index:99;letter-spacing:.02em}
-  header{background:var(--ink);color:#fff;padding:66px 0 46px;margin-top:30px}
+  header{background:var(--ink);color:#fff;padding:66px 0 46px}
   header .eyebrow{color:var(--green);font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 12px}
   header h1{font-size:34px;margin:0 0 14px;line-height:1.18;max-width:760px}
   header p{color:#a8d8c5;margin:0 0 26px;max-width:660px;font-size:17px}
@@ -74,7 +92,6 @@
 </style>
 </head>
 <body>
-<div class="proto-badge">ПРОТОТИП, разрез «ИИ-сотрудник для ресторана». Цифры и сценарии - образец вывода, не данные клиента.</div>
 
 <header>
   <div class="wrap">
@@ -195,7 +212,7 @@
 <footer>
   <div class="wrap">
     <b>Платформа «Слаживание»</b>, среда, где люди и ИИ-агенты делают больше работы вместе. Разрез HoReCa.<br>
-    Прототип лендинга. Источники тематических сценариев: restorium.su, getit.rest. Коннекторы: iiko, 1С, Docsinbox, Ревви, Сервис Инспектор.
+    Коннекторы: iiko, 1С, Docsinbox, Ревви, Сервис Инспектор.
     <nav class="foot-nav">
       <a href="index.html">Главная</a>
       <a href="approach.html">Подход</a>
