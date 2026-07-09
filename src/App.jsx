@@ -7,15 +7,19 @@ import {
 } from "lucide-react";
 
 /* ─────────────  TOKENS (светлая тема)  ───────────── */
+// Палитра v5 «дерево»: бумага/чернила + земляные акценты (ДНК: глина=человек, зелень=агент).
+// Неоновые акценты старого дашборда заменены на согласованные земляные тона — агенты
+// различимы, но в одной природной гамме.
 const c = {
-  bg: "#EDF0F6", bg2: "#EBEEF4", panel: "#FFFFFF", panelHi: "#F5F7FB",
-  line: "rgba(20,30,50,0.09)", lineHi: "rgba(20,30,50,0.18)",
-  txt: "#1B2433", dim: "#5B6677", dim2: "#98A2B3",
-  cyan: "#18B9CE", violet: "#7A6CF0", green: "#16B981", amber: "#D9892A", red: "#E5484D", blue: "#4F8DF7",
+  bg: "#F4EFE6", bg2: "#EDE6D8", panel: "#FFFFFF", panelHi: "#F7F1E7",
+  line: "rgba(32,28,23,0.10)", lineHi: "rgba(32,28,23,0.20)",
+  txt: "#201C17", dim: "#6B6258", dim2: "#8E877E",
+  cyan: "#4C7A6B", violet: "#9A6250", green: "#3D7A3E", amber: "#B8863C", red: "#B24A32", blue: "#5E7E86", clay: "#B85C3C",
 };
 const mono = "ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace";
-const sans = "Inter, -apple-system, 'Segoe UI', Roboto, sans-serif";
-const grad = `linear-gradient(135deg, ${c.cyan}, ${c.violet})`;
+const head = "'Fraunces', Georgia, serif";
+const sans = "'IBM Plex Sans', -apple-system, 'Segoe UI', Roboto, sans-serif";
+const grad = `linear-gradient(135deg, ${c.clay}, ${c.green})`;
 const HEALTH = { green: c.green, amber: c.amber, red: c.red };
 
 const SOL = {
@@ -31,7 +35,7 @@ const SOL = {
       solution: "Аргус тихо слушает чаты и встречи. Возвращает бриф перед встречей, разбор 1:1, протокол сразу участникам и находки: забытые цели, риски, скрытые таланты. Растёт по грейдам — от писаря до правой руки.",
       benefit: "−34% времени руководителя на операционку, 95% задач с владельцем и сроком, ничего не теряется. Меньше ручного контроля — больше видно.",
     } },
-  Kairos: { icon: Target, color: "#E879A6", sub: "Дашборд собственника · ТОС", cat: "Руководителю",
+  Kairos: { icon: Target, color: "#B07A4E", sub: "Дашборд собственника · ТОС", cat: "Руководителю",
     task: "Не видно, какое узкое место тормозит весь бизнес",
     result: "Находит ограничение и ведёт спринт по его снятию.",
     effect: "Больше выручки", speed: "С нашим спецом",
@@ -99,7 +103,7 @@ const DIMS = {
 const dimColor = (dim, v) => dim === "role" ? AGENT_CATS[v] : dim === "effect" ? EFFECT_COL[v] : SPEED_COL[v];
 const CATS = {
   "Интеграции": c.cyan, "Учёт и ЭДО": c.violet, "Госучёт": c.amber,
-  "Лояльность": c.green, "Аналитика": c.blue, "Коммуникации": "#E879A6", "Контроль": c.red,
+  "Лояльность": c.green, "Аналитика": c.blue, "Коммуникации": "#B07A4E", "Контроль": c.red,
 };
 
 const clients = [
@@ -251,7 +255,7 @@ const Card = ({ children, style, onClick, hover }) => {
     <div onClick={onClick} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}
       style={{ background: c.panel, border: `1px solid ${c.line}`, borderRadius: 14, padding: 16, transition: "all .15s",
         cursor: onClick ? "pointer" : "default",
-        boxShadow: h && hover ? "0 8px 24px rgba(20,30,50,0.10)" : "0 1px 2px rgba(20,30,50,0.04), 0 2px 8px rgba(20,30,50,0.04)",
+        boxShadow: h && hover ? "0 8px 24px rgba(32,28,23,0.10)" : "0 1px 2px rgba(32,28,23,0.04), 0 2px 8px rgba(32,28,23,0.04)",
         transform: h && hover ? "translateY(-2px)" : "none", ...style }}>{children}</div>
   );
 };
@@ -259,12 +263,12 @@ const HealthDot = ({ s, size = 9 }) => (
   <span style={{ display: "inline-block", width: size, height: size, borderRadius: 99, background: HEALTH[s], boxShadow: `0 0 8px ${HEALTH[s]}66` }} />
 );
 const Badge = ({ children, color = c.dim, bg }) => (
-  <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: .3, color, background: bg || "rgba(20,30,50,0.045)", padding: "2px 8px", borderRadius: 6, border: `1px solid ${c.line}` }}>{children}</span>
+  <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: .3, color, background: bg || "rgba(32,28,23,0.045)", padding: "2px 8px", borderRadius: 6, border: `1px solid ${c.line}` }}>{children}</span>
 );
 const SUBS = ["connectors", "model", "proxy", "memory", "evals"];
 const Footing = ({ uses }) => (
   <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
-    {SUBS.map((s) => <div key={s} title={s} style={{ width: 18, height: 4, borderRadius: 2, background: uses.includes(s) ? grad : "rgba(20,30,50,0.10)" }} />)}
+    {SUBS.map((s) => <div key={s} title={s} style={{ width: 18, height: 4, borderRadius: 2, background: uses.includes(s) ? grad : "rgba(32,28,23,0.10)" }} />)}
   </div>
 );
 
@@ -290,13 +294,13 @@ function Catalog({ onOpenSol }) {
         <Eyebrow style={{ marginRight: 4 }}>смотреть</Eyebrow>
         {Object.entries(DIMS).map(([k, v]) => {
           const on = dim === k;
-          return <button key={k} onClick={() => { setDim(k); setPick("Все"); }} style={{ background: on ? "rgba(20,30,50,0.06)" : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on ? c.lineHi : c.line}`, borderRadius: 8, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{v.label}</button>;
+          return <button key={k} onClick={() => { setDim(k); setPick("Все"); }} style={{ background: on ? "rgba(32,28,23,0.06)" : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on ? c.lineHi : c.line}`, borderRadius: 8, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{v.label}</button>;
         })}
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16, alignItems: "center" }}>
         {["Все", ...DIMS[dim].values].map((k) => {
           const on = pick === k, col = k === "Все" ? c.dim : dimColor(dim, k);
-          return <button key={k} onClick={() => setPick(k)} style={{ background: on ? (k === "Все" ? "rgba(20,30,50,0.06)" : `${col}14`) : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on && k !== "Все" ? col : c.line}`, borderRadius: 99, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{k}</button>;
+          return <button key={k} onClick={() => setPick(k)} style={{ background: on ? (k === "Все" ? "rgba(32,28,23,0.06)" : `${col}14`) : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on && k !== "Все" ? col : c.line}`, borderRadius: 99, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{k}</button>;
         })}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(290px,1fr))", gap: 12, marginBottom: 26 }}>
@@ -343,7 +347,7 @@ function Catalog({ onOpenSol }) {
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
         {["Все", ...Object.keys(CATS)].map((k) => {
           const on = cat === k, col = CATS[k] || c.dim;
-          return <button key={k} onClick={() => setCat(k)} style={{ background: on ? (k === "Все" ? "rgba(20,30,50,0.06)" : `${col}14`) : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on && k !== "Все" ? col : c.line}`, borderRadius: 99, padding: "6px 13px", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>{k}</button>;
+          return <button key={k} onClick={() => setCat(k)} style={{ background: on ? (k === "Все" ? "rgba(32,28,23,0.06)" : `${col}14`) : "transparent", color: on ? c.txt : c.dim, border: `1px solid ${on && k !== "Все" ? col : c.line}`, borderRadius: 99, padding: "6px 13px", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>{k}</button>;
         })}
       </div>
 
@@ -783,7 +787,7 @@ function AgentDashboards({ onOpen }) {
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
         {sols.map((s) => {
           const I = SOL[s].icon, on = s === sol, col = SOL[s].color, first = agents.find((x) => x.sol === s);
-          return <button key={s} onClick={() => { setSol(s); setAid(first.id); }} style={{ display: "flex", gap: 8, alignItems: "center", background: on ? c.panel : "transparent", border: `1px solid ${on ? col : c.line}`, color: on ? c.txt : c.dim, borderRadius: 10, padding: "8px 13px", cursor: "pointer", fontWeight: 600, fontSize: 13, boxShadow: on ? "0 2px 8px rgba(20,30,50,0.06)" : "none" }}><I size={15} color={col} /> {s}</button>;
+          return <button key={s} onClick={() => { setSol(s); setAid(first.id); }} style={{ display: "flex", gap: 8, alignItems: "center", background: on ? c.panel : "transparent", border: `1px solid ${on ? col : c.line}`, color: on ? c.txt : c.dim, borderRadius: 10, padding: "8px 13px", cursor: "pointer", fontWeight: 600, fontSize: 13, boxShadow: on ? "0 2px 8px rgba(32,28,23,0.06)" : "none" }}><I size={15} color={col} /> {s}</button>;
         })}
       </div>
       <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 18, flexWrap: "wrap" }}>
@@ -979,14 +983,14 @@ export default function App() {
   const Sidebar = (
     <div style={{ width: 234, background: c.bg2, borderRight: `1px solid ${c.line}`, padding: "18px 12px", display: "flex", flexDirection: "column", gap: 18, height: "100%", boxSizing: "border-box", position: narrow ? "fixed" : "relative", zIndex: 40, left: narrow && !navOpen ? -260 : 0, transition: "left .2s" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "2px 8px" }}>
-        <div style={{ width: 30, height: 30, borderRadius: 8, background: grad, display: "grid", placeItems: "center" }}><CircleDot size={17} color="#fff" /></div>
-        <div><div style={{ fontWeight: 700, fontSize: 15 }}>Слаживание</div><div style={{ fontSize: 10.5, color: c.dim2, letterSpacing: .5 }}>КОКПИТ · СЛОЙ A</div></div>
+        <div style={{ width: 30, height: 30, borderRadius: 8, background: "#fff", border: `1px solid ${c.line}`, display: "grid", placeItems: "center" }}><svg width="20" height="20" viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#ckMark)" strokeWidth="3.6" strokeLinecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="ckMark" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stopColor="#B85C3C"/><stop offset="1" stopColor="#3D7A3E"/></linearGradient></defs></svg></div>
+        <div><div style={{ fontFamily: head, fontWeight: 600, fontSize: 16 }}>слаживание</div><div style={{ fontSize: 10.5, color: c.dim2, letterSpacing: .5 }}>КОКПИТ · СЛОЙ A</div></div>
       </div>
       {NAV.map((g) => (
         <div key={g.sec}>
           <Eyebrow style={{ padding: "0 8px 8px" }}>{g.sec}</Eyebrow>
           {g.items.map(([v, label, Icon]) => { const active = view === v || (v === "myagents" && view === "agent") || (v === "fleet" && view === "solution"); return (
-            <div key={v} onClick={() => goto(v)} style={{ display: "flex", gap: 10, alignItems: "center", padding: "9px 10px", borderRadius: 9, cursor: "pointer", marginBottom: 2, fontSize: 13.5, background: active ? "rgba(20,30,50,0.05)" : "transparent", color: active ? c.txt : c.dim, borderLeft: `2px solid ${active ? c.cyan : "transparent"}` }}><Icon size={16} color={active ? c.cyan : c.dim2} /> {label}</div>); })}
+            <div key={v} onClick={() => goto(v)} style={{ display: "flex", gap: 10, alignItems: "center", padding: "9px 10px", borderRadius: 9, cursor: "pointer", marginBottom: 2, fontSize: 13.5, background: active ? "rgba(32,28,23,0.05)" : "transparent", color: active ? c.txt : c.dim, borderLeft: `2px solid ${active ? c.cyan : "transparent"}` }}><Icon size={16} color={active ? c.cyan : c.dim2} /> {label}</div>); })}
         </div>
       ))}
       <div style={{ marginTop: "auto", fontSize: 10.5, color: c.dim2, padding: "0 8px" }}>демо-данные · обезличено</div>
