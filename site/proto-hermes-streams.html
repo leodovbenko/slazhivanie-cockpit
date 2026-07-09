@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Гермес: потоки — прототип (согласование с клиентом)</title>
+<style>
+  :root{
+    --ink:#06251A; --green:#0FA06C; --paper:#F7FBF9; --card:#fff;
+    --line:#dfe9e4; --muted:#5c7267; --soft:#E4F7EF; --amber:#B4802C; --red:#B4472C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"IBM Plex Sans","Segoe UI",Roboto,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.55}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  .proto-badge{position:fixed;top:0;left:0;right:0;background:#B4472C;color:#fff;
+    text-align:center;font-size:13px;padding:6px;z-index:99;letter-spacing:.02em}
+  header{background:var(--ink);color:#fff;padding:64px 0 40px;margin-top:30px}
+  header h1{font-size:30px;margin:0 0 8px;line-height:1.2}
+  header p{color:#a8d8c5;margin:0;max-width:720px}
+  .brand{color:var(--green);font-weight:700}
+  section{padding:36px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 20px;font-size:15px}
+
+  /* переключатель потоков */
+  .switcher{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+  .chip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);
+    border-radius:999px;padding:8px 14px;cursor:pointer;font-size:14px;font-weight:600}
+  .chip .dot{width:9px;height:9px;border-radius:50%}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  /* кокпит */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;transition:.15s}
+  .scard:hover{border-color:var(--green)}
+  .scard.on{border-color:var(--green);box-shadow:0 0 0 2px rgba(15,160,108,.15)}
+  .scard .top{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+  .scard .av{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
+  .scard .nm{font-weight:700;font-size:15px;line-height:1.15}
+  .scard .kind{font-size:12px;color:var(--muted)}
+  .scard .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:3px 0}
+  .scard .row b{color:var(--ink)}
+  .pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px}
+  .pill.ok{background:var(--soft);color:var(--green)}
+  .pill.warn{background:#FBF1DF;color:var(--amber)}
+  .pill.rev{background:#FDEAE3;color:var(--red)}
+  .ring{letter-spacing:2px;font-size:13px}
+
+  /* один поток */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .panel .head{padding:18px 20px;color:#fff;display:flex;align-items:center;gap:12px}
+  .panel .head .av{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,.18)}
+  .panel .head h3{margin:0;font-size:19px}
+  .panel .head .k{opacity:.85;font-size:13px}
+  .panel .body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .panel .col{padding:18px 20px}
+  .panel .col+.col{border-left:1px solid var(--line)}
+  .kpis{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 14px}
+  .kpi .v{font-size:22px;font-weight:700}
+  .kpi .l{font-size:12px;color:var(--muted)}
+  .kpi .d{font-size:12px;color:var(--green);font-weight:600}
+  .lab{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:14px 0 6px}
+  .voice{font-size:14px;background:var(--soft);border-radius:10px;padding:10px 12px;color:var(--ink)}
+  .qitem{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .qitem:last-child{border-bottom:0}
+  .qitem .t{color:var(--muted);white-space:nowrap}
+
+  /* телефон */
+  .phone-wrap{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .phone{width:320px;flex:none;background:#cfe3d9;border-radius:26px;padding:10px;border:1px solid var(--line)}
+  .screen{background:#e9f3ee;border-radius:18px;overflow:hidden;font-size:13px}
+  .tgbar{background:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+  .tgbar .bav{width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .tgbar .bn{font-weight:700;font-size:14px}
+  .tgbar .bs{font-size:11px;color:var(--muted)}
+  .active-bar{background:#fff8e8;border-bottom:1px solid #f0e3c4;color:#8a6a1e;font-size:12px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center}
+  .active-bar b{color:#6d5312}
+  .chatarea{padding:12px;min-height:300px}
+  .msg{max-width:82%;padding:8px 11px;border-radius:14px;margin:0 0 9px;line-height:1.4}
+  .msg.bot{background:#fff;border:1px solid var(--line)}
+  .msg.me{background:#d7f2c9;margin-left:auto}
+  .badge{display:inline-block;font-size:11px;font-weight:700;color:#fff;border-radius:6px;padding:1px 7px;margin:0 0 6px}
+  .draft{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:0 0 9px}
+  .draft .dt{font-size:12.5px;color:var(--ink);margin:0 0 8px;white-space:pre-line}
+  .btns{display:flex;gap:6px;flex-wrap:wrap}
+  .b{font-size:11.5px;border-radius:8px;padding:5px 8px;border:1px solid var(--line);background:#f6faf8;font-weight:600}
+  .b.p{background:var(--green);color:#fff;border-color:var(--green)}
+  .guard{font-size:12px;color:var(--muted);background:var(--soft);border-radius:10px;padding:10px 12px;margin:14px 0 0}
+  .note{font-size:14px;color:var(--muted);max-width:360px}
+  .note b{color:var(--ink)}
+
+  footer{padding:40px 0;color:var(--muted);font-size:14px}
+  footer b{color:var(--ink)}
+  @media(max-width:680px){.panel .body{grid-template-columns:1fr}.panel .col+.col{border-left:0;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div class="proto-badge">ПРОТОТИП · не подключён к проду · данные — образец для согласования с клиентом</div>
+
+<header>
+  <div class="wrap">
+    <h1>Гермес: потоки</h1>
+    <p>Один СММ-специалист на аутсорсе ведёт <b>несколько страниц разных клиентов</b> из одного кабинета и одного Telegram-бота. Каждая страница — отдельный <span class="brand">поток</span> со своим голосом, памятью и петлёй самообучения. По факту «пять Гермесов» — но один движок, один бот, ноль путаницы между клиентами.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Поток — единица работы</h2>
+    <p class="sub">Не «одна лента с переключателем», а самостоятельная сущность. Кликните клиента ниже — весь кабинет и бот перестроятся под него.</p>
+    <div class="switcher" id="switcher"></div>
+    <div class="grid" id="cockpit"></div>
+    <p class="guard">🔒 <b>Гермес не смешивает клиентов.</b> Идеи, материалы и память одного потока никогда не всплывают в другом. Активный поток всегда виден, публикация всегда называет клиента — постом клиента А в ленту клиента Б промахнуться нельзя.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Один поток — рабочий экран</h2>
+    <p class="sub">Открыл клиента — видишь только его: аналитику, очередь, голос, ритм. Ничего чужого на экране.</p>
+    <div class="panel" id="panel"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Telegram — «режим потока»</h2>
+    <p class="sub">Бот залипает в активном потоке. Сверху всегда видно, за кого пишешь; смена — явной командой.</p>
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" id="phone"></div></div>
+      <div class="note">
+        <p><b>Жёсткое переключение.</b> Пока не сменил командой <code>/поток</code> — всё уходит текущему клиенту. Никакого угадывания.</p>
+        <p><b>Цель всегда на кнопке.</b> «Опубликовать в …» называет клиента. Корпоративный/клиентский аккаунт — только явным тапом.</p>
+        <p><b>Свой голос сам.</b> Гермес берёт голос и темы активного потока — специалист не переписывает и не держит контекст в голове.</p>
+        <p><b>Кокпит агентства.</b> Доска «Все потоки» выше — рабочее место: видно, кто выбился из ритма и где ждёт ревью, разом по всем клиентам.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>Что это доказывает:</b> один специалист ведёт много клиентов из одного места, а платформа держит их раздельно — голос, память, обучение, очередь и цифры у каждого свои. Масштабируется с 2 страниц (личная + компания) до агентства на N клиентов без «пяти ботов».</p>
+    <p><b>Развилки на согласование с клиентом:</b></p>
+    <p>1. <b>Границы потока</b> — поток = одна страница или бренд с несколькими площадками (LinkedIn + Instagram + Telegram-канал вместе)? Склоняемся ко второму: оператор мыслит «клиент», а не «площадка».</p>
+    <p>2. <b>Изоляция клиентов</b> — каждый клиент = отдельный периметр данных (рекомендуем), оператор — с доступом по гранту. Клиенты не видят друг друга.</p>
+    <p>3. <b>Кто вправе публиковать</b> — специалист сам или корп/клиентский пост уходит на ревью владельцу клиента? Доверие агентству ≠ полный карт-бланш.</p>
+    <p><b>Фаза 1 (сразу):</b> 2 потока у одного человека (личная + компания), выбор в боте, свой голос. <b>Фаза 2:</b> N потоков, режим переключения, изолированная память. <b>Фаза 3:</b> кокпит агентства, изоляция и биллинг по клиенту, ревью-гейт.</p>
+  </div>
+</footer>
+
+<script>
+  const STREAMS = [
+    { id:'founder', ic:'🧑', color:'#0FA06C', nm:'Личный бренд основателя', kind:'Личная страница · клиент',
+      voice:'От первого лица, «строю на глазах»: честно, без хайпа, короткие абзацы, вопрос в конце.',
+      followers:'24.6K', dF:'+146', reach:'62.7K', dR:'+5K', cad:'2 / день', ring:'🟩🟩⬜⬜⬜', done:2, goal:5,
+      status:['ok','в ритме'],
+      queue:[['Почему я не нанял ещё троих','сегодня 18:00'],['Разбор провала первой сделки','завтра 10:00'],['Что я понял про доверие в команде','ср 10:00']],
+      idea:'Мысль: «усталость от логинов» — про мультиаккаунтность.',
+      draft:'Я устал логиниться.\n\nОдин человек — десять корпоративных ящиков. Вчера свёл три своих входа в один...' },
+    { id:'saas', ic:'🏢', color:'#2C6CB4', nm:'«Нордсофт»', kind:'SaaS-компания · клиент',
+      voice:'От лица бренда «мы»: продукт, польза, кейсы. Спокойно, экспертно, без «я».',
+      followers:'3.1K', dF:'+58', reach:'11.2K', dR:'+1.4K', cad:'3 / неделю', ring:'🟩🟩🟩', done:3, goal:3,
+      status:['ok','кольцо закрыто'],
+      queue:[['Релиз: интеграция с Odoo','чт 11:00'],['Кейс клиента из ритейла','пн 11:00']],
+      idea:'Тема: вышла фича интеграции — анонс от лица «Нордсофт».',
+      draft:'В «Нордсофт» теперь есть интеграция с Odoo.\n\nМы собрали её, потому что клиенты просили одно окно...' },
+    { id:'prime', ic:'🍽', color:'#B4802C', nm:'«Прайм» — ресторан', kind:'Клиент агентства · HoReCa',
+      voice:'Тёплый, гостеприимный, аппетитный. Про атмосферу, сезонное меню, гостей.',
+      followers:'8.4K', dF:'+31', reach:'19.0K', dR:'+900', cad:'4 / неделю', ring:'🟩⬜⬜⬜', done:1, goal:4,
+      status:['warn','выбился из ритма'],
+      queue:[['Осеннее меню — 3 новых блюда','ждёт идею']],
+      idea:'Пул пуст. Предложить темы под осеннее меню?',
+      draft:'(черновиков нет — поток выбился из ритма, Гермес предложит 3 темы под осеннее меню)' },
+    { id:'stroy', ic:'🏗', color:'#5c7267', nm:'«СтройДом»', kind:'Клиент агентства · B2B',
+      voice:'Деловой, по делу, с цифрами. Объекты, сроки, гарантии. Без воды.',
+      followers:'2.2K', dF:'+12', reach:'5.8K', dR:'+300', cad:'2 / неделю', ring:'🟩🟩', done:2, goal:2,
+      status:['rev','ждёт ревью'],
+      queue:[['Сдали объект на 4 месяца раньше','на ревью у клиента'],['Гарантия 10 лет: что входит','пт 12:00']],
+      idea:'Черновик про сданный объект ждёт «Ок» владельца «СтройДом».',
+      draft:'Сдали жилой комплекс на 4 месяца раньше срока.\n\nРассказываем, за счёт чего...\n\n⏳ Ждёт подтверждения владельца.' },
+    { id:'lumina', ic:'💄', color:'#B44C7C', nm:'«Люмина»', kind:'Клиент агентства · бьюти',
+      voice:'Лёгкий, вдохновляющий, визуальный. Уход, ритуалы, до/после. Эмодзи в меру.',
+      followers:'15.7K', dF:'+220', reach:'40.3K', dR:'+3.1K', cad:'5 / неделю', ring:'🟩🟩🟩🟩⬜', done:4, goal:5,
+      status:['ok','в ритме'],
+      queue:[['Ритуал вечернего ухода','сегодня 19:00'],['Разбор мифа про SPF','завтра 12:00'],['До/после: 4 недели','пн 19:00']],
+      idea:'Тема: миф про SPF зимой — развенчать.',
+      draft:'«Зимой SPF не нужен» — самый дорогой миф в уходе.\n\nРазбираем, почему солнце работает и в декабре ☀️' },
+  ];
+  let active = 0;
+
+  const statusPill = s => `<span class="pill ${s[0]}">${s[1]}</span>`;
+
+  function renderSwitcher(){
+    document.getElementById('switcher').innerHTML = STREAMS.map((s,i)=>
+      `<div class="chip ${i===active?'on':''}" onclick="setActive(${i})">
+        <span class="dot" style="background:${s.color}"></span>${s.ic} ${s.nm}</div>`).join('');
+  }
+  function renderCockpit(){
+    document.getElementById('cockpit').innerHTML = STREAMS.map((s,i)=>`
+      <div class="scard ${i===active?'on':''}" onclick="setActive(${i})">
+        <div class="top">
+          <div class="av" style="background:${s.color}">${s.ic}</div>
+          <div><div class="nm">${s.nm}</div><div class="kind">${s.kind}</div></div>
+        </div>
+        <div class="row"><span>Подписчики</span><b>${s.followers} <span style="color:var(--green)">${s.dF}</span></b></div>
+        <div class="row"><span>Неделя</span><span class="ring">${s.ring} ${s.done}/${s.goal}</span></div>
+        <div class="row"><span>Ритм</span><b>${s.cad}</b></div>
+        <div class="row" style="margin-top:8px"><span></span>${statusPill(s.status)}</div>
+      </div>`).join('');
+  }
+  function renderPanel(){
+    const s = STREAMS[active];
+    document.getElementById('panel').innerHTML = `
+      <div class="head" style="background:${s.color}">
+        <div class="av">${s.ic}</div>
+        <div><h3>${s.nm}</h3><div class="k">${s.kind} · ${statusPill(s.status)}</div></div>
+      </div>
+      <div class="body">
+        <div class="col">
+          <div class="kpis">
+            <div class="kpi"><div class="v">${s.followers}</div><div class="l">подписчики</div><div class="d">${s.dF} за нед.</div></div>
+            <div class="kpi"><div class="v">${s.reach}</div><div class="l">охват 30д</div><div class="d">${s.dR}</div></div>
+          </div>
+          <div class="lab">Кольцо недели · ритм ${s.cad}</div>
+          <div class="ring" style="font-size:18px">${s.ring} <span style="font-size:13px;color:var(--muted)">${s.done}/${s.goal}</span></div>
+          <div class="lab">Голос потока</div>
+          <div class="voice">${s.voice}</div>
+        </div>
+        <div class="col">
+          <div class="lab">Очередь публикаций</div>
+          ${s.queue.map(q=>`<div class="qitem"><span>${q[0]}</span><span class="t">${q[1]}</span></div>`).join('')}
+          <div class="lab">Память и обучение</div>
+          <div class="voice" style="background:#fff;border:1px solid var(--line)">Отдельный накопитель этого клиента: что заходит его аудитории, прошлые посты, выученные уроки. Кормит только этот поток.</div>
+        </div>
+      </div>`;
+  }
+  function renderPhone(){
+    const s = STREAMS[active];
+    const short = {founder:'личную', saas:'«Нордсофт»', prime:'«Прайм»', stroy:'«СтройДом»', lumina:'«Люмина»'}[s.id] || s.nm;
+    document.getElementById('phone').innerHTML = `
+      <div class="tgbar"><div class="bav">Г</div><div><div class="bn">Гермес</div><div class="bs">bot</div></div></div>
+      <div class="active-bar"><span>Активный поток: <b>${s.ic} ${s.nm}</b></span><span>/поток ↔</span></div>
+      <div class="chatarea">
+        <div class="msg bot"><span class="badge" style="background:${s.color}">${s.ic} ${s.nm}</span><br>${s.idea}</div>
+        <div class="msg me">Давай соберём</div>
+        <div class="msg bot">
+          <div class="draft">
+            <span class="badge" style="background:${s.color}">${s.ic} ${s.nm}</span>
+            <div class="dt">${s.draft}</div>
+            <div class="btns">
+              <span class="b p">✅ Опубликовать в ${short}</span>
+              <span class="b">📅 В слот</span>
+              <span class="b">↔️ Сменить поток</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+  function setActive(i){ active=i; renderSwitcher(); renderCockpit(); renderPanel(); renderPhone(); }
+  setActive(0);
+</script>
+</body>
+</html>
