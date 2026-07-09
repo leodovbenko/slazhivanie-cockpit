@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Макет · Из требований в ТЗ на найм (скоркарта)</title>
+<style>
+  :root{--green:#17C787;--green-d:#1e9e5a;--yellow:#c98a00;--red:#d24a43;--violet:#7a6cf0;
+        --ink:#1A1F1D;--muted:#6E7C77;--line:#E4E9E6;--bg:#F6F7F5;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px}
+  .note{background:#fff8e6;border:1px solid #f0d98a;border-radius:10px;padding:10px 14px;font-size:13px;color:#7a5c00;margin-bottom:14px}
+  .head{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+  .head h1{margin:0 0 2px;font-size:19px}
+  .head .sub{color:var(--muted);font-size:13px}
+  .method{margin-top:8px;font-size:12.5px;color:#556;background:#eef4ff;border-radius:8px;padding:6px 10px;display:inline-block}
+  .split{display:grid;grid-template-columns:0.9fr 1.1fr;gap:14px;margin-top:14px}
+  .pane{background:var(--card);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-height:520px;max-height:78vh}
+  .pane h3{margin:0;padding:13px 16px;border-bottom:1px solid var(--line);font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#556}
+  .pane .body{padding:14px 16px;overflow:auto}
+  /* Сырьё */
+  .src{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;transition:box-shadow .2s,border-color .2s}
+  .src.flash{border-color:var(--violet);box-shadow:0 0 0 3px #7a6cf022}
+  .src .who{font-weight:600;font-size:13px;margin-bottom:2px}
+  .src .kind{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .src .txt{font-size:13px;color:#333;margin-top:6px;white-space:pre-wrap}
+  /* Скоркарта */
+  .mission{font-size:14px;background:#f0faf5;border-left:3px solid var(--green-d);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:12px}
+  .sub{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:#889;margin:14px 0 6px}
+  ol.out{margin:4px 0 0 18px;padding:0} ol.out li{margin:3px 0;font-size:13.5px}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:4px}
+  th,td{border:1px solid #e5e8ec;padding:6px 8px;text-align:left;vertical-align:top}
+  th{background:#fafbfa;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:#667}
+  .crit{cursor:pointer}
+  .crit:hover{background:#f4f7ff}
+  .wbar{height:7px;background:#e6e9e6;border-radius:999px;overflow:hidden;min-width:60px}
+  .wfill{height:100%;background:var(--green-d)}
+  .tag{font-size:11px;padding:2px 7px;border-radius:999px;white-space:nowrap}
+  .t-crit{background:#d24a4315;color:var(--red);border:1px solid #d24a4340}
+  .t-nice{background:#8a938f18;color:#5c655f;border:1px solid #8a938f33}
+  .ev{color:#556;font-size:12.5px}
+  .gaps{margin-top:14px;background:#fff7f0;border:1px solid #f0cba0;border-radius:10px;padding:10px 12px}
+  .gaps b{color:#a85b00}
+  .gaps ul{margin:6px 0 0 18px;padding:0} .gaps li{font-size:13px;margin:3px 0}
+  .foot{margin-top:8px;font-size:12px;color:var(--muted)}
+  .tabs{display:none;gap:8px;margin-top:14px}
+  .tabs button{flex:1;border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px;font:inherit;cursor:pointer}
+  .tabs button.on{background:var(--green-d);color:#fff;border-color:var(--green-d)}
+  @media(max-width:900px){.split{grid-template-columns:1fr}.tabs{display:flex}.pane.hide-m{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="note">🎨 <b>Макет</b> (не боевой экран). Данные условные. Слева — что накидали разные люди (через блок «Вопросы»: голос, текст, старый документ). Справа — как агент собирает из этого <b>ТЗ на найм в виде скоркарты</b>. Кликни любой критерий справа — подсветится, из какого сырья он собран.</div>
+
+  <div class="head">
+    <h1>Из требований в ТЗ на найм</h1>
+    <div class="sub">Вакансия: су-шеф · собрано из 3 источников</div>
+    <div class="method">Метод: скоркарта структурного найма (Smart &amp; Street, «Who»): миссия роли, ключевые результаты, критерии с весом и меткой «критично / некритично»</div>
+  </div>
+
+  <div class="tabs">
+    <button class="on" data-tab="left">Что накидали</button>
+    <button data-tab="right">Скоркарта</button>
+  </div>
+
+  <div class="split">
+    <!-- ЛЕВО: сырьё через «Вопросы» -->
+    <div class="pane pane-left" data-pane="left">
+      <h3>🗂 Что накидали (блок «Вопросы»)</h3>
+      <div class="body">
+        <div class="src" id="src-nm">
+          <div class="who">Нанимающий менеджер</div>
+          <div class="kind">🎙 голос 0:47, расшифровка</div>
+          <div class="txt">«Нужен су-шеф под открытие второй точки. Главное — чтобы умел ставить кухню с нуля и держать фудкост. Банкетов у нас почти нет, тут можно без опыта. А вот без запуска — даже не смотрим. Ну и чтобы не сбегал через месяц.»</div>
+        </div>
+        <div class="src" id="src-rec">
+          <div class="who">Рекрутёр (своё мнение)</div>
+          <div class="kind">✍️ текст</div>
+          <div class="txt">«По рынку Москвы такие идут 120–150к. Смотрела бы стаж от 3 лет и обязательно горячий цех. Частые прыжки по местам — риск.»</div>
+        </div>
+        <div class="src" id="src-doc">
+          <div class="who">Старый документ</div>
+          <div class="kind">📄 «Профиль повара 2019.docx»</div>
+          <div class="txt">«…требования: санитарная книжка, опыт горячего цеха, знание технологических карт, умение работать в бригаде…»</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ПРАВО: скоркарта -->
+    <div class="pane pane-right hide-m" data-pane="right">
+      <h3>🎯 Скоркарта (ТЗ на найм)</h3>
+      <div class="body">
+        <div class="mission"><b>Миссия роли:</b> су-шеф, который поставит кухню второй точки и удержит фудкост, а не «повар вообще».</div>
+
+        <div class="sub">Ключевые результаты (за первые 3–6 мес)</div>
+        <ol class="out">
+          <li>Запустить кухню новой точки: оборудование, техкарты, бригада.</li>
+          <li>Вывести и держать фудкост в целевом коридоре.</li>
+          <li>Собрать и удержать смену (низкая текучка).</li>
+        </ol>
+
+        <div class="sub">Критерии отбора — вес и «критично / некритично»</div>
+        <table>
+          <tr><th>Критерий</th><th>Вес</th><th>Тип</th><th>Что считаем доказательством в резюме</th></tr>
+          <tr class="crit" data-src="src-nm"><td>Запуск кухни с нуля</td><td><div class="wbar"><div class="wfill" style="width:30%"></div></div>30%</td><td><span class="tag t-crit">критично</span></td><td class="ev">Опыт открытия точки/кухни, «с нуля», закупка+техкарты+набор</td></tr>
+          <tr class="crit" data-src="src-nm src-rec"><td>Контроль фудкоста</td><td><div class="wbar"><div class="wfill" style="width:25%"></div></div>25%</td><td><span class="tag t-crit">критично</span></td><td class="ev">Цифры фудкоста/себестоимости, «снизил с … до …»</td></tr>
+          <tr class="crit" data-src="src-rec src-doc"><td>Горячий цех, стаж 3+</td><td><div class="wbar"><div class="wfill" style="width:20%"></div></div>20%</td><td><span class="tag t-crit">критично</span></td><td class="ev">Позиции и стаж на горячем цехе, техкарты</td></tr>
+          <tr class="crit" data-src="src-rec"><td>Стабильность (низкая текучка)</td><td><div class="wbar"><div class="wfill" style="width:15%"></div></div>15%</td><td><span class="tag t-nice">некритично</span></td><td class="ev">Сроки на прошлых местах; частые прыжки — минус</td></tr>
+          <tr class="crit" data-src="src-nm src-doc"><td>Банкетное меню</td><td><div class="wbar"><div class="wfill" style="width:10%"></div></div>10%</td><td><span class="tag t-nice">некритично</span></td><td class="ev">Опыт банкетов — плюс, но не обязателен</td></tr>
+        </table>
+        <div class="foot">Веса и «критично / некритично» напрямую задают светофор: провал критичного даёт красный; сумма весов совпавших — жёлтый или зелёный. Точнее скоркарта — чётче зоны.</div>
+
+        <div class="gaps">
+          <b>Агент переспрашивает (чего в надиктовках не хватило):</b>
+          <ul>
+            <li>Вилка по деньгам подтверждается 120–150к, или иначе?</li>
+            <li>График и локация точки?</li>
+            <li>Санкнижка обязательна сразу или к выходу?</li>
+            <li>Сколько человек в прямом подчинении?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Клик по критерию: подсветить источник(и), из которых он собран. Прослеживаемость: видно, чьё это требование.
+  let last = [], flashTimer;
+  document.querySelectorAll('.crit').forEach((row) => row.onclick = () => {
+    clearTimeout(flashTimer);
+    last.forEach((el) => el.classList.remove('flash'));
+    const ids = (row.dataset.src || '').split(/\s+/).filter(Boolean);
+    last = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    if (window.innerWidth <= 900) setTab('left');
+    last.forEach((el) => { el.classList.add('flash'); });
+    if (last[0]) last[0].scrollIntoView({behavior:'smooth', block:'center'});
+    flashTimer = setTimeout(() => last.forEach((el) => el.classList.remove('flash')), 1400);
+  });
+  function setTab(t){
+    document.querySelectorAll('.tabs button').forEach((b) => b.classList.toggle('on', b.dataset.tab === t));
+    document.querySelector('.pane-left').classList.toggle('hide-m', t !== 'left');
+    document.querySelector('.pane-right').classList.toggle('hide-m', t !== 'right');
+  }
+  document.querySelectorAll('.tabs button').forEach((b) => b.onclick = () => setTab(b.dataset.tab));
+</script>
+</body>
+</html>
