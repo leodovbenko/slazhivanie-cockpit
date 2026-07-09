@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Макет · Разбор кандидата рядом с резюме</title>
+<style>
+  :root{--green:#17C787;--green-d:#1e9e5a;--yellow:#c98a00;--red:#d24a43;--violet:#7a6cf0;
+        --ink:#1A1F1D;--muted:#6E7C77;--line:#E4E9E6;--bg:#F6F7F5;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.5 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px}
+  .note{background:#fff8e6;border:1px solid #f0d98a;border-radius:10px;padding:10px 14px;font-size:13px;color:#7a5c00;margin-bottom:16px}
+  /* Верхняя шапка кандидата */
+  .head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .name{font-size:19px;font-weight:700}
+  .badge{font-size:12.5px;padding:3px 10px;border-radius:999px;border:1px solid}
+  .b-need{color:var(--violet);border-color:#7a6cf055;background:#7a6cf012}
+  .spacer{flex:1}
+  .btn{border:1px solid var(--green-d);background:var(--green-d);color:#fff;border-radius:9px;padding:7px 13px;font:inherit;font-size:13px;cursor:pointer}
+  .btn.sec{background:#fff;color:var(--ink);border-color:var(--line)}
+  /* Две панели */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .pane{background:var(--card);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-height:520px;max-height:76vh}
+  .pane h3{margin:0;padding:13px 16px;border-bottom:1px solid var(--line);font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#556;display:flex;align-items:center;gap:8px}
+  .pane .body{padding:14px 16px;overflow:auto}
+  .verdict{font-size:14px;background:#f0faf5;border-left:3px solid var(--green-d);padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:14px}
+  .sub{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:#889;margin:14px 0 6px}
+  .gate{display:flex;gap:8px;padding:5px 0;font-size:13.5px;align-items:baseline}
+  .gate .mk{font-weight:700}
+  .ok{color:var(--green-d)} .no{color:var(--red)}
+  .q{color:#4a6cff;cursor:pointer;border-bottom:1px dashed #9fb0ff;font-style:italic}
+  .q:hover{background:#eef2ff}
+  ul{margin:4px 0 0 18px;padding:0} li{margin:3px 0;font-size:13.5px}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px}
+  /* Резюме */
+  .resume{white-space:pre-wrap;font-size:13.5px;line-height:1.65;color:#1B2433}
+  .resume mark{background:#fff3a8;border-radius:3px;padding:0 2px;transition:background .3s}
+  .resume mark.flash{background:#ffd23f}
+  .src{font-size:12px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+  /* Моя оценка */
+  .myrow{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+  .zbtn{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+  /* Мобильный переключатель */
+  .tabs{display:none;gap:8px;margin-top:14px}
+  .tabs button{flex:1;border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px;font:inherit;cursor:pointer}
+  .tabs button.on{background:var(--green-d);color:#fff;border-color:var(--green-d)}
+  @media(max-width:900px){
+    .split{grid-template-columns:1fr}
+    .tabs{display:flex}
+    .pane.hide-m{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="note">🎨 Это <b>макет</b> (не боевой экран) — рисунок того, как разбор кандидата может стоять рядом с его резюме. Данные условные. Кликай <span style="color:#4a6cff">синие цитаты</span> слева — резюме справа проматывается к этому месту и подсвечивает его.</div>
+
+  <div class="head">
+    <span class="dot" style="background:var(--green-d)"></span>
+    <span class="name">Виталий Борщевский</span>
+    <span class="badge b-need">Нужен собес</span>
+    <span class="spacer"></span>
+    <button class="btn">Пригласить на звонок</button>
+    <button class="btn sec">Отказ</button>
+    <button class="btn sec">Внести оценку собеса</button>
+  </div>
+
+  <div class="tabs">
+    <button class="on" data-tab="left">Разбор ИИ</button>
+    <button data-tab="right">Резюме</button>
+  </div>
+
+  <div class="split">
+    <!-- ЛЕВО: разбор -->
+    <div class="pane pane-left" data-pane="left">
+      <h3>🤖 Разбор ИИ по сценарию</h3>
+      <div class="body">
+        <div class="verdict">Сильный профиль под су-шефа: релевантный стаж и опыт запуска кухни с нуля. Проверить на собесе управление командой в стрессовой смене — в резюме об этом мало.</div>
+
+        <div class="sub">Ворота сценария</div>
+        <div class="gate"><span class="mk ok">✓</span><span>Опыт от 3 лет — <span class="q" data-q="общий стаж на кухне 6 лет">«общий стаж на кухне 6 лет»</span></span></div>
+        <div class="gate"><span class="mk ok">✓</span><span>Работа с себестоимостью — <span class="q" data-q="снизил фудкост с 34% до 28%">«снизил фудкост с 34% до 28%»</span></span></div>
+        <div class="gate"><span class="mk no">✗</span><span>Опыт управления бригадой 5+ — <span class="hint" style="display:inline">в резюме прямо не указано</span></span></div>
+
+        <div class="sub">Сильные стороны</div>
+        <ul>
+          <li>Запуск кухни с нуля — <span class="q" data-q="открывал кухню ресторана с нуля">«открывал кухню ресторана с нуля»</span></li>
+          <li>Меню под сезон — <span class="q" data-q="обновлял меню посезонно, 4 раза в год">«обновлял меню посезонно, 4 раза в год»</span></li>
+        </ul>
+
+        <div class="sub">Риски</div>
+        <ul>
+          <li>Частая смена мест (3 места за 2 года в начале карьеры)</li>
+          <li>Нет данных о работе с поставками/закупом</li>
+        </ul>
+
+        <div class="myrow">
+          <span class="hint">Моя оценка:</span>
+          <button class="zbtn" style="background:var(--green-d)" title="Зелёный"></button>
+          <button class="zbtn" style="background:var(--yellow)" title="Жёлтый"></button>
+          <button class="zbtn" style="background:var(--red)" title="Красный"></button>
+          <span class="hint">— переводит светофор кандидата сразу</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ПРАВО: резюме -->
+    <div class="pane pane-right hide-m" data-pane="right">
+      <h3>📄 Резюме <span class="src">· загружен файл · Борщевский_Виталий.pdf</span></h3>
+      <div class="body">
+        <div class="resume" id="resume">Виталий Борщевский
+Су-шеф / шеф-повар
+
+О себе:
+Повар с опытом работы в ресторанах полного цикла. Общий стаж на кухне 6 лет. Начинал линейным поваром горячего цеха, вырос до су-шефа.
+
+Опыт работы:
+
+Ресторан «Веранда» (2021 — н.в.), су-шеф.
+Открывал кухню ресторана с нуля: закупка оборудования, набор бригады, разработка технологических карт. Обновлял меню посезонно, 4 раза в год. Совместно с управляющим снизил фудкост с 34% до 28% за первый год за счёт пересмотра поставщиков и порционирования.
+
+Ресторан «Пряности» (2019 — 2021), повар горячего цеха.
+Работа на потоке до 200 гостей в вечер. Помогал в обучении стажёров.
+
+Кафе «Угли», бар «Дым», столовая «Обед» (2017 — 2019).
+Ранний этап карьеры, частая смена мест — искал свою кухню и формат.
+
+Навыки:
+Горячий цех, заготовки, банкетное меню, технологические карты, работа с фудкостом.
+
+Образование:
+Кулинарный колледж, повар-технолог, 2017.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Клик по цитате → найти фрагмент в резюме, подсветить, промотать. Это «провалиться в резюме».
+  const resume = document.getElementById('resume');
+  const raw = resume.textContent;
+  document.querySelectorAll('.q').forEach(el => el.onclick = () => {
+    const needle = el.dataset.q;
+    // Регистронезависимо: цитата ИИ может быть в нижнем регистре, а в резюме — с заглавной (начало предложения).
+    const i = raw.toLowerCase().indexOf(needle.toLowerCase());
+    if (i < 0) return;
+    const found = raw.slice(i, i + needle.length);   // подсвечиваем текст резюме как есть
+    // перерисовать резюме с <mark> вокруг найденного
+    resume.innerHTML = esc(raw.slice(0, i)) + '<mark class="flash">' + esc(found) + '</mark>' + esc(raw.slice(i + needle.length));
+    const m = resume.querySelector('mark');
+    // на мобиле переключить на вкладку «Резюме»
+    if (window.innerWidth <= 900) setTab('right');
+    m.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(() => m.classList.remove('flash'), 900);
+  });
+  function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+  // Мобильные вкладки
+  function setTab(t){
+    document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+    document.querySelector('.pane-left').classList.toggle('hide-m', t!=='left');
+    document.querySelector('.pane-right').classList.toggle('hide-m', t!=='right');
+  }
+  document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+</script>
+</body>
+</html>
