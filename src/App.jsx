@@ -134,6 +134,9 @@ const initConnectors = [
   { id: "gm", name: "Gmail", status: "active", clients: 3, agents: 3 },
   { id: "mg", name: "Mango Office", status: "active", clients: 2, agents: 2 },
   { id: "rp", name: "Restoplace", status: "beta", clients: 1, agents: 1 },
+  { id: "dib", name: "Docsinbox", status: "wip", clients: 0, agents: 0 },
+  { id: "rv", name: "Revvy", status: "wip", clients: 0, agents: 0 },
+  { id: "si", name: "Service Inspector", status: "wip", clients: 0, agents: 0 },
 ];
 const models = [
   { id: "opus", name: "Claude Opus 4.x", routes: "брифы · длинные документы · разбор", rank: 1 },
@@ -453,13 +456,13 @@ function Connectors() {
       )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))", gap: 12 }}>
         {list.map((k) => (
-          <Card key={k.id} style={{ outline: k.fresh ? `1px solid ${c.cyan}` : "none" }}>
+          <Card key={k.id} style={{ outline: k.fresh ? `1px solid ${c.cyan}` : "none", opacity: k.status === "wip" ? 0.62 : 1 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <div style={{ display: "flex", gap: 9, alignItems: "center" }}><Plug size={16} color={c.cyan} /><span style={{ fontWeight: 600 }}>{k.name}</span></div>
-              <Badge color={k.status === "active" ? c.green : c.amber}>{k.status}</Badge>
+              <div style={{ display: "flex", gap: 9, alignItems: "center" }}><Plug size={16} color={k.status === "wip" ? c.dim2 : c.cyan} /><span style={{ fontWeight: 600 }}>{k.name}</span></div>
+              <Badge color={k.status === "active" ? c.green : k.status === "wip" ? c.dim2 : c.amber}>{k.status === "wip" ? "в разработке" : k.status}</Badge>
             </div>
-            <Badge color={c.cyan} bg={`${c.cyan}12`}>рантайм-актив</Badge>
-            <div style={{ fontSize: 12, color: c.dim, marginTop: 10 }}>{k.fresh ? "доступен всем будущим внедрениям" : `${k.clients} клиентов · ${k.agents} агентов`}</div>
+            <Badge color={k.status === "wip" ? c.dim2 : c.cyan} bg={k.status === "wip" ? `${c.dim2}12` : `${c.cyan}12`}>{k.status === "wip" ? "ресторанный стек" : "рантайм-актив"}</Badge>
+            <div style={{ fontSize: 12, color: c.dim, marginTop: 10 }}>{k.status === "wip" ? "интеграция в разработке" : k.fresh ? "доступен всем будущим внедрениям" : `${k.clients} клиентов · ${k.agents} агентов`}</div>
           </Card>
         ))}
       </div>
