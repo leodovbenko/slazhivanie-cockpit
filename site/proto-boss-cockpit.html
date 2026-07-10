@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ПРОТО · Кокпит руководителя — «Мой день»</title>
+<style>
+  /* Палитра/классы 1:1 из живого кабинета (apps/web/routines.html) — прототип с боевого экрана, не generic */
+  :root { --bg:#F4EFE6; --panel:#FFFFFF; --panelHi:#F7F1E7; --line:rgba(32,28,23,0.09); --lineHi:rgba(32,28,23,0.18);
+    --txt:#201C17; --dim:#6B6258; --dim2:#8E877E; --cyan:#4C7A6B; --violet:#9A6250; --green:#3D7A3E; --amber:#B8863C; --red:#B24A32; --blue:#5E7E86; }
+  * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:14px; line-height:1.5; }
+  .shell { display:flex; min-height:100vh; }
+  .side { width:232px; flex:0 0 232px; background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column; padding:18px 14px; position:sticky; top:0; height:100vh; }
+  .brand { font-size:16px; font-weight:700; letter-spacing:-.2px; padding:4px 8px 6px; } .brand .dot { color:var(--violet); }
+  .who { display:flex; align-items:center; gap:10px; padding:10px 8px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin:4px 0 10px; }
+  .who .ava { width:30px; height:30px; border-radius:50%; background:var(--violet); color:#fff; font-weight:700; font-size:12px; display:inline-flex; align-items:center; justify-content:center; }
+  .who .nm { font-weight:600; font-size:13px; } .who .role { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--violet); }
+  .nav { display:flex; flex-direction:column; gap:2px; }
+  .nav a { display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:10px; color:var(--dim); text-decoration:none; font-size:13.5px; font-weight:500; }
+  .nav a .ic { width:16px; text-align:center; color:var(--dim2); } .nav a:hover { background:var(--panelHi); color:var(--txt); }
+  .nav a.on { background:rgba(154,98,80,.12); color:var(--violet); font-weight:700; }
+  .navsec { font-size:9.5px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:var(--dim2); padding:14px 11px 5px; }
+  .main { flex:1; min-width:0; padding:26px 28px 56px; max-width:1000px; }
+  h1 { font-size:22px; font-weight:700; margin:0 0 2px; letter-spacing:-.3px; } .pagesub { color:var(--dim); font-size:13px; margin:0 0 20px; max-width:680px; }
+  .sechead { display:flex; align-items:baseline; gap:10px; margin:26px 0 10px; }
+  .sechead h2 { font-size:15px; font-weight:800; margin:0; letter-spacing:-.2px; } .sechead .sub { color:var(--dim2); font-size:12px; }
+
+  /* агент-чип: "рука" сделала работу */
+  .ag { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--violet); background:rgba(154,98,80,.1); border:1px solid rgba(154,98,80,.22); border-radius:999px; padding:3px 10px; }
+  .ag .d { width:6px; height:6px; border-radius:50%; background:var(--violet); }
+
+  /* ── ПИРАМИДА УПРАВЛЕНИЯ (позвоночник) ── */
+  .pyr { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px 18px; }
+  .pyr-row { display:flex; align-items:center; gap:12px; margin:0 auto 7px; border-radius:12px; padding:11px 15px; border:1px solid var(--line); }
+  .pyr-row:last-child { margin-bottom:0; }
+  .pyr-row .lv { font-size:9.5px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; color:var(--dim2); flex:0 0 88px; }
+  .pyr-row .bd { flex:1; min-width:0; }
+  .pyr-row .bd .t { font-weight:700; font-size:13.5px; } .pyr-row .bd .s { color:var(--dim); font-size:12px; margin-top:1px; }
+  .r0 { background:rgba(154,98,80,.10); border-color:rgba(154,98,80,.3); width:100%; }
+  .r1 { background:rgba(94,126,134,.10); border-color:rgba(94,126,134,.28); width:94%; }
+  .r2 { background:var(--panelHi); width:86%; }
+  .r3 { background:#EEF4F0; border-color:rgba(61,122,62,.2); width:78%; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .mchip { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 10px; border-radius:999px; background:#fff; border:1px solid var(--line); }
+  .mchip .dot { width:8px; height:8px; border-radius:50%; }
+  .dot.g { background:var(--green); } .dot.a { background:var(--amber); } .dot.r { background:var(--red); }
+  .mchip .v { color:var(--dim2); font-weight:700; }
+  .initrow { display:flex; gap:8px; flex-wrap:wrap; }
+  .init { flex:1; min-width:150px; background:#fff; border:1px solid var(--line); border-radius:9px; padding:7px 11px; font-size:12.5px; font-weight:600; }
+  .init .st { font-size:10.5px; font-weight:700; margin-top:2px; } .init .st.ok { color:var(--green); } .init .st.risk { color:var(--amber); }
+
+  /* ── ДЕНЬ: три полосы утро/день/вечер ── */
+  .day { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  @media(max-width:860px){ .day { grid-template-columns:1fr; } }
+  .col { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:15px 16px; display:flex; flex-direction:column; }
+  .col-h { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+  .col-h .tm { font-size:11px; font-weight:800; color:var(--dim2); letter-spacing:.4px; }
+  .col-h .ttl { font-size:14px; font-weight:800; }
+  .col .lead { color:var(--dim); font-size:12px; margin:0 0 12px; }
+  .col.morning { border-top:3px solid var(--cyan); }
+  .col.mid { border-top:3px solid var(--amber); }
+  .col.evening { border-top:3px solid var(--violet); }
+
+  /* карточки задач/встреч утреннего плана */
+  .item { display:flex; align-items:flex-start; gap:9px; padding:9px 11px; border:1px solid var(--line); border-radius:10px; background:var(--panelHi); margin-bottom:7px; }
+  .item .ico { flex:0 0 20px; text-align:center; }
+  .item .body .h { font-weight:600; font-size:13px; } .item .body .m { color:var(--dim2); font-size:11.5px; margin-top:1px; }
+  .item .src { font-size:10px; font-weight:700; color:var(--blue); background:rgba(94,126,134,.12); border-radius:6px; padding:1px 6px; margin-top:4px; display:inline-block; }
+  .approve { margin-top:auto; display:flex; gap:8px; padding-top:6px; }
+  .btn { border:0; border-radius:9px; padding:8px 14px; font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; }
+  .btn.primary { background:var(--violet); color:#fff; } .btn.ghost { background:var(--panelHi); color:var(--dim); border:1px solid var(--lineHi); }
+
+  /* зеркальная мотивация — карточки команды с ползунками */
+  .mate { border:1px solid var(--line); border-radius:11px; padding:10px 12px; margin-bottom:8px; background:#fff; }
+  .mate-top { display:flex; align-items:center; gap:9px; }
+  .mate .ava { width:26px; height:26px; border-radius:50%; background:var(--blue); color:#fff; font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 26px; }
+  .mate .nm { font-weight:700; font-size:12.5px; flex:1; } .mate .mood { font-size:15px; }
+  .mate .plan { color:var(--dim); font-size:11.5px; margin:6px 0 7px; }
+  .bar { height:7px; border-radius:999px; background:rgba(32,28,23,.08); overflow:hidden; }
+  .bar > i { display:block; height:100%; border-radius:999px; background:var(--green); }
+  .bar.warn > i { background:var(--amber); } .bar.hot > i { background:var(--red); }
+  .mate-foot { display:flex; align-items:center; justify-content:space-between; margin-top:6px; font-size:11px; color:var(--dim2); }
+  .like { font-weight:700; color:var(--violet); cursor:pointer; }
+  .flag { font-size:11px; font-weight:700; color:var(--red); background:rgba(178,74,50,.1); border:1px solid rgba(178,74,50,.25); border-radius:8px; padding:5px 9px; margin-top:2px; display:flex; gap:7px; align-items:flex-start; }
+
+  /* вечерний чек-аут: черновик отчёта */
+  .draft { background:#F3EFE7; border:1px solid var(--lineHi); border-radius:11px; padding:12px 13px; font-size:12.5px; }
+  .draft .dh { font-weight:800; margin-bottom:6px; }
+  .draft ul { margin:6px 0 0; padding-left:16px; } .draft li { margin:3px 0; }
+  .metric-strip { display:flex; gap:8px; margin:0 0 8px; flex-wrap:wrap; }
+  .ms { flex:1; min-width:80px; background:#fff; border:1px solid var(--line); border-radius:9px; padding:7px 10px; }
+  .ms .k { font-size:10px; font-weight:700; color:var(--dim2); text-transform:uppercase; letter-spacing:.3px; } .ms .v { font-size:16px; font-weight:800; }
+
+  /* верхняя строка операторской ценности */
+  .proof { display:flex; align-items:center; gap:14px; background:#EEF4F0; border:1px solid rgba(61,122,62,.25); border-radius:12px; padding:11px 15px; margin:0 0 4px; }
+  .proof .big { font-size:20px; font-weight:800; color:var(--green); } .proof .lbl { font-size:12.5px; color:var(--dim); }
+
+  .protonote { max-width:1000px; margin:0 auto; padding:10px 28px; background:#201C17; color:#F4EFE6; font-size:12px; } .protonote b { color:#E8C79A; }
+  .footnote { color:var(--dim2); font-size:11.5px; margin-top:22px; max-width:680px; }
+
+  /* ── мобильная: сайдбар сворачивается в полосу-иконки, ряды пирамиды в стек ── */
+  @media(max-width:760px){
+    .side { width:54px; flex:0 0 54px; padding:14px 6px; }
+    .brand { font-size:0; text-align:center; padding:2px 0 6px; } .brand .dot { font-size:18px; }
+    .who { justify-content:center; padding:10px 0; } .who .nm, .who .role { display:none; }
+    .nav a { font-size:0; justify-content:center; padding:11px 0; } .nav a .ic { font-size:17px; }
+    .navsec { font-size:0; padding:10px 0 4px; border-top:1px solid var(--line); }
+    .main { padding:18px 14px 40px; }
+    .pyr-row { flex-wrap:wrap; width:100% !important; }
+    .pyr-row .lv { flex:0 0 100%; margin-bottom:2px; }
+    .pyr-row .mchip { margin-top:6px; }
+    .sechead { flex-wrap:wrap; } .sechead .ag { margin-left:0 !important; }
+    .proof { flex-direction:column; align-items:flex-start; gap:4px; }
+  }
+</style>
+</head>
+<body>
+  <div class="protonote">ПРОТОТИП · «Кокпит руководителя» = операционка по методологии <b>Школы Боссов</b> (пирамида управления + зеркальная мотивация). Идея: с нас начинается и заканчивается день, а чёрную работу микроменеджмента делает <b>агент</b>. Данные иллюстративные.</div>
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">Слаживание <span class="dot">·</span></div>
+      <div class="who"><div class="ava">ИД</div><div><div class="nm">Игорь</div><div class="role">рук. внедрения</div></div></div>
+      <nav class="nav">
+        <a class="on" href="#"><span class="ic">🌅</span> Мой день</a>
+        <a href="#"><span class="ic">🔺</span> Пирамида</a>
+        <a href="#"><span class="ic">👥</span> Команда</a>
+        <a href="#"><span class="ic">🗓</span> Календарь + задачи</a>
+        <div class="navsec">Агент</div>
+        <a href="#"><span class="ic">💬</span> Чаты агента</a>
+        <a href="#"><span class="ic">🔁</span> Рутины</a>
+        <a href="#"><span class="ic">🔌</span> Коннекторы</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <h1>Мой день · четверг, 10 июля</h1>
+      <p class="pagesub">Один экран, с которого руководитель начинает и заканчивает день. Сверху — куда идём (пирамида), ниже — сам день: утренний чек-ин, пульс команды, вечерний чек-аут. Агент собирает всё из чатов и встреч, вы — решаете.</p>
+
+      <div class="proof">
+        <div class="big">22 мин</div>
+        <div class="lbl">микроменеджмент сегодня <b>вместо ~3 часов</b> — планы, сбор статусов и отчёт собрал агент. Вам осталось подтвердить и поправить.</div>
+      </div>
+
+      <!-- ── СЛОЙ 1: ПИРАМИДА УПРАВЛЕНИЯ ── -->
+      <div class="sechead"><h2>🔺 Пирамида управления</h2><span class="sub">позвоночник — от годовой цели до сегодняшних цифр</span> <span class="ag" style="margin-left:auto"><span class="d"></span> метрики агент подтянул из чатов и коннекторов</span></div>
+      <div class="pyr">
+        <div class="pyr-row r0">
+          <div class="lv">Цель года</div>
+          <div class="bd"><div class="t">Сократить бэклог внедрений в 2 раза — до 40 клиентов к декабрю</div><div class="s">сейчас 96 · план на июль — ≤ 78</div></div>
+          <span class="mchip"><span class="dot a"></span>78% <span class="v">к цели квартала</span></span>
+        </div>
+        <div class="pyr-row r1">
+          <div class="lv">Инициативы</div>
+          <div class="bd initrow">
+            <div class="init">Нанять 4 внедренцев<div class="st ok">2 из 4 вышли · в графике</div></div>
+            <div class="init">Чек-лист «быстрый старт»<div class="st risk">черновик · нужен ваш проход</div></div>
+            <div class="init">Горизонтальный гейт от продаж<div class="st ok">внедрён · работает</div></div>
+          </div>
+        </div>
+        <div class="pyr-row r2">
+          <div class="lv">Рутины</div>
+          <div class="bd"><div class="t">Собеседования · дожим недовнедрённых · сверка передачи от продаж</div><div class="s">ежедневные действия, ведущие к цели</div></div>
+        </div>
+        <div class="pyr-row r3">
+          <div class="lv">Метрики</div>
+          <div class="bd chips">
+            <span class="mchip"><span class="dot g"></span>Запущено за неделю <span class="v">14</span></span>
+            <span class="mchip"><span class="dot a"></span>Производительность / чел <span class="v">3,5 → 3,1</span></span>
+            <span class="mchip"><span class="dot r"></span>Просрочка передачи <span class="v">6 клиентов</span></span>
+            <span class="mchip"><span class="dot g"></span>Собеседований <span class="v">5</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── СЛОЙ 2: ДНЕВНАЯ ПЕТЛЯ (зеркальная мотивация) ── -->
+      <div class="sechead"><h2>🔄 Дневная петля</h2><span class="sub">утро → день → вечер · зеркальная мотивация</span></div>
+      <div class="day">
+
+        <!-- УТРО -->
+        <div class="col morning">
+          <div class="col-h"><span class="tm">09:00</span><span class="ttl">Утренний чек-ин</span></div>
+          <p class="lead">Агент собрал план на день из встреч, задач и вычерпа из вашей mind-карты. Подтвердите или поправьте словами.</p>
+          <div class="item"><div class="ico">🗓</div><div class="body"><div class="h">ТопСинк внедрения</div><div class="m">11:00–11:30 · 6 чел</div><span class="src">из календаря</span></div></div>
+          <div class="item"><div class="ico">📋</div><div class="body"><div class="h">Дожать чек-лист «быстрый старт»</div><div class="m">инициатива · висит 4 дня</div><span class="src">из mind-карты (вс)</span></div></div>
+          <div class="item"><div class="ico">🧑‍💼</div><div class="body"><div class="h">Собеседование внедренца</div><div class="m">15:00 · финал</div><span class="src">из БИОПАН-задачи</span></div></div>
+          <div class="approve"><button class="btn primary">Подтвердить план</button><button class="btn ghost">Поправить</button></div>
+        </div>
+
+        <!-- ДЕНЬ -->
+        <div class="col mid">
+          <div class="col-h"><span class="tm">в течение дня</span><span class="ttl">Пульс команды</span></div>
+          <p class="lead">Планы и прогресс собраны из рабочих чатов — не вы пингуете людей, а видите движение ползунков. <span class="ag"><span class="d"></span> из чатов</span></p>
+          <div class="mate">
+            <div class="mate-top"><span class="ava">АК</span><span class="nm">Аня К.</span><span class="mood">🙂</span></div>
+            <div class="plan">Запустить 3 клиентов · обучить нового</div>
+            <div class="bar"><i style="width:80%"></i></div>
+            <div class="mate-foot"><span>80% · 4 из 5 задач</span><span class="like">♥ 3</span></div>
+          </div>
+          <div class="mate">
+            <div class="mate-top"><span class="ava">ДМ</span><span class="nm">Дима М.</span><span class="mood">😐</span></div>
+            <div class="plan">Настройка сети клиента «Поинтер»</div>
+            <div class="bar warn"><i style="width:35%"></i></div>
+            <div class="mate-foot"><span>35% · застрял на интеграции</span><span class="like">♥ 1</span></div>
+            <div class="flag">⚠️ <span><b>Синдром голубца:</b> задача принята 3 дня назад, ползунок не двигается. Агент предлагает: подключиться / переназначить.</span></div>
+          </div>
+          <div class="mate">
+            <div class="mate-top"><span class="ava">СВ</span><span class="nm">Света В.</span><span class="mood">😀</span></div>
+            <div class="plan">5 собеседований · оффер финалисту</div>
+            <div class="bar"><i style="width:100%"></i></div>
+            <div class="mate-foot"><span>100% · день закрыт</span><span class="like">♥ 5</span></div>
+          </div>
+        </div>
+
+        <!-- ВЕЧЕР -->
+        <div class="col evening">
+          <div class="col-h"><span class="tm">19:00</span><span class="ttl">Вечерний чек-аут</span></div>
+          <p class="lead">Агент собрал отчёт дня — цифры из метрик + эссе из настроения чатов, вашим голосом. Проверьте и отправьте наверх.</p>
+          <div class="metric-strip">
+            <div class="ms"><div class="k">Запущено</div><div class="v">3</div></div>
+            <div class="ms"><div class="k">Бэклог</div><div class="v">96</div></div>
+            <div class="ms"><div class="k">Настрой</div><div class="v">7/10</div></div>
+          </div>
+          <div class="draft">
+            <div class="dh">Итог дня · внедрение</div>
+            Запустили 3 клиентов, план недели держим. Света закрыла найм — финалист получил оффер.
+            <ul>
+              <li>⚠️ Дима застрял на интеграции «Поинтера» — завтра беру на себя.</li>
+              <li>📋 Чек-лист «быстрый старт» так и висит — блокер квартала, ставлю №1 на утро.</li>
+              <li>✅ Команда в тонусе, критичных сбоев нет.</li>
+            </ul>
+          </div>
+          <div class="approve"><button class="btn primary">Отправить наверх</button><button class="btn ghost">Поправить</button></div>
+        </div>
+
+      </div>
+
+      <p class="footnote">Почему это «наше», а не Motion/Todoist: те инструменты трекают микроменеджмент — <b>наш агент его делает</b> (собирает планы, ловит синдром голубца, чертит отчёт), опираясь на уже подключённые чаты и встречи. Метрика успеха — не время в приложении, а <b>сэкономленное время руководителя</b> и доля управленческих ритуалов, которые начинаются и закрываются здесь.</p>
+    </main>
+  </div>
+</body>
+</html>
