@@ -61,6 +61,24 @@
   .preview .ph { font-weight:700; color:var(--green); margin-bottom:6px; font-size:12px; text-transform:uppercase; letter-spacing:.4px; }
   .preview ul { margin:6px 0 0; padding-left:18px; } .preview li { margin:3px 0; }
   .protonote { max-width:900px; margin:0 auto; padding:10px 28px; background:#201C17; color:#F4EFE6; font-size:12px; } .protonote b { color:#E8C79A; }
+  /* мобильная вёрстка — по канону боевых routines.html/business.html */
+  @media (max-width:760px) {
+    .protonote { padding:10px 16px; }
+    .shell { flex-direction:column; }
+    .side { width:auto; flex:none; height:auto; position:static; flex-direction:row; flex-wrap:wrap; align-items:center; gap:8px; padding:10px 12px; }
+    .brand { padding:4px 6px; } .who { border:0; margin:0; padding:4px; }
+    .nav { flex-direction:row; flex-wrap:wrap; gap:4px; }
+    .nav a { padding:7px 10px; }
+    .main { padding:16px 16px 40px; max-width:none; }
+    .flow { gap:8px; }
+    .fx { flex-basis:100%; min-width:0; }
+    .sep { width:100%; height:16px; transform:rotate(90deg); }
+    .row2 { flex-direction:column; align-items:stretch; }
+    .row2 .ctrl { width:100% !important; }
+    .seg { flex-direction:column; width:100%; }
+    .seg span { text-align:center; }
+    .chatrow { flex-wrap:wrap; }
+  }
 </style>
 </head>
 <body>
