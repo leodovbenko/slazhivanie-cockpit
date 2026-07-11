@@ -90,6 +90,7 @@
         <a href="cases.html#results">Результаты</a>
         <a href="team.html">Команда</a>
         <a href="approach.html#process">Процесс</a>
+        <a href="#mcp">Разработчикам</a>
         <a href="#contacts">Контакты</a>
       </nav>
       <a href="#contacts" class="btn btn-green nav-cta">Обсудить внедрение</a>
@@ -102,6 +103,7 @@
       <a href="cases.html">Кейсы</a>
       <a href="team.html">Команда</a>
       <a href="approach.html#process">Процесс</a>
+      <a href="#mcp">Разработчикам</a>
       <a href="#contacts">Контакты</a>
       <a href="#contacts" class="btn btn-green">Обсудить внедрение</a>
     </div>
@@ -339,6 +341,35 @@
     </div>
   </section>
 
+  <!-- ============ ДЛЯ РАЗРАБОТЧИКОВ / MCP ============ -->
+  <section class="sec" id="mcp">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:36px">
+        <span class="eyebrow">Разработчикам</span>
+        <h2 class="h-sec">Уклад говорит на MCP</h2>
+        <p class="lead" style="margin:16px auto 0;max-width:700px">Подключайте наших ИИ-сотрудников к своим агентам так же легко, как мы подключаем чужие сервисы к себе. Один протокол (MCP) — и агент из вашего Claude, Cursor или собственного бота работает с Укладом напрямую.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <h3 style="font-size:20px;margin-bottom:10px">Позвать ИИ-сотрудника</h3>
+          <p style="color:var(--t3);line-height:1.6">Из своего агента или IDE поставьте задачу нашему сотруднику — рекрутёру, коммерсанту, маркетологу — и заберите готовый результат.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:20px;margin-bottom:10px">Общая память команды</h3>
+          <p style="color:var(--t3);line-height:1.6">Ваш агент кладёт факт и достаёт контекст из памяти команды в Укладе — единый слой знаний между вашими и нашими агентами.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-size:20px;margin-bottom:10px">Запустить навык или рутину</h3>
+          <p style="color:var(--t3);line-height:1.6">Программно триггерните навык — саммари чатов, сбор КП, скрининг резюме — и получите готовый артефакт себе в систему.</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:32px">
+        <p style="color:var(--t3);font-size:15px;margin-bottom:20px">Ранний доступ. Формируем спецификацию вместе с первыми партнёрами — расскажите, что хотите подключить.</p>
+        <a href="#contacts" class="btn btn-green" id="mcp-cta">Запросить доступ</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ КОНТАКТЫ / ФОРМА ============ -->
   <section class="sec light-block" id="contacts">
     <div class="wrap" style="max-width:760px">
@@ -402,6 +433,15 @@
     var b=document.getElementById('burger'),m=document.getElementById('mmenu');
     b.addEventListener('click',function(){m.classList.toggle('open')});
     m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
+
+    // Кнопка «Запросить доступ» (MCP) → скроллит к форме (href="#contacts") и подставляет маркер в задачу.
+    // Маркер [MCP] в начале текста — единственный способ отличить MCP-спрос от обычных лидов без правки сервера.
+    var mc=document.getElementById('mcp-cta');
+    if(mc){mc.addEventListener('click',function(){
+      var t=document.getElementById('f-task');
+      if(t&&!t.value.trim()){t.value='[MCP] Запрос доступа к MCP-серверу Уклада. Что хочу подключить: ';}
+      var n=document.getElementById('f-name'); if(n){setTimeout(function(){try{n.focus();}catch(e){}},400);}
+    });}
 
     // Форма заявки → шлём на сервер (uklad.ai/lead): заявка попадает в платформу и нам сразу
     // приходит уведомление. Если сервер недоступен (сеть/РФ) — надёжный запасной путь через почту.
