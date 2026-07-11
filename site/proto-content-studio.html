@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>ИИ-сммщик — прототип (решение продакт-директора)</title>
+<title>ИИ-сммщик — прототип</title>
 <style>
   :root{
     --ink:#06251A; --green:#0FA06C; --paper:#F7FBF9; --card:#fff;
@@ -16,52 +16,39 @@
   .wrap{max-width:980px;margin:0 auto;padding:0 20px}
   .proto-badge{position:fixed;top:0;left:0;right:0;background:#B4472C;color:#fff;
     text-align:center;font-size:13px;padding:6px;z-index:99;letter-spacing:.02em}
-  header{background:var(--ink);color:#fff;padding:64px 0 40px;margin-top:30px}
-  header .eyebrow{color:var(--green);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0 0 10px}
-  header h1{font-size:31px;margin:0 0 10px;line-height:1.2}
-  header p{color:#a8d8c5;margin:0;max-width:760px}
+  header{background:var(--ink);color:#fff;padding:60px 0 38px;margin-top:30px}
+  header h1{font-size:30px;margin:0 0 10px;line-height:1.2}
+  header p{color:#a8d8c5;margin:0;max-width:760px;font-size:16px}
   .brand{color:var(--green);font-weight:700}
-  section{padding:36px 0;border-bottom:1px solid var(--line)}
+  section{padding:34px 0;border-bottom:1px solid var(--line)}
   h2{font-size:22px;margin:0 0 4px}
   .sub{color:var(--muted);margin:0 0 20px;font-size:15px}
 
-  /* вердикт */
-  .verdict{background:var(--ink);color:#fff;border-radius:16px;padding:22px 24px;margin:0 0 8px}
-  .verdict h3{margin:0 0 12px;font-size:18px;color:#fff}
-  .verdict .rule{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid rgba(255,255,255,.12);font-size:14.5px;color:#dcefe6}
-  .verdict .rule:first-of-type{border-top:0}
-  .verdict .rule .n{flex:none;width:24px;height:24px;border-radius:7px;background:var(--green);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
-  .verdict .rule b{color:#fff}
+  /* кабинет-панель */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .panel .head{padding:16px 20px;color:#fff;display:flex;align-items:center;gap:12px;background:var(--ink)}
+  .panel .head .av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;background:rgba(255,255,255,.18)}
+  .panel .head h3{margin:0;font-size:18px}
+  .panel .head .k{opacity:.85;font-size:13px}
+  .panel .body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .panel .col{padding:18px 20px}
+  .panel .col+.col{border-left:1px solid var(--line)}
+  .lab{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:0 0 8px}
+  .vbox{background:var(--soft);border-radius:10px;padding:12px 13px;font-size:14px;color:var(--ink);line-height:1.5}
+  .hint{font-size:13px;color:var(--muted);margin:10px 0 0}
+  .ex{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .ex:last-child{border-bottom:0}
+  .ex .m{flex:none;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff}
+  .ex .m.y{background:var(--green)} .ex .m.n{background:var(--red)}
 
-  /* матрица решений */
-  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-  th{background:var(--soft);color:var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.03em}
-  tr:last-child td{border-bottom:0}
-  .tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
-  .tag.yes{background:var(--soft);color:var(--green)}
-  .tag.no{background:#FDEAE3;color:var(--red)}
-  .tag.hold{background:#FBF1DF;color:var(--amber)}
-  .mtitle{font-weight:700;color:var(--ink)}
-  .mgroup{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:22px 0 8px}
-
-  /* архитектура — 3 слоя */
-  .arch{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:0 0 14px}
-  .layer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
-  .layer .lh{display:flex;align-items:center;gap:9px;margin:0 0 10px}
-  .layer .lh .ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff}
-  .layer .lh .lt{font-weight:700;font-size:15px;line-height:1.1}
-  .layer .lh .ls{font-size:11.5px;color:var(--muted)}
-  .layer ul{margin:0;padding:0 0 0 16px;font-size:13px;color:var(--muted)}
-  .layer li{margin:4px 0}
-  .layer li b{color:var(--ink)}
-  .flow{text-align:center;font-size:13px;color:var(--muted);background:var(--soft);border-radius:10px;padding:10px 12px}
-  .flow b{color:var(--ink)}
-
-  /* каналы-оверлеи */
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
-  .chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 13px;font-size:13px;font-weight:600;color:var(--muted)}
-  .chip b{color:var(--ink)}
+  /* карточки каналов */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .scard .top{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+  .scard .av{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;background:var(--ink)}
+  .scard .nm{font-weight:700;font-size:15px}
+  .scard .rule{font-size:13.5px;color:var(--muted);margin:5px 0}
+  .scard .rule b{color:var(--ink)}
 
   /* телефон */
   .phone-wrap{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
@@ -74,23 +61,24 @@
   .chatarea{padding:12px;min-height:300px}
   .msg{max-width:88%;padding:9px 11px;border-radius:14px;margin:0 0 9px;line-height:1.42}
   .msg.bot{background:#fff;border:1px solid var(--line)}
-  .prov{font-size:11px;color:#6d5312;background:#fff8e8;border:1px solid #f0e3c4;border-radius:8px;padding:5px 8px;margin:0 0 8px}
+  .prov{font-size:11.5px;color:#6d5312;background:#fff8e8;border:1px solid #f0e3c4;border-radius:8px;padding:5px 8px;margin:0 0 8px}
   .prov b{color:#5a4410}
   .tabs{display:flex;gap:5px;margin:0 0 8px}
   .tab{font-size:11.5px;font-weight:700;border:1px solid var(--line);background:#f6faf8;border-radius:8px;padding:4px 9px;cursor:pointer;color:var(--muted)}
   .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .draft{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin:0 0 8px}
   .draft .dt{font-size:12.5px;color:var(--ink);white-space:pre-line;min-height:96px}
-  .scrub{font-size:11.5px;border-radius:9px;padding:7px 9px;margin:8px 0 0}
-  .scrub.ok{background:var(--soft);color:var(--green)}
-  .scrub.warn{background:#FDEAE3;color:var(--red)}
+  .check{font-size:11.5px;border-radius:9px;padding:7px 9px;margin:8px 0 0}
+  .check.ok{background:var(--soft);color:var(--green)}
+  .check.warn{background:#FDEAE3;color:var(--red)}
   .btns{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 0}
   .b{font-size:11.5px;border-radius:8px;padding:6px 9px;border:1px solid var(--line);background:#f6faf8;font-weight:600;cursor:pointer}
   .b.p{background:var(--green);color:#fff;border-color:var(--green)}
-  .note{font-size:14px;color:var(--muted);max-width:380px}
+  .note{font-size:14.5px;color:var(--muted);max-width:380px}
   .note b{color:var(--ink)}
+  .note p{margin:0 0 12px}
 
-  /* группа компаний */
+  /* откуда идеи */
   .group{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .co{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;min-width:150px}
   .co .cn{font-weight:700}
@@ -98,16 +86,23 @@
   .arrow{color:var(--green);font-weight:700;font-size:20px}
   .voicebox{background:var(--ink);color:#fff;border-radius:12px;padding:14px 16px;font-size:13.5px;max-width:230px}
   .voicebox b{color:var(--green)}
-
-  .guard{font-size:13px;color:var(--muted);background:var(--soft);border-radius:10px;padding:11px 13px;margin:14px 0 0}
+  .guard{font-size:13.5px;color:var(--muted);background:var(--soft);border-radius:10px;padding:11px 13px;margin:14px 0 0}
   .guard b{color:var(--ink)}
-  footer{padding:40px 0;color:var(--muted);font-size:14px}
-  footer b{color:var(--ink)}
+
+  /* почему так / порядок */
+  .why{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 18px}
+  .why .r{display:flex;gap:11px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line);font-size:14.5px}
+  .why .r:first-child{border-top:0}
+  .why .r .ic{flex:none;font-size:17px}
+  .why .r b{color:var(--ink)}
   .seq{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 0}
   .seq .st{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px}
   .seq .st b{color:var(--ink)}
   .seq .st .p{font-size:11px;color:var(--green);font-weight:700;text-transform:uppercase}
-  @media(max-width:760px){.arch{grid-template-columns:1fr}}
+
+  footer{padding:38px 0;color:var(--muted);font-size:14px}
+  footer b{color:var(--ink)}
+  @media(max-width:760px){.panel .body{grid-template-columns:1fr}.panel .col+.col{border-left:0;border-top:1px solid var(--line)}}
 </style>
 </head>
 <body>
@@ -115,110 +110,24 @@
 
 <header>
   <div class="wrap">
-    <p class="eyebrow">Решение продакт-директора</p>
-    <h1>ИИ-сммщик, который ведёт соцсети от и до</h1>
-    <p>Идея для поста рождается в зуме с клиентом или в рабочем чате — <b>ИИ-сммщик сам ловит её в памяти бизнеса</b>, пишет <b>твоим голосом</b> и в формате каждого канала, выкладывает туда, откуда идёт трафик: Дзен, VC, Telegram, LinkedIn, сайт. Планировщик так не умеет: планировщик это браузер с кнопками, где ты сам всё придумал и написал. Здесь ИИ-сотрудник делает работу целиком. Ниже — что решено и почему так на масштабе группы.</p>
+    <h1>ИИ-сммщик</h1>
+    <p>Агент сам находит повод для поста в рабочих чатах и зумах, пишет твоим голосом под каждую площадку и выкладывает туда, откуда идут клиенты: Дзен, VC, Telegram, LinkedIn, сайт. Ниже — как это выглядит в работе.</p>
   </div>
 </header>
 
-<!-- ВЕРДИКТ -->
+<!-- 1. АГЕНТ ПРИНОСИТ ПОСТ -->
 <section>
   <div class="wrap">
-    <h2>Вердикт</h2>
-    <p class="sub">Шесть решений. Каждое — с оглядкой на 4–5 компаний группы, не на сегодняшний один тенант.</p>
-    <div class="verdict">
-      <div class="rule"><span class="n">1</span><div><b>Поток = голос, компания = источник фактов.</b> Не плодим «медиа-тенант». Обобщаем существующий примитив <span class="brand">stream</span> (в нём уже живёт голос). Один твой голос на всю группу; вторую компанию делаем потоком, только если у неё другой голос.</div></div>
-      <div class="rule"><span class="n">2</span><div><b>Правила письма — из хардкода в конфиг агента.</b> Сейчас курс/стоп-лист/формулы зашиты в коде и заточены под LinkedIn. Выносим в настройки агента + пер-канальные оверлеи. Это работа №1.</div></div>
-      <div class="rule"><span class="n">3</span><div><b>Голос курируемый, не соскоб.</b> Ты правишь/засеиваешь голос и библиотеку примеров ✅/❌. Автосбор из постов — затравка, не источник.</div></div>
-      <div class="rule"><span class="n">4</span><div><b>Мотор — детектор моментов из бизнес-памяти.</b> Читает дистиллированную внутреннюю память тенантов группы через скоуп-грант, поверх гейта чатов. Этого нет ни у кого.</div></div>
-      <div class="rule"><span class="n">5</span><div><b>Автономия — лестница, гейт = приват-скраббер.</b> Старт ручной (человек = гейт) → заслуженный пер-канальный автопост со скраббером и окном вето → никогда полный автопост на клиенто-чувствительном.</div></div>
-      <div class="rule"><span class="n">6</span><div><b>Каналы по порядку:</b> фан-аут на том, что есть (TG+блог+RSS) → коннектор VC.ru → Дзен через RSS. MCP к Укладу — паркуем (личный/пиар).</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- МАТРИЦА -->
-<section>
-  <div class="wrap">
-    <h2>Развилки и почему так</h2>
-    <p class="sub">Каждую взвешивал по будущему группы 4–5 компаний: что выдержит рост, что треснет.</p>
-
-    <div class="mgroup">Где живёт контент-мозг</div>
-    <table>
-      <tr><th style="width:24%">Вариант</th><th>Плюс</th><th>Минус на масштабе</th><th style="width:16%">Вердикт</th></tr>
-      <tr><td class="mtitle">Медиа-тенант<br><span style="color:var(--muted);font-weight:400">(новая сущность)</span></td><td>Чистая изоляция контента</td><td>×10 к поверхности: права, биллинг, онбординг, изоляция, UI — на каждый новый спейс</td><td><span class="tag no">Отклонено</span></td></tr>
-      <tr><td class="mtitle">Всё в настройки агента</td><td>Один экран, ничего нового</td><td>Голос дублируется на N пер-тенантных инстансов Hermes → дрейф и рассинхрон</td><td><span class="tag no">Отклонено</span></td></tr>
-      <tr><td class="mtitle">Обобщить поток<br><span style="color:var(--muted);font-weight:400">stream = голос</span></td><td>Примитив уже есть; не тенант и не глобальный шаблон; голос в одном месте</td><td>Нужно расцепить «поток = страница LinkedIn» → «поток = бренд-голос»</td><td><span class="tag yes">Принято</span></td></tr>
-      <tr><td class="mtitle">MCP к Укладу</td><td>Быстро; ты сам гейт приватности</td><td>Личный/пиар-инструмент; данные наружу; клиент это у себя не запустит</td><td><span class="tag hold">Паркован</span></td></tr>
-    </table>
-
-    <div class="mgroup">Автономия публикации</div>
-    <table>
-      <tr><th style="width:24%">Вариант</th><th>Плюс</th><th>Минус на масштабе</th><th style="width:16%">Вердикт</th></tr>
-      <tr><td class="mtitle">Ручное одобрение</td><td>Человек = приват-гейт; ноль риска слить</td><td>Медленнее; ты в цикле</td><td><span class="tag yes">Старт</span></td></tr>
-      <tr><td class="mtitle">Авто после ревьюера</td><td>Быстро, почти без кликов</td><td>Слив приватного из группы неизбежен без скраббера</td><td><span class="tag hold">Позже + скраббер</span></td></tr>
-      <tr><td class="mtitle">Полный автопост</td><td>Ноль кликов</td><td>Сжигает клиентов/личное (клиент увидит себя в публичном посте)</td><td><span class="tag no">Никогда для чувствит.</span></td></tr>
-    </table>
-  </div>
-</section>
-
-<!-- АРХИТЕКТУРА -->
-<section>
-  <div class="wrap">
-    <h2>Архитектура — три слоя, ноль новых сущностей</h2>
-    <p class="sub">Пост = <b>голос</b> (поток) × <b>канал</b> (оверлей агента) × <b>факт</b> (память группы). Собирается на лету.</p>
-    <div class="arch">
-      <div class="layer">
-        <div class="lh"><div class="ic" style="background:var(--green)">🎙</div><div><div class="lt">Поток = голос</div><div class="ls">бренд-пространство</div></div></div>
-        <ul>
-          <li><b>voiceProfile</b> (уже есть) — курируемый</li>
-          <li>Библиотека <b>примеров ✅/❌</b></li>
-          <li>База знаний бренда</li>
-          <li>Один голос на группу; бренд-голос — отдельным потоком позже</li>
-        </ul>
-      </div>
-      <div class="layer">
-        <div class="lh"><div class="ic" style="background:var(--ink)">✍️</div><div><div class="lt">Агент = навык</div><div class="ls">Hermes</div></div></div>
-        <ul>
-          <li>Правила письма (из <b>hook-formulas</b> → в конфиг)</li>
-          <li><b>Оверлеи каналов:</b> Zen · VC · TG · LinkedIn · сайт</li>
-          <li>Петля доработки черновика</li>
-          <li>Приват-скраббер (гейт выхода)</li>
-        </ul>
-      </div>
-      <div class="layer">
-        <div class="lh"><div class="ic" style="background:var(--amber)">🧠</div><div><div class="lt">Память = факты</div><div class="ls">тенанты группы</div></div></div>
-        <ul>
-          <li><b>Детектор моментов</b> из чатов/зумов</li>
-          <li>Cross-tenant чтение через <b>грант</b></li>
-          <li>Только внутренняя дистиллированная память</li>
-          <li>Провенанс: какой компании факт</li>
-        </ul>
-      </div>
-    </div>
-    <div class="flow">Каналы — это <b>оверлеи</b> поверх одного голоса: <span class="chips" style="display:inline-flex;vertical-align:middle;margin-left:6px">
-      <span class="chip"><b>LinkedIn</b> EN · экспертный</span>
-      <span class="chip"><b>VC.ru</b> лонгрид · чек-листы</span>
-      <span class="chip"><b>Telegram</b> коротко + ссылка</span>
-      <span class="chip"><b>Дзен</b> SEO-статья</span>
-      <span class="chip"><b>Сайт</b> RSS</span>
-    </span></div>
-  </div>
-</section>
-
-<!-- ТЕЛЕФОН: как это работает -->
-<section>
-  <div class="wrap">
-    <h2>Как это работает вживую</h2>
-    <p class="sub">Агент сам нашёл момент в памяти, собрал под три канала, приват-скраббер проверил. Ты — одно касание.</p>
+    <h2>Агент сам приносит пост</h2>
+    <p class="sub">Нашёл случай в памяти бизнеса, написал под три площадки, проверил перед показом. Тебе — одно касание.</p>
     <div class="phone-wrap">
       <div class="phone">
         <div class="screen">
-          <div class="tgbar"><div class="bav">Г</div><div><div class="bn">Гермес · контент</div><div class="bs">нашёл момент для поста</div></div></div>
+          <div class="tgbar"><div class="bav">С</div><div><div class="bn">СММ-агент</div><div class="bs">нашёл повод для поста</div></div></div>
           <div class="chatarea">
             <div class="msg bot">
-              <div class="prov">🧠 <b>Момент из памяти</b> · тенант «Бизнес Леонида» · зум с клиентом, вчера</div>
-              «Клиент сказал, что ИИ ему не нужен — работа уникальная, не поддаётся автоматизации.» Потянет на пост — самоирония + инсайт. Собрал под 3 канала:
+              <div class="prov">💡 <b>Повод из памяти</b> · компания «Бизнес Леонида» · зум с клиентом, вчера</div>
+              На зуме клиент сказал: «ИИ мне не нужен, работа уникальная». Хороший повод для поста — с самоиронией. Написал под три площадки:
             </div>
             <div class="msg bot" style="max-width:100%">
               <div class="tabs">
@@ -227,11 +136,11 @@
                 <span class="tab" data-c="tg" onclick="pick(this)">Telegram</span>
               </div>
               <div class="draft"><div class="dt" id="dt"></div></div>
-              <div class="scrub warn" id="scrub"></div>
+              <div class="check warn" id="check"></div>
               <div class="btns">
-                <span class="b p">Одобрить и опубликовать</span>
-                <span class="b">Замаскировать клиента</span>
-                <span class="b">Править</span>
+                <span class="b p">Опубликовать</span>
+                <span class="b">Убрать имя клиента</span>
+                <span class="b">Поправить</span>
                 <span class="b">Не сейчас</span>
               </div>
             </div>
@@ -239,81 +148,137 @@
         </div>
       </div>
       <div class="note">
-        <p><b>Что здесь важно:</b></p>
-        <p>1. Идею <b>принёс агент</b> — из зума, а не ты вспомнил «надо в сторис».</p>
-        <p>2. Один факт → <b>три голоса каналов</b>, не копипаст.</p>
-        <p>3. <b>Приват-скраббер</b> поймал имя клиента и предлагает замаскировать — до того, как оно ушло наружу. Это и есть гейт, который делает автопост когда-нибудь безопасным.</p>
-        <p>4. Ты жмёшь одну кнопку. «Не нажимать же самому» — цель; но первый рубеж проходит через тебя, пока доверие не заслужено по каждому каналу.</p>
+        <p>1. Повод нашёл <b>агент сам</b> — прямо из зума, а не ты вспомнил «надо бы что-то запостить».</p>
+        <p>2. Один случай — <b>три поста</b>, каждый под свою площадку, а не копия одного текста.</p>
+        <p>3. Агент <b>заметил имя клиента</b> в тексте и предлагает убрать, пока пост не ушёл наружу.</p>
+        <p>4. Ты жмёшь одну кнопку. Со временем, где агент уже не ошибается, он публикует сам — но клиентские и личные темы всегда показывает тебе.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ГРУППА КОМПАНИЙ -->
+<!-- 2. КАБИНЕТ: ГОЛОС И ПРИМЕРЫ -->
 <section>
   <div class="wrap">
-    <h2>Группа компаний — один голос, много источников</h2>
-    <p class="sub">Рост с 2 до 4–5 компаний = раздача грантов, не пере-архитектура. Факты втекают снизу, голос один.</p>
-    <div class="group">
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div class="co"><div class="cn">Бизнес Леонида</div><div class="cf">факты · зумы · сделки</div></div>
-        <div class="co"><div class="cn">Semantica</div><div class="cf">факты · чаты команды</div></div>
-        <div class="co"><div class="cn">Компания №3…</div><div class="cf">+ грант на чтение</div></div>
-      </div>
-      <div class="arrow">→</div>
-      <div class="voicebox">Один поток <b>«Голос Леонида»</b><br><span style="color:#a8d8c5;font-size:12.5px">читает дистиллированную память всех компаний с провенансом. Пишет как ты — про любую из них.</span></div>
-      <div class="arrow">→</div>
-      <div class="chips" style="flex-direction:column;gap:6px">
-        <span class="chip"><b>Zen</b></span><span class="chip"><b>VC</b></span><span class="chip"><b>TG</b></span><span class="chip"><b>LinkedIn</b></span>
+    <h2>Кабинет: твой голос и примеры</h2>
+    <p class="sub">Один раз показываешь, как ты пишешь и что тебе нравится — агент пишет так же во всех каналах.</p>
+    <div class="panel">
+      <div class="head"><div class="av">🎙</div><div><h3>Голос Леонида</h3><div class="k">как пишет агент</div></div></div>
+      <div class="body">
+        <div class="col">
+          <div class="lab">Как я пишу</div>
+          <div class="vbox">Живо, с самоиронией. Короткие фразы. Реальные цифры и даты, а не общие слова. Без пафоса и «вдохновляющих» лозунгов. Могу пошутить над собой, но не свысока к читателю.</div>
+          <p class="hint">Можно вписать своими словами или дать агенту прочитать твои посты с 2010 года — он соберёт голос сам, а ты поправишь.</p>
+        </div>
+        <div class="col">
+          <div class="lab">Примеры: что хорошо, что нет</div>
+          <div class="ex"><span class="m y">✓</span><div>«Клиент сказал, что ИИ ему не нужен. Лучший отказ за месяц — сейчас объясню почему.»</div></div>
+          <div class="ex"><span class="m y">✓</span><div>«15 мая 2003-го — первый день официантом. Июль 2007-го — открыл ресторан.»</div></div>
+          <div class="ex"><span class="m n">✕</span><div>«Я не ловлю удачу — я ставлю её в расписание.» (красиво, но пусто)</div></div>
+          <p class="hint">Отмечаешь удачные и неудачные посты — агент учится на твоих примерах, а не на общих правилах.</p>
+        </div>
       </div>
     </div>
-    <div class="guard">🔒 <b>Грант читает только внутреннюю дистиллированную память</b> — не сырые чаты, не клиентские, не личное. Агрегация группы едет <b>поверх</b> гейта чатов, а не пробивает его. Провенанс не даёт факту компании А уйти в пост как будто про Б.</div>
   </div>
 </section>
 
-<!-- ПОРЯДОК -->
+<!-- 3. ПОД КАЖДУЮ ПЛОЩАДКУ -->
+<section>
+  <div class="wrap">
+    <h2>Под каждую площадку — свои правила</h2>
+    <p class="sub">Голос один, а формат разный: в Telegram коротко, в VC — статья. Настраивается один раз.</p>
+    <div class="grid">
+      <div class="scard"><div class="top"><div class="av">in</div><div class="nm">LinkedIn</div></div><div class="rule"><b>Язык:</b> английский</div><div class="rule"><b>Формат:</b> средний пост, зацепка и вывод</div></div>
+      <div class="scard"><div class="top"><div class="av">VC</div><div class="nm">VC.ru</div></div><div class="rule"><b>Язык:</b> русский</div><div class="rule"><b>Формат:</b> длинная статья, заголовки, цифры</div></div>
+      <div class="scard"><div class="top"><div class="av">✈</div><div class="nm">Telegram</div></div><div class="rule"><b>Язык:</b> русский</div><div class="rule"><b>Формат:</b> коротко, одна мысль и ссылка</div></div>
+      <div class="scard"><div class="top"><div class="av">Д</div><div class="nm">Дзен</div></div><div class="rule"><b>Язык:</b> русский</div><div class="rule"><b>Формат:</b> статья, заголовок под поиск</div></div>
+      <div class="scard"><div class="top"><div class="av">🌐</div><div class="nm">Сайт / блог</div></div><div class="rule"><b>Язык:</b> русский</div><div class="rule"><b>Формат:</b> статья в блог, оттуда в поиск и Дзен</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. ОТКУДА БЕРЁТ ИДЕИ -->
+<section>
+  <div class="wrap">
+    <h2>Откуда агент берёт идеи</h2>
+    <p class="sub">Из настоящей работы: рабочие чаты и заметки со звонков. У тебя несколько компаний — голос один, а поводы приходят из всех.</p>
+    <div class="group">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="co"><div class="cn">Бизнес Леонида</div><div class="cf">чаты, зумы, сделки</div></div>
+        <div class="co"><div class="cn">Semantica</div><div class="cf">чаты команды</div></div>
+        <div class="co"><div class="cn">Компания №3…</div><div class="cf">добавляешь доступ</div></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="voicebox">Один <b>голос Леонида</b><br><span style="color:#a8d8c5;font-size:12.5px">берёт поводы из всех компаний и всегда показывает, из какой компании случай. Пишет как ты — про любую из них.</span></div>
+      <div class="arrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="co" style="min-width:auto;padding:6px 12px">Дзен</div>
+        <div class="co" style="min-width:auto;padding:6px 12px">VC</div>
+        <div class="co" style="min-width:auto;padding:6px 12px">Telegram</div>
+        <div class="co" style="min-width:auto;padding:6px 12px">LinkedIn</div>
+      </div>
+    </div>
+    <div class="guard">🔒 <b>Агент читает только те командные чаты, которые ты сам отметил как внутренние.</b> Клиентские переписки и личное он не трогает. Добавляется новая компания — просто даёшь доступ к её памяти, ничего переделывать не нужно.</div>
+  </div>
+</section>
+
+<!-- 5. ПОЧЕМУ ТАК -->
+<section>
+  <div class="wrap">
+    <h2>Почему собрано так</h2>
+    <p class="sub">Коротко и по делу.</p>
+    <div class="why">
+      <div class="r"><span class="ic">🎙</span><div><b>Голос и примеры — в одном месте.</b> Правишь один раз — работает во всех каналах и во всех компаниях. Не приходится настраивать заново для каждой.</div></div>
+      <div class="r"><span class="ic">💡</span><div><b>Идеи из настоящей работы.</b> Агент берёт поводы из памяти бизнеса — поэтому посты живые, а не выдуманные «ни о чём».</div></div>
+      <div class="r"><span class="ic">✋</span><div><b>Сначала жмёшь ты.</b> Агент публикует сам только там, где уже доказал, что не ошибается — и всегда после проверки, что в тексте нет имени клиента или деталей сделки.</div></div>
+      <div class="r"><span class="ic">🏢</span><div><b>Растёт группа компаний — ничего не переделываем.</b> Новая компания = один доступ к её памяти. Голос остаётся тот же.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. ПОРЯДОК -->
 <section>
   <div class="wrap">
     <h2>Порядок сборки</h2>
-    <p class="sub">Каждый шаг даёт пользу в проде сам по себе.</p>
+    <p class="sub">Каждый шаг сам по себе полезен в работе.</p>
     <div class="seq">
-      <div class="st"><div class="p">Шаг 1</div><b>Правила из хардкода → конфиг агента</b><br><span style="color:var(--muted)">+ оверлеи каналов</span></div>
-      <div class="st"><div class="p">Шаг 2</div><b>Голос курируемый + библиотека ✅/❌</b><br><span style="color:var(--muted)">на потоке</span></div>
-      <div class="st"><div class="p">Шаг 3</div><b>Детектор моментов</b><br><span style="color:var(--muted)">из памяти тенанта</span></div>
-      <div class="st"><div class="p">Шаг 4</div><b>Приват-скраббер + фан-аут</b><br><span style="color:var(--muted)">TG+блог+RSS</span></div>
-      <div class="st"><div class="p">Шаг 5</div><b>Коннектор VC.ru</b> → <b>Дзен RSS</b></div>
-      <div class="st"><div class="p">Шаг 6</div><b>Cross-tenant грант</b><br><span style="color:var(--muted)">группа компаний</span></div>
+      <div class="st"><div class="p">Шаг 1</div><b>Голос и примеры в кабинете</b></div>
+      <div class="st"><div class="p">Шаг 2</div><b>Правила под каждую площадку</b></div>
+      <div class="st"><div class="p">Шаг 3</div><b>Агент сам находит поводы</b><br><span style="color:var(--muted)">из памяти бизнеса</span></div>
+      <div class="st"><div class="p">Шаг 4</div><b>Проверка + публикация</b><br><span style="color:var(--muted)">Telegram, блог, сайт</span></div>
+      <div class="st"><div class="p">Шаг 5</div><b>Добавляем VC и Дзен</b></div>
+      <div class="st"><div class="p">Шаг 6</div><b>Поводы из всех компаний</b></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <b>Контент-студия</b> — прототип решения. Собран на дизайн-системе кабинета, не подключён к проду. Данные — образец для согласования.<br>
-    Спорные точки для твоего «да»: (1) один голос на группу сейчас vs бренд-голос на компанию; (2) с какого канала автопост заслуживается первым.
+    <b>ИИ-сммщик</b> — прототип. Собран на дизайне кабинета, к проду не подключён. Данные — образец для согласования.<br>
+    Что решить с тобой: один голос на все компании сейчас или отдельный голос под бренд компании; и с какой площадки агент начнёт публиковать сам.
   </div>
 </footer>
 
 <script>
   const DRAFTS = {
     li: {
-      text: "A client told me on a call: «AI isn't for me — my work is unique, it can't be automated.»\n\nHonestly? Best rejection we've had in a while.\n\nBecause «unique, non-automatable work» almost always means: no one has written down how it's actually done. That's not a wall against AI. That's the exact place it pays off first.",
-      scrub: "warn"
+      text: "A client told me on a call: «AI isn't for me — my work is unique, it can't be automated.»\n\nHonestly? Best rejection we've had in a while.\n\n«Unique, non-automatable work» almost always means no one wrote down how it's actually done. That's not a wall against AI. That's where it pays off first.",
+      warn: true
     },
     vc: {
-      text: "«ИИ мне не нужен — работа уникальная»: почему это лучший комплимент продукту\n\nНа зуме клиент сказал, что его работу нельзя автоматизировать. Разбираю, почему «уникальная работа» чаще всего = «нигде не описанная» — и как это первая точка окупаемости ИИ, а не аргумент против.",
-      scrub: "warn"
+      text: "«ИИ мне не нужен — работа уникальная»: почему это лучший комплимент продукту\n\nНа зуме клиент сказал, что его работу нельзя автоматизировать. Разбираю, почему «уникальная работа» чаще всего значит «нигде не описанная» — и почему это первое место, где ИИ окупается.",
+      warn: true
     },
     tg: {
-      text: "Клиент: «ИИ мне не нужен, работа уникальная».\nЛучший отказ за месяц — объясняю почему ↓ (ссылка)",
-      scrub: "ok"
+      text: "Клиент: «ИИ мне не нужен, работа уникальная».\nЛучший отказ за месяц — почему, объясняю по ссылке.",
+      warn: false
     }
   };
   function render(c){
     document.getElementById('dt').textContent = DRAFTS[c].text;
-    const s = document.getElementById('scrub');
-    if(DRAFTS[c].scrub==='warn'){ s.className='scrub warn'; s.textContent='⚠️ Приват-скраб: упомянут узнаваемый клиент. Замаскировать до публикации?'; }
-    else { s.className='scrub ok'; s.textContent='🔒 Приват-скраб: имя убрано · без деталей сделки · ок к публикации'; }
+    const el = document.getElementById('check');
+    if(DRAFTS[c].warn){ el.className='check warn'; el.textContent='🔒 Проверил перед показом: в тексте всплыло имя клиента. Убрать?'; }
+    else { el.className='check ok'; el.textContent='🔒 Проверил: имени клиента и деталей сделки в тексте нет. Можно публиковать.'; }
   }
   function pick(el){
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
