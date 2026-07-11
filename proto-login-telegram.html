@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Вход в кабинет: как это выглядит для сотрудника</title>
+<style>
+  :root {
+    --bg:#F4EFE6; --panel:#FFFFFF; --line:rgba(32,28,23,0.09); --lineHi:rgba(32,28,23,0.18);
+    --txt:#201C17; --dim:#6B6258; --violet:#9A6250; --red:#B24A32; --tg:#54a9eb; --ok:#3f8f5f;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.5; }
+  .wrap { max-width:1120px; margin:0 auto; padding:36px 20px 80px; }
+  h1 { font-size:26px; letter-spacing:-0.4px; margin:0 0 6px; }
+  h1 .dot { color:var(--violet); }
+  .lead { color:var(--dim); font-size:15px; margin:0 0 6px; max-width:760px; }
+  .stat { display:flex; gap:10px; flex-wrap:wrap; margin:18px 0 30px; }
+  .chip { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 14px; font-size:13px; }
+  .chip b { font-size:16px; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:22px; }
+  .step { display:flex; flex-direction:column; gap:12px; }
+  .cap { display:flex; gap:10px; align-items:flex-start; }
+  .num { flex:0 0 26px; height:26px; border-radius:50%; background:var(--violet); color:#fff; font-weight:700;
+    font-size:14px; display:flex; align-items:center; justify-content:center; }
+  .cap h3 { font-size:15px; margin:2px 0 2px; }
+  .cap p { font-size:13px; color:var(--dim); margin:0; }
+  /* phone */
+  .phone { background:#111; border-radius:30px; padding:8px; box-shadow:0 12px 30px rgba(32,28,23,.16); }
+  .screen { background:var(--bg); border-radius:23px; overflow:hidden; aspect-ratio:9/17.5; position:relative;
+    display:flex; flex-direction:column; }
+  .bar { height:22px; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--dim); }
+  .body { flex:1; display:flex; flex-direction:column; padding:0 14px; }
+  /* login card */
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px 15px; margin:auto 0; }
+  .card h4 { font-size:15px; margin:0 0 2px; } .card h4 .dot{ color:var(--violet); }
+  .card .sub { font-size:9.5px; color:var(--dim); margin:0 0 12px; }
+  .lbl { font-size:8px; font-weight:700; letter-spacing:.5px; color:var(--dim); text-transform:uppercase; }
+  .inp { height:26px; border:1px solid var(--lineHi); border-radius:7px; background:#F7F1E7; margin:4px 0 10px; }
+  .btn { background:var(--violet); color:#fff; border-radius:7px; text-align:center; padding:8px; font-weight:700; font-size:11px; }
+  .or { display:flex; align-items:center; gap:8px; color:var(--dim); font-size:9px; margin:12px 0 10px; }
+  .or::before,.or::after { content:""; flex:1; height:1px; background:var(--line); }
+  .tgbtn { background:var(--tg); color:#fff; border-radius:16px; text-align:center; padding:8px 10px; font-weight:700; font-size:11px;
+    display:flex; align-items:center; justify-content:center; gap:6px; }
+  .hint { font-size:8px; color:var(--dim); text-align:center; margin-top:8px; }
+  /* telegram consent */
+  .tgsheet { background:#fff; border-radius:14px; margin:auto 0; overflow:hidden; border:1px solid var(--line); }
+  .tghead { background:var(--tg); color:#fff; padding:14px; text-align:center; }
+  .tghead .av { width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.25); margin:0 auto 8px;
+    display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .tghead .nm { font-weight:700; font-size:13px; } .tghead .un { font-size:10px; opacity:.85; }
+  .tgbody { padding:14px; font-size:11px; color:var(--txt); text-align:center; }
+  .tgbody .who { color:var(--dim); font-size:10px; margin-top:6px; }
+  .tgact { display:flex; border-top:1px solid var(--line); }
+  .tgact div { flex:1; text-align:center; padding:11px; font-size:12px; font-weight:700; color:var(--tg); }
+  .tgact div:first-child { border-right:1px solid var(--line); color:var(--dim); font-weight:500; }
+  /* dashboard */
+  .dash { flex:1; padding-top:10px; }
+  .dhead { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .dhead .logo { font-weight:800; font-size:13px; } .dhead .logo .dot{color:var(--violet);}
+  .dhead .ava { margin-left:auto; width:22px; height:22px; border-radius:50%; background:var(--violet); color:#fff;
+    font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:700; }
+  .welcome { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:8px; }
+  .welcome .t { font-weight:700; font-size:12px; } .welcome .s { font-size:9.5px; color:var(--dim); margin-top:3px; }
+  .tile { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px; margin-bottom:8px; font-size:10px; }
+  .tile .h { font-weight:700; margin-bottom:4px; }
+  .okbadge { display:inline-flex; align-items:center; gap:5px; background:rgba(63,143,95,.12); color:var(--ok);
+    border-radius:8px; padding:4px 8px; font-size:9px; font-weight:700; }
+  /* nudge banner */
+  .nudge { background:#FBF3D9; border:1px solid #E7D6A0; color:#6b5a1e; border-radius:10px; padding:9px 10px; font-size:9px; margin-bottom:8px; }
+  .nudge b { color:#5a4a12; }
+  .note { margin-top:34px; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+  .note h2 { font-size:16px; margin:0 0 10px; }
+  .note ul { margin:0; padding-left:18px; } .note li { font-size:14px; margin-bottom:7px; }
+  .note li b { color:var(--violet); }
+  .footer { margin-top:24px; font-size:12px; color:var(--dim); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>uklad <span class="dot">·</span> вход в кабинет</h1>
+  <p class="lead">Как выглядит вход глазами сотрудника с телефона. Главный путь тут <b>кнопка Telegram</b>: ничего не вводить, ничего не помнить.</p>
+  <div class="stat">
+    <div class="chip"><b>29</b> пользователей</div>
+    <div class="chip"><b>28</b> с привязанным Telegram, кнопка работает сразу</div>
+    <div class="chip"><b>8</b> с паролем, резервный путь</div>
+    <div class="chip"><b>180 дней</b> помнит вход в браузере</div>
+  </div>
+
+  <div class="steps">
+    <!-- STEP 1 -->
+    <div class="step">
+      <div class="cap"><div class="num">1</div><div><h3>Открывает uklad.ai/login</h3><p>В браузере телефона (Safari/Chrome). Внизу под формой синяя кнопка.</p></div></div>
+      <div class="phone"><div class="screen">
+        <div class="bar">uklad.ai/login</div>
+        <div class="body">
+          <div class="card">
+            <h4>uklad <span class="dot">·</span> Log in</h4>
+            <div class="sub">Platform workspace.</div>
+            <div class="lbl">Email</div><div class="inp"></div>
+            <div class="lbl">Password</div><div class="inp"></div>
+            <div class="btn">Log in</div>
+            <div class="or">или</div>
+            <div class="tgbtn">✈ Log in with Telegram</div>
+            <div class="hint">Нет пароля? Войдите через Telegram<br>тем же аккаунтом, где пишете боту.</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <div class="cap"><div class="num">2</div><div><h3>Telegram спрашивает подтверждение</h3><p>Появится имя «Первый Агент», это наш платформенный бот. Жмёт «Принять».</p></div></div>
+      <div class="phone"><div class="screen">
+        <div class="bar">Telegram</div>
+        <div class="body">
+          <div class="tgsheet">
+            <div class="tghead">
+              <div class="av">✈</div>
+              <div class="nm">Первый Агент</div>
+              <div class="un">@Slazhivanie_team_bot</div>
+            </div>
+            <div class="tgbody">
+              Этот сайт запрашивает доступ к вашему профилю Telegram.
+              <div class="who">Иван Петров · +7 ··· ·· 12</div>
+            </div>
+            <div class="tgact"><div>Отмена</div><div>Принять</div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <div class="cap"><div class="num">3</div><div><h3>Она уже в кабинете</h3><p>Никакого пароля. Вернуло прямо в его рабочее пространство.</p></div></div>
+      <div class="phone"><div class="screen">
+        <div class="bar">uklad.ai</div>
+        <div class="body"><div class="dash">
+          <div class="dhead"><div class="logo">uklad<span class="dot">·</span></div><div class="ava">И</div></div>
+          <div class="welcome"><div class="t">С возвращением, Иван</div><div class="s">Демо-команда · рабочее пространство</div></div>
+          <div class="tile"><div class="h">Ваш ассистент</div>Задачи, встречи и память команды в одном месте.</div>
+          <div class="tile"><div class="h">Чаты</div>Активные обсуждения команды.</div>
+          <div style="margin-top:6px"><span class="okbadge">✓ вход запомнен на 180 дней</span></div>
+        </div></div>
+      </div></div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <div class="cap"><div class="num">4</div><div><h3>Если открыла ссылку внутри Telegram</h3><p>Там браузер «одноразовый», вход может забыться. Подсказка выводит в настоящий браузер.</p></div></div>
+      <div class="phone"><div class="screen">
+        <div class="bar">Telegram · встроенный браузер</div>
+        <div class="body">
+          <div class="card" style="margin-top:14px">
+            <div class="nudge">Откройте эту страницу в <b>браузере телефона (Safari или Chrome)</b>, а не внутри Telegram, тогда вход <b>запомнится надолго</b>.</div>
+            <h4>uklad <span class="dot">·</span> Log in</h4>
+            <div class="sub">Platform workspace.</div>
+            <div class="or">или</div>
+            <div class="tgbtn">✈ Log in with Telegram</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <h2>Что дальше, коротко</h2>
+    <ul>
+      <li><b>Помнит ли долго?</b> Да, <b>180 дней</b> в обычном браузере (Safari/Chrome). Раньше было 30, подняли. Даже когда истечёт, это снова один тап по кнопке, без пароля.</li>
+      <li><b>Единственная тонкость.</b> «Забывает» не из-за срока, а из-за <b>встроенного браузера Telegram</b>. У него отдельная, часто сбрасываемая память. Поэтому важно открыть вход <b>в настоящем браузере</b>, тогда 180 дней держатся. На странице теперь есть подсказка (шаг 4).</li>
+      <li><b>Про пароль.</b> Кнопка Telegram закрывает 28 из 29 человек без всякой раздачи. Пароль оставляем как <b>резерв</b>. Кому удобнее, выдаём логин+пароль, браузер их сохранит и будет подставлять сам. По желанию.</li>
+    </ul>
+  </div>
+
+  <div class="footer">Прото для обсуждения. Живой вход: uklad.ai/login</div>
+</div>
+</body>
+</html>
