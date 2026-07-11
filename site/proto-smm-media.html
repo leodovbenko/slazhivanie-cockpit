@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ИИ-сммщик: медиа - прототип</title>
+<style>
+  :root{
+    --ink:#06251A; --green:#0FA06C; --paper:#F7FBF9; --card:#fff;
+    --line:#dfe9e4; --muted:#5c7267; --soft:#E4F7EF; --amber:#B4802C; --red:#B4472C;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"IBM Plex Sans","Segoe UI",Roboto,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.55}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  .proto-badge{position:fixed;top:0;left:0;right:0;background:#B4472C;color:#fff;
+    text-align:center;font-size:13px;padding:6px;z-index:99;letter-spacing:.02em}
+  header{background:var(--ink);color:#fff;padding:58px 0 36px;margin-top:30px}
+  header h1{font-size:30px;margin:0 0 10px;line-height:1.2}
+  header p{color:#a8d8c5;margin:0;max-width:780px;font-size:16px}
+  section{padding:34px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 20px;font-size:15px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  .mcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column}
+  .mcard .top{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+  .mcard .av{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;background:var(--ink)}
+  .mcard .nm{font-weight:700;font-size:15.5px;line-height:1.1}
+  .mcard .d{font-size:13.5px;color:var(--muted);margin:0 0 10px}
+  .mcard .d b{color:var(--ink)}
+  .mcard .need{font-size:12.5px;color:var(--muted);margin-top:auto;padding-top:10px;border-top:1px dashed var(--line)}
+  .st{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 10px;white-space:nowrap;margin-left:auto}
+  .st.ok{background:var(--soft);color:var(--green)}
+  .st.build{background:#FBF1DF;color:var(--amber)}
+  .st.soon{background:#eef1f0;color:var(--muted)}
+
+  /* превью медиа */
+  .slides{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+  .slide{width:88px;height:110px;border-radius:9px;border:1px solid var(--line);background:linear-gradient(160deg,#eaf5ef,#dff0e6);padding:8px;font-size:10.5px;color:var(--ink);display:flex;flex-direction:column;justify-content:space-between}
+  .slide .n{font-size:9px;color:var(--muted)}
+  .slide.dark{background:linear-gradient(160deg,#0f3d2c,#06251a);color:#eaf5ef}
+  .slide.dark .n{color:#9ec9b8}
+  .reel{width:88px;height:150px;border-radius:11px;border:1px solid var(--line);position:relative;background:linear-gradient(160deg,#1c3b30,#06251a)}
+  .reel .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px}
+  .reel .tag{position:absolute;left:6px;bottom:6px;font-size:9px;color:#cfe3d9}
+  .photo{width:88px;height:88px;border-radius:9px;background:#e9f3ee;border:1px dashed #b9d6c8;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
+
+  /* источники визуала */
+  .src{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px}
+  .scard h4{margin:0 0 6px;font-size:15px;display:flex;align-items:center;gap:8px}
+  .scard p{margin:0;font-size:13.5px;color:var(--muted)}
+  .scard p b{color:var(--ink)}
+  .link{font-size:12px;color:var(--green);font-weight:700;margin-top:8px;display:block}
+
+  /* браузер медиатека */
+  .browser{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);box-shadow:0 8px 26px rgba(6,37,26,.08)}
+  .bbar{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#eef4f1;border-bottom:1px solid var(--line)}
+  .dots{display:flex;gap:6px}.dots i{width:11px;height:11px;border-radius:50%;display:block}
+  .durl{flex:1;background:#fff;border:1px solid var(--line);border-radius:7px;padding:4px 11px;font-size:12px;color:var(--muted)}
+  .bmain{padding:18px 20px}
+  .lab{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:0 0 10px}
+  .lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+  .li{border:1px solid var(--line);border-radius:9px;height:82px;background:#e9f3ee;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;padding:6px}
+
+  /* телефон */
+  .phone-wrap{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+  .phone{width:340px;flex:none;background:#cfe3d9;border-radius:26px;padding:10px;border:1px solid var(--line)}
+  .screen{background:#e9f3ee;border-radius:18px;overflow:hidden;font-size:13px}
+  .tgbar{background:#fff;padding:10px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+  .tgbar .bav{width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .tgbar .bn{font-weight:700;font-size:14px}.tgbar .bs{font-size:11px;color:var(--muted)}
+  .chatarea{padding:12px;min-height:300px}
+  .msg{max-width:92%;padding:9px 11px;border-radius:14px;margin:0 0 9px;line-height:1.42;background:#fff;border:1px solid var(--line)}
+  .prov{font-size:11.5px;color:#6d5312;background:#fff8e8;border:1px solid #f0e3c4;border-radius:8px;padding:5px 8px;margin:0 0 8px}
+  .prov b{color:#5a4410}
+  .kbd{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+  .krow{display:flex;gap:5px}
+  .kbtn{flex:1;text-align:center;font-size:12px;font-weight:700;border-radius:9px;padding:8px 6px;background:#dff0e6;color:#0c6b48}
+  .kbtn.pub{background:var(--ink);color:#fff}.kbtn.plain{background:#f0f5f2;color:var(--muted);font-weight:600}
+  .note{font-size:14.5px;color:var(--muted);max-width:360px}.note b{color:var(--ink)}.note p{margin:0 0 12px}
+
+  /* порядок + кто генерит */
+  .seq{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 0}
+  .seq .stx{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px}
+  .seq .stx b{color:var(--ink)}.seq .stx .p{font-size:11px;color:var(--green);font-weight:700;text-transform:uppercase}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th{background:var(--soft);font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+  tr:last-child td{border-bottom:0}
+  td b{color:var(--ink)}
+  .guard{font-size:13.5px;color:var(--muted);background:var(--soft);border-radius:10px;padding:11px 13px;margin:14px 0 0}.guard b{color:var(--ink)}
+  footer{padding:38px 0;color:var(--muted);font-size:14px}footer b{color:var(--ink)}
+  @media(max-width:760px){.bmain .lib{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="proto-badge">ПРОТОТИП · не подключён к проду · данные - образец для согласования</div>
+
+<header>
+  <div class="wrap">
+    <h1>ИИ-сммщик: медиа</h1>
+    <p>Пост часто не текст, а рилс, сторис или карусель. Вот как агент собирает каждый вид медиа, откуда берёт картинку и видео, и где мы сейчас сильны, а где только строим. Честно: медиа - самое слабое место, поэтому расписал по-честному.</p>
+  </div>
+</header>
+
+<!-- ЧТО АГЕНТ СОБИРАЕТ -->
+<section>
+  <div class="wrap">
+    <h2>Что агент собирает</h2>
+    <p class="sub">Пять видов медиа. У каждого свой способ сборки и свой статус готовности.</p>
+    <div class="grid">
+      <div class="mcard">
+        <div class="top"><div class="av">🖼</div><div class="nm">Пост с фото</div><span class="st ok">готово</span></div>
+        <div class="d">Текст-подпись плюс одно фото из твоей медиатеки. Агент подбирает фото под тему.</div>
+        <div class="slides"><div class="photo">фото</div></div>
+        <div class="need">Нужно от тебя: наполнить медиатеку фотографиями.</div>
+      </div>
+      <div class="mcard">
+        <div class="top"><div class="av">🎠</div><div class="nm">Карусель с фото</div><span class="st build">строим</span></div>
+        <div class="d">Несколько фото подряд с подписями. Агент раскладывает историю по кадрам.</div>
+        <div class="slides"><div class="photo">1</div><div class="photo">2</div><div class="photo">3</div></div>
+        <div class="need">Нужно от тебя: фото в медиатеке, порядок агент предложит.</div>
+      </div>
+      <div class="mcard">
+        <div class="top"><div class="av">📊</div><div class="nm">Карусель со слайдами</div><span class="st build">строим</span></div>
+        <div class="d"><b>Текст плюс картинки на слайдах</b> по шаблону. То, что ты делал руками: мысль на слайд, дизайн из бренд-шаблона.</div>
+        <div class="slides"><div class="slide dark"><div>Если бы я завтра вышел работать таксистом</div><div class="n">1 / 5</div></div><div class="slide"><div>День 1: не понимал, куда ехать</div><div class="n">2 / 5</div></div><div class="slide"><div>Навигатор по данным</div><div class="n">3 / 5</div></div></div>
+        <div class="need">Нужно от тебя: бренд-шаблон слайдов один раз.</div>
+      </div>
+      <div class="mcard">
+        <div class="top"><div class="av">🎬</div><div class="nm">Рилс (видео)</div><span class="st soon">через HeyGen</span></div>
+        <div class="d">Короткое вертикальное видео. Сценарий пишет агент, видео и аватар собирает HeyGen.</div>
+        <div class="slides"><div class="reel"><div class="play">▶</div><div class="tag">HeyGen · 0:24</div></div></div>
+        <div class="need">Коннектор HeyGen строится в соседней сессии.</div>
+      </div>
+      <div class="mcard">
+        <div class="top"><div class="av">⚡</div><div class="nm">Сторис</div><span class="st soon">скоро</span></div>
+        <div class="d">Вертикальная картинка или короткое видео с текстом поверх. Живёт сутки, гонит трафик на пост.</div>
+        <div class="slides"><div class="reel" style="height:130px"><div class="play" style="font-size:16px">текст поверх</div></div></div>
+        <div class="need">Нужно: шаблон сторис плюс медиатека.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ОТКУДА ВИЗУАЛ -->
+<section>
+  <div class="wrap">
+    <h2>Откуда берётся визуал</h2>
+    <p class="sub">Четыре источника. Агент выбирает под вид медиа и площадку.</p>
+    <div class="src">
+      <div class="scard"><h4>📁 Твоя медиатека</h4><p>Реальные фото: команда, продукт, встречи, поездки. Агент подбирает под тему поста.</p><span class="link">настраивается в браузере</span></div>
+      <div class="scard"><h4>📊 Шаблоны слайдов и обложек</h4><p>Дизайн с текстом по твоему бренд-шаблону: слайды карусели, обложка статьи. <b>Собирается на нашей стороне.</b></p><span class="link">первый на очереди</span></div>
+      <div class="scard"><h4>🎬 HeyGen: видео и аватар</h4><p>Рилс и говорящий аватар. <b>Коннектор строится в соседней сессии</b> - подключаем, когда будет готов.</p><span class="link">в работе</span></div>
+      <div class="scard"><h4>🗂 Сток</h4><p>Запасная картинка, когда своей нет. Используем аккуратно, чтобы не выглядело шаблонно.</p><span class="link">запас</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- БРАУЗЕР: МЕДИАТЕКА -->
+<section>
+  <div class="wrap">
+    <h2>Медиатека в кабинете</h2>
+    <p class="sub">Загружаешь фото и видео один раз, размечаешь темами. Дальше агент берёт сам.</p>
+    <div class="browser">
+      <div class="bbar"><div class="dots"><i style="background:#e2685b"></i><i style="background:#e6b74a"></i><i style="background:#57b96a"></i></div><div class="durl">uklad.ai/кабинет/контент/медиатека</div></div>
+      <div class="bmain">
+        <div class="lab">Фото и видео, размечены темами</div>
+        <div class="lib">
+          <div class="li">команда за работой</div>
+          <div class="li">продукт, экраны</div>
+          <div class="li">встреча с клиентом</div>
+          <div class="li">эндуро, поездки</div>
+          <div class="li">видео с зума</div>
+          <div class="li">бренд-шаблон слайдов</div>
+          <div class="li">логотипы, шрифты</div>
+          <div class="li">+ загрузить</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ТЕЛЕФОН -->
+<section>
+  <div class="wrap">
+    <h2>С телефона: утверждаешь медиа</h2>
+    <p class="sub">Агент присылает готовую карусель или рилс с превью. Ты смотришь и жмёшь кнопку.</p>
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="screen">
+          <div class="tgbar"><div class="bav">С</div><div><div class="bn">СММ-агент</div><div class="bs">собрал карусель</div></div></div>
+          <div class="chatarea">
+            <div class="msg">
+              <div class="prov">💡 <b>Повод из памяти</b> · зум с клиентом, вчера</div>
+              Собрал карусель со слайдами под Instagram. 5 слайдов, текст на бренд-шаблоне:
+              <div class="slides"><div class="slide dark"><div>«ИИ мне не нужен»</div><div class="n">1 / 5</div></div><div class="slide"><div>Сказал клиент на зуме</div><div class="n">2 / 5</div></div><div class="slide"><div>И это лучший отказ за месяц</div><div class="n">3 / 5</div></div></div>
+              <div class="kbd">
+                <div class="krow"><span class="kbtn pub">Опубликовать</span><span class="kbtn plain">Поменять фото</span></div>
+                <div class="krow"><span class="kbtn plain">Поправить текст</span><span class="kbtn plain">Не сейчас</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <p>1. Агент собрал <b>всю карусель</b>, не только текст.</p>
+        <p>2. Превью слайдов видно <b>прямо в чате</b>.</p>
+        <p>3. Не то фото - жмёшь «поменять», агент возьмёт другое из медиатеки.</p>
+        <p>4. Сложная сборка была в браузере. В телефоне только смотришь и решаешь.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КТО ЧТО ГЕНЕРИТ -->
+<section>
+  <div class="wrap">
+    <h2>Кто что генерит</h2>
+    <p class="sub">Разные части медиа собирают разные движки. Текст - дёшево, видео - через сервис.</p>
+    <table>
+      <tr><th>Часть</th><th>Чем собираем</th><th>Стоимость</th></tr>
+      <tr><td><b>Текст, подписи, сценарий рилса</b></td><td>обычная модель (Sonnet)</td><td>дёшево</td></tr>
+      <tr><td><b>Слайды и обложки</b></td><td>бренд-шаблон плюс рендер на нашей стороне</td><td>дёшево</td></tr>
+      <tr><td><b>Фото</b></td><td>твоя медиатека, при нужде генерация картинки</td><td>средне</td></tr>
+      <tr><td><b>Видео и аватар (рилс, сторис)</b></td><td>HeyGen</td><td>дороже, по минутам</td></tr>
+    </table>
+    <div class="guard">Тяжёлое и дорогое (видео) идёт через отдельный сервис по кнопке, а не на каждый пост. Текст и слайды - потоком и дёшево.</div>
+  </div>
+</section>
+
+<!-- ПОРЯДОК -->
+<section>
+  <div class="wrap">
+    <h2>С чего начинаем в медиа</h2>
+    <p class="sub">От простого и того, что ты уже делал руками, к видео.</p>
+    <div class="seq">
+      <div class="stx"><div class="p">Шаг 1</div><b>Медиатека в кабинете</b><br><span style="color:var(--muted)">фото, разметка темами</span></div>
+      <div class="stx"><div class="p">Шаг 2</div><b>Карусель со слайдами</b><br><span style="color:var(--muted)">бренд-шаблон, текст+картинки</span></div>
+      <div class="stx"><div class="p">Шаг 3</div><b>Пост и карусель с фото</b></div>
+      <div class="stx"><div class="p">Шаг 4</div><b>Обложки под VC и Дзен</b></div>
+      <div class="stx"><div class="p">Шаг 5</div><b>Рилс через HeyGen</b><br><span style="color:var(--muted)">когда коннектор готов</span></div>
+      <div class="stx"><div class="p">Шаг 6</div><b>Сторис и нарезка видео</b></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <b>ИИ-сммщик: медиа</b> - прототип. Собран на дизайне кабинета, к проду не подключён. Данные - образец для согласования.<br>
+    HeyGen-коннектор для видео строится в соседней сессии, медиа-контур на него опирается.<br>
+    Что решить с тобой: начинаем медиа со слайд-каруселей (ты их делал руками) или сразу ждём HeyGen под рилс.
+  </div>
+</footer>
+</body>
+</html>
