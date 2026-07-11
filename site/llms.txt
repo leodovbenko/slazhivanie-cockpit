@@ -42,6 +42,7 @@
 - https://slazhivanie.ru/approach.html — подход и процесс
 - https://slazhivanie.ru/platform.html — Слаживание Платформа
 - https://slazhivanie.ru/solutions.html — решения (HR, финансы, строительство)
+- https://slazhivanie.ru/chats.html — управление чатами на базе ИИ (учёт чатов, память компании из переписок)
 - https://slazhivanie.ru/cases.html — кейсы и результаты
 - https://slazhivanie.ru/team.html — команда
 - https://slazhivanie.ru/platform/ — живое демо платформы (кокпит)

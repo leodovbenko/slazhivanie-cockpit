@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Управление чатами на базе ИИ | Слаживание</title>
+  <meta name="description" content="Реальное управление компанией живёт в чатах. Система превращает десятки рабочих групп в Telegram в собранную память компании — с приватностью в основе: учёт чатов, сбор фактов, ответы по контексту.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://slazhivanie.ru/chats.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Слаживание">
+  <meta property="og:title" content="Управление чатами на базе ИИ | Слаживание">
+  <meta property="og:description" content="Десятки рабочих чатов в Telegram → собранная память компании. Учёт чатов, сбор фактов из переписок, ответы по контексту. Приватность встроена.">
+  <meta property="og:image" content="https://slazhivanie.ru/og.png">
+  <meta property="og:locale" content="ru_RU">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* прото-специфика: нумерованные опоры + рамка скринов кабинета */
+    .steps{counter-reset:step}
+    .step-n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--green-soft);color:var(--green-d);font-weight:700;font-size:15px;margin-bottom:14px}
+    .shot{background:var(--white);border:1px solid var(--line-light);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(32,28,23,.04),0 12px 30px rgba(32,28,23,.06)}
+    .shot .bar{display:flex;align-items:center;gap:7px;padding:11px 15px;border-bottom:1px solid var(--line-light);background:var(--paper-2)}
+    .shot .bar i{width:11px;height:11px;border-radius:50%;background:#D8CDBB;display:inline-block}
+    .shot .bar .u{margin-left:10px;font-size:12.5px;color:var(--t3);font-family:ui-monospace,Menlo,monospace}
+    .shot img{display:block;width:100%;height:auto}
+    .shotcap{margin-top:12px;font-size:13.5px;color:var(--t3);line-height:1.45}
+    .shot-row{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:36px}
+    @media(max-width:860px){.shot-row{grid-template-columns:1fr;gap:30px}}
+    .priv{background:var(--white);border:1px solid var(--line-light);border-radius:20px;padding:30px;margin-top:36px}
+    .priv h3{font-size:18px;font-weight:700;margin-bottom:8px}
+    .privgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
+    @media(max-width:760px){.privgrid{grid-template-columns:1fr}}
+    .privgrid .k{font-weight:700;color:var(--t1);margin-bottom:5px}
+    .privgrid p{font-size:14px;color:var(--t2);line-height:1.5}
+    .cta-band{background:linear-gradient(135deg,var(--clay-soft),var(--green-soft));border-radius:22px;padding:44px 36px;text-align:center;margin-top:12px}
+    .cta-band h2{font-size:clamp(24px,3vw,34px);font-weight:700}
+    .cta-band p{margin:14px auto 26px;color:var(--t2);max-width:560px}
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap nav">
+      <a href="index.html" class="logo">
+        <span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>
+        слаживание<span class="green">.</span>
+      </a>
+      <nav class="nav-links">
+        <a href="approach.html">Подход</a>
+        <a href="platform.html">Платформа</a>
+        <a href="solutions.html">Решения</a>
+        <a href="chats.html" class="active">Управление чатами</a>
+        <a href="cases.html">Кейсы</a>
+        <a href="team.html">Команда</a>
+        <a href="index.html#contacts">Контакты</a>
+      </nav>
+      <a href="index.html#contacts" class="btn btn-green nav-cta">Обсудить внедрение</a>
+      <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    </div>
+    <div class="mmenu" id="mmenu">
+      <a href="approach.html">Подход</a>
+      <a href="platform.html">Платформа</a>
+      <a href="solutions.html">Решения</a>
+      <a href="chats.html">Управление чатами</a>
+      <a href="cases.html">Кейсы</a>
+      <a href="team.html">Команда</a>
+      <a href="index.html#contacts">Контакты</a>
+      <a href="index.html#contacts" class="btn btn-green">Обсудить внедрение</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="phero">
+    <div class="hero-radar"></div>
+    <div class="wrap" style="padding-top:76px;padding-bottom:70px;position:relative;z-index:2;max-width:920px">
+      <span class="pill">Подпродукт платформы</span>
+      <h1>Управление чатами <span class="green">на базе ИИ</span></h1>
+      <p class="sub">Реальное управление компанией живёт не в CRM, а в чатах. Мы превращаем десятки рабочих групп в Telegram в собранную память компании — с приватностью, встроенной в основу.</p>
+      <div class="hero-btns" style="margin-top:34px;display:flex;gap:14px;flex-wrap:wrap">
+        <a href="index.html#contacts" class="btn btn-green">Обсудить внедрение</a>
+        <a href="/platform/" class="btn btn-ghost">Посмотреть демо</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ПРОБЛЕМА ============ -->
+  <section class="sec light-block">
+    <div class="wrap">
+      <span class="eyebrow">Проблема</span>
+      <h2 class="about-lead">Спросите собственника: «что прямо сейчас с ключевым клиентом?» — и ответа <span class="green">не будет сразу</span>.</h2>
+      <p class="about-sub">На какой стадии сделка, кто последний говорил, о чём договорились, что обещали и не сделали. В компании на 50–300 человек этот ответ размазан по десяткам чатов. CRM хранит то, что занесли руками. А 80% живого контекста — решения, обещания, статусы — остаётся в переписке, куда никто ничего не заносит.</p>
+      <ul class="clist was" style="margin-top:26px;max-width:720px">
+        <li>Чатов десятки — никто не держит в голове полную карту: какие рабочие, какие уже мёртвые.</li>
+        <li>Информация живёт, пока помнит сотрудник, — и уходит вместе с ним при увольнении.</li>
+        <li>Собрать статус по клиенту — значит вручную прокрутить пять чатов и что-то додумать.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ ТРИ ОПОРЫ ============ -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">Как это устроено</span>
+          <h2 class="h-sec">Три шага: учесть → собрать → использовать</h2>
+        </div>
+      </div>
+      <div class="grid-3 steps">
+        <div class="card">
+          <div class="step-n">1</div>
+          <h3>Учёт чатов</h3>
+          <p>Новые чаты собираются в очередь. Владелец в пару кликов помечает: внутренний или клиентский. Пока чат не классифицирован — агент в нём полностью молчит и ничего не запоминает. Видно карту всех групп: тип и то, кормит ли чат память.</p>
+          <span class="effect">Приватность = условие включения</span>
+        </div>
+        <div class="card">
+          <div class="step-n">2</div>
+          <h3>Сбор в память</h3>
+          <p>Агент не хранит переписку целиком. Он дистиллирует из потока устойчивые факты: договорённости, обещания, статусы клиентов. У каждого факта — источник, дата и «живость»: старое затухает, свежее всплывает наверх.</p>
+          <span class="effect">Не архив, а собранная картина</span>
+        </div>
+        <div class="card">
+          <div class="step-n">3</div>
+          <h3>Использование</h3>
+          <p>На вопрос «как у нас дела» агент отвечает не пересказом чата, а сведённой картиной — со ссылкой на источник. Честно отделяет, что знает точно, от того, что додумал, и сам предлагает, что взять под контроль.</p>
+          <span class="effect">Ответ за секунды, а не за час</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ КАК ВЫГЛЯДИТ (СКРИНЫ) ============ -->
+  <section class="sec light-block">
+    <div class="wrap">
+      <span class="eyebrow">Как это выглядит</span>
+      <h2 class="h-sec">Живые экраны кабинета</h2>
+      <p class="lead" style="margin-top:14px">Не макеты — рабочий кабинет платформы. Названия компаний и имена людей на скринах скрыты.</p>
+      <div class="shot-row">
+        <figure style="margin:0">
+          <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="u">uklad.ai/chat-gates</span></div><img src="proto-chats-assets/01-uchet-chatov.png" alt="Учёт чатов: внутренний/клиентский, значок «кормит память»"></div>
+          <figcaption class="shotcap"><b>Учёт.</b> Каждый чат помечен внутренний/клиентский, значок 🧠 показывает, кормит ли он память.</figcaption>
+        </figure>
+        <figure style="margin:0">
+          <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="u">uklad.ai/memory</span></div><img src="proto-chats-assets/02-pamyat.png" alt="Память: факты из переписок, счётчик, источник"></div>
+          <figcaption class="shotcap"><b>Память.</b> Факты, извлечённые из переписок, со счётчиком и пометкой источника «из чатов».</figcaption>
+        </figure>
+        <figure style="margin:0">
+          <div class="shot"><div class="bar"><i></i><i></i><i></i><span class="u">uklad.ai/chat</span></div><img src="proto-chats-assets/03-ispolzovanie.png" alt="Использование: агент собирает сводку из памяти"></div>
+          <figcaption class="shotcap"><b>Использование.</b> Агент собирает сводку из накопленной памяти обычным вопросом.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ПРИВАТНОСТЬ ============ -->
+  <section class="sec">
+    <div class="wrap">
+      <span class="eyebrow">Почему это не слежка</span>
+      <h2 class="h-sec">Приватность встроена, а не докручена потом</h2>
+      <div class="priv">
+        <div class="privgrid">
+          <div><div class="k">Спящий агент</div><p>По умолчанию агент молчит и ничего не запоминает из нового чата, пока владелец не решил, что он вообще имеет право видеть.</p></div>
+          <div><div class="k">Личное — мимо памяти</div><p>Личные переписки сотрудника с агентом не попадают в корпоративную память. Командные и клиентские — попадают.</p></div>
+          <div><div class="k">Клиентское не утекает</div><p>В клиентском чате агент видит контекст, но внутреннюю кухню наружу не выносит и не пишет без явного разрешения.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="sec light-block">
+    <div class="wrap">
+      <div class="cta-band">
+        <h2>Покажем на ваших чатах</h2>
+        <p>Расскажем, как устроен контур, и разберём на вашем сценарии: какие чаты есть, что в них теряется и как это собрать в память компании.</p>
+        <a href="index.html#contacts" class="btn btn-green">Обсудить внедрение</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <a href="index.html" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
+      <nav class="foot-links">
+        <a href="approach.html">Подход</a>
+        <a href="platform.html">Платформа</a>
+        <a href="solutions.html">Решения</a>
+        <a href="chats.html">Управление чатами</a>
+        <a href="cases.html">Кейсы</a>
+        <a href="index.html#contacts">Контакты</a>
+        <a href="/platform/">Посмотреть демо →</a>
+      </nav>
+      <div>© 2026 Слаживание · 127006, Москва, ул. Долгоруковская, 27с1</div>
+    </div>
+  </footer>
+
+  <script>
+    var b=document.getElementById('burger'),m=document.getElementById('mmenu');
+    b.addEventListener('click',function(){m.classList.toggle('open')});
+    m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
+  </script>
+</body>
+</html>
