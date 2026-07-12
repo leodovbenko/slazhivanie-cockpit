@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Рекрутёр — сквозной флоу (прототип)</title>
+<style>
+  /* Палитра и компоненты 1:1 из боевого apps/web/recruiter.html */
+  :root { --bg:#F4EFE6; --panel:#FFFFFF; --panelHi:#F7F1E7; --line:rgba(32,28,23,0.09); --lineHi:rgba(32,28,23,0.18);
+    --txt:#201C17; --dim:#6B6258; --dim2:#8E877E; --cyan:#4C7A6B; --violet:#9A6250; --green:#3D7A3E; --amber:#B8863C; --red:#B24A32;
+    --zg:#2F5F30; --zy:#c98a00; --zr:#B24A32; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt); font-size:14px; line-height:1.5;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+
+  /* верхняя плашка прототипа + переключатель роли */
+  .topbar { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:12px 20px; background:var(--panel); border-bottom:1px solid var(--line); }
+  .protobadge { background:var(--red); color:#fff; font-size:11.5px; padding:4px 12px; border-radius:999px; font-weight:700; }
+  .topbar .sp { flex:1; }
+  .roleseg { display:inline-flex; background:var(--panelHi); border:1px solid var(--lineHi); border-radius:12px; padding:4px; }
+  .roleseg button { border:0; background:none; font:inherit; font-weight:700; font-size:13px; color:var(--dim); padding:7px 14px; border-radius:9px; cursor:pointer; }
+  .roleseg button.on { background:var(--violet); color:#fff; }
+  .roleseg .lbl { align-self:center; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--dim2); padding:0 10px 0 6px; }
+  .rolehint { padding:8px 20px; font-size:12.5px; color:var(--dim); background:rgba(154,98,80,.06); border-bottom:1px solid var(--line); }
+  .rolehint b { color:var(--violet); }
+
+  /* каркас кабинета как в боевом */
+  .shell { display:flex; min-height:calc(100vh - 90px); }
+  .side { width:232px; flex:0 0 232px; background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column; padding:18px 14px; }
+  .brand { font-size:16px; font-weight:700; letter-spacing:-.2px; padding:4px 8px 6px; } .brand .dot { color:var(--violet); }
+  .who { display:flex; align-items:center; gap:10px; padding:10px 8px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin:4px 0 10px; }
+  .who .ava { width:30px; height:30px; border-radius:50%; background:var(--violet); color:#fff; font-weight:700; font-size:12px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 30px; }
+  .who .nm { font-weight:600; font-size:13px; } .who .role { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--violet); }
+  .nav { display:flex; flex-direction:column; gap:2px; }
+  .nav a { display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:10px; color:var(--dim); text-decoration:none; font-size:13.5px; font-weight:500; }
+  .nav a .ic { width:16px; text-align:center; color:var(--dim2); }
+  .nav a.on { background:rgba(154,98,80,.12); color:var(--violet); font-weight:700; }
+  .main { flex:1; min-width:0; padding:24px 28px 60px; max-width:1020px; }
+  h1 { font-size:22px; font-weight:700; margin:0 0 2px; letter-spacing:-.3px; }
+  .pagesub { color:var(--dim); font-size:13px; margin:0 0 16px; max-width:680px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px 20px; margin-bottom:14px; }
+  .btn { border:0; border-radius:10px; padding:8px 15px; font:inherit; font-weight:700; cursor:pointer; background:var(--violet); color:#fff; text-decoration:none; display:inline-block; font-size:13px; }
+  .btn.sec { background:var(--panelHi); color:var(--violet); border:1px solid var(--lineHi); }
+  .btn:disabled { opacity:.55; cursor:default; }
+  .dim { color:var(--dim); } .muted { color:var(--dim2); }
+  .stbadge { font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px; }
+  .stbadge.on { background:rgba(61,122,62,.14); color:var(--green); }
+  .notice { border-left:3px solid var(--amber); background:rgba(184,134,60,.07); padding:11px 14px; border-radius:0 10px 10px 0; margin-bottom:14px; font-size:13px; }
+  .notice.ok { border-color:var(--green); background:rgba(61,122,62,.08); }
+
+  /* вакансии — строки как .vrow в боевом */
+  .vrow { display:flex; align-items:center; gap:12px; padding:11px 14px; border:1px solid var(--line); border-radius:12px; cursor:pointer; background:var(--panel); margin-bottom:8px; }
+  .vrow.on { border-color:var(--violet); background:rgba(154,98,80,.07); }
+  .vrow .t { font-weight:700; flex:1; min-width:0; } .vrow .meta { color:var(--dim2); font-size:12.5px; white-space:nowrap; }
+
+  /* лента этапов — хребет вакансии */
+  .stepper { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px; }
+  .step { flex:1; min-width:150px; border:1px solid var(--line); border-radius:13px; background:var(--panel); padding:10px 13px; cursor:pointer; position:relative; }
+  .step:hover { background:var(--panelHi); }
+  .step.on { border-color:var(--violet); box-shadow:0 0 0 1px var(--violet); }
+  .step .sn { font-size:10.5px; font-weight:800; letter-spacing:.4px; text-transform:uppercase; color:var(--dim2); }
+  .step .st { font-weight:700; font-size:13.5px; margin:1px 0; }
+  .step .ss { font-size:12px; color:var(--dim); }
+  .step.done .sn { color:var(--green); } .step.done .sn::before { content:"✓ "; }
+  .step .live { display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--green); margin-right:4px; vertical-align:1px; }
+
+  /* баннер «что дальше» */
+  .nextbar { border-left:3px solid var(--violet); background:rgba(154,98,80,.06); padding:11px 14px; border-radius:0 10px 10px 0; margin-bottom:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-size:13.5px; }
+  .nextbar b { color:var(--violet); }
+
+  /* карточки кандидатов — как .cand в боевом, светофор слева */
+  .cand { border:1px solid var(--line); border-radius:12px; padding:0; margin-bottom:10px; background:var(--panel); overflow:hidden; }
+  .cand summary { cursor:pointer; list-style:none; padding:13px 15px; }
+  .cand summary::-webkit-details-marker { display:none; }
+  .cand .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:9px; }
+  .cand .nm { font-weight:700; font-size:14.5px; }
+  .cand .vd { color:var(--dim); font-size:13px; margin:3px 0 0 18px; }
+  .cand .body { padding:0 15px 14px 33px; }
+  .why { margin:2px 0 0; padding:0; list-style:none; font-size:13px; }
+  .why li { padding:2px 0; } .why li::before { content:"— "; color:var(--dim2); }
+  .gate { display:flex; gap:8px; padding:3px 0; font-size:13px; }
+  .gate b.y { color:var(--zg); } .gate b.n { color:var(--zr); }
+  .gate i { color:#556; }
+  .sub { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim2); margin:12px 0 4px; font-weight:700; }
+  .acts { margin-top:11px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .slot { margin-top:9px; }
+  .draft { border-left:3px solid var(--violet); background:rgba(154,98,80,.06); padding:10px 12px; border-radius:0 10px 10px 0; }
+  .draft textarea { width:100%; padding:8px; border:1px solid var(--line); border-radius:8px; font:inherit; font-size:13px; resize:vertical; background:#fff; }
+  .draft .cap { font-size:11.5px; color:var(--dim); margin-bottom:5px; }
+  .sentok { font-size:12.5px; color:var(--green); font-weight:600; }
+
+  /* фильтр-светофор */
+  .zfil { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .zfil button { border:1px solid var(--lineHi); background:var(--panel); border-radius:999px; padding:5px 13px; font:inherit; font-size:12.5px; font-weight:700; color:var(--dim); cursor:pointer; }
+  .zfil button.on { border-color:var(--txt); color:var(--txt); background:var(--panelHi); }
+  .zfil .zd { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:0; }
+
+  /* карта требований — критерии с тумблерами (из прото скоркарты) */
+  .crit { display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:13.5px; }
+  .crit:first-of-type { border-top:0; }
+  .crit .tog { width:34px; height:20px; border-radius:999px; background:rgba(32,28,23,.15); flex:none; position:relative; transition:.15s; cursor:pointer; margin-top:1px; }
+  .crit .tog::after { content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:.15s; }
+  .crit.on .tog { background:var(--violet); } .crit.on .tog::after { left:16px; }
+  .crit .cl { flex:1; min-width:0; } .crit.off .cl > .cn { color:var(--dim2); text-decoration:line-through; }
+  .crit .cn { font-weight:600; }
+  .must { font-size:10px; font-weight:800; color:#fff; background:var(--txt); border-radius:6px; padding:2px 7px; margin-left:6px; vertical-align:1px; }
+  .hyp { font-size:10px; font-weight:800; color:var(--amber); background:rgba(184,134,60,.16); border-radius:6px; padding:2px 7px; margin-left:6px; vertical-align:1px; }
+  .src { font-size:12px; color:var(--dim); margin-top:2px; }
+  .src i { color:#556; }
+  .srcpin { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.4px; padding:2px 7px; border-radius:999px; margin-right:6px; }
+  .srcpin.tell { background:rgba(76,122,107,.14); color:var(--cyan); }
+  .srcpin.rule { background:rgba(32,28,23,.08); color:var(--txt); }
+  .srcpin.own { background:rgba(184,134,60,.16); color:var(--amber); }
+
+  /* интейк по случаям */
+  .qcard { border:1px solid var(--line); border-radius:12px; padding:13px 15px; margin-bottom:10px; }
+  .qcard .qt { font-weight:700; font-size:14px; }
+  .qcard .voice { display:inline-flex; align-items:center; gap:7px; background:var(--panelHi); border:1px solid var(--lineHi); border-radius:999px; padding:4px 12px; font-size:12px; font-weight:600; color:var(--dim); margin-top:7px; }
+  .qcard .voice .pl { color:var(--violet); font-weight:800; }
+  .chips { margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
+  .chip { border:1px solid var(--lineHi); border-radius:999px; padding:4px 12px; font-size:12.5px; font-weight:600; background:rgba(76,122,107,.08); color:var(--cyan); }
+
+  /* сверка (калибровка) — бары из прото скоркарты */
+  .calrow { display:grid; grid-template-columns:1fr 130px 60px; gap:12px; align-items:center; border:1px solid var(--line); border-radius:11px; padding:9px 13px; margin-bottom:8px; }
+  .calrow .crn { font-weight:600; font-size:13px; }
+  .bar { height:9px; border-radius:999px; background:rgba(32,28,23,.08); overflow:hidden; }
+  .bar > i { display:block; height:100%; border-radius:999px; }
+  .bar > i.hi { background:var(--green); } .bar > i.mid { background:var(--amber); } .bar > i.lo { background:var(--red); }
+  .pct { font-weight:800; font-size:13px; text-align:right; }
+  .pct.hi { color:var(--green); } .pct.mid { color:var(--amber); } .pct.lo { color:var(--red); }
+
+  /* воронка итога */
+  .funnel { display:flex; gap:8px; flex-wrap:wrap; }
+  .fstep { flex:1; min-width:110px; border:1px solid var(--line); border-radius:12px; padding:10px 12px; text-align:center; }
+  .fstep .fv { font-size:20px; font-weight:800; } .fstep .fl { font-size:11.5px; color:var(--dim); }
+
+  /* прогресс разбора */
+  .prog { height:8px; background:rgba(32,28,23,.08); border-radius:999px; overflow:hidden; max-width:420px; }
+  .prog > i { display:block; height:100%; width:0%; background:var(--zg); transition:width .3s; }
+
+  /* ── глубина по роли ────────────────────────────────────────────
+     d2 = карта требований и «откуда взялось» (нанимающий и глубже)
+     d3 = сверка, сила критериев, правила метода (HRD)
+     Роль задаёт, что открыто сразу; ссылка «подробнее» открывает
+     слой по запросу в любой роли. */
+  .d2, .d3 { display:none; }
+  body.r-hm .d2, body.r-hrd .d2 { display:block; }
+  body.r-hrd .d3 { display:block; }
+  .d2.open, .d3.open { display:block; }
+  .d2tog, .d3tog { border:0; background:none; color:var(--violet); font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; padding:0; text-decoration:underline; text-decoration-style:dashed; text-underline-offset:3px; }
+  body.r-hm .d2tog, body.r-hrd .d2tog, body.r-hrd .d3tog { display:none; }
+  .only-rec, .only-hm, .only-hrd { display:none; }
+  body.r-rec .only-rec { display:block; } body.r-hm .only-hm { display:block; } body.r-hrd .only-hrd { display:block; }
+  body.r-rec .only-rec.inline, body.r-hm .only-hm.inline, body.r-hrd .only-hrd.inline { display:inline-flex; }
+  body.r-hm .hide-hm { display:none; }
+
+  .pane { display:none; } .pane.on { display:block; }
+
+  @media(max-width:760px){
+    .shell { flex-direction:column; } .side { width:auto; flex:none; flex-direction:row; align-items:center; gap:10px; padding:10px 14px; }
+    .side .who, .side .nav { display:none; }
+    .main { padding:16px; }
+    .step { min-width:calc(50% - 6px); }
+    .vrow { flex-wrap:wrap; gap:4px 12px; }
+    .vrow .t { flex:none; width:100%; }
+    .vrow .meta { white-space:normal; }
+    .calrow { grid-template-columns:1fr; gap:5px; }
+  }
+</style>
+</head>
+<body class="r-rec">
+
+  <div class="topbar">
+    <span class="protobadge">Прототип · сквозной флоу рекрутёра</span>
+    <span class="sp"></span>
+    <div class="roleseg" id="roleseg">
+      <span class="lbl">Смотрю как</span>
+      <button data-role="rec" class="on">Рекрутёр</button>
+      <button data-role="hm">Нанимающий</button>
+      <button data-role="hrd">HRD</button>
+    </div>
+  </div>
+  <div class="rolehint" id="rolehint"></div>
+
+  <div class="shell">
+    <aside class="side">
+      <div class="brand">Слаживание <span class="dot">·</span></div>
+      <div class="who"><div class="ava">ЮК</div><div><div class="nm">Юля Ким</div><div class="role">Рекрутёр · Ромашка</div></div></div>
+      <nav class="nav">
+        <a href="#"><span class="ic">◇</span>Главная</a>
+        <a href="#" class="on"><span class="ic">◈</span>Рекрутёр</a>
+        <a href="#"><span class="ic">◇</span>Чаты</a>
+        <a href="#"><span class="ic">◇</span>Справка</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <h1>Рекрутёр</h1>
+      <p class="pagesub">Вакансия идёт по пяти шагам: кого ищем, отклики, разбор, собеседования, решение. Агент делает черновую работу, отправка в hh — после вашего одобрения.</p>
+
+      <!-- вакансии: одна активная лента на вакансию -->
+      <div class="vrow on">
+        <div class="t">Су-шеф, ресторан на Лесной</div>
+        <div class="meta">hh.ru · открыта 12 дней · 81 отклик</div>
+      </div>
+      <div class="vrow" style="opacity:.75">
+        <div class="t">Официант (2 смены)</div>
+        <div class="meta">ждёт карту требований — задайте Марине первый вопрос</div>
+      </div>
+
+      <!-- что дальше: платформа сама говорит следующий шаг -->
+      <div class="nextbar" id="nextbar">
+        <span><b>Дальше:</b> <span id="nexttext">34 новых отклика ждут разбора по карте требований.</span></span>
+        <button class="btn" id="nextbtn" style="padding:6px 13px">Разобрать новые</button>
+      </div>
+
+      <!-- лента этапов -->
+      <div class="stepper" id="stepper">
+        <div class="step done" data-pane="1">
+          <div class="sn">Шаг 1</div><div class="st">Кого ищем</div>
+          <div class="ss">карта готова · 5 критериев</div>
+        </div>
+        <div class="step" data-pane="2">
+          <div class="sn">Шаг 2</div><div class="st">Отклики</div>
+          <div class="ss"><span class="live"></span>81 всего · <b id="stNew">34 новых</b></div>
+        </div>
+        <div class="step on" data-pane="3">
+          <div class="sn">Шаг 3</div><div class="st">Разбор и решения</div>
+          <div class="ss" id="stZones">47 разобрано · 8 / 17 / 22</div>
+        </div>
+        <div class="step" data-pane="4">
+          <div class="sn">Шаг 4</div><div class="st">Собеседования</div>
+          <div class="ss">2 в работе · 1 слот подтверждён</div>
+        </div>
+        <div class="step" data-pane="5">
+          <div class="sn">Шаг 5</div><div class="st">Решение</div>
+          <div class="ss">офер не сделан</div>
+        </div>
+      </div>
+
+      <!-- ═══ ШАГ 1: КОГО ИЩЕМ ═══ -->
+      <section class="pane" id="pane1">
+        <div class="panel">
+          <h3 style="margin:0 0 4px">Карта требований</h3>
+          <p class="dim" style="font-size:13px;margin:0 0 12px">По этим критериям агент разбирает каждое резюме. Рядом с критерием видно, откуда он взялся.</p>
+
+          <div class="crit on"><span class="tog"></span>
+            <div class="cl"><span class="cn">Держит нагрузку в час пик</span><span class="must">обязательное</span>
+              <div class="src d2"><span class="srcpin tell">из рассказа</span>Марина, 3 июля, голосом: <i>«в час пик замирал — 40 заказов, и линия встаёт»</i></div>
+            </div>
+          </div>
+          <div class="crit on"><span class="tog"></span>
+            <div class="cl"><span class="cn">Собирал станцию или цех с нуля</span><span class="must">обязательное</span>
+              <div class="src d2"><span class="srcpin tell">из рассказа</span>Марина, 3 июля: <i>«сам собрал холодный цех с нуля — это было его сильное»</i></div>
+            </div>
+          </div>
+          <div class="crit on"><span class="tog"></span>
+            <div class="cl"><span class="cn">Ставит работу команде, не тянет всё сам</span>
+              <div class="src d2"><span class="srcpin tell">из рассказа</span>Марина, 3 июля: <i>«не гонял своих по стандарту, всё сам да сам — и выгорел»</i></div>
+            </div>
+          </div>
+          <div class="crit on"><span class="tog"></span>
+            <div class="cl"><span class="cn">Уверенная работа на воке</span><span class="must">обязательное</span>
+              <div class="src d2"><span class="srcpin rule">правило компании</span>формат «Ромашки» — азиатская кухня; добавлено HRD 5 июля</div>
+            </div>
+          </div>
+          <div class="crit on"><span class="tog"></span>
+            <div class="cl"><span class="cn">Стаж су-шефом от 3 лет</span><span class="hyp">пока не проверен</span>
+              <div class="src d2"><span class="srcpin own">мнение</span>добавила Юля; на прошлых наймах предсказывал успех слабо — цифры в сверке</div>
+            </div>
+          </div>
+          <div class="crit off"><span class="tog"></span>
+            <div class="cl"><span class="cn">Высшее кулинарное</span>
+              <div class="src d2"><span class="srcpin own">мнение</span>выключен: за 4 прошлых найма ни разу не отличил сильного от слабого</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px"><button class="d2tog" data-open=".src">откуда взялся каждый критерий</button></div>
+          <div class="d3" style="margin-top:12px;border-top:1px solid var(--line);padding-top:12px">
+            <div class="sub">Заготовка Слаживания</div>
+            <p class="dim" style="font-size:12.5px;margin:0 0 6px">Карта началась с нашей заготовки: правила добычи критериев, минимум обязательных, у каждого критерия — источник и цитата. «Ромашка» поправила её под себя; заготовка видна и возвращается кнопкой.</p>
+            <button class="btn sec" style="padding:5px 12px;font-size:12px">Сравнить с заготовкой</button>
+          </div>
+        </div>
+
+        <div class="panel d2">
+          <h3 style="margin:0 0 4px">Как пополняется карта</h3>
+          <p class="dim" style="font-size:13px;margin:0 0 12px">Агент спрашивает нанимающего про конкретные случаи — из рассказа критерий достаётся вместе с цитатой. Ответить можно голосом в Telegram.</p>
+
+          <div class="qcard">
+            <div class="qt">«Расскажите про су-шефа, с которым не сложилось»</div>
+            <div class="voice"><span class="pl">▶</span> ответ Марины голосом · 2:14 · из Telegram</div>
+            <div class="chips">
+              <span class="chip">+ держит час пик</span>
+              <span class="chip">+ собирал станцию с нуля</span>
+              <span class="chip">+ ставит работу команде</span>
+            </div>
+          </div>
+          <div class="qcard">
+            <div class="qt">«Кого из прошлых су-шефов вы забрали бы с собой? Чем он был хорош в деле?»</div>
+            <div class="slot" id="q2slot">
+              <button class="btn sec" id="q2btn" style="padding:6px 13px">Спросить Марину в Telegram</button>
+            </div>
+          </div>
+          <p class="muted" style="font-size:12.5px;margin:8px 0 0">Вопрос «каким должен быть идеальный кандидат» агент не задаёт: он даёт общие слова без критериев.</p>
+        </div>
+      </section>
+
+      <!-- ═══ ШАГ 2: ОТКЛИКИ ═══ -->
+      <section class="pane" id="pane2">
+        <div class="panel">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+            <span class="stbadge on">✓ hh.ru подключён</span>
+            <span class="dim">ООО «Ромашка» · менеджер Марина Т.</span>
+          </div>
+          <p class="dim" style="font-size:13px;margin:0 0 10px">Отклики приходят, пока вакансия открыта. Новые агент разбирает по карте требований — сами они никуда не отправляются.</p>
+          <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px">
+            <div><div style="font-size:22px;font-weight:800">81</div><div class="muted" style="font-size:12px">откликов всего</div></div>
+            <div><div style="font-size:22px;font-weight:800">47</div><div class="muted" style="font-size:12px">уже разобрано</div></div>
+            <div><div style="font-size:22px;font-weight:800;color:var(--violet)" id="cNew">34</div><div class="muted" style="font-size:12px">новых, ждут разбора</div></div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn" id="runBtn">Разобрать новые по карте</button>
+            <span class="dim" style="font-size:12.5px" id="runMsg"></span>
+          </div>
+          <div class="prog" id="runProg" style="display:none;margin-top:10px"><i id="runFill"></i></div>
+        </div>
+        <div class="panel">
+          <h3 style="margin:0 0 4px">Резюме не с hh</h3>
+          <p class="dim" style="font-size:13px;margin:0 0 10px">Пачку файлов PDF/DOCX или архив агент читает и кладёт в тот же разбор — один список, один светофор.</p>
+          <button class="btn sec" style="padding:7px 14px">Загрузить файлы</button>
+        </div>
+      </section>
+
+      <!-- ═══ ШАГ 3: РАЗБОР И РЕШЕНИЯ ═══ -->
+      <section class="pane on" id="pane3">
+        <div class="zfil" id="zfil">
+          <button class="on" data-zf="all">Все · <span id="zAll">47</span></button>
+          <button data-zf="green"><span class="zd" style="background:var(--zg)"></span>Зовём · <span id="zG">8</span></button>
+          <button data-zf="yellow"><span class="zd" style="background:var(--zy)"></span>Посмотреть самим · 17</button>
+          <button data-zf="red"><span class="zd" style="background:var(--zr)"></span>Мимо · 22</button>
+        </div>
+
+        <!-- пакетное действие по зелёным -->
+        <div class="notice ok hide-hm" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span>8 зелёных ещё не получили приглашение.</span>
+          <button class="btn" id="massInv" style="padding:6px 13px">Пригласить всех зелёных</button>
+          <span class="dim" style="font-size:12.5px" id="massMsg"></span>
+        </div>
+
+        <!-- показать нанимающему -->
+        <div class="panel only-rec inline" style="display:none;padding:10px 14px;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+          <span class="dim" style="font-size:12.5px">Показать нанимающему:</span>
+          <select style="padding:6px 9px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px"><option>Марина Т.</option></select>
+          <button class="btn sec" id="hmShow" style="padding:6px 12px;font-size:12.5px">Показать отмеченных</button>
+          <span class="dim" style="font-size:12.5px" id="hmMsg"></span>
+        </div>
+
+        <!-- ── кандидат: зелёный ── -->
+        <details class="cand" data-zone="green" style="border-left:4px solid var(--zg)">
+          <summary>
+            <span class="dot" style="background:var(--zg)"></span><span class="nm">Игорь Савченко</span>
+            <span class="muted" style="font-size:12.5px"> · су-шеф, 6 лет · 120 000 ₽</span>
+            <div class="vd">Все обязательные пройдены с цитатами. Вёл линию на 300 чеков в смену, открывал кухню с нуля.</div>
+          </summary>
+          <div class="body">
+            <div class="sub">Почему зелёный</div>
+            <ul class="why">
+              <li>Час пик: «держали 300 чеков в пятницу, линия не вставала» — прямой опыт.</li>
+              <li>Станция с нуля: открывал кухню в «Море и вок», собирал горячий цех сам.</li>
+              <li>Вок: 4 года на вок-станции, азиатское меню совпадает с нашим.</li>
+            </ul>
+
+            <div class="d2">
+              <div class="sub">По каждому критерию карты</div>
+              <div class="gate"><b class="y">✓</b><span>Держит час пик — <i>«держали 300 чеков в пятницу, линия не вставала»</i></span></div>
+              <div class="gate"><b class="y">✓</b><span>Собирал станцию с нуля — <i>«открывал кухню, сам ставил горячий цех»</i></span></div>
+              <div class="gate"><b class="y">✓</b><span>Ставит работу команде — <i>«вывел двух поваров на самостоятельные смены»</i></span></div>
+              <div class="gate"><b class="y">✓</b><span>Работа на воке — <i>«4 года станция вок, лапша и рис на потоке»</i></span></div>
+              <div class="gate"><b class="y">✓</b><span>Стаж от 3 лет — 6 лет су-шефом</span></div>
+              <div class="muted" style="font-size:12px;margin-top:4px">Клик по цитате в кабинете подсвечивает её в резюме — проверить источник можно не выходя из разбора.</div>
+            </div>
+            <div class="d3">
+              <div class="sub">Для сверки</div>
+              <p class="dim" style="font-size:12.5px;margin:0">Профиль близок к двум успешным наймам 2025 года (совпадение по «станция с нуля» и «час пик» — критериям с силой 86% и 79%).</p>
+            </div>
+            <div style="margin-top:8px"><button class="d2tog">как решилось — по критериям</button></div>
+
+            <div class="acts hide-hm">
+              <button class="btn" data-act="invite" data-nm="Игорь Савченко">Пригласить на собеседование</button>
+              <button class="btn sec" data-act="reject" data-nm="Игорь Савченко">Готовить отказ</button>
+              <button class="btn sec" data-act="show" data-nm="Игорь Савченко">Показать нанимающему</button>
+            </div>
+            <div class="acts only-hm">
+              <span class="dim" style="font-size:12.5px">Ваш ответ рекрутёру:</span>
+              <button class="btn" data-hmv="yes">Зову</button>
+              <button class="btn sec" data-hmv="no">Мимо</button>
+              <span class="dim" style="font-size:12.5px" data-hmvmsg></span>
+            </div>
+            <div class="slot"></div>
+          </div>
+        </details>
+
+        <!-- ── кандидат: зелёный, уже приглашён ── -->
+        <details class="cand" data-zone="green" style="border-left:4px solid var(--zg)">
+          <summary>
+            <span class="dot" style="background:var(--zg)"></span><span class="nm">Анна Крылова</span>
+            <span class="muted" style="font-size:12.5px"> · су-шеф, 4 года</span>
+            <span class="stbadge" style="background:rgba(76,122,107,.14);color:var(--cyan)">приглашена · слот подтверждён</span>
+            <div class="vd">Обязательные пройдены. Открывала точку с нуля, вок — основная станция последние два года.</div>
+          </summary>
+          <div class="body">
+            <div class="sub">Почему зелёная</div>
+            <ul class="why">
+              <li>Станция с нуля: запускала кухню доставки, собирала оба цеха.</li>
+              <li>Вок: основная станция в «Азия Гриль» два года.</li>
+              <li>Час пик: смены на доставке в пик 200+ заказов.</li>
+            </ul>
+            <div class="d2">
+              <div class="sub">Дальше по цепочке</div>
+              <p class="dim" style="font-size:12.5px;margin:0">Собеседование в четверг 16:00, ведёт Марина. Оценка встречи ляжет поверх разбора резюме — обе видны в шаге 4.</p>
+            </div>
+            <div class="slot"></div>
+          </div>
+        </details>
+
+        <!-- ── кандидат: жёлтый ── -->
+        <details class="cand" data-zone="yellow" style="border-left:4px solid var(--zy)">
+          <summary>
+            <span class="dot" style="background:var(--zy)"></span><span class="nm">Марат Гизатуллин</span>
+            <span class="muted" style="font-size:12.5px"> · повар-универсал, 8 лет</span>
+            <div class="vd">Сильный на воке, но опыт час-пика из резюме не виден — вопрос на собеседование, решать рано.</div>
+          </summary>
+          <div class="body">
+            <div class="sub">Почему жёлтый</div>
+            <ul class="why">
+              <li>Вок: «шеф вок-станции» три года — сильное совпадение.</li>
+              <li>Час пик: в резюме нет ни одного факта про поток — агент не додумывает, выносит вам.</li>
+              <li>Станция с нуля: упомянута «помощь при открытии», роль неясна.</li>
+            </ul>
+            <div class="d2">
+              <div class="sub">По каждому критерию карты</div>
+              <div class="gate"><b class="y">✓</b><span>Работа на воке — <i>«шеф вок-станции, 3 года»</i></span></div>
+              <div class="gate"><b class="n">✗</b><span>Держит час пик — фактов в резюме нет; вопрос для собеседования</span></div>
+              <div class="gate"><b class="n">✗</b><span>Собирал станцию с нуля — <i>«участвовал в открытии»</i> — роль не видна</span></div>
+              <div class="gate"><b class="y">✓</b><span>Стаж от 3 лет — 8 лет на кухне</span></div>
+            </div>
+            <div style="margin-top:8px"><button class="d2tog">как решилось — по критериям</button></div>
+            <div class="acts hide-hm">
+              <button class="btn sec" data-act="invite" data-nm="Марат Гизатуллин">Пригласить на собеседование</button>
+              <button class="btn sec" data-act="reject" data-nm="Марат Гизатуллин">Готовить отказ</button>
+            </div>
+            <div class="slot"></div>
+          </div>
+        </details>
+
+        <!-- ── кандидат: красный ── -->
+        <details class="cand" data-zone="red" style="border-left:4px solid var(--zr)">
+          <summary>
+            <span class="dot" style="background:var(--zr)"></span><span class="nm">Олег Демидов</span>
+            <span class="muted" style="font-size:12.5px"> · повар холодного цеха, 2 года</span>
+            <div class="vd">Два обязательных критерия не пройдены: нет вока и нет опыта потока.</div>
+          </summary>
+          <div class="body">
+            <div class="sub">Почему красный</div>
+            <ul class="why">
+              <li>Вок: опыта нет — обязательный критерий не пройден.</li>
+              <li>Час пик: холодный цех кафе на 30 мест, потока не было.</li>
+              <li>Решение по критериям карты; возраст и вуз агент не учитывает.</li>
+            </ul>
+            <div class="d2">
+              <div class="sub">По каждому критерию карты</div>
+              <div class="gate"><b class="n">✗</b><span>Работа на воке — в резюме отсутствует</span></div>
+              <div class="gate"><b class="n">✗</b><span>Держит час пик — <i>«кафе на 30 посадок»</i></span></div>
+              <div class="gate"><b class="y">✓</b><span>Собирал станцию с нуля — <i>«ставил холодный цех при открытии»</i></span></div>
+            </div>
+            <div style="margin-top:8px"><button class="d2tog">как решилось — по критериям</button></div>
+            <div class="acts hide-hm">
+              <button class="btn sec" data-act="reject" data-nm="Олег Демидов">Готовить отказ</button>
+            </div>
+            <div class="slot"></div>
+          </div>
+        </details>
+      </section>
+
+      <!-- ═══ ШАГ 4: СОБЕСЕДОВАНИЯ ═══ -->
+      <section class="pane" id="pane4">
+        <div class="panel">
+          <h3 style="margin:0 0 4px">Собеседования</h3>
+          <p class="dim" style="font-size:13px;margin:0 0 14px">Оценка встречи ложится поверх разбора резюме — у кандидата копится история касаний, решение видно целиком.</p>
+
+          <details class="cand" style="border-left:4px solid var(--zg)" open>
+            <summary>
+              <span class="dot" style="background:var(--zg)"></span><span class="nm">Игорь Савченко</span>
+              <span class="stbadge" style="background:rgba(154,98,80,.14);color:var(--violet)">после собеседования</span>
+            </summary>
+            <div class="body">
+              <div class="sub">История касаний</div>
+              <div style="border-left:3px solid var(--zg);padding:2px 0 2px 9px;margin:6px 0;font-size:12.5px">
+                <b>Резюме</b> · разбор агента <span style="color:var(--zg)">●</span>
+                <div class="dim">Все обязательные с цитатами, профиль под формат.</div>
+              </div>
+              <div style="border-left:3px solid var(--zg);padding:2px 0 2px 9px;margin:6px 0;font-size:12.5px">
+                <b>Собеседование</b> · Марина Т., 9 июля <span style="color:var(--zg)">●</span>
+                <div class="dim">Разобрал кейс «встала линия в пик» по шагам; попросил день на кухне до решения — хороший знак.</div>
+              </div>
+              <div class="acts hide-hm">
+                <button class="btn" data-act="verdict" data-nm="Игорь Савченко">Собрать вывод по кандидату</button>
+                <button class="btn sec" data-act="notes" data-nm="Игорь Савченко">Внести заметки со встречи</button>
+              </div>
+              <div class="slot"></div>
+            </div>
+          </details>
+
+          <details class="cand" style="border-left:4px solid var(--zg)">
+            <summary>
+              <span class="dot" style="background:var(--zg)"></span><span class="nm">Анна Крылова</span>
+              <span class="stbadge" style="background:rgba(76,122,107,.14);color:var(--cyan)">четверг 16:00 · слот подтверждён</span>
+            </summary>
+            <div class="body">
+              <p class="dim" style="font-size:13px;margin:0">Кандидат подтвердил время. После встречи внесите заметки или транскрипт — агент разберёт их по карте и добавит слой оценки.</p>
+              <div class="acts hide-hm"><button class="btn sec" data-act="notes" data-nm="Анна Крылова">Внести заметки со встречи</button></div>
+              <div class="slot"></div>
+            </div>
+          </details>
+
+          <p class="dim d2" style="font-size:12.5px;margin:10px 0 0">Вопросы на собеседование агент собирает из дыр разбора: у Марата это «час пик» и «роль в открытии» — спрашивать стоит именно про эти случаи.</p>
+        </div>
+      </section>
+
+      <!-- ═══ ШАГ 5: РЕШЕНИЕ ═══ -->
+      <section class="pane" id="pane5">
+        <div class="panel">
+          <h3 style="margin:0 0 10px">Воронка по вакансии</h3>
+          <div class="funnel">
+            <div class="fstep"><div class="fv">81</div><div class="fl">откликов</div></div>
+            <div class="fstep"><div class="fv">47</div><div class="fl">разобрано</div></div>
+            <div class="fstep"><div class="fv" style="color:var(--zg)">8</div><div class="fl">зовём</div></div>
+            <div class="fstep"><div class="fv">2</div><div class="fl">собеседования</div></div>
+            <div class="fstep"><div class="fv">1</div><div class="fl">готов к оферу</div></div>
+          </div>
+          <p class="dim" style="font-size:13px;margin:12px 0 0">Разбор 47 резюме занял у агента 26 минут. Ручной разбор такой пачки — около рабочего дня.</p>
+        </div>
+
+        <div class="panel">
+          <h3 style="margin:0 0 4px">Готов к оферу</h3>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px">
+            <span class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--zg)"></span>
+            <b>Игорь Савченко</b>
+            <span class="dim" style="font-size:12.5px">резюме зелёное · собеседование зелёное · вывод собран</span>
+            <button class="btn hide-hm" id="hireBtn" style="margin-left:auto">Отметить нанятым</button>
+          </div>
+          <div class="slot" id="hireSlot"></div>
+        </div>
+
+        <div class="panel d3">
+          <h3 style="margin:0 0 4px">Сверка: агент против ваших решений</h3>
+          <p class="dim" style="font-size:13px;margin:0 0 12px">Ваши оценки на карточках сравниваются со светофором агента. Каждый наём проверяет и критерии: предсказал успех — сила растёт, промахнулся — падает.</p>
+          <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+            <div><div style="font-size:22px;font-weight:800">84%</div><div class="muted" style="font-size:12px">совпадение · 31 размечен</div></div>
+            <div><div style="font-size:22px;font-weight:800;color:var(--red)">1</div><div class="muted" style="font-size:12px">потеряли стоящего (ваш зелёный у агента красный)</div></div>
+          </div>
+          <div class="sub">Сила критериев на прошлых наймах</div>
+          <div class="calrow"><div class="crn">Собирал станцию с нуля</div><div class="bar"><i class="hi" style="width:86%"></i></div><div class="pct hi">86%</div></div>
+          <div class="calrow"><div class="crn">Держит нагрузку в час пик</div><div class="bar"><i class="hi" style="width:79%"></i></div><div class="pct hi">79%</div></div>
+          <div class="calrow"><div class="crn">Стаж от 3 лет</div><div class="bar"><i class="mid" style="width:44%"></i></div><div class="pct mid">44%</div></div>
+          <div class="calrow"><div class="crn">Высшее кулинарное — выключен</div><div class="bar"><i class="lo" style="width:12%"></i></div><div class="pct lo">12%</div></div>
+          <p class="dim" style="font-size:12.5px;margin:10px 0 0">По слабому критерию цифра лежит на столе; решение о карте — за вами.</p>
+          <div class="acts">
+            <button class="btn sec" style="padding:6px 12px">Переоценить всех по новой карте</button>
+          </div>
+        </div>
+        <div style="margin-bottom:14px"><button class="d3tog">сверка и сила критериев — подробнее</button></div>
+      </section>
+
+    </main>
+  </div>
+
+<script>
+  // ── роль: что открыто сразу ──
+  var HINTS = {
+    rec: 'Рекрутёр видит светофор, три строки «почему» и действия. Глубина открывается ссылками «как решилось».',
+    hm:  'Нанимающему добавилась <b>карта требований</b> с источниками: видно, из какого рассказа взялся каждый критерий. Действия в hh остаются у рекрутёра.',
+    hrd: 'HRD видит всю глубину: сверку решений, силу критериев на прошлых наймах и заготовку метода.'
+  };
+  var seg = document.getElementById('roleseg');
+  function setRole(r) {
+    document.body.className = 'r-' + r;
+    seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.role === r); });
+    document.getElementById('rolehint').innerHTML = HINTS[r];
+    // сброс раскрытых по запросу слоёв при смене роли — видна честная разница ролей
+    document.querySelectorAll('.d2.open,.d3.open').forEach(function (x) { x.classList.remove('open'); });
+  }
+  seg.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && b.dataset.role) setRole(b.dataset.role); });
+  setRole('rec');
+
+  // ── лента этапов ──
+  function goPane(n) {
+    document.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('on', p.id === 'pane' + n); });
+    document.querySelectorAll('.step').forEach(function (s) { s.classList.toggle('on', s.dataset.pane === String(n)); });
+  }
+  document.getElementById('stepper').addEventListener('click', function (e) {
+    var s = e.target.closest('.step'); if (s) goPane(s.dataset.pane);
+  });
+
+  // ── «что дальше»: одно рекомендованное действие, меняется по состоянию ──
+  var nextbtn = document.getElementById('nextbtn');
+  function setNext(text, btnLabel, onClick) {
+    document.getElementById('nexttext').textContent = text;
+    nextbtn.textContent = btnLabel; nextbtn.onclick = onClick; nextbtn.disabled = false;
+  }
+  setNext('34 новых отклика ждут разбора по карте требований.', 'Разобрать новые', function () { goPane(2); runScreen(); });
+
+  // ── разбор новых откликов (шаг 2): прогресс, итог, следующий шаг ──
+  var running = false;
+  function runScreen() {
+    if (running) return; running = true;
+    var btn = document.getElementById('runBtn'), msg = document.getElementById('runMsg'),
+        prog = document.getElementById('runProg'), fill = document.getElementById('runFill');
+    btn.disabled = true; nextbtn.disabled = true; prog.style.display = 'block';
+    var total = 34, done = 0;
+    msg.textContent = 'Разбираю: 0 из ' + total + '…';
+    var t = setInterval(function () {
+      done += 3 + Math.floor(Math.random() * 4);
+      if (done >= total) {
+        done = total; clearInterval(t);
+        fill.style.width = '100%';
+        msg.textContent = 'Готово: 34 разобрано. Новых зелёных — 3.';
+        document.getElementById('cNew').textContent = '0';
+        document.getElementById('stNew').textContent = 'разобраны все';
+        document.getElementById('stZones').textContent = '81 разобрано · 11 / 24 / 46';
+        document.getElementById('zAll').textContent = '81';
+        document.getElementById('zG').textContent = '11';
+        setNext('3 новых зелёных ждут вашего взгляда и приглашения.', 'Открыть зелёных', function () {
+          goPane(3);
+          document.querySelector('#zfil [data-zf="green"]').click();
+        });
+        running = false; btn.disabled = false;
+        return;
+      }
+      fill.style.width = Math.round(done / total * 100) + '%';
+      msg.textContent = 'Разбираю: ' + done + ' из ' + total + '… идёт на сервере, вкладку можно закрыть.';
+    }, 450);
+  }
+  document.getElementById('runBtn').onclick = runScreen;
+
+  // ── фильтр-светофор ──
+  document.getElementById('zfil').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    var z = b.dataset.zf;
+    document.querySelectorAll('#pane3 .cand').forEach(function (c) {
+      c.style.display = (z === 'all' || c.dataset.zone === z) ? '' : 'none';
+    });
+  });
+
+  // ── глубина по запросу: «как решилось» открывает следующий слой в своей карточке ──
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.classList && t.classList.contains('d2tog')) {
+      var scope = t.closest('.body') || t.closest('.panel');
+      scope.querySelectorAll('.d2').forEach(function (x) { x.classList.add('open'); });
+      t.style.display = 'none';
+    }
+    if (t.classList && t.classList.contains('d3tog')) {
+      var sc = t.closest('.pane') || document;
+      sc.querySelectorAll('.d3').forEach(function (x) { x.classList.add('open'); });
+      t.style.display = 'none';
+    }
+  });
+
+  // ── действия по кандидату: черновик → правка → одобрить → отправить в hh ──
+  var DRAFTS = {
+    invite: function (nm) { return 'Здравствуйте, ' + nm.split(' ')[0] + '! Ваше резюме нам подходит: опыт с вок-станцией и работа в потоке — то, что ищем на позицию су-шефа. Приглашаем познакомиться в четверг или пятницу после 15:00 — какое время удобно?'; },
+    reject: function (nm) { return 'Здравствуйте, ' + nm.split(' ')[0] + '! Спасибо за отклик на вакансию су-шефа. Сейчас мы ищем человека с опытом вок-станции и работы в плотном потоке заказов, поэтому продолжить не готовы. Резюме сохраним — вернёмся, если откроется подходящая позиция.'; }
+  };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var kind = b.dataset.act, nm = b.dataset.nm || '', slot = b.closest('.body').querySelector('.slot');
+
+    if (kind === 'invite' || kind === 'reject') {
+      var title = kind === 'invite' ? 'Приглашение' : 'Отказ';
+      slot.innerHTML = '<div class="draft">' +
+        '<div class="cap">' + title + ' — черновик агента. Поправьте текст; в hh уйдёт только после «Одобрить».</div>' +
+        '<textarea rows="4"></textarea>' +
+        '<div class="acts" style="margin-top:8px">' +
+          '<button class="btn appr">Одобрить</button>' +
+          '<button class="btn sec cpy">Скопировать</button>' +
+          '<span class="dim" style="font-size:12.5px" data-m></span>' +
+        '</div></div>';
+      slot.querySelector('textarea').value = DRAFTS[kind](nm);
+      slot.querySelector('.cpy').onclick = function () { slot.querySelector('[data-m]').textContent = 'Скопировано ✓'; };
+      slot.querySelector('.appr').onclick = function () {
+        var m = slot.querySelector('[data-m]');
+        this.outerHTML = '<button class="btn sendhh">Отправить в hh</button>';
+        m.textContent = 'Одобрено ✓ — можно отправить';
+        slot.querySelector('.sendhh').onclick = function () {
+          var self = this; self.disabled = true; m.textContent = 'Отправляю в hh…';
+          setTimeout(function () {
+            self.remove();
+            m.innerHTML = '<span class="sentok">Отправлено в hh ✓ — кандидат получил сообщение' + (kind === 'invite' ? ', отклик переведён в «Приглашение»' : '') + '</span>';
+          }, 900);
+        };
+      };
+    }
+
+    if (kind === 'show') {
+      slot.innerHTML = '<div class="dim" style="font-size:12.5px">Показано Марине Т. — увидит карточку в Telegram и в кабинете, её ответ вернётся сюда.</div>';
+    }
+
+    if (kind === 'notes') {
+      slot.innerHTML = '<div class="draft"><div class="cap">Заметки или транскрипт встречи — агент разберёт их по карте требований.</div>' +
+        '<textarea rows="3" placeholder="Как прошла встреча: что спрашивали, что ответил…"></textarea>' +
+        '<div class="acts" style="margin-top:8px"><button class="btn prs">Разобрать встречу</button><span class="dim" style="font-size:12.5px" data-m></span></div></div>';
+      slot.querySelector('.prs').onclick = function () {
+        var v = slot.querySelector('textarea').value.trim();
+        var m = slot.querySelector('[data-m]');
+        if (v.length < 15) { m.textContent = 'Напишите пару фраз о встрече.'; return; }
+        slot.innerHTML = '<div class="notice ok" style="margin:0"><b>Встреча разобрана</b> <span style="color:var(--zg)">●</span><br>' +
+          '<span class="dim" style="font-size:12.5px">Оценка легла поверх разбора резюме — история касаний пополнена.</span></div>';
+      };
+    }
+
+    if (kind === 'verdict') {
+      slot.innerHTML = '<div class="dim" style="font-size:12.5px">Собираю вывод по всем касаниям…</div>';
+      setTimeout(function () {
+        slot.innerHTML = '<div class="notice ok" style="margin:0"><b>Готов к оферу</b><br>' +
+          '<span style="font-size:12.5px">Резюме и собеседование сходятся: держит поток, ставит работу команде, вок — родная станция. Открытый вопрос один — вилка: просил 120, у нас потолок 115. Обсудить на офере.</span></div>';
+      }, 800);
+    }
+  });
+
+  // ── пакетное приглашение зелёных ──
+  document.getElementById('massInv').onclick = function () {
+    var self = this, m = document.getElementById('massMsg');
+    self.disabled = true; m.textContent = 'Агент готовит 8 персональных приглашений…';
+    setTimeout(function () {
+      m.textContent = 'Черновики готовы — каждый откроется на карточке для одобрения. Без вашего «Одобрить» в hh ничего не уйдёт.';
+    }, 900);
+  };
+
+  // ── показать нанимающему (панель рекрутёра) ──
+  document.getElementById('hmShow').onclick = function () {
+    document.getElementById('hmMsg').textContent = 'Показано: 2 · Марина Т.';
+  };
+
+  // ── нанят: терминальный факт кормит воронку и сверку ──
+  document.getElementById('hireBtn').onclick = function () {
+    this.style.background = 'var(--green)'; this.textContent = 'Нанят ✓'; this.onclick = null;
+    document.getElementById('hireSlot').innerHTML =
+      '<div class="dim" style="font-size:12.5px;margin-top:8px">Наём записан. Через 90 дней агент спросит, как человек в деле — ответ обновит силу критериев карты.</div>';
+  };
+
+  // ── ответ нанимающего на карточке ──
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-hmv]'); if (!b) return;
+    var m = b.parentElement.querySelector('[data-hmvmsg]');
+    m.textContent = b.dataset.hmv === 'yes' ? 'Передано рекрутёру: зовёте ✓' : 'Передано рекрутёру: мимо ✓';
+  });
+</script>
+</body>
+</html>
