@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ИИ-сотрудник для 1С:Fresh — ответы по базе, сводки, документы | Слаживание</title>
+  <meta name="description" content="Слаживание для 1С:Fresh: ИИ-сотрудник поверх вашей 1С в облаке. Отвечает по базе человеческим языком, приносит сводки по выручке и дебиторке в Telegram, готовит документы. Подключение по стандартному OData, без доработок конфигурации.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://slazhivanie.ru/1c-fresh.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Слаживание">
+  <meta property="og:title" content="ИИ-сотрудник для 1С:Fresh — ответы по базе, сводки, документы">
+  <meta property="og:description" content="ИИ-сотрудник поверх вашей 1С в облаке: отвечает по базе, приносит сводки в Telegram, готовит документы. Без доработок конфигурации.">
+  <meta property="og:url" content="https://slazhivanie.ru/1c-fresh.html">
+  <meta property="og:image" content="https://slazhivanie.ru/og.png">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Что делает Слаживание для компании на 1С:Fresh?","acceptedAnswer":{"@type":"Answer","text":"Слаживание — это ИИ-сотрудник поверх вашей 1С в облаке. Он читает базу (контрагентов, документы, счета, оплаты) и отвечает на вопросы человеческим языком, приносит сводки по выручке и дебиторке в Telegram, готовит черновики документов. Не нужно открывать 1С и строить отчёт ради каждой цифры."}},
+      {"@type":"Question","name":"Нужно ли дорабатывать конфигурацию 1С?","acceptedAnswer":{"@type":"Answer","text":"Нет. Подключение идёт по стандартному интерфейсу OData, который 1С:Fresh выставляет из коробки. Мы не меняем конфигурацию и не ставим расширения на старте — только включаем доступ к нужным объектам и заводим служебного пользователя с ограниченными правами."}},
+      {"@type":"Question","name":"Безопасно ли давать доступ к базе 1С?","acceptedAnswer":{"@type":"Answer","text":"Доступ идёт под отдельным служебным пользователем с правами только на нужные объекты, по защищённому соединению. Данные остаются в вашей базе, наружу отдаётся только то, что вы разрешили и по запросу. Каждое действие фиксируется."}}
+    ]
+  }
+  </script>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,"script","https://mc.yandex.ru/metrika/tag.js?id=110175627", "ym");
+    ym(110175627, "init", {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/110175627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="wrap nav">
+      <a href="index.html" class="logo">
+        <span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>
+        слаживание<span class="green">.</span>
+      </a>
+      <nav class="nav-links">
+        <a href="approach.html">Подход</a>
+        <a href="platform.html">Платформа</a>
+        <a href="solutions.html">Решения</a>
+        <a href="chats.html">Управление чатами</a>
+        <a href="cases.html">Кейсы</a>
+        <a href="team.html">Команда</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+      <a href="#contacts" class="btn btn-green nav-cta">Обсудить внедрение</a>
+      <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    </div>
+    <div class="mmenu" id="mmenu">
+      <a href="approach.html">Подход</a>
+      <a href="platform.html">Платформа</a>
+      <a href="solutions.html">Решения</a>
+      <a href="chats.html">Управление чатами</a>
+      <a href="cases.html">Кейсы</a>
+      <a href="team.html">Команда</a>
+      <a href="#contacts">Контакты</a>
+      <a href="#contacts" class="btn btn-green">Обсудить внедрение</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="hero-radar"></div>
+    <div class="wrap hero-inner">
+      <span class="eyebrow">Слаживание для 1С:Fresh</span>
+      <h1>Ваша 1С в облаке — <span class="green">теперь отвечает словами</span>.</h1>
+      <p class="sub">ИИ-сотрудник поверх вашей базы 1С:Fresh. Спрашиваете в Telegram обычным языком — он читает базу и приносит ответ: сколько должен контрагент, какие счета не оплачены, что с выручкой. Без входа в 1С и построения отчётов.</p>
+      <div class="hero-btns">
+        <a href="#contacts" class="btn btn-green">Подключить к 1С:Fresh</a>
+        <a href="solutions.html#finance" class="btn btn-ghost">ИИ в финансах и учёте</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ БОЛИ ============ -->
+  <section class="sec" id="pain">
+    <div class="wrap">
+      <div style="text-align:center;margin-bottom:40px">
+        <span class="eyebrow">Знакомо?</span>
+        <h2 class="h-sec">Данные в 1С есть. А достать их — целый квест</h2>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <h3>За каждой цифрой — в 1С</h3>
+          <p>Чтобы узнать простой факт, надо открыть 1С, найти нужный отчёт, построить, выгрузить. Или дёрнуть бухгалтера.</p>
+        </div>
+        <div class="card">
+          <h3>Вопросы упираются в одного человека</h3>
+          <p>«Сколько нам должны?», «Этот счёт оплатили?» — знает только тот, кто сидит в базе. Ушёл в отпуск — встало.</p>
+        </div>
+        <div class="card">
+          <h3>Дебиторка всплывает поздно</h3>
+          <p>Просроченные оплаты и задвоенные контрагенты замечаются, когда уже накопилось, а не в момент появления.</p>
+        </div>
+        <div class="card">
+          <h3>Учёт живёт отдельно от работы</h3>
+          <p>Команда переписывается в Telegram и почте, а данные — в 1С. Две несвязанные вселенные.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ЧТО ДЕЛАЕТ ============ -->
+  <section class="sec light-block" id="what">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">Что делает ИИ-сотрудник поверх 1С</span>
+          <h2 class="h-sec">Не ещё один отчёт, а сотрудник, который знает базу</h2>
+        </div>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <h3>Ответы по базе словами</h3>
+          <p>«Сколько должен контрагент X?», «Какие счета не оплачены?», «Покажи реализации за июнь» — отвечает по данным 1С, а не отсылает строить отчёт.</p>
+        </div>
+        <div class="card">
+          <h3>Сводки в Telegram</h3>
+          <p>Выручка, поступления, дебиторка — по запросу или каждое утро, туда, где команда и так работает.</p>
+        </div>
+        <div class="card">
+          <h3>Замечает раньше вас</h3>
+          <p>Просроченная дебиторка, задвоенные контрагенты, зависший счёт — подсвечивает, пока это дёшево поправить.</p>
+        </div>
+        <div class="card">
+          <h3>Готовит документы</h3>
+          <p>Черновик счёта, письма контрагенту, справки по данным базы — вам остаётся проверить и подтвердить.</p>
+        </div>
+      </div>
+      <p class="lead" style="margin:28px auto 0;max-width:760px;text-align:center;font-size:16px;color:var(--t3)">Работает с типовыми конфигурациями в 1С:Fresh — Бухгалтерия, УНФ и другими. <a href="solutions.html#finance" style="color:var(--green-d);font-weight:600">Как мы держим ИИ честным в финансах и учёте →</a></p>
+    </div>
+  </section>
+
+  <!-- ============ КАК ПОДКЛЮЧАЕТСЯ ============ -->
+  <section class="sec process" id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow on-dark">Как подключается</span>
+          <h2 class="h-sec">Без доработок конфигурации</h2>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Включаем стандартный доступ</h3><p>1С:Fresh выставляет базу по стандартному интерфейсу OData из коробки. Конфигурацию не трогаем, расширения не ставим.</p></div>
+        <div class="step"><div class="n">02</div><h3>Служебный пользователь</h3><p>Заводим отдельного пользователя с правами только на нужные объекты. Доступ по защищённому соединению.</p></div>
+        <div class="step"><div class="n">03</div><h3>Данные остаются у вас</h3><p>База никуда не копируется. Наружу отдаётся только то, что вы разрешили, и только по запросу.</p></div>
+        <div class="step"><div class="n">04</div><h3>Спрашиваете в Telegram</h3><p>Сотрудник живёт в чате команды. Пишете обычными словами — он берёт ответ из вашей 1С.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ЧЕСТНАЯ РАМКА ============ -->
+  <section class="sec" id="trust">
+    <div class="wrap" style="max-width:820px">
+      <div style="text-align:center;margin-bottom:32px">
+        <span class="eyebrow">Честная рамка</span>
+        <h2 class="h-sec">В учёте нельзя выдумывать — и мы не выдумываем</h2>
+      </div>
+      <p class="lead" style="text-align:center">Обычные нейросети склонны сочинять цифры — для бухгалтерии и финансов это недопустимо. У нас каждый ответ по базе привязан к конкретной записи 1С: цифру всегда можно открыть и сверить. Доступ — по правам пользователя, всё, что меняет данные или уходит наружу, идёт под подтверждение человека. Соответствие 152-ФЗ и резидентность данных под контролем платформы.</p>
+      <div style="text-align:center;margin-top:24px">
+        <a href="solutions.html#finance" class="link-arrow">Подробнее про ИИ в финансах →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ КОНТАКТЫ / ФОРМА ============ -->
+  <section class="sec light-block" id="contacts">
+    <div class="wrap" style="max-width:760px">
+      <div style="text-align:center;margin-bottom:36px">
+        <span class="eyebrow">Ранний доступ</span>
+        <h2 class="h-sec">Подключить ИИ-сотрудника к 1С:Fresh</h2>
+        <p class="lead" style="margin:16px auto 0">Оставьте заявку — обсудим вашу конфигурацию и покажем на демо, как сотрудник отвечает по базе. Отвечаем в течение рабочего дня.</p>
+      </div>
+
+      <div class="form-wrap">
+        <form id="leadform">
+          <div class="form-row">
+            <div class="field">
+              <label for="f-name">Как к вам обращаться</label>
+              <input id="f-name" name="name" type="text" required placeholder="Имя">
+            </div>
+            <div class="field">
+              <label for="f-company">Компания и сфера</label>
+              <input id="f-company" name="company" type="text" placeholder="Компания, отрасль">
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-contact">Куда вернуться с ответом</label>
+            <input id="f-contact" name="contact" type="text" required placeholder="Почта или телефон">
+          </div>
+          <div class="field">
+            <label for="f-task">Какая у вас конфигурация и что хотите спрашивать</label>
+            <textarea id="f-task" name="task" placeholder="Например: 1С:Бухгалтерия в облаке 1С:Fresh, хотим сводки по дебиторке и ответы по контрагентам в Telegram"></textarea>
+          </div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+          <button type="submit" class="btn btn-green" style="width:100%">Оставить заявку</button>
+          <p class="form-consent">Отправляя заявку, вы соглашаетесь на обработку контактных данных для ответа на неё.</p>
+        </form>
+        <div class="form-ok" id="formok">
+          <div class="ic-ok"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0FA06C" stroke-width="2.4"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <h3>Заявка у нас — спасибо</h3>
+          <p>Вернёмся в течение рабочего дня. Если срочно — напишите напрямую: <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
+        </div>
+      </div>
+      <p style="text-align:center;margin-top:24px;font-size:15px;color:var(--t3)">127006, Москва, ул. Долгоруковская, 27с1 · <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <a href="index.html" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
+      <nav class="foot-links">
+        <a href="approach.html">Подход</a>
+        <a href="platform.html">Платформа</a>
+        <a href="solutions.html">Решения</a>
+        <a href="iiko.html">Для iiko</a>
+        <a href="cases.html">Кейсы</a>
+        <a href="index.html#contacts">Контакты</a>
+        <a href="/platform/">Посмотреть демо →</a>
+      </nav>
+      <div>© 2026 Слаживание · 127006, Москва, ул. Долгоруковская, 27с1</div>
+    </div>
+  </footer>
+
+  <script>
+    var b=document.getElementById('burger'),m=document.getElementById('mmenu');
+    b.addEventListener('click',function(){m.classList.toggle('open')});
+    m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
+
+    // Форма заявки → шлём на сервер (uklad.ai/lead). Маркер [1С] в начале задачи —
+    // способ отделить спрос по этому лендингу в web_leads (task LIKE '[1С]%') без правки сервера.
+    // Маркер добавляем принудительно на сабмите, чтобы не зависеть от того, что напишет клиент.
+    var lf=document.getElementById('leadform');
+    if(lf){lf.addEventListener('submit',function(e){
+      e.preventDefault();
+      var d=new FormData(lf);
+      var task=(d.get('task')||'').trim();
+      if(task.indexOf('[1С]')!==0){task='[1С] '+task;}
+      var payload={name:d.get('name')||'',company:d.get('company')||'',contact:d.get('contact')||'',task:task,website:d.get('website')||'',lang:'ru',source:'slazhivanie.ru/1c-fresh'};
+      var btn=lf.querySelector('button[type=submit]'); if(btn){btn.disabled=true;btn.textContent='Отправляем…';}
+      function done(){lf.style.display='none';document.getElementById('formok').classList.add('show');}
+      function fallbackMail(){
+        var body='Имя: '+payload.name+'\nКомпания и сфера: '+payload.company+'\nКонтакт: '+payload.contact+'\nЗапрос: '+payload.task;
+        window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Заявка — Слаживание для 1С:Fresh')+'&body='+encodeURIComponent(body);
+        done();
+      }
+      fetch('https://uklad.ai/lead',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)})
+        .then(function(r){return r.ok?r.json():Promise.reject();})
+        .then(function(){done();})
+        .catch(fallbackMail);
+    });}
+  </script>
+</body>
+</html>
