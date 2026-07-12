@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Скоркарта: наш дефолт — клиент правит под себя (прототип рекрутёра)</title>
+<title>Карта требований к кандидату: наш метод, клиент правит под себя (прототип рекрутёра)</title>
 <style>
   /* Палитра и компоненты 1:1 из apps/web/recruiter.html */
   :root { --bg:#F4EFE6; --panel:#FFFFFF; --panelHi:#F7F1E7; --line:rgba(32,28,23,0.09); --lineHi:rgba(32,28,23,0.18);
@@ -116,40 +116,40 @@
 
   <div class="protohead">
     <span class="protobadge">Прототип · срисовано с боевого рекрутёра</span>
-    <h1 class="tt">Скоркарта: наш дефолт — клиент правит под себя</h1>
+    <h1 class="tt">Карта требований к кандидату: наш метод, клиент правит под себя</h1>
     <p class="lead">
-      Скоркарта — это <b>форма, куда рекрутёр записывает критерии</b> оценки кандидата (метод «Who», Смарт и Стрит),
-      а критерии в неё <b>добывают</b> из сырья (техника Фланагана). Оба метода заимствованы, указываем честно.
-      Своё у нас — <b>сборка из сырья с сохранением источника</b> и <b>калибровка на прошлых решениях</b>.
-      Всё это едет клиенту <b>нашим дефолтом</b> — и клиент правит его под себя. Ниже — как именно.
+      Карта требований — это <b>список критериев</b>, по которым оцениваем человека на вакансию, и рядом видно,
+      <b>откуда взялся каждый критерий</b>. Критерии не выдумываем — <b>достаём из рассказов нанимающего</b>
+      про конкретных людей. Всё это едет клиенту <b>нашей готовой заготовкой</b> — и клиент правит её под себя.
+      Ниже — как именно. <span style="color:var(--dim2)">(Метод — «Who» и техника Фланагана; заимствованы, честно указываем внизу.)</span>
     </p>
   </div>
 
   <!-- ГЕРОЙ: наш дефолт ⇄ версия клиента -->
   <div class="sec">
-    <div class="sech"><span class="num">1</span><h2>Наш дефолт — и правка клиента, на одном экране</h2></div>
-    <p class="secsub">Мы вкладываем свой опыт как <b>стартовый промпт метода и политику отбора</b>. У клиента опыт другой —
-      он переключается на свою версию и меняет что нужно. Наш дефолт при этом <b>виден и возвращается одной кнопкой</b>.</p>
+    <div class="sech"><span class="num">1</span><h2>Наша заготовка — и правка клиента, на одном экране</h2></div>
+    <p class="secsub">Мы вкладываем свой опыт как <b>готовые правила и политику отбора</b>. У клиента опыт другой —
+      он переключается на свою версию и меняет что нужно. Наша заготовка при этом <b>видна и возвращается одной кнопкой</b>.</p>
 
     <div class="switch">
       <div class="seg" id="seg">
-        <button class="on def" data-mode="def">Дефолт Слаживания</button>
+        <button class="on def" data-mode="def">Заготовка Слаживания</button>
         <button data-mode="client">Версия клиента «Ромашка»</button>
       </div>
       <span class="editflag">● изменено клиентом</span>
-      <button class="revert" id="revert" style="display:none">вернуть наш дефолт</button>
+      <button class="revert" id="revert" style="display:none">вернуть нашу заготовку</button>
     </div>
 
     <div class="panel">
       <!-- промпт метода -->
       <div class="promptbox">
-        <div class="ph"><span>Промпт метода — как добывать критерии</span>
-          <span class="tag def">дефолт Слаживания</span><span class="tag cli">версия «Ромашка»</span></div>
+        <div class="ph"><span>Правила метода — как добываем критерии</span>
+          <span class="tag def">заготовка Слаживания</span><span class="tag cli">версия «Ромашка»</span></div>
         <div class="pl"><span class="n">1.</span><span>Слова нанимающего — данные; мнение рекрутёра и старые документы — гипотезы, пока нанимающий не подтвердил.</span></div>
         <div class="pl"><span class="n">2.</span><span>Если сказано, что чего-то не надо, — это исключение, а не критерий.</span></div>
         <div class="pl"><span class="n">3.</span><span>Обязательное — только то, без чего работу вообще не сделать.
           <span class="keepdef">Из «обязательных» оставляй минимум.</span><span class="del">Из «обязательных» оставляй минимум.</span>
-          <span class="ins">Для нашей сети допускаем до трёх шлагбаумов.</span></span></div>
+          <span class="ins">Для нашей сети допускаем до трёх обязательных.</span></span></div>
         <div class="pl"><span class="n">4.</span><span>У каждого критерия сохраняй источник и цитату.</span></div>
         <div class="pl added"><span class="n">5.</span><span><span class="ins">Наш формат — азиатская кухня: уверенная работа на воке — обязательное. Спрашивай про конкретные блюда и станцию вока.</span></span></div>
       </div>
@@ -162,16 +162,16 @@
             <span class="pill defon defonly">Резерв: зовём на второй собес</span>
             <span class="pill on clionly">Автоотказ: воронку держим узкой</span>
           </div>
-          <div class="secsub defonly" style="margin:9px 0 0;font-size:12.5px">Наш дефолт: жёлтый — это «под вопросом», не отказ. Смотрим на собесе.</div>
+          <div class="secsub defonly" style="margin:9px 0 0;font-size:12.5px">Наша заготовка: жёлтый — это «под вопросом», не отказ. Смотрим на собесе.</div>
           <div class="secsub clionly" style="margin:9px 0 0;font-size:12.5px">«Ромашка» решила: поток откликов большой, жёлтых сразу в отказ. Их право — записано как их политика.</div>
         </div>
         <!-- критерии -->
         <div class="fld">
-          <div class="fh">Критерии скоркарты</div>
-          <div class="crit on"><span class="tog"></span><span class="cl">Держит нагрузку в час пик</span><span class="src">🚧 шлагбаум</span></div>
-          <div class="crit on"><span class="tog"></span><span class="cl">Собирал станцию с нуля</span><span class="src">🚧 шлагбаум</span></div>
+          <div class="fh">Критерии в карте требований</div>
+          <div class="crit on"><span class="tog"></span><span class="cl">Держит нагрузку в час пик</span><span class="src">🚧 обязательное</span></div>
+          <div class="crit on"><span class="tog"></span><span class="cl">Собирал станцию с нуля</span><span class="src">🚧 обязательное</span></div>
           <div class="crit off"><span class="tog"></span><span class="cl">Высшее кулинарное</span><span class="src clionly">снял клиент</span><span class="src defonly">гипотеза</span></div>
-          <div class="crit on cliadd"><span class="tog"></span><span class="cl">Работа на воке <span class="newtag">добавил клиент</span></span><span class="src">🚧 шлагбаум</span></div>
+          <div class="crit on cliadd"><span class="tog"></span><span class="cl">Работа на воке <span class="newtag">добавил клиент</span></span><span class="src">🚧 обязательное</span></div>
           <div class="crit on cliadd"><span class="tog"></span><span class="cl">Возраст до 40 <span class="flag">риск: возраст</span> <span class="newtag">гипотеза клиента</span></span><span class="src owner">мнение</span></div>
         </div>
       </div>
@@ -183,22 +183,22 @@
     <div class="sech"><span class="num">2</span><h2>Три слоя: откуда что берётся</h2></div>
     <p class="secsub">Правка клиента не ломает наш метод и не смешивается с другими клиентами. Каждый слой знает своё место.</p>
     <div class="layers">
-      <div class="layer l1"><div class="lk">Канон Слаживания · наш дефолт</div>
-        <div class="lh">Метод: провенанс источников, три правила добычи, калибровка</div>
+      <div class="layer l1"><div class="lk">Наш метод · заготовка Слаживания</div>
+        <div class="lh">Три правила добычи критериев, видно откуда каждый, проверка на прошлых наймах</div>
         <div class="ls">Едет всем клиентам как стартовая точка. Обновляем мы — прилетает как обновление.</div></div>
-      <div class="layer l2"><div class="lk">Правит тенант «Ромашка»</div>
-        <div class="lh">Свой промпт метода + политика «жёлтый → автоотказ»</div>
-        <div class="ls">Переиспользуется на всех их вакансиях. Наш дефолт под ним виден и возвращается.</div></div>
-      <div class="layer l3"><div class="lk">Эта вакансия · инстанс</div>
-        <div class="lh">Су-шеф: ворота, критерии, кандидаты со светофором</div>
-        <div class="ls">Конкретная вакансия по промпту и политике «Ромашки».</div></div>
+      <div class="layer l2"><div class="lk">Правит клиент «Ромашка»</div>
+        <div class="lh">Свои правила + политика «жёлтый → автоотказ»</div>
+        <div class="ls">Переиспользуется на всех их вакансиях. Наша заготовка под ним видна и возвращается.</div></div>
+      <div class="layer l3"><div class="lk">Эта вакансия</div>
+        <div class="lh">Су-шеф: обязательное, критерии, кандидаты со светофором</div>
+        <div class="ls">Конкретная вакансия по правилам и политике «Ромашки».</div></div>
     </div>
   </div>
 
   <!-- добыча по Фланагану -->
   <div class="sec">
-    <div class="sech"><span class="num">3</span><h2>Откуда берётся дефолт: добыча по случаям</h2></div>
-    <p class="secsub">Наш промпт метода стоит на технике критических инцидентов (Фланаган, 1954): спрашиваем не про требования, а про случаи.</p>
+    <div class="sech"><span class="num">3</span><h2>Откуда берутся критерии: добыча по случаям</h2></div>
+    <p class="secsub">Наш метод стоит на технике критических инцидентов (Фланаган, 1954): спрашиваем не про требования, а про случаи.</p>
     <div class="panel">
       <div class="q bad"><span class="mark">✕</span><div><div class="txt">«Каким должен быть идеальный су-шеф?»</div>
         <div class="note">→ «ответственный, стрессоустойчивый» — вода, критериев ноль</div></div></div>
@@ -213,12 +213,12 @@
   <div class="sec">
     <div class="sech"><span class="num">4</span><h2>Калибровка держит правки честными</h2></div>
     <p class="secsub">Клиент волен добавить свой критерий. Калибровка на прошлых наймах показывает, <b>предсказывал ли он успех</b> —
-      спор решается цифрами, а не лозунгом.</p>
+      спор решается цифрами, а не лозунгом. <b>Наймов ещё нет</b> — калибровка пустая, критерий помечаем «пока не проверен».</p>
     <div class="panel">
       <div class="cal">
         <div class="calrow"><div class="crn">Собирал станцию с нуля</div><div class="bar"><i class="hi" style="width:86%"></i></div><div class="pct hi">86%</div></div>
         <div class="calrow"><div class="crn">Держит нагрузку в час пик</div><div class="bar"><i class="hi" style="width:79%"></i></div><div class="pct hi">79%</div></div>
-        <div class="calrow"><div class="crn">Стаж 3+ года</div><div class="bar"><i class="mid" style="width:44%"></i></div><div class="pct mid">44%</div></div>
+        <div class="calrow"><div class="crn">Стаж 3+ года <span class="pin hyp">просто срок</span></div><div class="bar"><i class="mid" style="width:44%"></i></div><div class="pct mid">44%</div></div>
         <div class="calrow"><div class="crn">Возраст до 40 <span class="pin owner">критерий клиента</span></div><div class="bar"><i class="lo" style="width:18%"></i></div><div class="pct lo">18%</div></div>
       </div>
       <div class="ownercase">
@@ -232,17 +232,18 @@
 
   <div class="foot">
     <h3>Как назовём — открытый вопрос</h3>
-    <p>Своё имя заслуживает то, что наше: <b>сборка из сырья с сохранением источника + калибровка на прошлых решениях</b>.
-      «Who» и техника Фланагана — заимствованы, указываем честно; «метод скоркарты Лены» не годится — скоркарту придумала не она, сама об этом сказала. Рабочие варианты имени:</p>
+    <p>Клиенту наружу это «Карта требований к кандидату». Своё имя заслуживает то, что наше внутри:
+      <b>сборка критериев из рассказов с сохранением источника + проверка на прошлых наймах</b>.
+      «Who» и техника Фланагана — заимствованы, указываем честно. Рабочие варианты имени:</p>
     <div>
-      <span class="nameopt">Скоркарта на источниках</span>
-      <span class="nameopt">Доказательная скоркарта</span>
-      <span class="nameopt">Живая скоркарта</span>
+      <span class="nameopt">Карта требований на источниках</span>
+      <span class="nameopt">Доказательная карта требований</span>
+      <span class="nameopt">Живая карта требований</span>
     </div>
     <div class="attr">
       Метод хранения — Geoff Smart, Randy Street, «Who: The A Method for Hiring» (2008).
       Метод добычи критериев — John Flanagan, «The Critical Incident Technique» (1954).
-      Провенанс источников и калибровка на прошлых решениях — часть платформы «Слаживание».
+      Сборка критериев с сохранением источника и проверка на прошлых наймах — часть платформы «Слаживание».
     </div>
   </div>
 
