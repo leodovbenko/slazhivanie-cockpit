@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Слаживание · Машина контента — концепт</title>
+<style>
+  /* Палитра и компоненты — из живого кабинета (linkedin.html / streams.html / shell.js), v5 «дерево» */
+  :root { --bg:#F4EFE6; --panel:#FFFFFF; --panelHi:#F7F1E7; --line:rgba(32,28,23,0.09); --lineHi:rgba(32,28,23,0.18);
+    --txt:#201C17; --dim:#6B6258; --dim2:#8E877E; --cyan:#4C7A6B; --violet:#9A6250; --green:#3D7A3E; --amber:#B8863C; --red:#B24A32; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:14px; line-height:1.5; overflow-x:hidden; }
+  .protobar { background:#FFF6E5; border-bottom:1px solid #F0E0A0; color:#7a5d00; font-size:12.5px; text-align:center; padding:6px 12px; }
+  .main { max-width:720px; margin:0 auto; padding:14px 14px 80px; min-width:0; }
+  @media(min-width:920px){ .main { max-width:960px; padding:20px 24px 80px; } }
+
+  h1 { font-size:22px; font-weight:700; margin:0 0 2px; letter-spacing:-.3px; }
+  h2 { font-size:16px; margin:0 0 6px; }
+  .pagesub { color:var(--dim); font-size:13px; margin:0 0 16px; }
+  .muted { color:var(--dim2); font-size:12.5px; }
+
+  /* Шапка: бренд + поток (верхний контейнер машины) */
+  .brand { font-size:15px; font-weight:700; letter-spacing:-.2px; margin:8px 0 10px; }
+  .brand .dot { color:var(--violet); }
+  .brand .agent { color:var(--dim); font-weight:500; font-size:13px; }
+  .streambar { position:relative; display:flex; align-items:center; gap:10px; margin:0 0 14px; }
+  .streampick { flex:1 1 0; min-width:0; display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--lineHi); border-radius:14px; padding:11px 14px; font:inherit; cursor:pointer; text-align:left; min-height:48px; }
+  .streampick > span:nth-child(2) { min-width:0; overflow:hidden; }
+  .streampick .snm { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .streampick .skind { display:block; line-height:1.35; }
+  .streampick .ava { width:32px; height:32px; border-radius:50%; background:var(--violet); color:#fff; font-weight:700; font-size:12px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 32px; }
+  .streampick .snm { font-weight:700; font-size:14.5px; }
+  .streampick .skind { color:var(--dim2); font-size:12px; }
+  .streampick .car { margin-left:auto; color:var(--dim2); }
+  .allstreams { flex:0 0 auto; background:var(--panelHi); border:1px solid var(--lineHi); border-radius:14px; padding:11px 14px; color:var(--violet); font-weight:700; font-size:13px; text-decoration:none; cursor:pointer; min-height:48px; display:inline-flex; align-items:center; }
+  .smenu { position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--panel); border:1px solid var(--lineHi); border-radius:14px; box-shadow:0 10px 30px rgba(32,28,23,.14); z-index:50; overflow:hidden; display:none; }
+  .smenu.open { display:block; }
+  .smenu button { display:flex; align-items:center; gap:10px; width:100%; background:none; border:0; border-top:1px solid var(--line); padding:12px 14px; font:inherit; cursor:pointer; text-align:left; }
+  .smenu button:first-child { border-top:0; }
+  .smenu button:hover { background:var(--panelHi); }
+  .smenu .ava { width:28px; height:28px; border-radius:50%; color:#fff; font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 28px; }
+
+  /* Вкладки раздела — .smmtabs из shell.js */
+  .smmtabs { display:flex; flex-wrap:wrap; gap:4px; background:rgba(154,98,80,.10); border:1px solid rgba(154,98,80,.20); border-radius:12px; padding:4px; margin:0 0 16px; }
+  .smmtabs a { flex:1 1 auto; justify-content:center; padding:9px 11px; border-radius:9px; font-size:13px; font-weight:600; color:var(--dim); text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
+  .smmtabs a.on { background:var(--violet); color:#fff; }
+
+  .box { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px 18px; margin-bottom:12px; }
+  .btn { border:0; border-radius:10px; padding:10px 16px; font:inherit; font-weight:700; cursor:pointer; background:var(--violet); color:#fff; min-height:42px; }
+  .btn:disabled { opacity:.6; cursor:default; }
+  .btn.ghost { background:var(--panelHi); color:var(--violet); border:1px solid var(--lineHi); }
+  .btn.sm { padding:7px 12px; font-size:13px; min-height:36px; }
+  .btn.wide { width:100%; }
+  .chip { display:inline-block; font-size:12px; font-weight:600; padding:3px 9px; border-radius:999px; background:var(--panelHi); color:var(--dim); border:1px solid var(--line); }
+  .chip.ok { color:var(--green); } .chip.warn { color:var(--amber); } .chip.bad { color:var(--red); } .chip.vi { color:var(--violet); }
+
+  /* Лента машины: вход → раскладка → выходы. Держит образ одного объекта на входном экране */
+  .machinestrip { display:flex; align-items:center; gap:8px; background:var(--panelHi); border:1px solid var(--line); border-radius:14px; padding:10px 14px; margin-bottom:14px; font-size:12.5px; color:var(--dim); overflow-x:auto; white-space:nowrap; }
+  .machinestrip b { color:var(--txt); }
+  .machinestrip .ar { color:var(--violet); font-weight:700; }
+
+  /* Идеи */
+  .idea { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-bottom:10px; }
+  .idea .cat { font-size:12px; font-weight:700; }
+  .idea .itx { margin:6px 0 4px; font-size:14.5px; line-height:1.5; }
+  .idea .src { color:var(--dim2); font-size:12px; }
+  .idea .iacts { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .inrow { display:flex; gap:8px; flex-wrap:wrap; }
+  .inrow .btn { flex:1; min-width:120px; }
+
+  /* Раскладка (герой): идея закреплена сверху, выходы — рельсой ниже */
+  .pin { border-left:4px solid var(--violet); }
+  .chsel { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px; }
+  .chsel .cbtn { font-size:12.5px; font-weight:600; padding:7px 12px; border-radius:999px; border:1px solid var(--lineHi); background:var(--panelHi); color:var(--dim); cursor:pointer; font-family:inherit; }
+  .chsel .cbtn.on { background:var(--violet); border-color:var(--violet); color:#fff; }
+  .outs { display:grid; grid-template-columns:1fr; gap:12px; }
+  @media(min-width:920px){ .outs { grid-template-columns:1fr 1fr; } }
+  .out { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 16px; display:flex; flex-direction:column; }
+  .out .ohead { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .out .onm { font-weight:700; font-size:14px; }
+  .out .ofmt { color:var(--dim2); font-size:12px; }
+  .out .rail { margin-left:auto; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; background:rgba(76,122,107,.12); color:var(--cyan); white-space:nowrap; }
+  .out .otx { background:var(--panelHi); border:1px solid var(--line); border-radius:12px; padding:11px 13px; font-size:13px; line-height:1.55; white-space:pre-wrap; }
+  .out .slides { display:flex; gap:6px; overflow-x:auto; padding:2px 0; }
+  .out .slide { flex:0 0 96px; height:120px; border-radius:10px; border:1px solid var(--lineHi); background:linear-gradient(160deg,#F7F1E7,#EFE5D3); padding:8px; font-size:10.5px; line-height:1.35; display:flex; flex-direction:column; justify-content:space-between; }
+  .out .slide .n { font-size:9px; color:var(--dim2); }
+  .out .slide.last { background:linear-gradient(160deg,#9A6250,#7d4f40); color:#fff; }
+  .out .slide.last .n { color:rgba(255,255,255,.7); }
+  .out .medialine { color:var(--dim); font-size:12.5px; margin-top:8px; }
+  .limbar { margin-top:8px; }
+  .limbar .lt { display:flex; justify-content:space-between; font-size:11.5px; color:var(--dim2); margin-bottom:3px; }
+  .limbar .rail2 { height:5px; background:var(--panelHi); border-radius:99px; overflow:hidden; border:1px solid var(--line); }
+  .limbar .fill { height:100%; background:var(--green); border-radius:99px; }
+  .limbar .fill.hot { background:var(--amber); }
+  .out .ofoot { display:flex; align-items:center; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); flex-wrap:wrap; }
+  .out .trust { font-size:12px; font-weight:600; }
+  .out .trust.auto { color:var(--green); }
+  .out .trust.gate { color:var(--dim); }
+  .out .ofoot .btn { margin-left:auto; }
+  .privline { border-radius:12px; padding:10px 13px; font-size:12.5px; margin:12px 0; }
+  .privline.ok { background:rgba(61,122,62,.09); color:var(--green); border:1px solid rgba(61,122,62,.25); }
+  .privline.warn { background:#FFF6E5; color:#7a5d00; border:1px solid #F0E0A0; }
+  .fanfoot { position:sticky; bottom:0; background:var(--panel); border:1px solid var(--lineHi); border-radius:16px; padding:12px 16px; box-shadow:0 -6px 24px rgba(32,28,23,.10); display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  .fanfoot .sum { font-size:13px; font-weight:600; }
+  .fanfoot .btn { margin-left:auto; }
+  .backlink { display:inline-block; color:var(--violet); font-weight:700; font-size:13px; text-decoration:none; cursor:pointer; margin-bottom:10px; }
+
+  /* Каналы */
+  .chcard { display:flex; align-items:flex-start; gap:12px; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-bottom:10px; }
+  .chcard .ic { width:38px; height:38px; border-radius:10px; background:var(--panelHi); border:1px solid var(--line); display:inline-flex; align-items:center; justify-content:center; font-size:18px; flex:0 0 38px; }
+  .chcard .cnm { font-weight:700; }
+  .chcard .cfmt { color:var(--dim); font-size:12.5px; }
+  .chcard .cdet { color:var(--dim2); font-size:12px; margin-top:4px; }
+  .chcard .rail { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; background:rgba(76,122,107,.12); color:var(--cyan); }
+  .sw { margin-left:auto; flex:0 0 auto; width:44px; height:26px; border-radius:99px; border:1px solid var(--lineHi); background:var(--panelHi); position:relative; cursor:pointer; }
+  .sw::after { content:''; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%; background:#fff; border:1px solid var(--lineHi); transition:left .15s; }
+  .sw.on { background:var(--green); border-color:var(--green); }
+  .sw.on::after { left:20px; }
+
+  /* Метрики (как .metric в linkedin.html) */
+  .cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin:0 0 12px; }
+  .metric { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 16px; }
+  .metric .lbl { color:var(--dim); font-size:12px; font-weight:600; }
+  .metric .val { font-size:24px; font-weight:800; letter-spacing:-.5px; margin:3px 0 2px; }
+  .dlt { font-size:12px; font-weight:700; } .dlt.up { color:var(--green); } .dlt.dn { color:var(--red); }
+
+  /* Результат: строки по каналам */
+  .rrow { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line); font-size:13.5px; }
+  .rrow:first-of-type { border-top:0; }
+  .rrow .k { flex:1; } .rrow .v { font-weight:700; white-space:nowrap; }
+  .ring { letter-spacing:1px; font-size:13px; }
+
+  /* Доска потоков (как .scard в streams.html) */
+  .board { display:grid; grid-template-columns:1fr; gap:12px; }
+  @media(min-width:920px){ .board { grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); } }
+  .scard { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px 18px; cursor:pointer; }
+  .scard .top { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+  .scard .nm { font-weight:700; font-size:15px; }
+  .kind { font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; }
+  .kind.personal { background:var(--panelHi); color:var(--dim); }
+  .kind.company { background:rgba(154,98,80,.12); color:var(--violet); }
+  .kind.client { background:rgba(76,122,107,.12); color:var(--cyan); }
+  .scard .row { display:flex; justify-content:space-between; padding:6px 0; border-top:1px solid var(--line); font-size:13px; }
+  .scard .row:first-of-type { border-top:0; }
+  .scard .row .k { color:var(--dim); } .scard .row .v { font-weight:700; }
+  .scard .chips { display:flex; flex-wrap:wrap; gap:5px; margin:8px 0 10px; }
+
+  /* Как работаю: шаги машины + лестница доверия */
+  .step { display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+  .step:first-of-type { border-top:0; }
+  .step .num { flex:0 0 28px; width:28px; height:28px; border-radius:50%; background:rgba(154,98,80,.12); color:var(--violet); font-weight:800; font-size:13px; display:inline-flex; align-items:center; justify-content:center; }
+  .step b { display:block; }
+  .step p { margin:2px 0 0; color:var(--dim); font-size:13px; }
+  .ladder { border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:6px; }
+  .lrow { display:flex; gap:10px; align-items:flex-start; padding:11px 14px; border-top:1px solid var(--line); font-size:13px; color:var(--dim); }
+  .lrow:first-child { border-top:0; }
+  .lrow.cur { background:rgba(61,122,62,.08); color:var(--txt); }
+  .lrow .ln { font-weight:800; color:var(--dim2); flex:0 0 18px; }
+  .lrow.cur .ln { color:var(--green); }
+
+  .note { background:#FFF6E5; border:1px solid #F0E0A0; border-radius:12px; padding:10px 13px; color:#7a5d00; font-size:13px; margin-bottom:12px; }
+  .toast { position:fixed; left:50%; bottom:18px; transform:translateX(-50%) translateY(80px); background:var(--txt); color:#fff; font-size:13px; font-weight:600; padding:11px 18px; border-radius:12px; opacity:0; transition:all .25s; z-index:99; max-width:90vw; text-align:center; }
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div class="protobar">Концепт-прототип · к проду не подключён · данные — пример для согласования</div>
+<div class="main">
+
+  <div class="brand">Слаживание <span class="dot">·</span> <span class="agent">Гермес · машина контента</span></div>
+
+  <!-- Поток — верхний контейнер: чей голос, чьи каналы, чья очередь -->
+  <div class="streambar">
+    <button class="streampick" id="streamPick" onclick="toggleStreamMenu(event)">
+      <span class="ava" id="sAva">Л</span>
+      <span><span class="snm" id="sName">Леонид — личный</span><br><span class="skind" id="sKind">личный поток · голос собран · 🔥 серия 14</span></span>
+      <span class="car">▾</span>
+    </button>
+    <a class="allstreams" onclick="go('board')">Все потоки</a>
+    <div class="smenu" id="sMenu"></div>
+  </div>
+
+  <div class="smmtabs" id="tabs"></div>
+
+  <!-- ЭКРАН: ИДЕИ — дневной вход машины -->
+  <section id="v-ideas">
+    <h1>Идеи</h1>
+    <p class="pagesub">День начинается здесь. Гермес приносит моменты из работы команды — из памяти бизнеса, итогов встреч и вечернего разбора дня. Свою идею можно надиктовать или написать.</p>
+
+    <div class="machinestrip">
+      <b>идея</b> <span class="ar">→</span> Гермес раскладывает <span class="ar">→</span> <b id="stripCh">5 каналов</b> <span class="ar">→</span> ты одобряешь <span class="ar">→</span> очередь публикует
+    </div>
+
+    <div class="box">
+      <h2>Подкинуть идею</h2>
+      <div class="inrow">
+        <button class="btn ghost" onclick="toast('В проде: поле для текста идеи прямо здесь')">✍️ Написать</button>
+        <button class="btn ghost" onclick="toast('В проде: надиктовка — голосовое боту Гермеса')">🎙 Надиктовать</button>
+        <button class="btn ghost" onclick="toast('В проде: моменты из вечернего разбора дня попадают сюда сами')">🌙 Из разбора дня</button>
+      </div>
+    </div>
+
+    <h2 style="margin:16px 0 8px">Свежие · <span id="ideasStream" class="muted" style="font-size:13px">поток «Леонид — личный»</span></h2>
+    <div id="ideaList"></div>
+
+    <h2 style="margin:16px 0 8px">Уже разложены</h2>
+    <div id="ideaDone"><p class="muted">Разложенные идеи появятся здесь со статусом по каждому выходу.</p></div>
+  </section>
+
+  <!-- ЭКРАН-ГЕРОЙ: РАСКЛАДКА — одна идея входит, N готовых постов выходят -->
+  <section id="v-fanout" class="hidden">
+    <a class="backlink" onclick="go('ideas')">← Идеи</a>
+    <h1>Раскладка по каналам</h1>
+    <p class="pagesub">Одна идея — все выходы на одном экране. Текст подогнан под лимит и правила каждой площадки, медиа подобрано под формат. Правишь любой выход по отдельности.</p>
+
+    <div class="box pin" id="fanIdea"></div>
+
+    <div class="chsel" id="chSel"></div>
+
+    <div class="privline ok" id="privLine"></div>
+
+    <div class="outs" id="outList"></div>
+
+    <div class="fanfoot" id="fanFoot">
+      <span class="sum" id="fanSum"></span>
+      <button class="btn" id="fanSend" onclick="sendAll()">Одобрить и в очередь</button>
+    </div>
+  </section>
+
+  <!-- ЭКРАН: КАНАЛЫ — реестр форматов; добавить канал = строка, не пересборка -->
+  <section id="v-channels" class="hidden">
+    <h1>Каналы</h1>
+    <p class="pagesub">Куда машина умеет раскладывать. У каждого формата свой лимит, тип медиа и правила площадки. Выключенный канал в раскладку не попадает.</p>
+    <div id="chList"></div>
+    <div class="box">
+      <h2>Добавить канал</h2>
+      <p class="muted" style="margin:0 0 10px">Новая площадка — это строка в этом списке: рельс публикации, формат, лимит, правила. Интерфейс не переделывается.</p>
+      <div class="inrow" id="soonList"></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН: LINKEDIN — цифры постов + рост сети, сгруппировано -->
+  <section id="v-linkedin" class="hidden">
+    <h1>LinkedIn</h1>
+    <p class="pagesub">Как заходят посты и как растёт сеть. Цифры за 30 дней, обновляются раз в день.</p>
+    <div class="cards">
+      <div class="metric"><div class="lbl">Подписчики</div><div class="val">2 348</div><span class="dlt up">+112 за 30 дней</span></div>
+      <div class="metric"><div class="lbl">Охват</div><div class="val">18,4K</div><span class="dlt up">+3,1K</span></div>
+      <div class="metric"><div class="lbl">Реакции</div><div class="val">642</div><span class="dlt up">+87</span></div>
+      <div class="metric"><div class="lbl">Комментарии</div><div class="val">94</div><span class="dlt dn">−6</span></div>
+    </div>
+    <div class="box">
+      <h2>Рост сети</h2>
+      <p class="muted" style="margin:0 0 10px">Гермес ищет людей по вашему портрету и готовит записки вашим голосом. Отправляете сами, в пределах дневного лимита.</p>
+      <div class="rrow"><span class="k">Партия на сегодня</span><span class="v">12 черновиков готовы</span></div>
+      <div class="rrow"><span class="k">Отправлено сегодня</span><span class="v">7 / 18</span></div>
+      <div class="rrow"><span class="k">Ответили — стоит поговорить</span><span class="v">3</span></div>
+      <button class="btn ghost sm" style="margin-top:10px" onclick="toast('В проде: открывается разбор партии — как на живой странице «Рост сети»')">Открыть партию</button>
+    </div>
+    <div class="box">
+      <h2>Последние посты</h2>
+      <div class="rrow"><span class="k">Скрининг за полтора часа: цифры недели</span><span class="v">4,2K · 38 реакций</span></div>
+      <div class="rrow"><span class="k">Агент читает резюме по скоркарте</span><span class="v">2,9K · 25 реакций</span></div>
+      <div class="rrow"><span class="k">Вечерний разбор дня: как мы закрываем день</span><span class="v">1,7K · 19 реакций</span></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН: РЕЗУЛЬТАТ — цифры машины целиком: вход → выходы → публикации -->
+  <section id="v-result" class="hidden">
+    <h1>Результат</h1>
+    <p class="pagesub">Машина за неделю, от входа до выхода.</p>
+    <div class="cards">
+      <div class="metric"><div class="lbl">Идей на входе</div><div class="val">4</div><span class="muted">3 из работы команды, 1 надиктована</span></div>
+      <div class="metric"><div class="lbl">Выходов собрано</div><div class="val">14</div><span class="muted">по 5 каналам</span></div>
+      <div class="metric"><div class="lbl">Опубликовано</div><div class="val">11</div><span class="dlt up">3 ждут слота</span></div>
+      <div class="metric"><div class="lbl">Правок при одобрении</div><div class="val">2</div><span class="muted">из 14 выходов</span></div>
+    </div>
+    <div class="box">
+      <h2>По каналам за 30 дней</h2>
+      <div class="rrow"><span class="k">✈️ Telegram</span><span class="v">9 постов · +64 подписчика</span></div>
+      <div class="rrow"><span class="k">💼 LinkedIn</span><span class="v">8 постов · +112 · охват 18,4K</span></div>
+      <div class="rrow"><span class="k">📷 Instagram</span><span class="v">6 постов · +38</span></div>
+      <div class="rrow"><span class="k">🎬 Рилс</span><span class="v">3 видео · 11K просмотров</span></div>
+      <div class="rrow"><span class="k">📰 VC.ru</span><span class="v">1 лонгрид · 2,3K прочтений</span></div>
+    </div>
+    <div class="box">
+      <h2>Ритм недели</h2>
+      <div class="rrow"><span class="k">Цель: 4 публикации в неделю</span><span class="v ring">🟩🟩🟩⬜ 3/4</span></div>
+      <div class="rrow"><span class="k">Серия без пропусков</span><span class="v">🔥 14 дней</span></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН: КАК РАБОТАЮ — устройство машины и лестница доверия -->
+  <section id="v-how" class="hidden">
+    <h1>Как работаю</h1>
+    <p class="pagesub">Машина одна: идея входит, готовые публикации выходят. Вот путь.</p>
+    <div class="box">
+      <div class="step"><span class="num">1</span><span><b>Ловлю идею</b><p>Из памяти бизнеса, итогов встреч и вечернего разбора дня — или ты пишешь и надиктовываешь сам. У каждой идеи видно, откуда она: момент настоящий.</p></span></div>
+      <div class="step"><span class="num">2</span><span><b>Раскладываю по каналам</b><p>Из одной идеи собираю версию под каждый включённый канал: свой лимит, свой язык, свой тип медиа. Всё в твоём голосе — он собран из твоих же постов.</p></span></div>
+      <div class="step"><span class="num">3</span><span><b>Проверяю, что можно наружу</b><p>Перед показом убираю имена клиентов и детали сделок. Если что-то нашёл — говорю об этом прямо на раскладке.</p></span></div>
+      <div class="step"><span class="num">4</span><span><b>Ты одобряешь</b><p>Каждый выход отдельно или всё разом. Канал, которому доверие уже заработано, публикует без ожидания.</p></span></div>
+      <div class="step"><span class="num">5</span><span><b>Очередь публикует, цифры возвращаются</b><p>Посты уходят по слотам расписания. Реакции и охваты стекаются в «Результат» — и я учусь на том, что зашло.</p></span></div>
+    </div>
+    <div class="box">
+      <h2>Доверие по каналам</h2>
+      <p class="muted" style="margin:0 0 8px">Автопубликацию канал зарабатывает: столько-то постов подряд одобрено без правок — предлагаю снять ручную проверку. Вернуть её можно в любой момент.</p>
+      <div class="ladder">
+        <div class="lrow"><span class="ln">1</span><span>Каждый выход одобряешь руками. Так начинает любой канал.</span></div>
+        <div class="lrow cur"><span class="ln">2</span><span><b>Сейчас:</b> Telegram публикует сам (34 поста подряд без правок), остальные каналы ждут одобрения.</span></div>
+        <div class="lrow"><span class="ln">3</span><span>Машина публикует везде сама, тебе остаётся стоп-кнопка и утренняя сводка.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН: ВСЕ ПОТОКИ — доска над потоками -->
+  <section id="v-board" class="hidden">
+    <h1>Все потоки</h1>
+    <p class="pagesub">Один движок и один бот ведут несколько потоков: личный, корпоративные, дальше — клиентские. У каждого свой голос, свои каналы и своя очередь; друг друга они не видят.</p>
+    <div class="board" id="boardList"></div>
+  </section>
+
+</div>
+<div class="toast" id="toastEl"></div>
+
+<script>
+'use strict';
+var $ = function (id) { return document.getElementById(id); };
+var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[c]; }); };
+
+/* ---------- данные концепта (пример, не прод) ---------- */
+
+var STREAMS = [
+  { id:'leo',   name:'Леонид — личный',    kind:'personal', kindLbl:'личный',        ava:'Л', color:'#9A6250', sub:'личный поток · голос собран · 🔥 серия 14', channels:['✈️','💼','📷','🎠','🎬'], queue:2, week:[3,4], streak:14 },
+  { id:'uklad', name:'Уклад ИИ — компания', kind:'company', kindLbl:'корпоративный', ava:'У', color:'#4C7A6B', sub:'корпоративный · голос собран · 🔥 серия 6',  channels:['✈️','💼','🌐'], queue:1, week:[1,3], streak:6 },
+  { id:'avx',   name:'Aiverix — клиент',    kind:'client',  kindLbl:'клиентский',    ava:'A', color:'#B8863C', sub:'клиентский · отдельный голос и память',      channels:['💼','📰'], queue:0, week:[2,2], streak:21 },
+];
+var curStream = STREAMS[0];
+
+/* Реестр каналов: рельс + формат + лимит + медиа + правила. Instagram — два формата под одним каналом */
+var CH = [
+  { id:'tg',    icon:'✈️', name:'Telegram',   fmt:'пост',        rail:'Publora', limit:2000, media:'текст',        rules:'русский · можно ссылку · без хэштегов',            on:true,  trust:'auto' },
+  { id:'li',    icon:'💼', name:'LinkedIn',   fmt:'пост',        rail:'Publora', limit:2000, media:'текст',        rules:'английский · ссылка первым комментарием',          on:true,  trust:'gate' },
+  { id:'igp',   icon:'📷', name:'Instagram',  fmt:'пост с фото', rail:'Publora', limit:300,  media:'фото',         rules:'русский · коротко · 3–5 хэштегов',                 on:true,  trust:'gate' },
+  { id:'igc',   icon:'🎠', name:'Instagram',  fmt:'карусель',    rail:'Publora', limit:1000, media:'карусель',     rules:'русский · 5–7 слайдов · вывод на последнем',       on:true,  trust:'gate' },
+  { id:'reels', icon:'🎬', name:'Рилс',       fmt:'видео',       rail:'HeyGen',  limit:500,  media:'видео',        rules:'сценарий до 40 секунд · аватар и голос выбраны',   on:true,  trust:'gate' },
+  { id:'vc',    icon:'📰', name:'VC.ru',      fmt:'лонгрид',     rail:'VC',      limit:0,    media:'текст',        rules:'русский · разбор с цифрами и скринами',            on:false, trust:'gate' },
+  { id:'blog',  icon:'🌐', name:'Блог сайта', fmt:'статья',      rail:'Сайт',    limit:0,    media:'текст + фото', rules:'русский · под поисковые запросы',                  on:false, trust:'gate' },
+];
+var SOON = ['Twitter/X', 'Threads', 'YouTube Shorts', 'Дзен'];
+
+var CATS = { win:'🏆 Победа', insight:'💡 Инсайт', reject:'🙅 Отказ', vivid:'✨ Живое' };
+var IDEAS = [
+  { id:1, cat:'win',     text:'Рекрутёр разобрал 92 отклика до обеда — у Юли скрининг занял полтора часа вместо целого дня.', src:'итоги встречи с Юлей · вторник', spread:false, priv:'ok' },
+  { id:2, cat:'reject',  text:'Клиент на созвоне: «у нас работа уникальная, ИИ не поможет». Разобрали вместе — уникальная чаще всего значит нигде не записанная.', src:'зум с клиентом · вчера', spread:false, priv:'warn' },
+  { id:3, cat:'insight', text:'Голос страницы собираем из её же постов — владельцы правят пару слов и сохраняют. Свой тон людям дорог.', src:'память бизнеса · чат команды', spread:false, priv:'ok' },
+  { id:4, cat:'vivid',   text:'Бот поздравил команду с сотым постом раньше, чем мы сами заметили круглую цифру.', src:'вечерний разбор дня · вчера', spread:false, priv:'ok' },
+];
+
+/* Готовые выходы для идеи-героя (id=1). Для остальных идей — черновая раскладка по тем же правилам */
+var HERO = {
+  tg: 'Рекрутёр разобрал 92 отклика до обеда.\n\nРаньше у Юли на это уходил полный день. Теперь — полтора часа, и все они ушли на разговоры с сильными кандидатами: остальных агент отсеял сам.\n\nКак устроено: агент читает каждое резюме по скоркарте Юли и по каждому человеку показывает, почему прошёл или нет. Решение остаётся за ней — просто теперь она начинает с короткого списка.\n\nЦифры недели: 92 отклика, 11 в коротком списке, 4 собеседования назначены.',
+  li: 'Our recruiting agent screened 92 applications before lunch.\n\nThis used to take Yulia a full day. Now it takes 1.5 hours — and she spends them talking to strong candidates instead of skimming CVs.\n\nThe agent reads every application against her own scorecard and shows why each person made the cut. The decision stays with her; she just starts from a short list.\n\nThis week: 92 applications, 11 shortlisted, 4 interviews booked.',
+  igp: '92 отклика до обеда. Раньше на скрининг уходил день, теперь полтора часа: агент читает резюме по скоркарте и оставляет короткий список. Разбор по шагам — в карусели рядом.',
+  igc: ['Скрининг резюме: полтора часа вместо дня', '92 отклика — каждое резюме прочитано целиком', 'Оценка по скоркарте Юли: её критерии, её планка', 'По каждому кандидату видно, почему прошёл или нет', '11 человек в коротком списке, 4 собеседования', 'Время вернулось людям. Хочешь так же — пиши'],
+  reels: 'Хук (0–3 сек): «92 отклика до обеда. Вручную это день работы».\n\nСередина: агент читает каждое резюме по скоркарте и собирает короткий список — на экране видно, как выглядит оценка.\n\nФинал: «Полтора часа вместо восьми. Остальное время — разговоры с людьми».',
+  vc: 'Заголовок: Скрининг резюме за полтора часа: что мы отдали агенту и что оставили человеку\n\nПлан лонгрида:\n1. Исходная точка — день на разбор откликов\n2. Скоркарта: как оцифровали критерии Юли\n3. Что агент делает сам и где останавливается\n4. Цифры за месяц работы\n5. Что не получилось с первого раза',
+  blog: 'Заголовок: ИИ-рекрутёр разбирает отклики по вашей скоркарте\n\nЛид: живой пример — 92 отклика, полтора часа, короткий список из 11 человек. Показываем экраны и цифры, без обещаний на вырост.',
+};
+var MEDIA = {
+  tg: 'без медиа — текст со ссылкой',
+  li: '📷 1 фото из медиатеки: экран скрининга, обезличен',
+  igp: '📷 фото из медиатеки: экран скрининга, обезличен',
+  igc: '🎠 6 слайдов, соберу по шаблону потока',
+  reels: '🎬 HeyGen: аватар и голос из настроек потока · ~40 сек',
+  vc: '🖼 обложка из шаблона + 2 скрина в текст',
+  blog: '🖼 обложка + 1 скрин',
+};
+
+/* ---------- состояние ---------- */
+var curView = 'ideas';
+var fanIdeaId = null;
+var fanOn = {};      // включённые каналы на текущей раскладке
+var fanSent = false; // выходы уже отправлены в очередь
+
+/* ---------- каркас: вкладки и переходы ---------- */
+var TABS = [
+  { k:'ideas',    ic:'💡', label:'Идеи' },
+  { k:'channels', ic:'📡', label:'Каналы' },
+  { k:'linkedin', ic:'📊', label:'LinkedIn' },
+  { k:'result',   ic:'🎯', label:'Результат' },
+  { k:'how',      ic:'🧭', label:'Как работаю' },
+];
+function renderTabs() {
+  var act = (curView === 'fanout') ? 'ideas' : curView;
+  $('tabs').innerHTML = TABS.map(function (t) {
+    return '<a class="' + (t.k === act ? 'on' : '') + '" onclick="go(\'' + t.k + '\')"><span>' + t.ic + '</span><span>' + t.label + '</span></a>';
+  }).join('');
+}
+function go(view) {
+  ['ideas','fanout','channels','linkedin','result','how','board'].forEach(function (v) {
+    var s = $('v-' + v); if (s) s.classList.toggle('hidden', v !== view);
+  });
+  curView = view;
+  renderTabs();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- потоки ---------- */
+function renderStreamMenu() {
+  $('sMenu').innerHTML = STREAMS.map(function (s) {
+    return '<button onclick="pickStream(\'' + s.id + '\')"><span class="ava" style="background:' + s.color + '">' + s.ava + '</span>'
+      + '<span><b>' + esc(s.name) + '</b><br><span class="muted">' + esc(s.sub) + '</span></span></button>';
+  }).join('');
+}
+function toggleStreamMenu(e) { e.stopPropagation(); $('sMenu').classList.toggle('open'); }
+document.addEventListener('click', function () { $('sMenu').classList.remove('open'); });
+function pickStream(id) {
+  curStream = STREAMS.filter(function (s) { return s.id === id; })[0] || STREAMS[0];
+  $('sName').textContent = curStream.name;
+  $('sKind').textContent = curStream.sub;
+  $('sAva').textContent = curStream.ava;
+  $('sAva').style.background = curStream.color;
+  $('ideasStream').textContent = 'поток «' + curStream.name + '»';
+  $('sMenu').classList.remove('open');
+  if (curView === 'board') go('ideas');
+  toast('Поток переключён: идеи, каналы и цифры теперь этого потока');
+}
+function renderBoard() {
+  $('boardList').innerHTML = STREAMS.map(function (s) {
+    var ring = '🟩'.repeat(s.week[0]) + '⬜'.repeat(Math.max(0, s.week[1] - s.week[0]));
+    return '<div class="scard" onclick="pickStream(\'' + s.id + '\')">'
+      + '<div class="top"><span class="nm">' + esc(s.name) + '</span><span class="kind ' + s.kind + '">' + s.kindLbl + '</span></div>'
+      + '<div class="chips">' + s.channels.map(function (c) { return '<span class="chip">' + c + '</span>'; }).join('') + '</div>'
+      + '<div class="row"><span class="k">Эта неделя</span><span class="v">' + ring + ' ' + s.week[0] + '/' + s.week[1] + '</span></div>'
+      + '<div class="row"><span class="k">В очереди</span><span class="v">' + s.queue + '</span></div>'
+      + '<div class="row"><span class="k">Серия</span><span class="v">🔥 ' + s.streak + ' дней</span></div>'
+      + '</div>';
+  }).join('');
+}
+
+/* ---------- идеи ---------- */
+function renderIdeas() {
+  var fresh = IDEAS.filter(function (i) { return !i.spread; });
+  var done = IDEAS.filter(function (i) { return i.spread; });
+  var nOn = CH.filter(function (c) { return c.on; }).length;
+  $('stripCh').textContent = nOn + ' каналов';
+  $('ideaList').innerHTML = fresh.length ? fresh.map(function (i) {
+    return '<div class="idea"><span class="cat">' + CATS[i.cat] + '</span>'
+      + '<div class="itx">' + esc(i.text) + '</div>'
+      + '<div class="src">↳ откуда: ' + esc(i.src) + '</div>'
+      + '<div class="iacts"><button class="btn sm" onclick="openFanout(' + i.id + ')">Разложить по каналам · ' + nOn + ' →</button>'
+      + '<button class="btn sm ghost" onclick="dropIdea(' + i.id + ')">Не моё</button></div></div>';
+  }).join('') : '<p class="muted">Свежих идей нет. Гермес принесёт, когда в работе команды появится момент, о котором стоит рассказать.</p>';
+  $('ideaDone').innerHTML = done.length ? done.map(function (i) {
+    return '<div class="idea"><span class="cat">' + CATS[i.cat] + '</span>'
+      + '<div class="itx">' + esc(i.text) + '</div>'
+      + '<div class="src">↳ разложена на ' + i.outs + ' выходов · ' + i.outsNote + '</div>'
+      + '<div class="iacts"><button class="btn sm ghost" onclick="openFanout(' + i.id + ')">Открыть раскладку</button></div></div>';
+  }).join('') : '<p class="muted">Разложенные идеи появятся здесь со статусом по каждому выходу.</p>';
+}
+function dropIdea(id) {
+  IDEAS = IDEAS.filter(function (i) { return i.id !== id; });
+  renderIdeas();
+  toast('Идея убрана. Гермес запомнит, что такое тебе не заходит');
+}
+
+/* ---------- раскладка (герой) ---------- */
+function draftFor(idea, ch) {
+  if (idea.id === 1 && HERO[ch.id] != null) return HERO[ch.id];
+  var base = idea.text + '\n\nЧерновик соберу в голосе потока — здесь показана сама раскладка по формату.';
+  if (ch.id === 'igc') return null; // карусель для не-героя покажем схемой
+  return ch.limit ? base.slice(0, ch.limit) : base;
+}
+function openFanout(id) {
+  fanIdeaId = id; fanSent = false;
+  fanOn = {};
+  CH.forEach(function (c) { fanOn[c.id] = c.on; });
+  renderFanout();
+  go('fanout');
+}
+function renderFanout() {
+  var idea = IDEAS.filter(function (i) { return i.id === fanIdeaId; })[0];
+  if (!idea) { go('ideas'); return; }
+  $('fanIdea').innerHTML = '<span class="cat" style="font-size:12px;font-weight:700">' + CATS[idea.cat] + '</span>'
+    + '<div class="itx" style="margin:6px 0 4px;font-size:15px">' + esc(idea.text) + '</div>'
+    + '<div class="src muted">↳ откуда: ' + esc(idea.src) + '</div>';
+
+  $('chSel').innerHTML = CH.map(function (c) {
+    return '<button class="cbtn' + (fanOn[c.id] ? ' on' : '') + '" onclick="toggleFanCh(\'' + c.id + '\')">' + c.icon + ' ' + esc(c.name) + ' · ' + esc(c.fmt) + '</button>';
+  }).join('');
+
+  var pl = $('privLine');
+  if (idea.priv === 'warn') {
+    pl.className = 'privline warn';
+    pl.textContent = '🔒 Проверил перед показом: в исходном моменте было имя клиента — во всех выходах его нет, история рассказана без привязки.';
+  } else {
+    pl.className = 'privline ok';
+    pl.textContent = '🔒 Проверил перед показом: имён клиентов и деталей сделок в текстах нет, можно наружу.';
+  }
+
+  var active = CH.filter(function (c) { return fanOn[c.id]; });
+  $('outList').innerHTML = active.map(function (c) { return outCard(idea, c); }).join('');
+
+  var autoN = active.filter(function (c) { return c.trust === 'auto'; }).length;
+  var gateN = active.length - autoN;
+  $('fanSum').innerHTML = fanSent
+    ? '✓ ' + active.length + ' выходов в очереди'
+    : active.length + ' выходов · ' + (autoN ? autoN + ' уйдёт сам · ' : '') + gateN + ' ждут одобрения';
+  $('fanSend').disabled = fanSent || !active.length;
+  $('fanSend').textContent = fanSent ? 'В очереди ✓' : 'Одобрить и в очередь';
+}
+function outCard(idea, c) {
+  var body;
+  var draft = draftFor(idea, c);
+  var len = 0;
+  if (c.id === 'igc') {
+    var slides = (idea.id === 1) ? HERO.igc : ['Заголовок из идеи', 'Суть момента', 'Как это устроено', 'Цифры', 'Вывод и приглашение'];
+    len = slides.join(' ').length;
+    body = '<div class="slides">' + slides.map(function (s, i) {
+      var last = i === slides.length - 1;
+      return '<div class="slide' + (last ? ' last' : '') + '"><span class="n">' + (i + 1) + '/' + slides.length + '</span><span>' + esc(s) + '</span></div>';
+    }).join('') + '</div>';
+  } else {
+    len = draft.length;
+    body = '<div class="otx">' + esc(draft) + '</div>';
+  }
+  var lim = '';
+  if (c.limit) {
+    var pct = Math.min(100, Math.round(len / c.limit * 100));
+    lim = '<div class="limbar"><div class="lt"><span>' + len + ' / ' + c.limit + ' знаков</span><span>' + pct + '% лимита</span></div>'
+      + '<div class="rail2"><div class="fill' + (pct > 85 ? ' hot' : '') + '" style="width:' + pct + '%"></div></div></div>';
+  } else {
+    lim = '<div class="limbar"><div class="lt"><span>' + len + ' знаков · без жёсткого лимита</span></div></div>';
+  }
+  var trust = c.trust === 'auto'
+    ? '<span class="trust auto">публикуется сам — доверие заработано</span>'
+    : '<span class="trust gate">жду одобрения</span>';
+  var st = fanSent ? '<span class="chip ok">в очереди · ближайший слот пн 10:00</span>'
+    : '<button class="btn sm ghost" onclick="toast(\'В проде: правка этого выхода — текстом или голосом в чате\')">Поправить</button>';
+  return '<div class="out">'
+    + '<div class="ohead"><span>' + c.icon + '</span><span><span class="onm">' + esc(c.name) + '</span> <span class="ofmt">· ' + esc(c.fmt) + '</span></span><span class="rail">' + esc(c.rail) + '</span></div>'
+    + body
+    + '<div class="medialine">' + esc(MEDIA[c.id] || '') + '</div>'
+    + lim
+    + '<div class="ofoot">' + trust + '<span style="margin-left:auto"></span>' + st + '</div>'
+    + '</div>';
+}
+function toggleFanCh(id) {
+  if (fanSent) return;
+  fanOn[id] = !fanOn[id];
+  renderFanout();
+}
+function sendAll() {
+  var idea = IDEAS.filter(function (i) { return i.id === fanIdeaId; })[0];
+  var active = CH.filter(function (c) { return fanOn[c.id]; });
+  fanSent = true;
+  if (idea) {
+    idea.spread = true;
+    idea.outs = active.length;
+    idea.outsNote = 'в очереди, ближайший слот пн 10:00';
+  }
+  renderFanout();
+  renderIdeas();
+  toast(active.length + ' выходов в очереди. Telegram уйдёт сам, остальные — по слотам после одобрения');
+}
+
+/* ---------- каналы ---------- */
+function renderChannels() {
+  $('chList').innerHTML = CH.map(function (c, i) {
+    return '<div class="chcard"><span class="ic">' + c.icon + '</span>'
+      + '<span style="flex:1;min-width:0"><span class="cnm">' + esc(c.name) + '</span> <span class="cfmt">· ' + esc(c.fmt) + '</span> <span class="rail">' + esc(c.rail) + '</span>'
+      + '<div class="cdet">' + (c.limit ? 'до ' + c.limit + ' знаков' : 'без жёсткого лимита') + ' · медиа: ' + esc(c.media) + '<br>' + esc(c.rules)
+      + (c.trust === 'auto' ? '<br><span style="color:var(--green);font-weight:600">публикует сам — 34 поста подряд без правок</span>' : '') + '</div></span>'
+      + '<span class="sw' + (c.on ? ' on' : '') + '" onclick="toggleCh(' + i + ')"></span>'
+      + '</div>';
+  }).join('');
+  $('soonList').innerHTML = SOON.map(function (n) {
+    return '<button class="btn ghost sm" onclick="toast(\'' + n + ': добавим строкой в реестре — рельс, формат, лимит, правила\')">+ ' + n + '</button>';
+  }).join('');
+}
+function toggleCh(i) {
+  CH[i].on = !CH[i].on;
+  renderChannels();
+  renderIdeas();
+  toast(CH[i].on ? (CH[i].name + ' · ' + CH[i].fmt + ' теперь в раскладке') : (CH[i].name + ' · ' + CH[i].fmt + ' выключен — в раскладку не попадает'));
+}
+
+/* ---------- мелочи ---------- */
+var toastTimer = null;
+function toast(msg) {
+  var t = $('toastEl');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
+}
+
+renderTabs();
+renderStreamMenu();
+renderIdeas();
+renderChannels();
+renderBoard();
+
+/* Диплинк на экран: #fanout открывает раскладку идеи-героя, остальные — просто вид.
+   Удобно кидать ссылку на конкретный экран при показе с телефона. */
+(function () {
+  var h = (location.hash || '').replace('#', '');
+  if (h === 'fanout') openFanout(1);
+  else if (['ideas','channels','linkedin','result','how','board'].indexOf(h) >= 0) go(h);
+})();
+</script>
+</body>
+</html>
