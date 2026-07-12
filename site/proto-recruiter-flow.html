@@ -197,7 +197,7 @@
 
     <main class="main">
       <h1>Рекрутёр</h1>
-      <p class="pagesub">Вакансия идёт по пяти шагам: кого ищем, отклики, разбор, собеседования, решение. Агент делает черновую работу, отправка в hh — после вашего одобрения.</p>
+      <p class="pagesub">Вакансия идёт по пяти шагам: кого ищем, отклики, разбор, собеседования, результат. Агент делает черновую работу, отправка в hh — после вашего одобрения.</p>
 
       <!-- вакансии: одна активная лента на вакансию -->
       <div class="vrow on">
@@ -234,7 +234,7 @@
           <div class="ss">2 в работе · 1 слот подтверждён</div>
         </div>
         <div class="step" data-pane="5">
-          <div class="sn">Шаг 5</div><div class="st">Решение</div>
+          <div class="sn">Шаг 5</div><div class="st">Результат</div>
           <div class="ss">офер не сделан</div>
         </div>
       </div>
@@ -266,8 +266,8 @@
             </div>
           </div>
           <div class="crit on"><span class="tog"></span>
-            <div class="cl"><span class="cn">Стаж су-шефом от 3 лет</span><span class="hyp">пока не проверен</span>
-              <div class="src d2"><span class="srcpin own">мнение</span>добавила Юля; на прошлых наймах предсказывал успех слабо — цифры в сверке</div>
+            <div class="cl"><span class="cn">Самостоятельно вёл станцию (от года)</span>
+              <div class="src d2"><span class="srcpin own">мнение</span>Юля задала «стаж 3+»; агент предложил мерить способность — «сам вёл станцию»: год за сильным шефом и год соло дают разный опыт. Цифры в сверке.</div>
             </div>
           </div>
           <div class="crit off"><span class="tog"></span>
@@ -281,6 +281,9 @@
             <div class="sub">Заготовка Слаживания</div>
             <p class="dim" style="font-size:12.5px;margin:0 0 6px">Карта началась с нашей заготовки: правила добычи критериев, минимум обязательных, у каждого критерия — источник и цитата. «Ромашка» поправила её под себя; заготовка видна и возвращается кнопкой.</p>
             <button class="btn sec" style="padding:5px 12px;font-size:12px">Сравнить с заготовкой</button>
+
+            <div class="sub" style="margin-top:14px">Возраст, пол, вуз — что делает агент</div>
+            <p class="dim" style="font-size:12.5px;margin:0">Эти признаки сами по себе в карту не идут. Если клиент называет, например, «до 40», агент просит назвать, что за этим стоит — «опыт масштабирования», «выносливость в поток» — и в карту встаёт проверяемая формулировка, а не год рождения. Требование остаётся, но его можно проверить по работе, а не по паспорту.</p>
           </div>
         </div>
 
@@ -378,7 +381,7 @@
               <div class="gate"><b class="y">✓</b><span>Собирал станцию с нуля — <i>«открывал кухню, сам ставил горячий цех»</i></span></div>
               <div class="gate"><b class="y">✓</b><span>Ставит работу команде — <i>«вывел двух поваров на самостоятельные смены»</i></span></div>
               <div class="gate"><b class="y">✓</b><span>Работа на воке — <i>«4 года станция вок, лапша и рис на потоке»</i></span></div>
-              <div class="gate"><b class="y">✓</b><span>Стаж от 3 лет — 6 лет су-шефом</span></div>
+              <div class="gate"><b class="y">✓</b><span>Сам вёл станцию — <i>«открывал кухню „Море и вок", держал линию соло»</i></span></div>
               <div class="muted" style="font-size:12px;margin-top:4px">Клик по цитате в кабинете подсвечивает её в резюме — проверить источник можно не выходя из разбора.</div>
             </div>
             <div class="d3">
@@ -444,7 +447,7 @@
               <div class="gate"><b class="y">✓</b><span>Работа на воке — <i>«шеф вок-станции, 3 года»</i></span></div>
               <div class="gate"><b class="n">✗</b><span>Держит час пик — фактов в резюме нет; вопрос для собеседования</span></div>
               <div class="gate"><b class="n">✗</b><span>Собирал станцию с нуля — <i>«участвовал в открытии»</i> — роль не видна</span></div>
-              <div class="gate"><b class="y">✓</b><span>Стаж от 3 лет — 8 лет на кухне</span></div>
+              <div class="gate"><b class="y">✓</b><span>Сам вёл станцию — <i>«шеф вок-станции, 3 года»</i></span></div>
             </div>
             <div style="margin-top:8px"><button class="d2tog">как решилось — по критериям</button></div>
             <div class="acts hide-hm">
@@ -467,7 +470,7 @@
             <ul class="why">
               <li>Вок: опыта нет — обязательный критерий не пройден.</li>
               <li>Час пик: холодный цех кафе на 30 мест, потока не было.</li>
-              <li>Решение по критериям карты; возраст и вуз агент не учитывает.</li>
+              <li>Решение — по критериям карты. Возраст и вуз сами по себе не берём: если важны, агент просит назвать, что за ними стоит, и проверяет уже это.</li>
             </ul>
             <div class="d2">
               <div class="sub">По каждому критерию карты</div>
@@ -529,7 +532,7 @@
         </div>
       </section>
 
-      <!-- ═══ ШАГ 5: РЕШЕНИЕ ═══ -->
+      <!-- ═══ ШАГ 5: РЕЗУЛЬТАТ ═══ -->
       <section class="pane" id="pane5">
         <div class="panel">
           <h3 style="margin:0 0 10px">Воронка по вакансии</h3>
@@ -564,7 +567,7 @@
           <div class="sub">Сила критериев на прошлых наймах</div>
           <div class="calrow"><div class="crn">Собирал станцию с нуля</div><div class="bar"><i class="hi" style="width:86%"></i></div><div class="pct hi">86%</div></div>
           <div class="calrow"><div class="crn">Держит нагрузку в час пик</div><div class="bar"><i class="hi" style="width:79%"></i></div><div class="pct hi">79%</div></div>
-          <div class="calrow"><div class="crn">Стаж от 3 лет</div><div class="bar"><i class="mid" style="width:44%"></i></div><div class="pct mid">44%</div></div>
+          <div class="calrow"><div class="crn">Стаж 3+ — просто срок (заменили на «сам вёл станцию»)</div><div class="bar"><i class="mid" style="width:44%"></i></div><div class="pct mid">44%</div></div>
           <div class="calrow"><div class="crn">Высшее кулинарное — выключен</div><div class="bar"><i class="lo" style="width:12%"></i></div><div class="pct lo">12%</div></div>
           <p class="dim" style="font-size:12.5px;margin:10px 0 0">По слабому критерию цифра лежит на столе; решение о карте — за вами.</p>
           <div class="acts">
@@ -591,6 +594,12 @@
     document.getElementById('rolehint').innerHTML = HINTS[r];
     // сброс раскрытых по запросу слоёв при смене роли — видна честная разница ролей
     document.querySelectorAll('.d2.open,.d3.open').forEach(function (x) { x.classList.remove('open'); });
+    // HM/HRD: раскрыть первую карточку на активном шаге, чтобы добавленная глубина была видна сразу, а не пряталась в свёрнутых карточках
+    if (r !== 'rec') {
+      var pane = document.querySelector('.pane.on');
+      var firstCand = pane && pane.querySelector('details.cand');
+      if (firstCand) firstCand.open = true;
+    }
   }
   seg.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b && b.dataset.role) setRole(b.dataset.role); });
   setRole('rec');
