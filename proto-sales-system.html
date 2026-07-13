@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Система продаж как продукт | Слаживание</title>
+<meta name="description" content="Кликабельный прототип-вижен: любое касание — звонок, Zoom, встреча — становится транскриптом в карточке CRM, агент разбирает его двумя линзами: исполнение (руки) и коучинг (наставники-советники). CRM не пересобираем — подключаемся коннектором. Внедряем CRM последний раз: система наследуется.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://slazhivanie.ru/proto-sales-system.html">
+<meta name="robots" content="noindex"><!-- прототип-вижен на согласовании; индексацию открываем по команде -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Слаживание">
+<meta property="og:title" content="Система продаж как продукт | Слаживание">
+<meta property="og:description" content="Один шов: касание → транскрипт в карточку CRM → две линзы (исполнение и коучинг) → результат обратно в карточку. Советники — конфиг, не код: под каждого клиента свои имена, промпты и CRM.">
+<meta property="og:image" content="https://slazhivanie.ru/og.png">
+<meta property="og:locale" content="ru_RU">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+  (function(m,e,t,r,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+  })(window, document,"script","https://mc.yandex.ru/metrika/tag.js?id=110175627", "ym");
+  ym(110175627, "init", {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/110175627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<style>
+  :root{
+    --ink:#06251A; --green:#0FA06C; --paper:#F7FBF9; --card:#fff;
+    --line:#dfe9e4; --muted:#5c7267; --soft:#E4F7EF; --warm:#B4472C; --amo:#2b7de9; --btrx:#0aa1dd;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"IBM Plex Sans","Segoe UI",Roboto,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.5}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  a{color:var(--green)}
+  header{background:var(--ink);color:#fff;padding:40px 0 26px}
+  header .eyebrow{color:var(--green);font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin:0 0 10px}
+  header h1{font-size:30px;margin:0 0 12px;line-height:1.18;max-width:860px}
+  header p{color:#a8d8c5;margin:0;max-width:780px;font-size:16px}
+  .sitenav{padding-top:2px;margin-bottom:16px}
+  .sitenav a{color:#a8d8c5;text-decoration:none;font-size:14px;font-weight:600}
+  .sitenav a:hover{color:#fff}
+  .brand{color:var(--green);font-weight:700}
+
+  /* переключатель ролей */
+  .roleline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px}
+  .roleline .rl{color:#a8d8c5;font-size:13.5px;font-weight:700}
+  .seg{display:inline-flex;background:rgba(255,255,255,.07);border:1px solid #2f5e4e;border-radius:11px;padding:3px;gap:3px}
+  .seg b{font-size:13px;font-weight:700;color:#cdeede;border-radius:8px;padding:6px 14px;cursor:pointer;user-select:none;transition:background .12s,color .12s}
+  .seg b.on{background:var(--green);color:#06251A}
+  .rolenote{color:#7fd8b5;font-size:12.5px}
+
+  /* верхняя навигация-табы */
+  .tabs{position:sticky;top:0;z-index:50;background:var(--ink);border-top:1px solid #0c3527;border-bottom:1px solid #0c3527;box-shadow:0 2px 10px rgba(6,37,26,.25)}
+  .tabs .wrap{display:flex;gap:4px;overflow-x:auto;padding:8px 20px;-webkit-overflow-scrolling:touch}
+  .tabs b{flex:0 0 auto;font-size:13.5px;font-weight:700;color:#a8d8c5;border-radius:9px;padding:8px 14px;cursor:pointer;user-select:none;white-space:nowrap;transition:background .12s,color .12s}
+  .tabs b:hover{color:#fff}
+  .tabs b.on{background:var(--green);color:#06251A}
+  .tabs b .num{opacity:.6;font-weight:800;margin-right:5px}
+
+  .stage-bar{background:#0c3527;color:#cdeede;font-size:13.5px}
+  .stage-bar .wrap{display:flex;gap:8px;flex-wrap:wrap;padding:14px 20px}
+  .hint{background:rgba(255,255,255,.06);border:1px solid #2f5e4e;border-radius:10px;padding:8px 12px;width:100%}
+  .hint b{color:#fff}
+
+  main{padding:30px 0 10px}
+  .sec{display:none}
+  .sec.on{display:block}
+  .sec h2{font-size:23px;margin:0 0 6px}
+  .sec .sub{color:var(--muted);font-size:14.5px;margin:0 0 20px;max-width:820px}
+
+  /* шов: схема потока */
+  .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1.2fr auto 1fr;gap:0;align-items:stretch;margin:0 0 22px}
+  @media(max-width:900px){.flow{grid-template-columns:1fr}}
+  .fbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .fbox .fk{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);margin:0 0 6px}
+  .fbox b{display:block;font-size:14.5px;margin:0 0 4px}
+  .fbox span{font-size:12.5px;color:var(--muted)}
+  .fbox.crm{border-color:#bcd6f5;background:#f6faff}
+  .fbox.crm .fk{color:var(--amo)}
+  .farr{display:flex;align-items:center;justify-content:center;color:var(--green);font-size:22px;font-weight:800;padding:0 8px}
+  @media(max-width:900px){.farr{transform:rotate(90deg);padding:2px 0}}
+  .lensbox{display:grid;gap:8px}
+  .lens{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;cursor:pointer;transition:border-color .12s,box-shadow .12s}
+  .lens:hover{border-color:var(--green);box-shadow:0 0 0 2px var(--soft)}
+  .lens b{display:block;font-size:13.5px;margin:0 0 2px}
+  .lens span{font-size:12px;color:var(--muted)}
+  .lens .go{color:var(--green);font-weight:700;font-size:12px}
+  .lastcrm{background:var(--ink);color:#eafff4;border-radius:16px;padding:20px 22px;margin:0 0 22px}
+  .lastcrm b{color:#7fd8b5}
+  .lastcrm p{margin:0;font-size:14.5px;max-width:900px}
+  .lastcrm .cap{display:block;font-size:16.5px;font-weight:800;color:#fff;margin:0 0 8px}
+  .seamnote{background:var(--soft);border-radius:12px;padding:13px 16px;font-size:13.5px;margin:0 0 26px}
+
+  /* amoCRM/CRM карточка */
+  .amo{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 1px 0 rgba(6,37,26,.03)}
+  .amo .top{background:#f2f6fb;border-bottom:1px solid var(--line);padding:11px 16px;display:flex;align-items:center;gap:8px}
+  .amo .top .dot{width:10px;height:10px;border-radius:50%;background:var(--amo)}
+  .amo .top b{font-size:13px;color:#33506b;font-weight:800;letter-spacing:.02em}
+  .amo .top span{font-size:12px;color:var(--muted);margin-left:auto}
+  .detail{padding:16px 18px}
+  .dh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 2px}
+  .dh b{font-size:17px}
+  .stagepill{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--amo);background:#e9f1fc;border-radius:7px;padding:2px 8px}
+  .subline{font-size:13px;color:var(--muted);margin:2px 0 14px}
+  .lbl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:0 0 6px}
+  .rec{border-left:3px solid var(--green);padding:2px 0 2px 12px;margin:0 0 14px}
+  .rec ul{margin:0;padding-left:16px;font-size:13.5px}
+  .rec li{margin:0 0 3px}
+  .rec li b{color:var(--ink)}
+  .rec.amo{border-left-color:var(--amo)}
+  .task{background:var(--soft);border-radius:10px;padding:11px 13px;font-size:13.5px;margin:0 0 12px}
+  .task.cal{background:#eef4ff}
+  .task .tdate{display:inline-block;font-size:11px;font-weight:800;color:var(--amo);background:#dce9fb;border-radius:6px;padding:2px 7px;margin-left:6px}
+  .tl{list-style:none;margin:0;padding:0}
+  .tl li{position:relative;padding:0 0 12px 22px;font-size:13px}
+  .tl li:before{content:"";position:absolute;left:4px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .tl li:after{content:"";position:absolute;left:7.5px;top:12px;bottom:0;width:1px;background:var(--line)}
+  .tl li:last-child{padding-bottom:0}.tl li:last-child:after{display:none}
+  .tl li.agent:before{background:var(--amo)}
+  .tl .d{color:var(--muted);font-size:11.5px}
+  .tl b{display:block;font-weight:600}
+  .idline{font-size:11px;color:var(--muted);margin-top:12px;font-family:ui-monospace,Menlo,monospace}
+  .btn{border:none;cursor:pointer;font-weight:700;border-radius:9px;padding:9px 14px;font-size:13.5px;background:var(--green);color:#fff}
+  .btn.sec{background:#e7efeb;color:var(--ink)}
+  .btn.amo{background:var(--amo)}
+  .btn:disabled{opacity:.5;cursor:default}
+
+  .transcript{background:#0c2d21;color:#d7f3e7;border-radius:12px;padding:13px 15px;font-size:13px;margin:0 0 12px;line-height:1.65}
+  .transcript .who{color:#7fd8b5;font-weight:700}
+  .transcript .mark{background:rgba(180,71,44,.35);border-radius:4px;padding:0 3px}
+
+  /* денежные поля */
+  .fields{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:0 0 14px}
+  @media(max-width:560px){.fields{grid-template-columns:1fr}}
+  .fld{border:1px solid var(--line);border-radius:11px;padding:9px 12px;background:#fbfdfc}
+  .fld .k{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .fld .v{font-size:15px;font-weight:800;margin-top:2px}
+  .fld .src{display:inline-block;font-size:10.5px;font-weight:700;color:var(--amo);background:#e9f1fc;border-radius:6px;padding:1px 6px;margin-top:4px}
+  .fld.lock{background:#f4f4f2;border-style:dashed}
+  .fld.lock .v{font-size:12.5px;font-weight:600;color:var(--muted)}
+
+  /* сетка двух панелей */
+  .duo{display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:start;margin:0 0 26px}
+  @media(max-width:900px){.duo{grid-template-columns:1fr}}
+  .side{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .side h3{font-size:15px;margin:0 0 4px}
+  .side .s-sub{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+  .prio{list-style:none;margin:0;padding:0}
+  .prio li{border:1px solid var(--line);border-radius:11px;padding:9px 11px;margin:0 0 8px;font-size:13px}
+  .prio .rank{display:inline-block;width:20px;height:20px;border-radius:6px;background:var(--soft);color:var(--green);font-weight:800;font-size:11.5px;text-align:center;line-height:20px;margin-right:7px}
+  .prio b{font-size:13.5px}
+  .prio .why{display:block;color:var(--muted);font-size:12px;margin-top:2px;padding-left:27px}
+  .prio .money{float:right;font-weight:800;font-size:12.5px;color:var(--ink)}
+  .prio .money.hid{color:var(--muted);font-weight:600;font-style:italic}
+
+  /* черновик follow-up */
+  .draftbx{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin:0 0 12px;font-size:13px}
+  .draftbx .dl{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:0 0 5px}
+  .draftbx .txt{color:var(--ink);white-space:pre-wrap}
+  .draftbx textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font:inherit;font-size:13px;resize:vertical;min-height:86px}
+  .draftbx .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+  .draftbx .btns b{font-size:12.5px;font-weight:700;border-radius:8px;padding:6px 11px;cursor:pointer;user-select:none}
+  .draftbx .btns b.send{background:var(--green);color:#fff}
+  .draftbx .btns b.sec{background:#e7efeb;color:var(--ink)}
+  .draftbx.sent{opacity:.75}
+  .sentmark{font-size:12px;font-weight:700;color:var(--green);margin-top:8px}
+
+  /* коучинг: советники */
+  .weak{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+  .weak span{font-size:12px;font-weight:700;background:#fce8e2;color:var(--warm);border-radius:16px;padding:4px 11px}
+  .advrow{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+  .advbtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer;user-select:none;font-size:13.5px;font-weight:700;transition:border-color .12s,box-shadow .12s,background .12s;display:flex;align-items:center;gap:8px}
+  .advbtn:hover{border-color:var(--green)}
+  .advbtn.on{background:var(--soft);border-color:var(--green);box-shadow:0 0 0 2px var(--soft)}
+  .advbtn .ava{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
+  .advpanel{border:1px solid var(--green);border-radius:14px;padding:16px 18px;margin:0 0 14px;background:#fbfffd}
+  .advpanel .ap-h{display:flex;align-items:center;gap:10px;margin:0 0 4px}
+  .advpanel .ap-h .ava{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+  .advpanel .ap-h b{font-size:16px}
+  .advpanel .plane{font-size:12px;color:var(--muted);margin:0 0 12px}
+  .advpanel .fb{border-left:3px solid var(--green);padding:2px 0 2px 12px;margin:0 0 14px}
+  .advpanel .fb p{margin:0 0 8px;font-size:13.5px}
+  .advpanel .fb p:last-child{margin-bottom:0}
+  .lesson{background:#fff6e8;border:1px solid #f0dcb8;border-radius:11px;padding:11px 13px;font-size:13px;margin:0 0 12px}
+  .lesson .lt{font-size:11px;font-weight:800;color:#9a6a12;text-transform:uppercase;letter-spacing:.03em;margin:0 0 5px}
+  .srcline{font-size:12px;color:var(--muted)}
+  .srcline b{color:var(--ink)}
+
+  /* дашборд РОПа */
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:0 0 26px}
+  @media(max-width:900px){.tiles{grid-template-columns:1fr}}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .tile h3{font-size:15px;margin:0 0 3px}
+  .tile .t-sub{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+  .perseg{display:inline-flex;background:#eef4f1;border-radius:9px;padding:3px;gap:3px;margin:0 0 12px}
+  .perseg b{font-size:12px;font-weight:700;color:var(--muted);border-radius:7px;padding:4px 12px;cursor:pointer;user-select:none}
+  .perseg b.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(6,37,26,.12)}
+  .prow{margin:0 0 11px}
+  .prow .pn{display:flex;justify-content:space-between;font-size:13px;margin:0 0 4px}
+  .prow .pn b{font-weight:700}
+  .prow .pn span{color:var(--muted);font-size:12.5px}
+  .bar{height:8px;border-radius:5px;background:#edf3f0;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:5px;background:var(--green)}
+  .bar i.low{background:var(--warm)}
+  .bar i.mid{background:#d99a26}
+  .mini{width:100%;border-collapse:collapse;font-size:13px}
+  .mini th{text-align:left;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:0 8px 6px 0;border-bottom:1px solid var(--line)}
+  .mini td{padding:7px 8px 7px 0;border-bottom:1px solid #eef3f0}
+  .mini tr:last-child td{border-bottom:none}
+  .mini .num{font-weight:800}
+  .objs{list-style:none;margin:0;padding:0;font-size:13px}
+  .objs li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #eef3f0}
+  .objs li:last-child{border-bottom:none}
+  .objs .val{font-weight:800;white-space:nowrap}
+  .objs .val.bad{color:var(--warm)}
+  .mfeed{list-style:none;margin:0;padding:0;font-size:13px}
+  .mfeed li{padding:8px 10px;border-radius:10px;background:var(--soft);margin:0 0 7px}
+  .mfeed li.fresh{background:#fff6e8}
+  .mfeed .md{font-size:11px;color:var(--muted);font-weight:700}
+  .locked{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:40px 24px;text-align:center;margin:0 0 26px}
+  .locked .lk{font-size:34px;margin:0 0 8px}
+  .locked b{display:block;font-size:16px;margin:0 0 6px}
+  .locked p{color:var(--muted);font-size:14px;margin:0 0 16px}
+
+  /* конфигуратор */
+  .clsw{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+  .clbtn{flex:1 1 320px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 16px;cursor:pointer;user-select:none;text-align:left;transition:border-color .12s,box-shadow .12s}
+  .clbtn:hover{border-color:var(--green)}
+  .clbtn.on{border-color:var(--green);box-shadow:0 0 0 2px var(--soft);background:#fbfffd}
+  .clbtn b{display:block;font-size:15px;margin:0 0 3px}
+  .clbtn span{font-size:12.5px;color:var(--muted)}
+  .clbtn .crmtag{display:inline-block;font-size:11px;font-weight:800;border-radius:7px;padding:2px 8px;margin-top:7px;color:#fff}
+  .enginenote{background:var(--soft);border-radius:12px;padding:12px 15px;font-size:13.5px;margin:0 0 18px}
+  .advgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0 0 20px}
+  @media(max-width:820px){.advgrid{grid-template-columns:1fr}}
+  .acard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+  .acard .ah{display:flex;align-items:center;gap:9px;margin:0 0 8px}
+  .acard .ah .ava{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:#fff}
+  .acard .ah b{font-size:15px}
+  .acard .krow{font-size:12.5px;margin:0 0 7px}
+  .acard .krow .k{display:block;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .acard .prompt{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#0c2d21;color:#d7f3e7;border-radius:9px;padding:9px 11px;white-space:pre-wrap;margin:0 0 7px}
+  .acard .ed{font-size:12.5px;font-weight:700;color:var(--green);cursor:pointer;user-select:none}
+  .aform label{display:block;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:8px 0 3px}
+  .aform input,.aform textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 9px;font:inherit;font-size:13px}
+  .aform textarea{resize:vertical;min-height:70px}
+  .aform .btns{display:flex;gap:6px;margin-top:10px}
+
+  /* роли */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 26px}
+  @media(max-width:820px){.tiers{grid-template-columns:1fr}}
+  .tier{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:border-color .12s,box-shadow .12s}
+  .tier.on{border-color:var(--green);box-shadow:0 0 0 2px var(--soft)}
+  .tier b.tn{display:block;font-size:15.5px;margin:0 0 2px}
+  .tier .tt{font-size:12px;color:var(--muted);margin:0 0 10px}
+  .tier ul{margin:0 0 12px;padding-left:17px;font-size:13px}
+  .tier li{margin:0 0 4px}
+  .tier li.no{color:var(--muted);list-style:"— "}
+
+  /* рамка + фазы */
+  .framegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 22px}
+  @media(max-width:820px){.framegrid{grid-template-columns:1fr}}
+  .fcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .fcard b{display:block;font-size:14.5px;margin:0 0 5px}
+  .fcard span{font-size:13px;color:var(--muted)}
+  .phases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 22px}
+  @media(max-width:820px){.phases{grid-template-columns:1fr}}
+  .phase{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--card)}
+  .phase.now{border-color:var(--green);box-shadow:0 0 0 2px var(--soft)}
+  .phase .pn{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--green);margin:0 0 6px}
+  .phase b{display:block;font-size:14.5px;margin:0 0 5px}
+  .phase span{font-size:13px;color:var(--muted)}
+  .phase a{font-size:12.5px;font-weight:700;text-decoration:none}
+  .note{background:var(--soft);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--ink);margin-top:6px}
+
+  footer{padding:30px 0;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line);margin-top:30px}
+  footer b{color:var(--ink)}
+  .foot-nav{margin:14px 0 0;display:flex;gap:16px;flex-wrap:wrap}
+  .foot-nav a{color:var(--green);text-decoration:none;font-weight:600;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="sitenav"><a href="index.html">Весь сайт слаживание.ру</a></div>
+    <p class="eyebrow">Прототип-вижен · система продаж</p>
+    <h1>Система продаж как продукт</h1>
+    <p>Один продукт на одном технологическом шве: любое касание — звонок, Zoom, встреча — становится транскриптом в карточке CRM, наш агент разбирает его двумя линзами и возвращает результат в ту же карточку. <span class="brand">CRM не пересобираем</span> — подключаемся коннектором. Всё ниже кликается: понажимайте. Данные вымышленные, но так это и работает.</p>
+    <div class="roleline">
+      <span class="rl">Вы смотрите глазами:</span>
+      <span class="seg" id="roleSeg"></span>
+      <span class="rolenote" id="roleNote"></span>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs"></nav>
+
+<div class="stage-bar">
+  <div class="wrap">
+    <div class="hint" id="hint"></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- 0. Шов -->
+  <section class="sec on" id="sec-seam">
+    <h2>Один шов, из которого растёт всё</h2>
+    <p class="sub">Технологически весь продукт — это один поток. Мы строим его один раз, а дальше на него навешиваются линзы, роли и советники.</p>
+
+    <div class="flow">
+      <div class="fbox">
+        <div class="fk">1 · Касание</div>
+        <b>Звонок · Zoom · встреча</b>
+        <span>Любой разговор с клиентом. Запись отдаёт АТС, Zoom или рекордер встречи — руками никто ничего не скачивает.</span>
+      </div>
+      <div class="farr">→</div>
+      <div class="fbox crm">
+        <div class="fk">2 · Транскрипт в CRM</div>
+        <b>Сам падает в карточку сделки</b>
+        <span>amoCRM у Open Service открыта: коннектор и виджет через API. Транскрипт лежит там, где живёт сделка.</span>
+      </div>
+      <div class="farr">→</div>
+      <div class="lensbox">
+        <div class="fbox" style="padding:10px 12px"><div class="fk">3 · Наш слой</div><span>Агент разбирает разговор двумя линзами:</span></div>
+        <div class="lens" onclick="setTab('exec')">
+          <b>Линза исполнения — руки</b>
+          <span>Срез до звонка, саммари, черновик follow-up, пинг спящих, задачи, денежные поля, приоритизация.</span>
+          <span class="go">Открыть →</span>
+        </div>
+        <div class="lens" onclick="setTab('coach')">
+          <b>Линза коучинга — наставник</b>
+          <span>Кнопки «Что бы сказал Батя / Райан / КД / Школа боссов»: фидбэк по плоскости + микро-урок.</span>
+          <span class="go">Открыть →</span>
+        </div>
+      </div>
+      <div class="farr">→</div>
+      <div class="fbox crm">
+        <div class="fk">4 · Обратно в CRM</div>
+        <b>Кнопка и примечание в той же карточке</b>
+        <span>Результат возвращается туда, где работает продавец. Отправляет клиенту всегда человек, одним тапом.</span>
+      </div>
+    </div>
+
+    <div class="lastcrm">
+      <span class="cap">Внедряем CRM последний раз в истории — чтобы система наследовалась</span>
+      <p>Знания, досье клиентов и советники живут в нашем слое, а не в CRM. Слой CRM-agnostic: сегодня amoCRM, завтра Bitrix24 или HubSpot — меняется только адаптер, а наработанное годами не сгорает при очередном «переезде на новую систему». Поэтому это внедрение — последнее: дальше система только наследуется и умнеет.</p>
+    </div>
+
+    <div class="seamnote"><b>Почему две линзы, а не одна.</b> Линза исполнения делает работу за продавца — экономит часы. Линза коучинга растит продавца — поднимает конверсию каждого следующего разговора. Обе смотрят на один и тот же транскрипт, кода два раза писать не нужно. Переключите роль наверху: коллер, менеджер и РОП видят разное — деньги и план открываются по тиру.</div>
+  </section>
+
+  <!-- 1. Исполнение -->
+  <section class="sec" id="sec-exec">
+    <h2>Карточка сделки — линза исполнения</h2>
+    <p class="sub">Разговор прошёл — агент уже разложил его по карточке: саммари, денежные поля, задача, черновик follow-up. Продавец проверяет и жмёт, а не печатает. Роль наверху меняет, какие деньги видны.</p>
+    <div class="duo">
+      <div class="amo">
+        <div class="top"><span class="dot"></span><b>amoCRM · Воронка «Охота» (тест)</b><span>сделка #52240</span></div>
+        <div class="detail" id="execCard"></div>
+      </div>
+      <div class="side">
+        <h3>Приоритет на сегодня</h3>
+        <p class="s-sub">Агент отсортировал сделки по потенциалу и «температуре» — с чего начать день, чтобы деньги не остыли.</p>
+        <ul class="prio" id="execPrio"></ul>
+        <p class="s-sub" id="prioNote" style="margin:6px 0 0"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Коучинг -->
+  <section class="sec" id="sec-coach">
+    <h2>Карточка сделки — линза коучинга</h2>
+    <p class="sub">Тот же транскрипт, но теперь он растит продавца. Под разговором — кнопки советников: каждый разбирает звонок по своей плоскости и даёт микро-урок ровно по слабым местам этого разговора. Один звонок — четыре разных, по-своему ценных разбора.</p>
+    <div class="amo" style="margin:0 0 16px">
+      <div class="top"><span class="dot"></span><b>amoCRM · Воронка «Телеколлер» (тест)</b><span>сделка #52311 · холодный звонок, 6 мин</span></div>
+      <div class="detail">
+        <div class="dh"><b>Сеть «Шафран» (3 точки)</b><span class="stagepill">Холодный прозвон</span></div>
+        <div class="subline">Марат Гареев, собственник · коллер: Даниил · транскрипт снят агентом из записи АТС</div>
+
+        <div class="lbl">Транскрипт · ключевой кусок (агент подсветил слабые места)</div>
+        <div class="transcript">
+          <span class="who">Клиент (Марат):</span> Ребята, честно — мы уже почти выбрали другого дилера. Счёт у меня на столе. <span class="mark">Третий день собираюсь оплатить</span>, всё руки не доходят.<br>
+          <span class="who">Коллер (Даниил):</span> Понял вас, давить не буду. Скажу одно: мы топ-2 в рейтинге дилеров iiko по стране — это не слова, это рейтинг самой iiko. Если что-то пойдёт не так — держите нас в уме.<br>
+          <span class="who">Клиент:</span> Хорошо, что позвонили. Для меня, если по-честному, <span class="mark">вопрос в сумме</span> — кто дешевле посчитает, тот и молодец.<br>
+          <span class="who">Коллер:</span> Принял. Тогда я на связи, хорошего дня!
+        </div>
+
+        <div class="lbl">Слабые места разговора · разметка агента</div>
+        <div class="weak">
+          <span>конкурент не назван — не знаем, с кем сравнивают</span>
+          <span>сумма конкурента не выяснена, хотя клиент решает по цене</span>
+          <span>«оплата 3-й день висит» прочитана как стоп, а это открытое окно</span>
+        </div>
+        <div class="task" style="margin-bottom:14px">Что коллер сделал хорошо: не давил в лоб, зашёл козырем «топ-2 в рейтинге iiko», оставил дверь открытой — «держите в уме». Контакт сохранён. Дальше — что с этим делать: спросите советников.</div>
+
+        <div class="lbl">Что бы сказал советник · нажмите на любого</div>
+        <div class="advrow" id="advRow"></div>
+        <div id="advPanel"></div>
+        <div class="idline">deal_id: 52311 · lens: coaching · разбор идёт по транскрипту этого звонка, не по общим правилам</div>
+      </div>
+    </div>
+    <div class="seamnote"><b>В чём суть.</b> Советник — не «ещё один чат-бот», а конкретный человек-эксперт компании, чьи знания оцифрованы: записи разборов, обучения, закрытые сделки. Фидбэк привязан к плоскости советника и к слабым местам именно этого разговора. Как советники настраиваются под другого клиента — вкладка «Конфигуратор».</div>
+  </section>
+
+  <!-- 3. Дашборд РОПа -->
+  <section class="sec" id="sec-rop">
+    <h2>Дашборд РОПа — видимость и объекты управления</h2>
+    <p class="sub">Не Power BI с отчётами за вчера, а живые виджеты поверх CRM: план, спящие деньги, маржа, мотивация — в момент, когда ещё можно вмешаться.</p>
+    <div id="ropBody"></div>
+  </section>
+
+  <!-- 4. Конфигуратор -->
+  <section class="sec" id="sec-config">
+    <h2>Конфигуратор советников — масштабируемость</h2>
+    <p class="sub">Советники — это конфиг, не код. У каждого настраиваются имя, плоскость, промпт и источник знаний; под клиента выбирается адаптер CRM. Переключите клиента и посмотрите, что меняется — и что остаётся.</p>
+    <div id="configBody"></div>
+  </section>
+
+  <!-- 5. Роли -->
+  <section class="sec" id="sec-roles">
+    <h2>Роли и доступ — три тира</h2>
+    <p class="sub">Один продукт, три окна в него. Деньги и план открываются по тиру: коллер работает со сделками, менеджер видит выручку, РОП — маржу и управление. Нажмите «Смотреть в этой роли» — весь прототип переключится.</p>
+    <div class="tiers" id="tierGrid"></div>
+    <div class="seamnote"><b>Как это устроено.</b> Роль — это фильтр на одних и тех же данных, а не три разных продукта. Коллер в Telegram получает срезы и черновики без сумм; менеджер в карточке видит выручку и встречи; РОП поверх всего — P&amp;L, маржу, приоритизацию спящих и объекты управления. Права заданы в нашем слое, CRM об этом даже не знает.</div>
+  </section>
+
+  <!-- 6. Рамка -->
+  <section class="sec" id="sec-frame">
+    <h2>Честная рамка и стратегия</h2>
+    <p class="sub">Что мы обещаем, чего не обещаем и в каком порядке строим.</p>
+    <div class="framegrid">
+      <div class="fcard"><b>CRM-agnostic</b><span>Весь интеллект — в нашем слое. Под клиента меняется только адаптер: amoCRM, Bitrix24, HubSpot. CRM клиента не пересобираем и не подменяем.</span></div>
+      <div class="fcard"><b>Внедряем CRM последний раз</b><span>Знания, досье и советники наследуются при любой смене CRM. Очередной «переезд на новую систему» перестаёт сжигать наработанное.</span></div>
+      <div class="fcard"><b>Человек в контуре</b><span>Клиенту ничего не уходит автоматически. Агент готовит черновик — отправляет продавец, одним тапом. Каждое действие агента в журнале с ID сделки.</span></div>
+      <div class="fcard"><b>152-ФЗ</b><span>В LLM разговор уходит без персональных данных — через прокси приватности. Данные живут в РФ. Записи звонков — у оператора телефонии, как и сейчас.</span></div>
+      <div class="fcard"><b>Софт, а не ритуал</b><span>Продукт — это транскрипт → карточка → линзы. Разборы у Бати по средам, регламенты, планёрки — управленческий процесс клиента. Мы его усиливаем, но не продаём.</span></div>
+      <div class="fcard"><b>Знания компании — актив</b><span>Записи Бати, обучения Райана, сделки КД в Pyrus превращаются в советников. Уходит человек — экспертиза остаётся в системе.</span></div>
+    </div>
+
+    <h2 style="font-size:19px">Фазность: строим по одной опоре</h2>
+    <div class="phases">
+      <div class="phase now">
+        <div class="pn">Фаза 1 · сейчас</div>
+        <b>Телеколлер — исполнение</b>
+        <span>Пре-колл срез, саммари, follow-up, перезвоны, передача в «Охоту». На ограниченной воронке считаем затраты и эффект. </span>
+        <a href="proto-sales-agent.html">Кликабельный прототип фазы 1 →</a>
+      </div>
+      <div class="phase">
+        <div class="pn">Фаза 2</div>
+        <b>Менеджер и РОП — видимость</b>
+        <span>Денежные поля из разговора, приоритизация по потенциалу, дашборд РОПа: план, спящие, маржа, объекты управления, мотивация в реальном времени.</span>
+      </div>
+      <div class="phase">
+        <div class="pn">Фаза 3</div>
+        <b>Коучинг — советники</b>
+        <span>Оцифровка знаний: Батя, Райан, КД, Школа боссов. Кнопки «что бы сказал…» в карточке, микро-уроки по слабым местам каждого разговора.</span>
+      </div>
+    </div>
+    <p class="note">Каждая фаза окупает следующую: исполнение экономит часы и даёт чистые данные, видимость даёт РОПу управление, коучинг поднимает конверсию каждого разговора. И всё это стоит на одном шве, построенном в фазе 1.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>Платформа «Слаживание»</b> — среда, где люди и ИИ-агенты делают больше работы вместе. Прототип-вижен «Система продаж как продукт»: один шов, две линзы, советники как конфиг. Ядро CRM-agnostic: под клиента меняется только адаптер.
+    <nav class="foot-nav">
+      <a href="index.html">Главная</a>
+      <a href="solutions.html">Решения</a>
+      <a href="proto-sales-agent.html">Фаза 1: прототип телеколлера</a>
+      <a href="mailto:leo@dovbenko.me?subject=Система%20продаж%20как%20продукт%20—%20обсудить">Обсудить пилот</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+/* ---------- общее состояние ---------- */
+const state = {
+  role: 'caller',          // caller | manager | rop
+  tab: 'seam',
+  client: 'os',            // os | vita
+  adv: null,               // открытый советник в коучинге
+  period: 'month',         // week | month | year
+  fu: 'draft',             // draft | sent
+  fuEdit: false,
+  fuText: 'Марина, добрый день! Спасибо за разговор. Как договорились: в четверг в 15:00 покажу по видео, как в iiko выглядят склад и фудкост на живых данных — возьму пример кофейни на две точки, как у вас. Расчёт по сумме пришлю до среды, чтобы вы успели посмотреть до демо. Если что-то поменяется — пишите сюда.',
+  pinged: {},
+  editAdv: null,
+  demoDeals: 0
+};
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money = v => v.toLocaleString('ru-RU') + ' ₽';
+function setHint(t){ document.getElementById('hint').innerHTML = t; }
+
+/* ---------- табы ---------- */
+const TABS = [
+  {id:'seam',   n:'0', t:'Шов'},
+  {id:'exec',   n:'1', t:'Исполнение'},
+  {id:'coach',  n:'2', t:'Коучинг'},
+  {id:'rop',    n:'3', t:'Дашборд РОПа'},
+  {id:'config', n:'4', t:'Конфигуратор'},
+  {id:'roles',  n:'5', t:'Роли'},
+  {id:'frame',  n:'6', t:'Рамка'}
+];
+const TAB_HINTS = {
+  seam:  '<b>С чего начать:</b> это карта всего вижена. Кликните на любую из двух линз в схеме — попадёте в её раздел. Переключатель ролей наверху меняет, что видно в каждом разделе.',
+  exec:  '<b>Линза исполнения:</b> агент уже разобрал звонок с «Углями и дымом» — саммари, денежные поля, задача. Нажмите «Отправить» или «Править» у черновика follow-up. Переключите роль наверху: у коллера денег в карточке нет.',
+  coach: '<b>Линза коучинга:</b> нажмите «Что бы сказал Батя», потом «Что бы сказал КД» — один и тот же звонок, два разных разбора. У каждого советника — своя плоскость, микро-урок и источник знаний.',
+  rop:   '<b>Дашборд РОПа:</b> пощёлкайте период «неделя / месяц / год» в плане, нажмите «Пингануть» у спящей сделки и «Демо: закрыть сделку» в мотивации.',
+  config:'<b>Самое важное про масштабируемость:</b> переключите клиента с Open Service на «Белла Виту» — имена советников, промпты, источники и CRM поменяются, а продукт останется тем же. Нажмите «Редактировать» у любого советника.',
+  roles: '<b>Роли:</b> нажмите «Смотреть в этой роли» на любой карточке — весь прототип переключится: исполнение спрячет или покажет деньги, дашборд РОПа откроется или закроется.',
+  frame: '<b>Честная рамка:</b> что обещаем, чего не обещаем, и почему строим в порядке исполнение → видимость → коучинг. Фаза 1 уже есть отдельным прототипом — ссылка в первой карточке.'
+};
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = '<div class="wrap">' + TABS.map(t =>
+    `<b class="${state.tab===t.id?'on':''}" onclick="setTab('${t.id}')"><span class="num">${t.n}</span>${t.t}</b>`).join('') + '</div>';
+}
+function setTab(id){
+  state.tab = id;
+  document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.id === 'sec-'+id));
+  renderTabs();
+  setHint(TAB_HINTS[id] || '');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------- роли ---------- */
+const ROLES = {
+  caller: {t:'Коллер', note:'Telegram · только свои сделки · без денег и плана'},
+  manager:{t:'Менеджер', note:'свои сделки · выручка и встречи · без маржи и P&L'},
+  rop:    {t:'РОП', note:'P&L, маржа, MRR, приоритизация, объекты управления'}
+};
+function renderRoleSeg(){
+  document.getElementById('roleSeg').innerHTML = Object.keys(ROLES).map(r =>
+    `<b class="${state.role===r?'on':''}" onclick="setRole('${r}')">${ROLES[r].t}</b>`).join('');
+  document.getElementById('roleNote').textContent = ROLES[state.role].note;
+}
+function setRole(r){
+  state.role = r;
+  renderRoleSeg(); renderExec(); renderRop(); renderTiers();
+  const msgs = {
+    caller: 'Теперь вы коллер: в карточке исполнения пропали сумма, маржа и MRR, в приоритизации — суммы, дашборд РОПа закрыт. Коллер работает со сделками, не с деньгами.',
+    manager:'Теперь вы менеджер: в карточке видна сумма сделки (выручка), но маржа и MRR по-прежнему закрыты — это тир РОПа. Дашборд РОПа тоже закрыт.',
+    rop:    'Теперь вы РОП: открылись маржа и MRR в карточке, суммы и маржа в приоритизации, и весь дашборд на вкладке «Дашборд РОПа».'
+  };
+  setHint('<b>Роль переключена.</b> ' + msgs[r]);
+}
+
+/* ---------- 1. исполнение: карточка сделки ---------- */
+const EXEC = {
+  company:'Гриль-бар «Угли и дым» (2 точки)', contact:'Марина Соколова, совладелица и управляющая — ЛПР',
+  stage:'Переговоры', id:'52240',
+  fields:[
+    {k:'Продукт', v:'iiko на 2 точки + склад + перенос меню', src:'заполнил агент из разговора', tier:'caller'},
+    {k:'Сумма сделки', v:money(348000), src:'названа в разговоре, 14:12', tier:'manager'},
+    {k:'Маржа', v:'26% · '+money(90500), src:'посчитана по прайсу', tier:'rop'},
+    {k:'MRR (сопровождение)', v:money(14400)+' / мес', src:'пакет «Забота»', tier:'rop'}
+  ],
+  summary:{
+    'Кто и роль':'Марина Соколова, совладелица 2 точек — решает сама, но финальную цифру сверяет с партнёром',
+    'Боль':'склад в Excel, инвентаризация раз в месяц «на глаз», расхождения списывают в никуда',
+    'Продукт':'iiko на 2 точки + складской учёт, перенос меню с r_keeper',
+    'Договорённость':'демо по видео в четверг 15:00, до среды прислать расчёт по сумме',
+    'Следующий шаг':'расчёт до среды → демо в четверг → счёт',
+    'Стоп-фактор':'партнёр Марины считает, что «и так работает» — на демо нужен аргумент цифрами потерь'
+  },
+  timeline:[
+    {d:'вчера, 14:02', a:0, s:'Звонок, 22 мин — Марина рассказала про склад в Excel и согласилась на демо'},
+    {d:'вчера, 14:05', a:1, s:'Транскрипт из АТС упал в карточку · саммари снято в примечание'},
+    {d:'вчера, 14:05', a:1, s:'Денежные поля заполнены из разговора: продукт, сумма, маржа, MRR'},
+    {d:'вчера, 14:06', a:1, s:'Задача «Демо по видео чт 15:00» встала в amoCRM + приглашение в календарь'},
+    {d:'вчера, 14:07', a:1, s:'Черновик follow-up готов — ждёт тапа менеджера'}
+  ]
+};
+
+const PRIO = [
+  {co:'Сеть «Дон Пино» (4 точки)', why:'счёт конкурента висит без оплаты — окно открыто', sum:890000, m:'31%', heat:'горит'},
+  {co:'Гриль-бар «Угли и дым»', why:'расчёт обещан до среды, демо в четверг', sum:348000, m:'26%', heat:'в работе'},
+  {co:'Кофейня «Крафт и корица»', why:'молчит 19 дней после «подумаю» — пинг спящего', sum:210000, m:'24%', heat:'спит'},
+  {co:'Столовая «Порция»', why:'просила перезвонить после 15-го — срок подошёл', sum:145000, m:'22%', heat:'ждёт'}
+];
+
+function fuBoxHTML(){
+  if(state.fu === 'sent'){
+    return `<div class="draftbx sent">
+      <div class="dl">Follow-up · черновик агента</div>
+      <div class="txt">${esc(state.fuText)}</div>
+      <div class="sentmark">✓ Отправлено клиенту вами · касание записано в таймлайн сделки</div>
+    </div>`;
+  }
+  if(state.fuEdit){
+    return `<div class="draftbx">
+      <div class="dl">Follow-up · правка черновика</div>
+      <textarea id="fuTa">${esc(state.fuText)}</textarea>
+      <div class="btns">
+        <b class="send" onclick="fuSave()">Сохранить и отправить</b>
+        <b class="sec" onclick="fuCancel()">Отмена</b>
+      </div>
+    </div>`;
+  }
+  return `<div class="draftbx">
+    <div class="dl">Follow-up · черновик агента, тоном скрипта — отправляет человек</div>
+    <div class="txt">${esc(state.fuText)}</div>
+    <div class="btns">
+      <b class="send" onclick="fuSend()">Отправить</b>
+      <b class="sec" onclick="fuEdit()">Править</b>
+    </div>
+  </div>`;
+}
+
+function renderExec(){
+  const r = state.role;
+  const tierRank = {caller:0, manager:1, rop:2};
+  const fieldsHTML = EXEC.fields.map(f => {
+    if(tierRank[r] >= tierRank[f.tier]){
+      return `<div class="fld"><div class="k">${esc(f.k)}</div><div class="v">${esc(f.v)}</div><span class="src">${esc(f.src)}</span></div>`;
+    }
+    const who = f.tier === 'rop' ? 'РОПу' : 'менеджеру и РОПу';
+    return `<div class="fld lock"><div class="k">${esc(f.k)}</div><div class="v">🔒 видно ${who} — у роли «${ROLES[r].t.toLowerCase()}» денег в карточке нет</div></div>`;
+  }).join('');
+
+  document.getElementById('execCard').innerHTML = `
+    <div class="dh"><b>${esc(EXEC.company)}</b><span class="stagepill">${esc(EXEC.stage)}</span></div>
+    <div class="subline">${esc(EXEC.contact)}</div>
+    <div class="lbl">Поля сделки · заполнены агентом из разговора, человек может поправить</div>
+    <div class="fields">${fieldsHTML}</div>
+    <div class="lbl">Примечание · саммари звонка <span style="color:var(--amo)">(снято агентом)</span></div>
+    <div class="rec"><ul>${Object.entries(EXEC.summary).map(([k,v])=>`<li><b>${esc(k)}:</b> ${esc(v)}</li>`).join('')}</ul></div>
+    <div class="task cal"><span class="lbl" style="margin-bottom:0;display:inline">Задача · демо по видео</span><span class="tdate">чт, 16.07 · 15:00</span><br>Поставлена агентом в amoCRM, приглашение ушло в календари обеим сторонам. Не провели — сама вернётся в план.</div>
+    ${fuBoxHTML()}
+    <div class="lbl" style="margin-top:6px">Таймлайн касаний (сквозной ID сделки)</div>
+    <ul class="tl">${EXEC.timeline.map(t=>`<li class="${t.a?'agent':''}"><span class="d">${esc(t.d)}${t.a?' · агент':''}</span><b>${esc(t.s)}</b></li>`).join('')}</ul>
+    <div class="idline">deal_id: ${EXEC.id} · lens: execution · все действия агента в журнале</div>`;
+
+  const heatLabel = {'горит':'высокий, окно закрывается','в работе':'высокий','спит':'средний','ждёт':'средний'};
+  document.getElementById('execPrio').innerHTML = PRIO.map((p,i)=>{
+    let m = '';
+    if(r === 'rop') m = `<span class="money">${money(p.sum)} · маржа ${esc(p.m)}</span>`;
+    else if(r === 'manager') m = `<span class="money">${money(p.sum)}</span>`;
+    else m = `<span class="money hid">потенциал: ${esc(heatLabel[p.heat])}</span>`;
+    return `<li>${m}<span class="rank">${i+1}</span><b>${esc(p.co)}</b><span class="why">${esc(p.why)}</span></li>`;
+  }).join('');
+  document.getElementById('prioNote').textContent = r==='caller'
+    ? 'Роль «коллер»: порядок виден, суммы — нет. Приоритет уже посчитан по деньгам в нашем слое, коллеру отдан только вывод.'
+    : (r==='manager' ? 'Роль «менеджер»: видна выручка по своим сделкам. Маржа остаётся тиром РОПа.' : 'Роль «РОП»: полная картина — суммы и маржа. Тот же список, что видят продавцы, только без купюр.');
+}
+
+function fuSend(){
+  state.fu = 'sent'; state.fuEdit = false;
+  EXEC.timeline.push({d:'сейчас', a:0, s:'Менеджер отправил follow-up (черновик агента)'});
+  renderExec();
+  setHint('<b>Отправлено вами, одним тапом.</b> Касание легло в таймлайн, задача на демо стоит. Агент подготовил — человек решил и отправил: клиенту автоматически не уходит ничего.');
+}
+function fuEdit(){
+  state.fuEdit = true; renderExec();
+  setHint('Правьте как хотите — агент дал основу тоном скрипта, финальное слово за человеком.');
+}
+function fuCancel(){ state.fuEdit = false; renderExec(); }
+function fuSave(){
+  const ta = document.getElementById('fuTa');
+  if(ta) state.fuText = ta.value;
+  fuSend();
+}
+
+/* ---------- 2. коучинг: советники ---------- */
+const COACH = {
+  batya: {
+    name:'Батя', color:'#B4472C', init:'Б',
+    plane:'Психология продаж · настроение продавца · менторство',
+    verdict:[
+      'Что не полез продавливать — молодец. Клиент почти решил, давление тут только захлопнуло бы дверь. И козырь с рейтингом вынул вовремя — спокойно, без суеты.',
+      'А теперь слушай, где ты себя обманул. «Держите нас в уме» — это не ход, это отступление, упакованное в вежливость. Ты закончил звонок там, где он только начинался.',
+      'Марат сам сказал: три дня не платит. Человек, который хочет платить, платит в день счёта. Он ждал повода не платить — а ты этот повод в руках держал и положил обратно. Не спросил ни с кем сравнивает, ни какая сумма. Это не техника подвела, это страх прямого вопроса о деньгах. С ним и работаем.'
+    ],
+    lesson:{t:'Микро-урок · 4 минуты · под слабое место этого звонка',
+      b:'Техника «два честных вопроса» на паузе оплаты: «Марат, что вас держит от оплаты — сумма или сомнение?» и «Если по цене сойдёмся — вопрос закрыт?». Оба вопроса не давят, но заставляют клиента назвать настоящую причину. Послушай фрагмент разбора от 12 марта — «Пауза после счёта — золото», там точно такой же случай.'},
+    src:'Записи разборов Бати — 14 часов аудио, распознаны и проиндексированы'
+  },
+  ryan: {
+    name:'Райан', color:'#2b7de9', init:'Р',
+    plane:'Продукт: кнопки iiko · отчёты · бухгалтерские возражения · движение товара',
+    verdict:[
+      'В звонке ноль продуктовой конкретики. «Топ-2 в рейтинге» — хороший статус, но статус не аргумент: клиент не может сравнить рейтинг с суммой в счёте конкурента.',
+      'Марат сказал «вопрос в сумме» — а суммы без состава не сравниваются. Что в чужом счёте: сколько касс, есть ли склад, кто делает перенос меню, входит ли обучение? У сети на 3 точки одно только движение товара между точками — это отдельный блок, который дешёвые счета обычно «забывают».',
+      'Один вопрос — «а что у них входит в эту сумму?» — переводил разговор из «кто дешевле» в «что вы на самом деле покупаете». Это наш разговор, мы его выигрываем.'
+    ],
+    lesson:{t:'Микро-урок · модуль 4 · под слабое место этого звонка',
+      b:'«Из чего складывается счёт iiko»: три вопроса, которые вскрывают состав чужого КП (кассы, склад, перенос, обучение), и как отвечать на бухгалтерское возражение «нам это проведут одной строкой, у вас дороже». Семь минут, с примерами счетов.'},
+    src:'Обучения Райана — 9 модулей по продукту, слайды и записи'
+  },
+  kd: {
+    name:'КД', color:'#0FA06C', init:'КД',
+    plane:'Сложные сделки: кастом · Docs in Box · интеграции · плагины касс',
+    verdict:[
+      '«Оплата третий день висит» — это не стоп-фактор, это открытое окно. По моей практике сделки чаще всего перехватываются именно на паузе оплаты: клиент уже сомневается, иначе бы заплатил.',
+      'Коллер не выяснил две вещи, без которых следующее касание слепое: КТО конкурент и КАКАЯ сумма. Клиент прямо сказал, что решает по цене — поле боя известно, а цифры противника у нас нет. Это надо было забирать в этом же звонке.',
+      'Сеть на 3 точки — почти наверняка понадобятся интеграции и перенос данных, то есть чужой «дешёвый» счёт неполный. Ход: встречный счёт с полным составом и дедлайном. Не «держите в уме», а «завтра пришлю расчёт, где видно всё, — сравните построчно».'
+    ],
+    lesson:{t:'Микро-урок · sales story №78 · под слабое место этого звонка',
+      b:'Кейс из Pyrus: сеть на 5 точек, счёт конкурента висел неделю. Перехватили встречным счётом с полным составом (плагины касс + перенос) и бонусом внедрения за подпись до пятницы. Шаблон «встречный счёт на паузе оплаты» — приложен, подставляй цифры.'},
+    src:'Pyrus: 120 закрытых сложных сделок + sales stories отдела'
+  },
+  boss: {
+    name:'Школа боссов', color:'#06251A', init:'ШБ',
+    plane:'Управленческая механика · плоскость РОПа',
+    verdict:[
+      'Этот звонок — сигнал не про Даниила, а про процесс. В скрипте холодного звонка нет обязательной пары «конкурент + сумма»: если её не спросил этот коллер — сколько ещё звонков за неделю прошли так же?',
+      'Рамка «сигнал → метрика → ритуал»: сигнал у вас уже есть (этот разбор). Метрика — доля звонков, где конкурент и сумма выяснены: агент считает её по транскриптам автоматически, сейчас она в объектах управления — 41%. Ритуал — один такой звонок на планёрке в неделю, разбор по линзе, без публичной порки.',
+      'Отдельно: «оплата висит 3 дня» — событие, на которое у отдела должен быть стандартный ход (встречный счёт, см. КД), а не личная находчивость каждого коллера. Стандартизируйте ход — уберёте зависимость от героизма.'
+    ],
+    lesson:{t:'Микро-урок · рамка Школы боссов · для РОПа',
+      b:'«Сигнал → метрика → ритуал»: как из одного разобранного звонка сделать управляемую величину, не раздувая отчётность. Пошаговая рамка: выбрать метрику, назначить владельца, встроить в существующую планёрку — не создавая новую.'},
+    src:'Конспекты Школы боссов — управленческая механика Леонида'
+  }
+};
+
+function renderCoach(){
+  document.getElementById('advRow').innerHTML = Object.entries(COACH).map(([id,a]) =>
+    `<span class="advbtn ${state.adv===id?'on':''}" onclick="toggleAdvisor('${id}')">
+      <span class="ava" style="background:${a.color}">${a.init}</span>Что бы сказал${a.name==='Школа боссов'?'а':''} ${esc(a.name)}</span>`).join('');
+  const p = document.getElementById('advPanel');
+  if(!state.adv){ p.innerHTML = ''; return; }
+  const a = COACH[state.adv];
+  p.innerHTML = `<div class="advpanel">
+    <div class="ap-h"><span class="ava" style="background:${a.color}">${a.init}</span><b>${esc(a.name)}</b></div>
+    <div class="plane">Плоскость: ${esc(a.plane)}</div>
+    <div class="lbl">Разбор этого звонка</div>
+    <div class="fb">${a.verdict.map(v=>`<p>${esc(v)}</p>`).join('')}</div>
+    <div class="lesson"><div class="lt">${esc(a.lesson.t)}</div>${esc(a.lesson.b)}</div>
+    <div class="srcline">Источник знаний советника: <b>${esc(a.src)}</b> · советник отвечает только из своего источника, не выдумывает</div>
+  </div>`;
+}
+function toggleAdvisor(id){
+  state.adv = state.adv === id ? null : id;
+  renderCoach();
+  if(state.adv){
+    const hints = {
+      batya:'Батя разбирает не технику, а состояние: где коллер отступил из страха. Теперь нажмите «Что бы сказал КД» — тот же звонок, совсем другой разбор.',
+      ryan: 'Райан смотрит только на продуктовую плоскость: клиент сравнивает суммы, а состав сумм никто не вскрыл. Сравните с разбором Бати — плоскости не пересекаются.',
+      kd:   'КД видит в «оплата висит» открытое окно и даёт ход из практики: встречный счёт с дедлайном. Плюс кейс №78 из Pyrus как микро-урок.',
+      boss: 'Школа боссов разбирает не коллера, а процесс: метрика «доля звонков с выясненным конкурентом» уезжает прямо в объекты управления РОПа — гляньте вкладку «Дашборд РОПа».'
+    };
+    setHint('<b>Разбор открыт.</b> ' + hints[state.adv]);
+  }
+}
+
+/* ---------- 3. дашборд РОПа ---------- */
+const ROP_PLAN = {
+  week:  {label:'неделя 13–19 июля', unit:'тыс ₽', rows:[['Ковалёв',420,510],['Ахметова',380,290],['Сизов',350,365]]},
+  month: {label:'июль',              unit:'тыс ₽', rows:[['Ковалёв',1800,1240],['Ахметова',1600,930],['Сизов',1500,1410]]},
+  year:  {label:'2026 год',          unit:'тыс ₽', rows:[['Ковалёв',21000,11820],['Ахметова',19000,10380],['Сизов',18000,12140]]}
+};
+const ROP_SLEEP = [
+  {co:'Сеть «Дон Пино» (4 точки)', sum:890000, days:12, mgr:'Ахметова'},
+  {co:'Ресторан «Севан»',          sum:520000, days:24, mgr:'Ковалёв'},
+  {co:'Кофейня «Крафт и корица»',  sum:210000, days:19, mgr:'Сизов'},
+  {co:'Пекарня «Подъём»',          sum:160000, days:31, mgr:'Ахметова'}
+];
+const ROP_PNL = [
+  ['Ковалёв', '27%', 334000, 41200],
+  ['Ахметова','31%', 288000, 36800],
+  ['Сизов',   '22%', 310000, 28400]
+];
+const ROP_OBJS = [
+  {k:'План/факт по каждому менеджеру', v:'3 менеджера', bad:false},
+  {k:'Спящие сделки > 14 дней, взвешенные по деньгам', v:money(890000)+' сверху', bad:true},
+  {k:'Конверсия звонок → встреча', v:'18%', bad:false},
+  {k:'Скорость первого касания нового лида', v:'2ч 40м', bad:false},
+  {k:'Маржа по сделке ниже порога 20%', v:'2 сделки', bad:true},
+  {k:'Доля звонков с выясненным конкурентом', v:'41%', bad:true}
+];
+
+function ropMotivHTML(){
+  const base = [
+    {d:'сегодня, 13:42', t:'Ковалёв закрыл «Тесто и точка» — 4-я сделка за месяц, до квартального бонуса ещё 2.'},
+    {d:'сегодня, 11:15', t:'Ахметова: встреча с «Дон Пино» назначена — сделка на 890 тыс проснулась после пинга.'},
+    {d:'вчера, 18:00',   t:'Сизов вышел на 94% плана недели — впервые за квартал. Повод сказать вслух.'}
+  ];
+  let extra = '';
+  for(let i=0;i<state.demoDeals;i++){
+    extra += `<li class="fresh"><span class="md">только что · демо</span><br>Сделка закрыта — ${4+i+1}-я за месяц у Ковалёва, до квартального бонуса ${Math.max(0, 2-(i+1))===0?'0 — бонус взят 🎉':'ещё '+(2-(i+1))}.</li>`;
+  }
+  return extra + base.map(m=>`<li><span class="md">${esc(m.d)}</span><br>${esc(m.t)}</li>`).join('');
+}
+
+function renderRop(){
+  const body = document.getElementById('ropBody');
+  if(state.role !== 'rop'){
+    body.innerHTML = `<div class="locked">
+      <div class="lk">🔒</div>
+      <b>Этот экран видит только РОП</b>
+      <p>Роль «${esc(ROLES[state.role].t)}» не видит план по чужим сделкам, P&amp;L и маржу — это тир руководителя. Так же это работает и в продукте: права заданы в нашем слое.</p>
+      <button class="btn" onclick="setRole('rop')">Посмотреть глазами РОПа</button>
+    </div>`;
+    return;
+  }
+  const plan = ROP_PLAN[state.period];
+  body.innerHTML = `<div class="tiles">
+    <div class="tile">
+      <h3>План по менеджеру · ${esc(plan.label)}</h3>
+      <p class="t-sub">Год раскладывается в месяц и неделю — щёлкните период. Факт обновляется в момент закрытия сделки, не «в отчёте за вчера».</p>
+      <span class="perseg">${['week','month','year'].map(p=>`<b class="${state.period===p?'on':''}" onclick="setPeriod('${p}')">${{week:'Неделя',month:'Месяц',year:'Год'}[p]}</b>`).join('')}</span>
+      ${plan.rows.map(([n,p,f])=>{
+        const pct = Math.min(100, Math.round(f/p*100));
+        const cls = pct>=95?'':(pct>=75?'mid':'low');
+        return `<div class="prow"><div class="pn"><b>${esc(n)}</b><span>${f.toLocaleString('ru-RU')} / ${p.toLocaleString('ru-RU')} ${plan.unit} · ${pct}%</span></div><div class="bar"><i class="${cls}" style="width:${pct}%"></i></div></div>`;
+      }).join('')}
+    </div>
+    <div class="tile">
+      <h3>Спящие сделки · по деньгам</h3>
+      <p class="t-sub">Не «кто дольше молчит», а «где спит больше всего денег». Пинг уходит менеджеру черновиком — будит человек.</p>
+      <ul class="prio">${ROP_SLEEP.map((s,i)=>`<li><span class="money">${money(s.sum)}</span><span class="rank">${i+1}</span><b>${esc(s.co)}</b><span class="why">${s.days} дн. тишины · менеджер: ${esc(s.mgr)} · ${state.pinged[i]?'<b style="color:var(--green)">✓ черновик пинга у менеджера в Telegram</b>':`<b style="color:var(--green);cursor:pointer" onclick="pingDeal(${i})">Пингануть →</b>`}</span></li>`).join('')}</ul>
+    </div>
+    <div class="tile">
+      <h3>P&amp;L по менеджеру · июль</h3>
+      <p class="t-sub">Маржа и MRR — тир РОПа. Продавцы соревнуются в выручке, руководитель управляет прибылью.</p>
+      <table class="mini"><tr><th>Менеджер</th><th>Маржа</th><th>Прибыль</th><th>+MRR</th></tr>
+      ${ROP_PNL.map(r=>`<tr><td><b>${esc(r[0])}</b></td><td class="num">${esc(r[1])}</td><td class="num">${money(r[2])}</td><td class="num">${money(r[3])}/мес</td></tr>`).join('')}</table>
+    </div>
+    <div class="tile">
+      <h3>Объекты управления</h3>
+      <p class="t-sub">То, что РОП держит в руках, — как данные, а не как ощущение. Список настраивается; «доля звонков с выясненным конкурентом» приехала сюда из линзы коучинга.</p>
+      <ul class="objs">${ROP_OBJS.map(o=>`<li><span>${esc(o.k)}</span><span class="val ${o.bad?'bad':''}">${esc(o.v)}</span></li>`).join('')}</ul>
+    </div>
+    <div class="tile" style="grid-column:1 / -1">
+      <h3>Мотивация в реальном времени</h3>
+      <p class="t-sub">Событие в CRM → живая лента, пока эмоция горячая. Не грамота в конце квартала, а «четвёртая за месяц, до бонуса две» в момент закрытия. <button class="btn sec" style="padding:5px 10px;font-size:12px;margin-left:6px" onclick="demoClose()">Демо: закрыть сделку</button></p>
+      <ul class="mfeed" id="mfeed">${ropMotivHTML()}</ul>
+    </div>
+  </div>`;
+}
+function setPeriod(p){
+  state.period = p; renderRop();
+  setHint('<b>Период переключён.</b> Год → месяц → неделя: один и тот же план, разложенный до горизонта, на котором можно управлять. У Ахметовой отставание видно на любом горизонте — вмешиваться надо на неделе, а не в декабре.');
+}
+function pingDeal(i){
+  state.pinged[i] = true; renderRop();
+  setHint('<b>Пинг ушёл черновиком менеджеру в Telegram.</b> РОП не пишет клиенту через голову продавца: агент собрал черновик по истории сделки, менеджер отправит одним тапом — или перепишет.');
+}
+function demoClose(){
+  state.demoDeals++; renderRop();
+  setHint('<b>Сделка закрыта — лента отреагировала мгновенно.</b> Продавец видит прогресс к бонусу в момент события. Это и есть «мотивация в реальном времени»: цифра догоняет эмоцию.');
+}
+
+/* ---------- 4. конфигуратор ---------- */
+const CLIENTS = {
+  os: {
+    name:'Open Service', vertical:'HoReCa: рестораны, кассы iiko / r_keeper / 1С',
+    crm:'amoCRM', crmColor:'var(--amo)', adapter:'адаптер amoCRM · виджет + API',
+    touch:'звонок коллера / менеджера → запись из АТС → транскрипт в карточку сделки',
+    advisors:[
+      {name:'Батя', color:'#B4472C', init:'Б', plane:'Психология продаж, настроение продавца, менторство',
+       prompt:'Ты — Батя, наставник отдела продаж Open Service. Разбирай звонок по психологии: состояние продавца, где отступил из страха, где пережал. Говори прямо, по-отечески. Отвечай только из записей разборов Бати.',
+       src:'Записи разборов Бати — 14 часов аудио'},
+      {name:'Райан', color:'#2b7de9', init:'Р', plane:'Продукт: кнопки iiko, отчёты, бухгалтерские возражения, движение товара',
+       prompt:'Ты — Райан, продуктовый эксперт по iiko. Разбирай звонок только в продуктовой плоскости: состав КП, отчёты, бухгалтерские возражения. Каждый совет привязывай к модулю обучения.',
+       src:'Обучения Райана — 9 модулей по продукту'},
+      {name:'КД', color:'#0FA06C', init:'КД', plane:'Сложные сделки: кастом, Docs in Box, интеграции, плагины касс',
+       prompt:'Ты — коммерческий директор. Разбирай сложные сделки: ищи похожие кейсы в Pyrus и sales stories, давай конкретный ход из практики, а не общие слова.',
+       src:'Pyrus: 120 сложных сделок + sales stories'},
+      {name:'Школа боссов', color:'#06251A', init:'ШБ', plane:'Управленческая механика — плоскость РОПа',
+       prompt:'Ты — методолог управленческой механики. Из разговора вытаскивай сигналы для РОПа: дырки процесса, метрики, ритуалы. Рамка «сигнал → метрика → ритуал». Не разбирай продавца лично.',
+       src:'Конспекты Школы боссов'}
+    ]
+  },
+  vita: {
+    name:'Сеть клиник «Белла Вита»', vertical:'Медицина: стоматология и косметология, 4 филиала',
+    crm:'Bitrix24', crmColor:'var(--btrx)', adapter:'адаптер Bitrix24 · встройка + REST API',
+    touch:'звонок администратора / консультация по Zoom → транскрипт в карточку лида',
+    advisors:[
+      {name:'Ментор', color:'#7a4bd0', init:'М', plane:'Общение с пациентом: доверие, страх боли и цены, тон администратора',
+       prompt:'Ты — Ментор администраторов «Белла Виты». Разбирай разговор по эмпатии: где пациента напугали ценой, где потеряли доверие, где недослушали. Мягко, без порки. Только из тренингов главврача.',
+       src:'Записи тренингов главврача — 8 часов'},
+      {name:'Продуктолог', color:'#0aa1dd', init:'П', plane:'Услуги и планы лечения: показания, ДМС и страховые возражения',
+       prompt:'Ты — Продуктолог клиники. Разбирай разговор по составу плана лечения: что предложили, что упустили, как отвечать на «мне по ДМС положено». Ссылайся на методички и прайс.',
+       src:'Методички клиники + прайс, 120 страниц'},
+      {name:'Эксперт по крупным сделкам', color:'#0FA06C', init:'Э', plane:'Комплексные планы: имплантация, ортодонтия, рассрочка',
+       prompt:'Ты — эксперт по комплексным планам лечения. Разбирай большие чеки: где пациент ушёл «подумать», как предлагать рассрочку и этапность. Ищи похожие закрытые планы в Bitrix24.',
+       src:'60 закрытых комплексных планов в Bitrix24'}
+    ]
+  }
+};
+
+function renderConfig(){
+  const c = CLIENTS[state.client];
+  const body = document.getElementById('configBody');
+  body.innerHTML = `
+    <div class="clsw">${Object.entries(CLIENTS).map(([id,cl]) =>
+      `<div class="clbtn ${state.client===id?'on':''}" onclick="setClient('${id}')">
+        <b>${esc(cl.name)}</b>
+        <span>${esc(cl.vertical)} · советники: ${cl.advisors.map(a=>esc(a.name)).join(' / ')}</span><br>
+        <span class="crmtag" style="background:${cl.crmColor}">${esc(cl.crm)}</span>
+      </div>`).join('')}
+    </div>
+    <div class="enginenote"><b>Что поменялось при переключении:</b> имена советников, их плоскости, промпты, источники знаний и адаптер CRM. <b>Что не поменялось:</b> шов «касание → транскрипт → линзы → карточка», две линзы, роли и вся механика. Один движок — разные клиенты, без переписывания кода.</div>
+    <div class="lbl" style="margin-bottom:10px">Клиент: ${esc(c.name)} · ${esc(c.adapter)} · касание: ${esc(c.touch)}</div>
+    <div class="advgrid">${c.advisors.map((a,i)=> state.editAdv===i ? advFormHTML(a,i) : advCardHTML(a,i)).join('')}</div>
+    <div class="seamnote"><b>Почему это важно.</b> Советник добавляется настройкой: имя + плоскость + промпт + источник знаний. Оцифровали эксперта нового клиента — советник заработал в тот же день, на том же движке, хоть в amoCRM, хоть в Bitrix24. Продукт масштабируется конфигурацией, а не проектом разработки под каждого клиента.</div>`;
+}
+function advCardHTML(a,i){
+  return `<div class="acard">
+    <div class="ah"><span class="ava" style="background:${a.color}">${esc(a.init)}</span><b>${esc(a.name)}</b></div>
+    <div class="krow"><span class="k">Плоскость</span>${esc(a.plane)}</div>
+    <div class="krow"><span class="k">Промпт советника</span><div class="prompt">${esc(a.prompt)}</div></div>
+    <div class="krow"><span class="k">Источник знаний</span>${esc(a.src)}</div>
+    <span class="ed" onclick="editAdvisor(${i})">Редактировать советника →</span>
+  </div>`;
+}
+function advFormHTML(a,i){
+  return `<div class="acard" style="border-color:var(--green)">
+    <div class="ah"><span class="ava" style="background:${a.color}">${esc(a.init)}</span><b>Настройка советника</b></div>
+    <div class="aform">
+      <label>Имя</label><input id="af-name" value="${esc(a.name)}">
+      <label>Плоскость (за что отвечает)</label><input id="af-plane" value="${esc(a.plane)}">
+      <label>Промпт</label><textarea id="af-prompt">${esc(a.prompt)}</textarea>
+      <label>Источник знаний</label><input id="af-src" value="${esc(a.src)}">
+      <div class="btns">
+        <button class="btn" onclick="advSave(${i})">Сохранить</button>
+        <button class="btn sec" onclick="advCancel()">Отмена</button>
+      </div>
+    </div>
+  </div>`;
+}
+function setClient(id){
+  if(state.client === id) return;
+  state.client = id; state.editAdv = null;
+  renderConfig();
+  const c = CLIENTS[id];
+  setHint(`<b>Клиент переключён: ${esc(c.name)}.</b> Советники теперь — ${c.advisors.map(a=>esc(a.name)).join(', ')}; CRM — ${esc(c.crm)}; промпты и источники знаний свои. А шов, линзы и карточка — те же самые. Это и есть масштабируемость: конфиг, не код.`);
+}
+function editAdvisor(i){
+  state.editAdv = i; renderConfig();
+  setHint('<b>Форма советника открыта.</b> Имя, плоскость, промпт, источник знаний — четыре поля, которые и делают советника. Поменяйте что-нибудь и сохраните: карточка обновится.');
+}
+function advCancel(){ state.editAdv = null; renderConfig(); }
+function advSave(i){
+  const a = CLIENTS[state.client].advisors[i];
+  const g = id => document.getElementById(id);
+  if(g('af-name'))   a.name  = g('af-name').value.trim() || a.name;
+  if(g('af-plane'))  a.plane = g('af-plane').value.trim() || a.plane;
+  if(g('af-prompt')) a.prompt= g('af-prompt').value.trim() || a.prompt;
+  if(g('af-src'))    a.src   = g('af-src').value.trim() || a.src;
+  a.init = a.name.slice(0,1).toUpperCase() || a.init;
+  state.editAdv = null;
+  renderConfig();
+  setHint('<b>Сохранено.</b> В продукте это ровно так же: правка конфига советника — и следующий разбор звонка идёт уже с новым промптом и источником. Никакого релиза кода.');
+}
+
+/* ---------- 5. роли ---------- */
+const TIERS = [
+  {id:'caller', t:'Коллер', tt:'работает из Telegram', yes:['Свои сделки воронки «Телеколлер»','Пре-колл срезы и саммари звонков','Черновики follow-up, задачи на перезвон','Коучинг-разборы своих звонков'], no:['Суммы, маржа, MRR','План отдела и чужие сделки','Дашборд РОПа']},
+  {id:'manager', t:'Менеджер', tt:'карточка сделки + Telegram', yes:['Свои сделки «Охоты» с суммами (выручка)','Денежные поля из разговора','Встречи, календарь, приоритизация своих сделок','Коучинг-разборы своих звонков и встреч'], no:['Маржа, MRR, P&L','Чужие сделки и план отдела']},
+  {id:'rop', t:'РОП', tt:'дашборд поверх CRM', yes:['План по каждому менеджеру: год → месяц → неделя','Спящие сделки, взвешенные по деньгам','P&L и маржа по менеджеру, MRR','Объекты управления как данные','Мотивация в реальном времени','Управленческие разборы (Школа боссов)'], no:[]}
+];
+function renderTiers(){
+  document.getElementById('tierGrid').innerHTML = TIERS.map(t => `
+    <div class="tier ${state.role===t.id?'on':''}">
+      <b class="tn">${esc(t.t)} ${state.role===t.id?'<span style="color:var(--green);font-size:12px">· вы сейчас</span>':''}</b>
+      <div class="tt">${esc(t.tt)}</div>
+      <ul>${t.yes.map(y=>`<li>${esc(y)}</li>`).join('')}${t.no.map(n=>`<li class="no">${esc(n)}</li>`).join('')}</ul>
+      <button class="btn ${state.role===t.id?'sec':''}" onclick="setRole('${t.id}')">${state.role===t.id?'Текущая роль':'Смотреть в этой роли'}</button>
+    </div>`).join('');
+}
+
+/* ---------- старт ---------- */
+renderTabs();
+renderRoleSeg();
+renderExec();
+renderCoach();
+renderRop();
+renderConfig();
+renderTiers();
+setHint(TAB_HINTS.seam);
+</script>
+</body>
+</html>
