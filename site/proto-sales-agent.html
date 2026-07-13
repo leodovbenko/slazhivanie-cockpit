@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Прототип: ИИ-ассистент отдела продаж в amoCRM | Слаживание</title>
-<meta name="description" content="Кликабельный прототип ИИ-ассистента коммерческого менеджера. Карточка сделки amoCRM с авто-саммари звонка и таймлайном касаний + Telegram-дайджест со спящими сделками и черновиками follow-up. Отправляет всегда человек.">
+<title>Прототип: рабочее место коллера с ИИ-ассистентом (amoCRM) | Open Service · Слаживание</title>
+<meta name="description" content="Кликабельный прототип для Open Service: воронка «Телеколлер» в amoCRM. Пре-колл срез по клиенту до звонка, саммари звонка, авто-задача на перезвон, алерт «клиент горит» и передача в «Охоту» с комментарием для охотника. Отправляет всегда человек.">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="canonical" href="https://slazhivanie.ru/proto-sales-agent.html">
 <meta name="robots" content="noindex"><!-- прототип на согласовании клиента; индексацию открываем по команде -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Слаживание">
-<meta property="og:title" content="Прототип: ИИ-ассистент отдела продаж в amoCRM | Слаживание">
-<meta property="og:description" content="Кликабельный прототип: карточка сделки amoCRM + Telegram-ассистент со спящими сделками и черновиками. Отправляет всегда человек.">
+<meta property="og:title" content="Прототип: рабочее место коллера с ИИ-ассистентом (amoCRM) | Open Service">
+<meta property="og:description" content="Кликабельный прототип: пре-колл срез до звонка, саммари после, авто-перезвон, алерт «клиент горит», передача в «Охоту». Отправляет всегда человек.">
 <meta property="og:image" content="https://slazhivanie.ru/og.png">
 <meta property="og:locale" content="ru_RU">
 <!-- Yandex.Metrika counter -->
@@ -73,6 +73,7 @@
   .badge.sleep{background:#fce8e2;color:var(--warm)}
   .badge.fresh{background:#e4eefb;color:var(--amo)}
   .badge.ok{background:var(--soft);color:var(--green)}
+  .badge.hot{background:#fdeae2;color:#c0392b}
 
   .detail{border-top:1px solid var(--line);padding:16px 18px}
   .detail .dh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 2px}
@@ -84,8 +85,10 @@
   .rec ul{margin:0;padding-left:16px;font-size:13.5px}
   .rec li{margin:0 0 3px}
   .rec li b{color:var(--ink)}
+  .rec.amo{border-left-color:var(--amo)}
   .task{background:var(--soft);border-radius:10px;padding:11px 13px;font-size:13.5px;margin:0 0 12px}
   .task.cal{background:#eef4ff}
+  .task.hot{background:#fdeee7;color:#7d2b14}
   .task .tdate{display:inline-block;font-size:11px;font-weight:800;color:var(--amo);background:#dce9fb;border-radius:6px;padding:2px 7px;margin-left:6px}
   .tl{list-style:none;margin:0;padding:0}
   .tl li{position:relative;padding:0 0 12px 22px;font-size:13px}
@@ -106,6 +109,18 @@
   .transcript .who{color:#7fd8b5;font-weight:700}
   .working{font-size:13px;color:var(--amo);font-weight:700;margin:0 0 12px}
 
+  /* пре-колл срез */
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{font-size:12px;font-weight:700;border:1px solid var(--line);border-radius:16px;padding:4px 11px;cursor:pointer;user-select:none;color:var(--muted);background:#fff;transition:background .12s,border-color .12s}
+  .chip.on{background:var(--soft);border-color:var(--green);color:var(--ink)}
+  .chip.on:before{content:"✓ ";color:var(--green)}
+  .pcx{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 12px;background:#fbfdfc}
+  .pcr{display:flex;gap:10px;font-size:13.5px;margin:0 0 7px;align-items:baseline}
+  .pcr:last-child{margin-bottom:0}
+  .pcr .k{min-width:92px;flex:0 0 92px;font-weight:800;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .pcr .miss{color:var(--muted);font-style:italic}
+  .pcmeta{font-size:11.5px;color:var(--muted);margin:0 0 12px}
+
   /* Telegram pane */
   .phone{background:#0c2d21;border-radius:22px;padding:12px;position:sticky;top:14px}
   .phone .head{color:#eafff4;display:flex;align-items:center;gap:10px;padding:4px 6px 12px}
@@ -116,9 +131,15 @@
   .bubble{border-radius:14px;padding:10px 13px;margin:0 0 9px;font-size:13.5px;max-width:92%}
   .bubble.bot{background:#eafff4;color:var(--ink);border-bottom-left-radius:4px}
   .bubble.user{background:#1f5140;color:#eafff4;margin-left:auto;border-bottom-right-radius:4px}
+  .bubble.alert{background:#fff1ea;border:1px solid #f2b09a;color:#7d2b14;border-bottom-left-radius:4px}
+  .bubble.alert .cap{display:block;font-weight:800;font-size:14px;letter-spacing:.02em;margin:0 0 5px}
   .bubble .who{display:block;font-size:10.5px;opacity:.7;margin:0 0 3px;font-weight:700}
   .bubble ol{margin:6px 0 0;padding-left:18px}
   .bubble li{margin:0 0 4px}
+  .bubble .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+  .bubble .btns b{font-size:12.5px;font-weight:700;border-radius:8px;padding:6px 11px;cursor:pointer;user-select:none}
+  .bubble .btns b.hotb{background:#c0392b;color:#fff}
+  .bubble .btns b.sec{background:#fff;border:1px solid #f2b09a;color:#7d2b14}
   .draftbx{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin:0 0 9px;font-size:13px}
   .draftbx .dl{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:0 0 5px}
   .draftbx .txt{color:var(--ink);white-space:pre-wrap}
@@ -130,13 +151,14 @@
   .draftbx.sent{opacity:.7}
   .sentmark{font-size:12px;font-weight:700;color:var(--green);margin-top:8px}
   .postponed{font-size:12px;font-weight:700;color:var(--muted);margin-top:8px}
+  .ackmark{font-size:12px;font-weight:800;color:#c0392b;margin-top:8px}
 
   .legend{padding:26px 0 46px}
   .legend h2{font-size:20px;margin:0 0 4px}
   .legend .sub{color:var(--muted);font-size:14px;margin:0 0 18px;max-width:760px}
-  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-  @media(max-width:820px){.grid4{grid-template-columns:1fr 1fr}}
-  @media(max-width:520px){.grid4{grid-template-columns:1fr}}
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  @media(max-width:980px){.grid5{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.grid5{grid-template-columns:1fr}}
   .fcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
   .fcard .n{width:26px;height:26px;border-radius:8px;background:var(--soft);color:var(--green);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
   .fcard b{display:block;font-size:14.5px;margin:9px 0 5px}
@@ -153,15 +175,15 @@
 <header>
   <div class="wrap">
     <div class="sitenav"><a href="index.html">Весь сайт слаживание.ру</a></div>
-    <p class="eyebrow">Прототип · Разрез продаж / amoCRM</p>
-    <h1>Рабочее место коммерческого менеджера с ИИ-ассистентом</h1>
-    <p>Кликабельный прототип, не картинка. Слева — карточка сделки в <span class="brand">amoCRM</span>, справа — ассистент в <span class="brand">Telegram</span>. Понажимайте: снимите суть звонка, отправьте или поправьте черновик follow-up. Данные вымышленные, но так это и работает.</p>
+    <p class="eyebrow">Прототип · Open Service · воронка «Телеколлер»</p>
+    <h1>Рабочее место коллера с ИИ-ассистентом (amoCRM)</h1>
+    <p>Кликабельный прототип, не картинка. Слева — сделки воронки «Телеколлер» в <span class="brand">amoCRM</span>: пре-колл срез до звонка и саммари после. Справа — ассистент в <span class="brand">Telegram</span>: срочные алерты, черновики, задачи на перезвон. Понажимайте всё. Данные вымышленные, но так это и работает.</p>
   </div>
 </header>
 
 <div class="stage-bar">
   <div class="wrap">
-    <div class="hint" id="hint"><b>С чего начать:</b> откройте сделку «ООО Гамма» слева — по ней только что был звонок, суть ещё не снята. Нажмите «Снять суть звонка».</div>
+    <div class="hint" id="hint"><b>С чего начать:</b> откройте «Кофейню „Гранула“» слева — коллер ещё не звонил, а ассистент уже собрал пре-колл срез. Пощёлкайте чипы фактов: срез перестроится.</div>
   </div>
 </div>
 
@@ -169,8 +191,8 @@
   <div class="wrap stage">
 
     <!-- amoCRM -->
-    <div class="amo">
-      <div class="top"><span class="dot"></span><b>amoCRM · Воронка «Переданные сделки»</b><span id="amocap">клик по сделке — открыть карточку</span></div>
+    <div class="amo" id="amopane">
+      <div class="top"><span class="dot"></span><b>amoCRM · Воронка «Телеколлер» (тест)</b><span id="amocap">клик по сделке — открыть карточку</span></div>
       <div class="pipe" id="pipe"></div>
       <div class="detail" id="detail"><div class="empty">Выберите сделку в воронке выше.</div></div>
     </div>
@@ -180,7 +202,7 @@
       <div class="phone">
         <div class="head">
           <div class="ava">А</div>
-          <div><b>Ассистент продаж</b><span>bot · пишет только вам, не клиенту</span></div>
+          <div><b>Ассистент коллера</b><span>bot · пишет только вам, не клиенту</span></div>
         </div>
         <div class="stream" id="stream"></div>
       </div>
@@ -191,79 +213,115 @@
 
 <section class="legend">
   <div class="wrap">
-    <h2>Что вы сейчас потрогали — четыре функции</h2>
-    <p class="sub">Ассистент живёт внутри вашей воронки и рабочего чата. Он готовит — отправляет всегда человек, одним тапом.</p>
-    <div class="grid4">
-      <div class="fcard"><div class="n">1</div><b>Снятие сути звонка</b><span>Из записи звонка вытягивает: кто и роль, боль, продукт, договорённости, следующий шаг, стоп-факторы. Кладёт саммари в примечание сделки.</span></div>
-      <div class="fcard"><div class="n">2</div><b>Черновик follow-up</b><span>По саммари, этапу и продукту собирает следующее сообщение клиенту тоном вашего скрипта. Не отправляет — кладёт в задачу и в чат.</span></div>
-      <div class="fcard"><div class="n">3</div><b>Пинг спящих сделок</b><span>Раз в сутки — «кому напомнить сегодня» с готовыми черновиками. Порог тишины и активные этапы настраиваются.</span></div>
-      <div class="fcard"><div class="n">4</div><b>Календарь</b><span>Услышал «созвон во вторник в 15:00» — ставит задачу с датой и напоминанием прямо в amoCRM. Без отдельного календаря.</span></div>
+    <h2>Что вы сейчас потрогали — пять функций</h2>
+    <p class="sub">Ассистент живёт в воронке «Телеколлер» и в Telegram коллера. Он готовит и подсказывает — звонит и отправляет всегда человек, одним тапом.</p>
+    <div class="grid5">
+      <div class="fcard"><div class="n">1</div><b>Пре-колл срез</b><span>До звонка собирает по клиенту: касса (r_keeper / iiko / 1С), сколько точек, кто решает, что видно в 2ГИС и соцсетях, — и 2–3 подсказки к разговору из «Своевременного вопроса». Коллер набирает номер, понимая, кому звонит.</span></div>
+      <div class="fcard"><div class="n">2</div><b>Снятие сути звонка</b><span>Запись из АТС сама падает в сделку — скачивать ничего не нужно. Ассистент вытягивает: кто и роль, боль, продукт, договорённости, следующий шаг, стоп-факторы — и кладёт саммари в примечание.</span></div>
+      <div class="fcard"><div class="n">3</div><b>Follow-up и перезвон</b><span>По саммари собирает черновик сообщения тоном скрипта коллера — отправляет человек одним тапом. Не дозвонились или не закрыли — задача «перезвонить» с датой встаёт в amoCRM сама.</span></div>
+      <div class="fcard"><div class="n">4</div><b>Пинг «клиент горит»</b><span>Видит по звонку, что клиента можно потерять прямо сейчас, — бьёт коллеру в Telegram: СРОЧНО ПЕРЕЗВОНИ, и объясняет, почему окно закрывается. Не дайджест, а тревога с действием.</span></div>
+      <div class="fcard"><div class="n">5</div><b>Передача в «Охоту»</b><span>Коллер закрыл в успех — в «Охоте» автоматически появляется сделка, а ассистент дописывает комментарий для охотника: суть, боль, договорённости, на что давить. Раньше это писали руками.</span></div>
     </div>
-    <p class="note">Честная рамка: клиенту ничего не уходит без тапа человека. Каждое действие агента привязано к ID сделки и попадает в журнал. 152-ФЗ и резидентность данных — часть продукта для внешних клиентов. Бьёт в конверсию переданных сделок (KPI4): тот же менеджер ведёт больше сделок и не роняет follow-up.</p>
+    <p class="note">Честная рамка: клиенту ничего не уходит автоматически — только по тапу человека. Ассистент подсказывает, коллер думает и решает: коллеров развиваем, а не превращаем в исполнителей при ИИ. Аудио и персональные данные — по 152-ФЗ, записи живут у оператора телефонии. Тестируем на ограниченной воронке «Телеколлер», по ней же считаем затраты на распознавание и саммари, потом масштабируем на «Охоту». Каждое действие агента привязано к ID сделки и попадает в журнал. Ядро CRM-agnostic: под клиента меняется только адаптер, здесь — amoCRM.</p>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <b>Платформа «Слаживание»</b> — среда, где люди и ИИ-агенты делают больше работы вместе. Разрез продаж, коннектор amoCRM. Ядро CRM-agnostic: под клиента меняется только адаптер.
+    <b>Платформа «Слаживание»</b> — среда, где люди и ИИ-агенты делают больше работы вместе. Прототип для Open Service: разрез продаж, коннектор amoCRM. Ядро CRM-agnostic: под клиента меняется только адаптер.
     <nav class="foot-nav">
       <a href="index.html">Главная</a>
       <a href="solutions.html">Решения</a>
       <a href="platform.html">Платформа</a>
-      <a href="mailto:leo@dovbenko.me?subject=Пилот%20ИИ-ассистента%20отдела%20продаж%20(amoCRM)">Запросить пилот</a>
+      <a href="mailto:leo@dovbenko.me?subject=Пилот%20ИИ-ассистента%20коллера%20(amoCRM)">Запросить пилот</a>
     </nav>
   </div>
 </footer>
 
 <script>
 const deals = {
-  gamma: {
-    company:'ООО «Гамма»', contact:'Марина Лебедева, маркетолог', stage:'Первый контакт', stageKey:'new',
-    product:'—', sleeping:0, id:'40231',
-    summary:null, draft:null, calendar:null,
-    timeline:[{d:'сегодня, 12:04', a:0, s:'Входящий звонок, 6 мин 40 с. Запись на сервере, суть ещё не снята.'}]
+  granula: {
+    company:'Кофейня «Гранула»', contact:'Артём Кравцов, собственник', stage:'Прозвонить',
+    product:'Автоматизация кафе · iiko', id:'51182', precall:true,
+    summary:null, draft:null, recall:null,
+    timeline:[
+      {d:'вчера, 18:02', a:0, s:'Сделка создана в воронке «Телеколлер» (выгрузка базы)'},
+      {d:'сегодня, 8:40', a:1, s:'Пре-колл срез собран: поля CRM + 2ГИС + соцсети'}
+    ]
   },
-  delta: {
-    company:'ООО «Дельта»', contact:'Иван Соловьёв, коммерческий директор (ЛПР)', stage:'КП отправлено', stageKey:'kp',
-    product:'Пакет «Команда»', sleeping:9, id:'40218',
-    summary:{'Кто и роль':'Иван Соловьёв, коммерческий директор — ЛПР','Боль':'ручное сведение отчётов по выходным, теряют время','Продукт':'обсуждали пакет «Команда»','Договорённость':'выслать КП, свериться по срокам внедрения','Следующий шаг':'созвон по внедрению','Стоп-фактор':'сравнивают ещё с одним подрядчиком'},
-    draft:'Иван, добрый день! Возвращаюсь по нашему КП от 30 июня — вы хотели свериться по срокам внедрения. Готов созвониться в четверг или пятницу, когда удобнее?',
-    calendar:null,
-    timeline:[{d:'30.06',a:0,s:'Исходящий звонок, 18 мин'},{d:'30.06',a:1,s:'Саммари звонка снято ассистентом → в примечание'},{d:'30.06',a:1,s:'Этап передвинут → «КП отправлено»'},{d:'30.06',a:0,s:'Менеджер отправил КП'}]
+  svoya: {
+    company:'Столовая «Своя кухня»', contact:'Наталья Ким, управляющая (сеть, наёмная)', stage:'Недозвон',
+    product:'Касса + учёт · сейчас 1С', id:'51175',
+    summary:null, draft:null,
+    recall:{when:'завтра, 14.07 · 11:00', title:'Перезвонить Наталье («Своя кухня») — 3-я попытка'},
+    timeline:[
+      {d:'10.07', a:0, s:'Звонок — абонент недоступен'},
+      {d:'сегодня, 10:20', a:0, s:'Звонок — не взяла трубку'},
+      {d:'сегодня, 10:21', a:1, s:'Недозвон ×2 → авто-задача «перезвонить завтра 11:00» прямо в amoCRM'}
+    ]
   },
-  sokolov: {
-    company:'ИП Соколов', contact:'Пётр Соколов, владелец', stage:'Переговоры', stageKey:'nego',
-    product:'Пакет «Старт»', sleeping:7, id:'40225',
-    summary:{'Кто и роль':'Пётр Соколов, владелец — ЛПР','Боль':'заявки теряются между менеджерами','Продукт':'пакет «Старт», интересна цена','Договорённость':'созвониться повторно во вторник','Следующий шаг':'повторный созвон не состоялся','Стоп-фактор':'сомневается, потянет ли команда внедрение'},
-    draft:'Пётр, добрый день! Мы договаривались созвониться во вторник — видимо, не сложилось. Подскажите, когда вам удобно на этой неделе? Займёт 15 минут, покажу, как это встроится в вашу работу без нагрузки на команду.',
-    calendar:null,
-    timeline:[{d:'01.07',a:0,s:'Звонок, 11 мин'},{d:'01.07',a:1,s:'Саммари снято → в примечание'},{d:'01.07',a:1,s:'Договорённость «созвон во вт» → задача с датой'},{d:'08.07',a:1,s:'Созвон не состоялся, тишина 7 дней'}]
+  donpesto: {
+    company:'Сеть «Дон Песто» (4 точки)', contact:'Сергей Мигунов, собственник', stage:'Переговоры',
+    product:'iiko на 4 точки + перенос данных', id:'51168', hot:true,
+    summary:{'Кто и роль':'Сергей Мигунов, собственник 4 точек — ЛПР','Боль':'r_keeper на точках живёт вразнобой, складской учёт в Excel','Продукт':'iiko на 4 точки, перенос меню и остатков','Договорённость':'сравнивает нас с предложением другого дилера','Следующий шаг':'дожать до счёта на этой неделе','Стоп-фактор':'у другого дилера уже «на счетах» — третий день не оплачивает, сомневается'},
+    draft:null, recall:null,
+    timeline:[
+      {d:'сегодня, 12:34', a:0, s:'Звонок, 14 мин — Сергей сравнивает нас с другим дилером'},
+      {d:'сегодня, 12:36', a:1, s:'Саммари снято → в примечание сделки'},
+      {d:'сегодня, 12:52', a:1, s:'Стоп-фактор «на счетах у другого дилера, 3-й день не платит» → срочный алерт коллеру в Telegram'}
+    ]
   },
-  veranda: {
-    company:'«Ресторан Веранда»', contact:'Ольга Гринь, управляющая', stage:'Счёт', stageKey:'bill',
-    product:'Пакет «Команда» + HoReCa', sleeping:5, id:'40230',
-    summary:{'Кто и роль':'Ольга Гринь, управляющая — ЛПР','Боль':'нет единой картины по точкам','Продукт':'«Команда» + отраслевой HoReCa','Договорённость':'выставить счёт до конца недели','Следующий шаг':'счёт не выставлен','Стоп-фактор':'ждёт согласования у собственника'},
-    draft:'Ольга, добрый день! По нашей договорённости готовлю счёт. Уточните, пожалуйста, реквизиты и на какое юрлицо оформляем — сразу вышлю. Если нужен счёт с отсрочкой для согласования у собственника, тоже сделаем.',
-    calendar:null,
-    timeline:[{d:'03.07',a:0,s:'Звонок, 9 мин'},{d:'03.07',a:1,s:'Саммари снято → в примечание'},{d:'04.07',a:1,s:'Тишина 5 дней на этапе «Счёт»'}]
+  polka: {
+    company:'Бар «Полка»', contact:'Дина Ахметова, совладелица', stage:'Был звонок',
+    product:'—', id:'51190',
+    summary:null, draft:null, recall:null,
+    timeline:[
+      {d:'сегодня, 12:40', a:0, s:'Исходящий звонок, 7 мин 10 с. Запись из АТС уже в сделке — суть не снята.'}
+    ]
   },
-  praktika: {
-    company:'ООО «Практика»', contact:'Дмитрий Осин, ИТ-директор', stage:'Пилот', stageKey:'pilot',
-    product:'Пакет «Команда»', sleeping:0, id:'40222',
-    summary:{'Кто и роль':'Дмитрий Осин, ИТ-директор — ЛПР','Боль':'ручные отчёты, нет прозрачности','Продукт':'пакет «Команда», пилот на одном отделе','Договорённость':'пилот запущен, следующий чек-поинт в пятницу','Следующий шаг':'снять обратную связь по пилоту','Стоп-фактор':'—'},
-    draft:'Дмитрий, добрый день! На связи по пилоту — как первые дни? В пятницу предлагаю короткий чек-поинт: соберу, что сработало и что подкрутить. Удобно в 12:00?',
-    calendar:{when:'пт, 11.07 · 12:00', title:'Чек-поинт по пилоту с Д. Осиным'},
-    timeline:[{d:'05.07',a:0,s:'Звонок, 22 мин'},{d:'05.07',a:1,s:'Саммари снято → в примечание'},{d:'05.07',a:1,s:'Договорённость «чек-поинт пт» → задача в календаре'},{d:'сегодня',a:1,s:'Активна, тишины нет'}]
+  testo: {
+    company:'Пиццерия «Тесто и точка»', contact:'Олег Луконин, собственник', stage:'Согласие',
+    product:'Пакет «Старт»: касса iiko + склад', id:'51154', win:true, success:false,
+    summary:{'Кто и роль':'Олег Луконин, собственник — ЛПР','Боль':'фудкост считает в тетради, списания «на глаз» — сам называл ~8% потерь','Продукт':'пакет «Старт»: касса iiko + складской учёт','Договорённость':'согласен, запуск на следующей неделе, ждёт договор','Следующий шаг':'закрыть в успех и передать охотнику','Стоп-фактор':'—'},
+    draft:null, recall:null,
+    timeline:[
+      {d:'09.07', a:0, s:'Звонок, 19 мин — Олег согласен на «Старт»'},
+      {d:'09.07', a:1, s:'Саммари снято → в примечание сделки'},
+      {d:'сегодня, 11:15', a:0, s:'Олег подтвердил в переписке: запускаемся на следующей неделе'}
+    ]
   }
 };
 
 const columns = [
-  {key:'left',  title:'Активные', ids:['gamma','praktika']},
-  {key:'right', title:'В работе / дожать', ids:['sokolov','veranda','delta']}
+  {key:'left',  title:'Прозвонить сегодня', ids:['granula','svoya']},
+  {key:'right', title:'В работе / дожать', ids:['donpesto','polka','testo']}
 ];
+
+/* пре-колл срез: какие факты о клиенте известны (CRM + интернет) */
+const factDefs = {
+  owner:  'собственник (CRM)',
+  kassa:  'касса r_keeper (CRM)',
+  points: '2 точки (2ГИС)',
+  reviews:'2ГИС: 4,6★ · 128 отзывов',
+  social: 'соцсети активны'
+};
+const facts = {owner:true, kassa:true, points:true, reviews:true, social:true};
+
+/* состояние Telegram-потока */
+const S = {alert:'new', polka:'none', polkaEdit:false, testo:false};
 
 let current = null;
 const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+function badgeFor(id){
+  const d = deals[id];
+  if(id==='granula') return '<span class="badge fresh">пре-колл готов</span>';
+  if(id==='svoya')   return '<span class="badge sleep">недозвон ×2 · перезвон завтра</span>';
+  if(id==='donpesto')return S.alert==='ack' ? '<span class="badge hot">🔥 в работе у коллера</span>' : '<span class="badge hot">🔥 горит — алерт в Telegram</span>';
+  if(id==='polka')   return d.summary ? '<span class="badge ok">суть снята</span>' : '<span class="badge fresh">новый звонок, суть не снята</span>';
+  if(id==='testo')   return d.success ? '<span class="badge ok">успех → Охота #51907</span>' : '<span class="badge ok">согласие — закрыть в успех</span>';
+  return '';
+}
 
 function renderPipe(){
   const pipe = document.getElementById('pipe');
@@ -272,140 +330,286 @@ function renderPipe(){
       <div class="colh">${col.title}</div>
       ${col.ids.map(id => {
         const d = deals[id];
-        let badge = '';
-        if (d.sleeping > 0) badge = `<span class="badge sleep">спит ${d.sleeping} дн.</span>`;
-        else if (id==='gamma' && !d.summary) badge = `<span class="badge fresh">новый звонок</span>`;
-        else badge = `<span class="badge ok">в графике</span>`;
         return `<div class="dcard ${current===id?'on':''}" onclick="select('${id}')">
           <div class="co">${esc(d.company)}</div>
           <div class="meta">${esc(d.stage)} · ${esc(d.product)}</div>
-          ${badge}
+          ${badgeFor(id)}
         </div>`;
       }).join('')}
     </div>`).join('');
 }
 
+const selectHints = {
+  granula:'Это пре-колл срез — агент собрал его ДО звонка из CRM и интернета. Выключите чип «касса r_keeper»: срез честно обеднеет — качество среза зависит от того, что заполнено. Дальше загляните в «Бар „Полка“».',
+  polka:'По «Полке» только что был звонок — запись из АТС уже в сделке, скачивать ничего не надо. Нажмите «Снять суть звонка».',
+  donpesto:'Клиент горит: у другого дилера уже «на счетах» и третий день не платит — сомневается. Ассистент ударил алертом справа в Telegram. Нажмите там «Взял в работу».',
+  testo:'Олег согласен. Нажмите «Закрыть в успех» — в «Охоте» появится сделка, а ассистент допишет комментарий-хендофф для охотника.',
+  svoya:'Недозвон ×2 — ассистент сам поставил задачу «перезвонить завтра 11:00» в amoCRM. Ничего не потерялось и не висит на памяти коллера.'
+};
+
 function select(id){
   current = id; renderPipe(); renderDetail();
   document.getElementById('amocap').textContent = 'сделка #' + deals[id].id;
+  if(selectHints[id]) setHint(selectHints[id]);
 }
 
+/* ---------- пре-колл срез ---------- */
+function toggleFact(k){
+  facts[k] = !facts[k];
+  renderDetail();
+  const n = Object.values(facts).filter(Boolean).length;
+  if(n === 5) setHint('Все факты на месте — срез максимально плотный. Так выглядит сделка, где CRM заполнена и агент успел пройтись по интернету.');
+  else setHint('Убрали факт — срез честно обеднел: '+n+' из 5. Никакой выдумки: чего нет в CRM и в интернете, того нет и в срезе. Чем полнее данные, тем точнее подсказки.');
+}
+
+function precallHTML(){
+  const rows = [];
+  rows.push(facts.points
+    ? {k:'Заведение', v:'кофейня, <b>2 точки</b> — вторая открылась в марте (2ГИС), растут'}
+    : {k:'Заведение', v:'кофейня; сколько точек — неизвестно: в CRM пусто, в 2ГИС не нашлось', miss:1});
+  rows.push(facts.kassa
+    ? {k:'Касса', v:'<b>r_keeper 7</b> (поле CRM). Против iiko: лицензии + платные отчёты, склад слабее — есть за что зацепиться'}
+    : {k:'Касса', v:'неизвестна — первый вопрос в разговоре: «на чём сейчас работаете?»', miss:1});
+  rows.push(facts.owner
+    ? {k:'Кто решает', v:'<b>собственник</b>, решает сам — разговор про деньги и часы, а не про список функций'}
+    : {k:'Кто решает', v:'роль не заполнена — выясните, собственник это или наёмный управляющий', miss:1});
+  rows.push(facts.reviews
+    ? {k:'Отзывы', v:'2ГИС 4,6★, 128 отзывов; за месяц три жалобы «долго в час пик» — узкое место на кассе или кухне'}
+    : {k:'Отзывы', v:'нет данных', miss:1});
+  rows.push(facts.social
+    ? {k:'Соцсети', v:'активные, каждую неделю сезонные новинки — фудкост по новым позициям наверняка считают руками'}
+    : {k:'Соцсети', v:'нет данных', miss:1});
+
+  const tips = [];
+  if(facts.kassa)  tips.push('Спросите, во сколько в месяц обходится r_keeper вместе с отчётами — сравнение с iiko обычно цепляет именно тут.');
+  if(facts.reviews)tips.push('Зацепка из отзывов: «долго в час пик». Спросите, где копится очередь — на кассе или на кухне.');
+  if(facts.owner && facts.points) tips.push('Собственник с двумя точками сводит цифры сам. Спросите, сколько часов в неделю уходит на сверку.');
+  if(facts.social) tips.push('Каждую неделю сезонные новинки — спросите, как считают фудкост по новым позициям.');
+  const tipsShown = tips.slice(0,3);
+  const n = Object.values(facts).filter(Boolean).length;
+
+  return `
+    <div class="lbl">Пре-колл срез · собран ассистентом <span style="color:var(--amo)">до звонка</span></div>
+    <div class="lbl" style="font-weight:700;text-transform:none;letter-spacing:0">Что о клиенте известно (CRM + интернет) — нажмите на факт, чтобы убрать или вернуть:</div>
+    <div class="chips">${Object.keys(factDefs).map(k =>
+      `<span class="chip ${facts[k]?'on':''}" onclick="toggleFact('${k}')">${esc(factDefs[k])}</span>`).join('')}</div>
+    <div class="pcx">${rows.map(r =>
+      `<div class="pcr"><span class="k">${esc(r.k)}</span><span class="${r.miss?'miss':''}">${r.miss?esc(r.v):r.v}</span></div>`).join('')}</div>
+    <div class="lbl">Подсказки к разговору · база курса «Своевременный вопрос»</div>
+    ${tipsShown.length
+      ? `<div class="rec"><ul>${tipsShown.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`
+      : `<div class="rec"><ul><li class="miss" style="color:var(--muted);font-style:italic">Данных почти нет — подсказки не из чего собрать. Заполните карточку в CRM, и срез станет рабочим. Пока начните с открытых вопросов: касса, точки, кто решает.</li></ul></div>`}
+    <div class="pcmeta">Полнота среза: ${n} из 5. Чем полнее CRM и находки в интернете — тем богаче срез и точнее подсказки. Чего нет — того в срезе честно нет.</div>`;
+}
+
+/* ---------- карточка сделки ---------- */
 function renderDetail(){
   const d = deals[current];
   const el = document.getElementById('detail');
   if(!d){ el.innerHTML = '<div class="empty">Выберите сделку.</div>'; return; }
 
-  let summaryBlock;
+  let body = '';
+
+  if(d.precall) body += precallHTML();
+
   if(d.summary){
-    summaryBlock = `<div class="lbl">Примечание · саммари звонка <span style="color:var(--amo)">(снято ассистентом)</span></div>
+    body += `<div class="lbl">Примечание · саммари звонка <span style="color:var(--amo)">(снято ассистентом)</span></div>
       <div class="rec"><ul>${Object.entries(d.summary).map(([k,v])=>`<li><b>${esc(k)}:</b> ${esc(v)}</li>`).join('')}</ul></div>`;
-  } else {
-    summaryBlock = `<div class="transcript" id="tr" style="display:none">
-        <span class="who">Менеджер:</span> …в целом интересно, но надо понять сроки. <br>
-        <span class="who">Клиент (Марина):</span> Да, мы как раз собираем отчётность руками, уходит весь понедельник. Пришлите КП и давайте созвонимся во вторник в 15:00. <br>
-        <span class="who">Менеджер:</span> Договорились, вышлю и наберу во вторник.
+  } else if(current==='polka'){
+    body += `<div class="transcript" id="tr" style="display:none">
+        <span class="who">Коллер:</span> …если по деньгам, то из чего складывается? <br>
+        <span class="who">Клиент (Дина):</span> Сейчас у нас r_keeper, платим за него и отдельно за отчёты. Пришлите расчёт для одного бара — я посоветуюсь с партнёром, решим до пятницы. <br>
+        <span class="who">Коллер:</span> Понял, подготовлю расчёт и наберу в пятницу.
       </div>
       <div class="working" id="wk" style="display:none">Ассистент обрабатывает запись…</div>
-      <div class="task" style="background:#fdf3ee;color:#8a3b23">По сделке был звонок, но суть ещё не снята. Ассистент может распознать запись и разложить её по полям.</div>
+      <div class="task" style="background:#fdf3ee;color:#8a3b23">По сделке был звонок, запись из АТС уже здесь — суть ещё не снята. Ассистент может распознать её и разложить по полям.</div>
       <button class="btn amo" id="snap" onclick="snapCall()">Снять суть звонка</button>`;
   }
 
-  let taskBlock = '';
-  if(d.calendar){
-    taskBlock += `<div class="task cal"><span class="lbl" style="margin-bottom:0;display:inline">Задача в календаре</span><span class="tdate">${esc(d.calendar.when)}</span><br>${esc(d.calendar.title)} · напоминание за час</div>`;
+  if(current==='donpesto'){
+    body += `<div class="task hot"><b>⚠️ Клиент горит.</b> Из звонка: у другого дилера уже «на счетах», третий день не оплачивает — сомневается и выбирает. Окно закроется: либо дожмут они, либо перезвоните вы. Алерт ушёл коллеру в Telegram в 12:52.</div>`;
+  }
+
+  if(current==='testo'){
+    if(!d.success){
+      body += `<div class="task">Олег согласен и ждёт запуск. Дальше сделку ведёт охотник — переход в «Охоту» уже настроен на стороне amoCRM.</div>
+        <button class="btn" onclick="closeSuccess()">Закрыть в успех → создать сделку в «Охоте»</button>`;
+    } else {
+      body += `<div class="lbl">Комментарий в новой сделке «Охоты» #51907 · пометка <span style="color:var(--amo)">(агент)</span></div>
+        <div class="rec amo"><ul>
+          <li><b>Суть:</b> пиццерия, собственник Олег Луконин, согласен на «Старт» (касса iiko + склад)</li>
+          <li><b>Боль:</b> фудкост в тетради, списания «на глаз» — сам называет ~8% потерь</li>
+          <li><b>Договорённости:</b> запуск на следующей неделе, договор ждёт</li>
+          <li><b>На что давить:</b> быстрый запуск до выходных и цифра списаний — Олег сам её назвал</li>
+        </ul></div>`;
+    }
+  }
+
+  if(d.recall){
+    body += `<div class="task cal"><span class="lbl" style="margin-bottom:0;display:inline">Авто-задача · перезвонить</span><span class="tdate">${esc(d.recall.when)}</span><br>${esc(d.recall.title)} · поставлена ассистентом в amoCRM</div>`;
   }
   if(d.draft){
-    taskBlock += `<div class="task"><div class="lbl">Задача · черновик follow-up <span style="color:var(--green)">готов, ждёт вашего тапа</span></div>${esc(d.draft)}</div>`;
+    body += `<div class="task"><div class="lbl">Черновик follow-up <span style="color:var(--green)">готов, ждёт вашего тапа в Telegram</span></div>${esc(d.draft)}</div>`;
   }
 
   el.innerHTML = `
     <div class="dh"><b>${esc(d.company)}</b><span class="stagepill">${esc(d.stage)}</span></div>
     <div class="sub">${esc(d.contact)} · продукт: ${esc(d.product)}</div>
-    ${summaryBlock}
-    ${taskBlock}
+    ${body}
     <div class="lbl" style="margin-top:6px">Таймлайн касаний (сквозной ID сделки)</div>
     <ul class="tl">${d.timeline.map(t=>`<li class="${t.a?'agent':''}"><span class="d">${esc(t.d)}${t.a?' · ассистент':''}</span><b>${esc(t.s)}</b></li>`).join('')}</ul>
-    <div class="idline">deal_id: ${d.id} · agent: sales-assistant · все действия в журнале</div>`;
+    <div class="idline">deal_id: ${d.id} · agent: caller-assistant · все действия в журнале</div>`;
 }
 
+/* ---------- функция 2: снятие сути звонка ---------- */
 function snapCall(){
   const tr = document.getElementById('tr'), wk = document.getElementById('wk'), snap = document.getElementById('snap');
   tr.style.display='block'; snap.disabled=true; snap.textContent='Распознаю…';
-  setHint('Ассистент распознаёт запись и вытягивает суть в структурированные поля. Это функция 1 — снятие сути звонка.');
+  setHint('Ассистент распознаёт запись и вытягивает суть в структурированные поля: кто, боль, договорённости, стоп-факторы.');
   setTimeout(()=>{ wk.style.display='block'; }, 500);
   setTimeout(()=>{
-    const d = deals.gamma;
-    d.summary = {'Кто и роль':'Марина Лебедева, маркетолог (влияет на решение)','Боль':'отчётность собирают руками, уходит целый понедельник','Продукт':'интерес к КП, обсуждали базовый пакет','Договорённость':'выслать КП, созвон во вторник в 15:00','Следующий шаг':'подготовить и отправить КП','Стоп-фактор':'нужно понять сроки внедрения'};
-    d.calendar = {when:'вт, 15.07 · 15:00', title:'Созвон с Мариной («Гамма») по КП'};
-    d.draft = 'Марина, добрый день! Как договаривались, направляю КП по базовому пакету — внутри сроки внедрения, чтобы было с чем свериться. Наберу вас во вторник в 15:00, как условились. Если появятся вопросы раньше — пишите.';
-    d.stage = 'КП отправлено'; d.product = 'Базовый пакет';
-    d.timeline.push({d:'сейчас',a:1,s:'Суть звонка снята → саммари в примечание'});
-    d.timeline.push({d:'сейчас',a:1,s:'Договорённость «вт 15:00» → задача в календаре'});
-    d.timeline.push({d:'сейчас',a:1,s:'Черновик follow-up с КП → в задачу и в Telegram'});
-    renderPipe(); renderDetail(); addGammaDigest();
-    setHint('Готово. Саммари в карточке, договорённость встала в календарь, черновик — справа в Telegram. Отправляет клиенту всегда человек: нажмите «Отправить» в чате.');
+    const d = deals.polka;
+    d.summary = {'Кто и роль':'Дина Ахметова, совладелица — решает вместе с партнёром','Боль':'платят за r_keeper и отдельно за отчёты, считают это дорогим','Продукт':'расчёт перехода на кассу iiko для одного бара','Договорённость':'выслать расчёт, Дина советуется с партнёром до пятницы','Следующий шаг':'перезвонить в пятницу','Стоп-фактор':'решение не единоличное — нужен партнёр'};
+    d.draft = 'Дина, добрый день! Спасибо за разговор. Как условились: готовлю расчёт перехода с r_keeper на iiko для вашего бара — пришлю до четверга, чтобы вы успели обсудить с партнёром. Наберу в пятницу. Если вопросы появятся раньше — пишите сюда.';
+    d.recall = {when:'пт, 17.07 · 11:00', title:'Перезвонить Дине («Полка») — обещала решение с партнёром'};
+    d.stage = 'Думает до пятницы'; d.product = 'Расчёт: касса iiko для бара';
+    d.timeline.push({d:'сейчас', a:1, s:'Суть звонка снята → саммари в примечание'});
+    d.timeline.push({d:'сейчас', a:1, s:'Сделка не закрыта → авто-задача «перезвонить пт 11:00» в amoCRM'});
+    d.timeline.push({d:'сейчас', a:1, s:'Черновик follow-up тоном скрипта → коллеру в Telegram'});
+    S.polka = 'draft';
+    renderPipe(); renderDetail(); renderStream(); scrollStream();
+    setHint('Готово. Саммари в карточке, задача «перезвонить в пятницу» встала в amoCRM сама, черновик — справа в Telegram. Отправляет клиенту всегда человек: нажмите «Отправить» в чате.');
   }, 1700);
 }
 
+/* ---------- функция 5: успех → «Охота» ---------- */
+function closeSuccess(){
+  const d = deals.testo;
+  d.success = true; d.stage = 'Успех';
+  d.timeline.push({d:'сейчас', a:0, s:'Коллер закрыл сделку в успех'});
+  d.timeline.push({d:'сейчас', a:1, s:'Создана сделка в «Охоте» #51907 (переход настроен в amoCRM)'});
+  d.timeline.push({d:'сейчас', a:1, s:'Комментарий-хендофф для охотника дописан — пометка «(агент)»'});
+  S.testo = true;
+  renderPipe(); renderDetail(); renderStream(); scrollStream();
+  setHint('Сделка ушла в «Охоту» с комментарием для охотника: суть, боль, договорённости, на что давить. Раньше коллер писал это руками — теперь просто закрывает в успех.');
+}
+
 /* ---------- Telegram ---------- */
-const sleepingOrder = ['delta','sokolov','veranda'];
-function draftItemHTML(id){
-  const d = deals[id];
-  return `<div class="draftbx" id="db-${id}">
+function polkaBoxHTML(){
+  const d = deals.polka;
+  if(S.polkaEdit){
+    return `<div class="draftbx" id="db-polka">
       <div class="dl">${esc(d.company)} · черновик follow-up</div>
-      <div class="txt" id="tx-${id}">${esc(d.draft)}</div>
+      <textarea id="tx-polka">${esc(d.draft)}</textarea>
       <div class="btns">
-        <b class="send" onclick="send('${id}')">Отправить</b>
-        <b class="sec" onclick="edit('${id}')">Править</b>
-        <b class="sec" onclick="postpone('${id}')">Отложить</b>
+        <b class="send" onclick="saveEdit()">Сохранить и отправить</b>
+        <b class="sec" onclick="cancelEdit()">Отмена</b>
       </div>
     </div>`;
+  }
+  let tail = '';
+  if(S.polka==='draft') tail = `<div class="btns">
+        <b class="send" onclick="send()">Отправить</b>
+        <b class="sec" onclick="edit()">Править</b>
+        <b class="sec" onclick="postpone()">Отложить</b>
+      </div>`;
+  if(S.polka==='sent') tail = '<div class="sentmark">✓ Отправлено клиенту вами · записано в карточку сделки</div>';
+  if(S.polka==='post') tail = '<div class="postponed">↦ Отложено — напомню завтра утром вместе с задачей на перезвон</div>';
+  return `<div class="draftbx ${S.polka==='sent'?'sent':''}" id="db-polka">
+      <div class="dl">${esc(d.company)} · черновик follow-up</div>
+      <div class="txt">${esc(d.draft || d.lastDraft || '')}</div>
+      ${tail}
+    </div>`;
 }
+
 function renderStream(){
   const s = document.getElementById('stream');
-  s.innerHTML = `
+  let html = `
     <div class="bubble bot"><span class="who">Ассистент · сегодня, 9:00</span>
-      Доброе утро. Сегодня стоит догнать <b>${sleepingOrder.length} спящие сделки</b> — по каждой готов черновик:
-      <ol>${sleepingOrder.map(id=>`<li><b>${esc(deals[id].company)}</b> — ${deals[id].sleeping} дн. тишины (${esc(deals[id].stage)})</li>`).join('')}</ol>
-    </div>
-    ${sleepingOrder.map(draftItemHTML).join('')}
-    <div id="gamma-slot"></div>`;
+      Доброе утро. По воронке «Телеколлер» на сегодня:
+      <ol>
+        <li><b>Кофейня «Гранула»</b> — новый прозвон, пре-колл срез готов, гляньте карточку до набора</li>
+        <li><b>Столовая «Своя кухня»</b> — недозвон ×2, задача «перезвонить завтра 11:00» уже стоит в amoCRM</li>
+      </ol>
+    </div>`;
+
+  html += `<div class="bubble bot"><span class="who">Ассистент · сегодня, 12:48</span>
+      По <b>бару «Полка»</b> закончился звонок (7 мин) — запись из АТС уже в сделке. Могу снять суть: кнопка в карточке сделки.</div>`;
+
+  html += `<div class="bubble alert"><span class="who">Ассистент · сегодня, 12:52</span>
+      <span class="cap">⚠️ СРОЧНО ПЕРЕЗВОНИ — «ДОН ПЕСТО»</span>
+      Почему сейчас: Сергей у другого дилера уже <b>«на счетах» и третий день не оплачивает</b> — сомневается и выбирает. Окно закроется: либо дожмут они, либо перезвоните вы. Сделка #51168, саммари звонка в карточке.
+      ${S.alert==='new'
+        ? `<div class="btns"><b class="hotb" onclick="ackAlert()">Взял в работу — звоню</b><b class="sec" onclick="openDeal('donpesto')">Открыть сделку</b></div>`
+        : `<div class="ackmark">✓ Взято в работу · записал в сделку, отслеживаю исход</div>`}
+    </div>`;
+
+  if(S.polka !== 'none'){
+    html += `<div class="bubble bot"><span class="who">Ассистент · только что</span>
+      Снял суть звонка по <b>«Полке»</b>: Дина советуется с партнёром до пятницы — поставил задачу «перезвонить пт 11:00» в amoCRM. Черновик follow-up готов:</div>` + polkaBoxHTML();
+  }
+
+  if(S.testo){
+    html += `<div class="bubble bot"><span class="who">Ассистент · только что</span>
+      <b>«Тесто и точка»</b> закрыта в успех 🎉 В «Охоте» появилась сделка <b>#51907</b> — комментарий для охотника дописал: суть, боль, договорённости, на что давить. Руками ничего переносить не надо.</div>`;
+  }
+
+  s.innerHTML = html;
 }
-function addGammaDigest(){
-  const slot = document.getElementById('gamma-slot');
-  if(!slot || document.getElementById('db-gamma')) return;
-  slot.innerHTML = `<div class="bubble bot" style="margin-top:4px"><span class="who">Ассистент · только что</span>
-      Снял суть звонка по <b>ООО «Гамма»</b>: договорились на КП и созвон во вторник 15:00 (поставил в календарь). Черновик с КП готов:</div>`
-    + draftItemHTML('gamma');
-  slot.scrollIntoView({behavior:'smooth', block:'nearest'});
+function scrollStream(){
+  const s = document.getElementById('stream');
+  s.scrollTop = s.scrollHeight;
 }
-function send(id){
-  const box = document.getElementById('db-'+id); if(!box || box.classList.contains('sent')) return;
-  box.classList.add('sent');
-  box.querySelector('.btns').outerHTML = '<div class="sentmark">✓ Отправлено клиенту вами · записано в карточку сделки</div>';
-  const d = deals[id]; d.sleeping = 0; d.draft = null;
-  d.timeline.push({d:'сейчас',a:0,s:'Менеджер отправил follow-up (черновик ассистента)'});
-  if(current===id) renderDetail();
-  renderPipe();
-  setHint('Отправлено вами одним тапом. Сделка ожила, касание легло в таймлайн карточки. Так закрывается рутина без потери контроля.');
+
+function openDeal(id){
+  select(id);
+  document.getElementById('amopane').scrollIntoView({behavior:'smooth', block:'start'});
 }
-function edit(id){
-  const tx = document.getElementById('tx-'+id); if(!tx) return;
-  const cur = deals[id].draft;
-  tx.outerHTML = `<textarea id="tx-${id}">${esc(cur)}</textarea>`;
-  const box = document.getElementById('db-'+id);
-  box.querySelector('.btns').innerHTML = `<b class="send" onclick="saveEdit('${id}')">Сохранить и отправить</b><b class="sec" onclick="renderStream()">Отмена</b>`;
-  setHint('Правьте текст как хотите — агент подготовил основу, финальное слово за вами.');
+
+/* ---------- функция 4: алерт «горит» ---------- */
+function ackAlert(){
+  if(S.alert !== 'new') return;
+  S.alert = 'ack';
+  deals.donpesto.timeline.push({d:'сейчас', a:0, s:'Коллер взял в работу по алерту — перезванивает'});
+  renderStream(); renderPipe();
+  if(current==='donpesto') renderDetail();
+  setHint('Коллер перезванивает первым, пока конкурент ждёт оплату. Это функция 4: не дайджест раз в сутки, а тревога с действием в момент, когда окно ещё открыто.');
 }
-function saveEdit(id){
-  const ta = document.getElementById('tx-'+id); if(ta) deals[id].draft = ta.value;
-  send(id);
+
+/* ---------- функция 3: черновик follow-up ---------- */
+function send(){
+  if(S.polka!=='draft' && !S.polkaEdit) return;
+  S.polka = 'sent'; S.polkaEdit = false;
+  const d = deals.polka;
+  d.lastDraft = d.draft; d.draft = null;
+  d.timeline.push({d:'сейчас', a:0, s:'Коллер отправил follow-up (черновик ассистента)'});
+  renderStream(); renderPipe();
+  if(current==='polka') renderDetail();
+  setHint('Отправлено вами одним тапом. Касание легло в таймлайн, задача на перезвон в пятницу осталась стоять. Рутина закрыта без потери контроля.');
 }
-function postpone(id){
-  const box = document.getElementById('db-'+id); if(!box) return;
-  box.querySelector('.btns').outerHTML = '<div class="postponed">↦ Отложено — напомню завтра утром</div>';
-  setHint('Отложили — ассистент вернёт эту сделку в завтрашний дайджест. Ничего не потеряется.');
+function edit(){
+  if(S.polka!=='draft') return;
+  S.polkaEdit = true;
+  renderStream(); scrollStream();
+  setHint('Правьте текст как хотите — ассистент подготовил основу тоном скрипта, финальное слово за коллером.');
 }
+function cancelEdit(){
+  S.polkaEdit = false;
+  renderStream();
+}
+function saveEdit(){
+  const ta = document.getElementById('tx-polka');
+  if(ta) deals.polka.draft = ta.value;
+  send();
+}
+function postpone(){
+  if(S.polka!=='draft') return;
+  S.polka = 'post';
+  const d = deals.polka; d.lastDraft = d.draft;
+  renderStream();
+  setHint('Отложили — ассистент вернёт черновик в завтрашний план вместе с задачей на перезвон. Ничего не потеряется.');
+}
+
 function setHint(t){ document.getElementById('hint').innerHTML = t; }
 
 renderPipe(); renderStream();
