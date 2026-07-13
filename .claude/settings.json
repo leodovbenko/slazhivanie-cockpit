@@ -6,7 +6,13 @@
       "WebFetch",
       "WebSearch",
       "mcp__publora__list_posts",
-      "mcp__publora__list_connections"
+      "mcp__publora__list_connections",
+      "mcp__publora__get_post",
+      "mcp__publora__get_upload_url",
+      "mcp__claude_ai_Google_Drive__search_files",
+      "mcp__claude_ai_Google_Drive__get_file_metadata",
+      "mcp__claude_ai_Buildin_Dxbx__API-search",
+      "mcp__claude_ai_Buildin_Dxbx__API-semanticSearch"
     ],
     "ask": [
       "Bash(rm -rf*)",
