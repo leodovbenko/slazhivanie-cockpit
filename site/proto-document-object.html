@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Документ-объект — прототип до кода</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --glina:#B85C3C; --glina-d:#A24E32; --zelen:#3D7A3E; --zelen-d:#2F5F30; --zelen-l:#9CC791;
+    --glina-soft:#F2E3DB; --zelen-soft:#E2EEDB; --bumaga:#F4EFE6; --bumaga2:#EDE6D8;
+    --yadro:#EBD9CE; --chernila:#201C17; --mute:#6B6258; --line:#E5DCCD;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bumaga);color:var(--chernila);font-family:"IBM Plex Sans",-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  h1,h2,h3,.f{font-family:"Fraunces",Georgia,serif;letter-spacing:-.02em;}
+  .wrap{max-width:1180px;margin:0 auto;padding:30px 24px 60px;}
+
+  /* header */
+  .brandbar{display:flex;align-items:center;gap:11px;margin-bottom:22px;}
+  .brandbar .name{font-weight:600;font-size:15px;}
+  .brandbar .name small{color:var(--mute);font-weight:400;}
+  h1.title{font-size:26px;line-height:1.15;max-width:900px;}
+  h1.title em{font-style:normal;color:var(--glina-d);}
+  .lede{margin-top:10px;font-size:14.5px;color:var(--mute);max-width:820px;}
+
+  .badge{font-size:11px;font-weight:700;border-radius:999px;padding:3px 11px;letter-spacing:.4px;}
+  .badge.proto{color:#fff;background:var(--glina-d);}
+  .badge.live{color:var(--zelen-d);background:var(--zelen-soft);}
+
+  /* pills nav of pains */
+  .pains{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 26px;}
+  .pain{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;color:var(--mute);}
+  .pain b{color:var(--chernila);}
+
+  /* view switch */
+  .view{display:none;}
+  .view.on{display:block;}
+
+  /* ===== SHELF ===== */
+  .shelf-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .filters{display:flex;gap:7px;flex-wrap:wrap;}
+  .filt{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;color:var(--mute);cursor:pointer;}
+  .filt.active{background:var(--yadro);color:var(--chernila);border-color:var(--glina);}
+  .btn{font-size:13px;font-weight:600;color:#fff;background:var(--zelen);border:none;border-radius:11px;padding:9px 15px;cursor:pointer;}
+  .btn:hover{background:var(--zelen-d);}
+  .btn.ghost{background:#fff;color:var(--zelen-d);border:1px solid var(--zelen);}
+  .btn.ghost:hover{background:var(--zelen-soft);}
+  .btn.clay{background:var(--glina);}
+  .btn.clay:hover{background:var(--glina-d);}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .doc{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(32,28,23,.04),0 12px 30px rgba(32,28,23,.04);}
+  .doc .thumb{height:110px;background:linear-gradient(135deg,var(--bumaga2),#fff);border-bottom:1px solid var(--line);position:relative;padding:14px;}
+  .doc .thumb .mini-logo{position:absolute;top:12px;left:14px;}
+  .doc .thumb .mini-lines{position:absolute;left:14px;right:14px;bottom:14px;}
+  .doc .thumb .ln{height:5px;border-radius:3px;background:var(--line);margin-top:6px;}
+  .doc .thumb .ln.a{width:60%;background:var(--glina-soft);} .doc .thumb .ln.b{width:85%;} .doc .thumb .ln.c{width:45%;}
+  .doc .body{padding:14px 16px 16px;flex:1;display:flex;flex-direction:column;}
+  .doc .type{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--zelen-d);}
+  .doc h3{font-size:16px;margin:5px 0 8px;}
+  .doc .prov{font-size:12px;color:var(--mute);line-height:1.55;}
+  .doc .prov span{color:var(--glina-d);}
+  .doc .acts{margin-top:13px;display:flex;gap:8px;}
+  .doc .acts button{flex:1;font-size:12.5px;font-weight:600;border-radius:9px;padding:8px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--chernila);}
+  .doc .acts button.open{background:var(--zelen);color:#fff;border-color:var(--zelen);}
+  .doc .acts button.open:hover{background:var(--zelen-d);}
+  .doc .acts button.copy:hover{background:var(--bumaga2);}
+
+  /* ===== EDITOR ===== */
+  .ed-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .back{font-size:13px;color:var(--mute);cursor:pointer;background:none;border:none;}
+  .back:hover{color:var(--chernila);}
+  .ed-top .doctitle{font-family:"Fraunces";font-size:18px;font-weight:600;}
+  .ed-top .spacer{flex:1;}
+  .ed-layout{display:grid;grid-template-columns:270px 1fr;gap:18px;align-items:start;}
+
+  /* brand panel */
+  .panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;}
+  .panel .ttl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);margin-bottom:12px;}
+  .panel .asset{font-size:12.5px;color:var(--mute);display:flex;align-items:center;gap:9px;padding:7px 0;}
+  .panel .asset:not(:last-child){border-bottom:1px solid #EFE7D8;}
+  .swatches{display:flex;gap:6px;margin:2px 0;}
+  .sw{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.06);}
+  .panel .note{margin-top:12px;font-size:11.5px;color:var(--zelen-d);background:var(--zelen-soft);border-radius:9px;padding:8px 10px;}
+  .themebtns{display:flex;gap:6px;margin-top:12px;}
+  .themebtns button{flex:1;font-size:12px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px;cursor:pointer;}
+  .themebtns button.active{border-color:var(--glina);background:var(--glina-soft);font-weight:600;}
+  .panel .outline{margin-top:6px;}
+  .panel .ol-item{font-size:12.5px;color:var(--mute);padding:5px 0;cursor:pointer;}
+  .panel .ol-item:hover{color:var(--chernila);}
+
+  /* document canvas (the branded doc) */
+  .canvas-wrap{position:relative;}
+  .rebuild-note{font-size:12px;color:var(--glina-d);background:var(--glina-soft);border:1px solid #E4C4B6;border-radius:10px;padding:9px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;}
+  .canvas{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 40px rgba(32,28,23,.07);padding:0;overflow:hidden;transition:border-color .3s;}
+  .doc-header{padding:26px 34px;border-bottom:2px solid var(--brandaccent,var(--zelen));display:flex;align-items:center;justify-content:space-between;background:var(--brandband,#fff);}
+  .doc-header .co{display:flex;align-items:center;gap:11px;}
+  .doc-header .co .cn{font-family:"Fraunces";font-weight:600;font-size:15px;}
+  .doc-header .kicker{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--brandaccent,var(--zelen-d));font-family:"Fraunces";}
+  .doc-body{padding:30px 34px 40px;}
+
+  /* editable blocks */
+  .blk{position:relative;border-radius:10px;padding:8px 12px;margin:2px -12px;transition:background .15s;cursor:pointer;}
+  .blk:hover{background:#FBF7EF;}
+  .blk.sel{background:#FBF7EF;box-shadow:inset 0 0 0 1.5px var(--zelen-l);}
+  .blk.h1{font-family:"Fraunces";font-size:25px;font-weight:700;color:var(--brandaccent,var(--chernila));line-height:1.12;}
+  .blk.lead{font-size:14.5px;color:#45403a;margin-top:6px;}
+  .blk.h2{font-family:"Fraunces";font-size:17px;font-weight:600;margin-top:14px;}
+  .blk.p{font-size:13.5px;color:#45403a;}
+  .blk ul{margin:2px 0 0 18px;font-size:13.5px;color:#45403a;}
+  .blk li{margin:3px 0;}
+  .blk.just-changed{animation:pulse 1.6s ease;}
+  @keyframes pulse{0%{background:var(--zelen-soft);box-shadow:inset 0 0 0 2px var(--zelen);}70%{background:var(--zelen-soft);}100%{background:transparent;}}
+  .changed-tag{position:absolute;top:-9px;right:8px;font-size:10px;font-weight:700;color:#fff;background:var(--zelen);border-radius:999px;padding:2px 8px;opacity:0;transition:opacity .3s;}
+  .blk.just-changed .changed-tag{opacity:1;}
+
+  /* pricing table block */
+  .ptable{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px;}
+  .ptable th,.ptable td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);}
+  .ptable th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);}
+  .ptable td.num{text-align:right;font-family:"Fraunces";font-weight:600;color:var(--glina-d);}
+
+  /* floating block toolbar */
+  .blktools{position:absolute;z-index:20;background:var(--chernila);border-radius:11px;padding:6px;display:none;gap:6px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+  .blktools.on{display:flex;}
+  .blktools button{font-size:12px;font-weight:600;border:none;border-radius:7px;padding:7px 11px;cursor:pointer;white-space:nowrap;}
+  .blktools .hand{background:#fff;color:var(--chernila);}
+  .blktools .agent{background:var(--zelen);color:#fff;}
+  .blktools .agent:hover{background:var(--zelen-l);color:var(--chernila);}
+  .blktools .hint{color:#b9b1a4;font-size:11px;align-self:center;padding:0 4px;}
+
+  /* agent prompt mini */
+  .agentbox{position:absolute;z-index:21;background:#fff;border:1px solid var(--zelen);border-radius:12px;padding:12px;width:320px;box-shadow:0 16px 40px rgba(32,28,23,.18);display:none;}
+  .agentbox.on{display:block;}
+  .agentbox .lbl{font-size:11px;font-weight:700;color:var(--zelen-d);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .agentbox .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .agentbox .chips button{font-size:12px;border:1px solid var(--line);background:var(--bumaga);border-radius:999px;padding:5px 10px;cursor:pointer;}
+  .agentbox .chips button:hover{border-color:var(--zelen);background:var(--zelen-soft);}
+  .agentbox .scope{font-size:11.5px;color:var(--mute);}
+  .agentbox .scope b{color:var(--zelen-d);}
+
+  /* memory banner (pain 3) */
+  .membanner{margin-top:18px;background:linear-gradient(180deg,var(--zelen-soft),#fff);border:1px solid var(--zelen-l);border-radius:14px;padding:18px 20px;display:none;}
+  .membanner.on{display:block;animation:slidein .4s ease;}
+  @keyframes slidein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .membanner .lbl{font-size:11px;font-weight:700;color:var(--zelen-d);text-transform:uppercase;letter-spacing:.5px;}
+  .membanner h3{font-family:"Fraunces";font-size:17px;margin:6px 0 4px;}
+  .membanner p{font-size:13px;color:#45403a;max-width:640px;}
+  .goals{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;}
+  .goal{font-size:12.5px;background:#fff;border:1px solid var(--zelen-l);border-radius:10px;padding:8px 12px;}
+  .goal b{color:var(--zelen-d);}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--chernila);color:#fff;font-size:13px;padding:12px 18px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.3s;z-index:50;max-width:90vw;}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast b{color:var(--zelen-l);}
+
+  footer{margin-top:40px;font-size:12px;color:var(--mute);border-top:1px solid var(--line);padding-top:16px;}
+  @media(max-width:900px){.grid{grid-template-columns:1fr 1fr;}.ed-layout{grid-template-columns:1fr;}}
+  @media(max-width:620px){.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- brand bar -->
+  <div class="brandbar">
+    <svg width="30" height="30" viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#p)" stroke-width="3.4" stroke-linecap="round"/><circle cx="14" cy="18.5" r="6.6" fill="#B85C3C"/><circle cx="34" cy="18.5" r="6.6" fill="#3D7A3E"/><defs><linearGradient id="p" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg>
+    <div class="name">Уклад · Документы <small>— прототип</small></div>
+    <span class="spacer" style="flex:1"></span>
+    <span class="badge proto">ПРОТОТИП · ДО КОДА</span>
+  </div>
+
+  <h1 class="title">Документ — это <em>объект платформы</em>, а не файл-выхлоп.<br>Правится на месте, лежит на полке, питает память.</h1>
+  <div class="lede">Кликабельный прототип. Слева-направо показывает три боли: полка «Файлы» с происхождением и копией → правка блока без пересборки всего → отданный документ становится объявленной истиной и уходит в цели. Зелёное — вклад агента, терракота — вклад человека.</div>
+
+  <div class="pains">
+    <span class="pain"><b>Боль 0.</b> Бренд как ассеты, не проза</span>
+    <span class="pain"><b>Боль 1.</b> Правка на месте, не пересборка</span>
+    <span class="pain"><b>Боль 2.</b> Полка «Файлы» + копия</span>
+    <span class="pain"><b>Боль 3.</b> Документ → память</span>
+  </div>
+
+  <!-- ============ VIEW 1: SHELF ============ -->
+  <div class="view on" id="view-shelf">
+    <div class="shelf-top">
+      <div class="filters">
+        <span class="filt active">Все</span>
+        <span class="filt">КП и письма</span>
+        <span class="filt">Презентации</span>
+        <span class="filt">Регламенты</span>
+        <span class="filt">По клиентам ▾</span>
+        <span class="filt">Июль ▾</span>
+      </div>
+      <button class="btn">+ Новый документ</button>
+    </div>
+
+    <div class="grid" id="docgrid"></div>
+  </div>
+
+  <!-- ============ VIEW 2: EDITOR ============ -->
+  <div class="view" id="view-editor">
+    <div class="ed-top">
+      <button class="back" onclick="showShelf()">← Файлы</button>
+      <span class="doctitle" id="ed-title">КП — Юрбюро «Ясно» · внедрение Первого агента</span>
+      <span class="spacer"></span>
+      <button class="btn ghost" onclick="toast('Собран PDF через системный Chrome — пиксель-в-пиксель, с брендом и текстовым слоем')">Экспорт PDF</button>
+      <button class="btn ghost" onclick="toast('Собран .docx — редактируемый, приблизительный. Чтобы дальше поправить в Word')">Экспорт .docx</button>
+      <button class="btn clay" onclick="giveOut()">Отдать клиенту →</button>
+    </div>
+
+    <div class="ed-layout">
+      <!-- brand + outline panel -->
+      <div>
+        <div class="panel">
+          <div class="ttl">Бренд тенанта (юрбюро «Ясно»)</div>
+          <div class="asset">🏷️ Логотип — <b style="color:var(--chernila)">файл</b>, не текст</div>
+          <div class="asset">🎨 Палитра
+            <span class="swatches"><span class="sw" style="background:#1F3A5F"></span><span class="sw" style="background:#C9A227"></span><span class="sw" style="background:#F5F3EE"></span></span>
+          </div>
+          <div class="asset">🔤 Шрифты — Georgia / Inter</div>
+          <div class="note">Ассеты доходят до генератора <b>как ассеты</b> и применяются к блокам темой. Не проза в промпте — движок больше не игнорит стиль.</div>
+          <div class="themebtns">
+            <button class="active" onclick="setTheme(this,'yasno')">Тема «Ясно»</button>
+            <button onclick="setTheme(this,'uklad')">Тема Уклад</button>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:14px;">
+          <div class="ttl">Блоки документа</div>
+          <div class="outline">
+            <div class="ol-item">Заголовок</div>
+            <div class="ol-item">Вступление</div>
+            <div class="ol-item">Что входит</div>
+            <div class="ol-item">Стоимость и сроки</div>
+            <div class="ol-item">Следующий шаг</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- document canvas -->
+      <div class="canvas-wrap">
+        <div class="rebuild-note">
+          <span>⚠️</span>
+          <span>Через чат правка «поменяй две строки» = пересборка всех 15 блоков — риск, что нужное не изменится, а вёрстка поедет. Здесь: <b>кликни блок → правь только его.</b></span>
+        </div>
+
+        <div class="canvas" id="canvas">
+          <div class="doc-header">
+            <div class="co">
+              <div style="width:30px;height:30px;border-radius:7px;background:var(--brandaccent,#1F3A5F);display:flex;align-items:center;justify-content:center;color:#fff;font-family:Fraunces;font-weight:700;" id="logo-badge">Я</div>
+              <div class="cn" id="logo-name">Юрбюро «Ясно»</div>
+            </div>
+            <div class="kicker">Коммерческое предложение</div>
+          </div>
+          <div class="doc-body">
+            <div class="blk h1" data-blk="Заголовок">Внедрение Первого агента для юрбюро «Ясно»<span class="changed-tag">изменён агентом</span></div>
+            <div class="blk lead" data-blk="Вступление">Предлагаем запустить ИИ-агента, который снимет с юристов рутину переписки и подготовки типовых документов. Ниже — состав работ, стоимость и сроки.<span class="changed-tag">изменён агентом</span></div>
+
+            <div class="blk h2" data-blk="Заголовок раздела">Что входит<span class="changed-tag">изменён агентом</span></div>
+            <div class="blk" data-blk="Список работ">
+              <ul>
+                <li>Подключение агента к рабочим чатам и почте</li>
+                <li>Черновики ответов и типовых писем на согласование юриста</li>
+                <li>Память по делам клиента: агент помнит договорённости и сроки</li>
+              </ul>
+              <span class="changed-tag">изменён агентом</span>
+            </div>
+
+            <div class="blk h2" data-blk="Заголовок раздела">Стоимость и сроки<span class="changed-tag">изменён агентом</span></div>
+            <div class="blk" data-blk="Таблица стоимости">
+              <table class="ptable">
+                <tr><th>Этап</th><th>Срок</th><th style="text-align:right">Стоимость</th></tr>
+                <tr><td>Настройка и подключение</td><td>1 неделя</td><td class="num">120 000 ₽</td></tr>
+                <tr><td>Обучение на делах клиента</td><td>2 недели</td><td class="num">180 000 ₽</td></tr>
+                <tr><td>Сопровождение, в месяц</td><td>—</td><td class="num">60 000 ₽</td></tr>
+              </table>
+              <span class="changed-tag">изменён агентом</span>
+            </div>
+
+            <div class="blk p" data-blk="Следующий шаг" style="margin-top:14px;">Следующий шаг — короткий созвон на 30 минут, покажем агента на ваших делах. Готовы начать на неделе.<span class="changed-tag">изменён агентом</span></div>
+          </div>
+        </div>
+
+        <!-- memory banner (pain 3) -->
+        <div class="membanner" id="membanner">
+          <div class="lbl">Документ отдан наружу → объявленная истина</div>
+          <h3>Из КП извлечены обязательства — теперь платформа сверяет их с фактом</h3>
+          <p>Мы отдали это клиенту, значит в написанное верим и хотим, чтобы так и было. Цифры и сроки уходят в память клиента как цели. Дальше факт нашей работы сравнивается с тем, что заявили.</p>
+          <div class="goals">
+            <span class="goal">🎯 <b>Срок настройки</b> — 1 неделя</span>
+            <span class="goal">🎯 <b>Запуск полностью</b> — 3 недели</span>
+            <span class="goal">🎯 <b>Сопровождение</b> — 60 000 ₽/мес</span>
+            <span class="goal">🔗 привязано к демо-сделке</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating block toolbar -->
+  <div class="blktools" id="blktools">
+    <button class="hand" onclick="editHand()">✏️ Поправить руками</button>
+    <button class="agent" onclick="openAgent()">🤖 Агент: поправить этот блок</button>
+    <span class="hint" id="blkhint"></span>
+  </div>
+
+  <!-- agent mini prompt -->
+  <div class="agentbox" id="agentbox">
+    <div class="lbl">Агент правит только этот блок</div>
+    <div class="chips">
+      <button onclick="agentApply('короче')">Короче</button>
+      <button onclick="agentApply('строже, официальнее')">Строже</button>
+      <button onclick="agentApply('добавить выгоду клиенту')">Добавить выгоду</button>
+    </div>
+    <div class="scope">Скоуп: <b id="agentscope">блок</b>. Соседние блоки не трогаются, вёрстка на месте.</div>
+  </div>
+
+  <footer>Прототип до кода — смотрим, договариваемся о словах, потом строим. Рендер PDF уже решён (системный Chrome), моат вижена — редактор + модель документа + связь с памятью, а не рендерер. Build-vs-adopt блочного редактора — в вижен-документе, раздел «Бенчмарк».</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---- data: shelf documents ----
+  const DOCS = [
+    {t:'КП', title:'КП — Юрбюро «Ясно» · внедрение Первого агента', prov:['создан 12.07 · <span>чат внедрения</span>','демо-сделка'], open:true},
+    {t:'Презентация', title:'Презентация — колл-центр · телеколлер', prov:['создан 09.07 · <span>чат внедрения</span>','15 слайдов · для РОП']},
+    {t:'Регламент', title:'Регламент онбординга клиента', prov:['создан 04.07 · <span>внутренний</span>','версия 2 · база знаний']},
+    {t:'Письмо', title:'Письмо — стартап «Контур» · старт пилота', prov:['создан 11.07 · <span>чат внедрения</span>','ЛПР']},
+    {t:'КП', title:'КП — сеть кофеен · сводки чатов', prov:['создан 07.07 · <span>чат внедрения</span>','HoReCa']},
+    {t:'Презентация', title:'Вижен «Система продаж как продукт»', prov:['создан 03.07 · <span>внутренний</span>','7 разделов']},
+  ];
+  const grid = document.getElementById('docgrid');
+  DOCS.forEach(d=>{
+    const el=document.createElement('div');el.className='doc';
+    el.innerHTML=`
+      <div class="thumb">
+        <svg class="mini-logo" width="22" height="22" viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#pp)" stroke-width="3.4" stroke-linecap="round"/><circle cx="14" cy="18.5" r="6.6" fill="#B85C3C"/><circle cx="34" cy="18.5" r="6.6" fill="#3D7A3E"/></svg>
+        <div class="mini-lines"><div class="ln a"></div><div class="ln b"></div><div class="ln c"></div></div>
+      </div>
+      <div class="body">
+        <div class="type">${d.t}</div>
+        <h3>${d.title}</h3>
+        <div class="prov">${d.prov.join('<br>')}</div>
+        <div class="acts">
+          <button class="open">Открыть</button>
+          <button class="copy">Сделать копию</button>
+        </div>
+      </div>`;
+    el.querySelector('.open').onclick=()=>{ if(d.open){showEditor(d.title);} else {toast('Открыт «'+d.title+'» — тот же блочный редактор'); showEditor(d.title);} };
+    el.querySelector('.copy').onclick=()=>toast('Скопировано: <b>«'+d.title+' (копия)»</b> — правь под нового клиента, оригинал цел');
+    grid.appendChild(el);
+  });
+
+  // ---- view switching ----
+  const vShelf=document.getElementById('view-shelf'), vEd=document.getElementById('view-editor');
+  function showEditor(title){ vShelf.classList.remove('on'); vEd.classList.add('on'); if(title)document.getElementById('ed-title').textContent=title; hideTools(); document.getElementById('membanner').classList.remove('on'); window.scrollTo({top:0,behavior:'smooth'}); }
+  function showShelf(){ vEd.classList.remove('on'); vShelf.classList.add('on'); hideTools(); }
+
+  // ---- block selection + toolbar ----
+  let selBlk=null;
+  const tools=document.getElementById('blktools'), agentbox=document.getElementById('agentbox');
+  document.getElementById('canvas').addEventListener('click',e=>{
+    const blk=e.target.closest('.blk'); if(!blk)return;
+    e.stopPropagation();
+    selectBlock(blk);
+  });
+  function selectBlock(blk){
+    if(selBlk)selBlk.classList.remove('sel');
+    selBlk=blk; blk.classList.add('sel');
+    const r=blk.getBoundingClientRect();
+    tools.style.top=(window.scrollY+r.top-52)+'px';
+    tools.style.left=(window.scrollX+r.left)+'px';
+    tools.classList.add('on'); agentbox.classList.remove('on');
+    document.getElementById('blkhint').textContent='блок: '+(blk.dataset.blk||'');
+  }
+  function hideTools(){ tools.classList.remove('on'); agentbox.classList.remove('on'); if(selBlk){selBlk.classList.remove('sel');selBlk=null;} }
+  document.body.addEventListener('click',e=>{ if(!e.target.closest('.blk')&&!e.target.closest('#blktools')&&!e.target.closest('#agentbox'))hideTools(); });
+
+  // ---- hand edit ----
+  function editHand(){
+    if(!selBlk)return;
+    const target=selBlk.querySelector('ul,table')?null:selBlk;
+    if(target){ selBlk.setAttribute('contenteditable','true'); selBlk.focus();
+      document.execCommand&&document.execCommand('selectAll',false,null);
+      toast('Правь прямо в блоке — сохранится в объект документа. Остальные блоки не трогаются.');
+      selBlk.addEventListener('blur',()=>selBlk&&selBlk.removeAttribute('contenteditable'),{once:true});
+    } else { toast('Правь ячейки таблицы на месте — соседние блоки не двигаются'); }
+    tools.classList.remove('on');
+  }
+
+  // ---- agent edit (surgical) ----
+  function openAgent(){
+    if(!selBlk)return;
+    const r=selBlk.getBoundingClientRect();
+    agentbox.style.top=(window.scrollY+r.top-8)+'px';
+    agentbox.style.left=(window.scrollX+Math.min(r.left, window.innerWidth-360))+'px';
+    document.getElementById('agentscope').textContent=selBlk.dataset.blk||'блок';
+    agentbox.classList.add('on'); tools.classList.remove('on');
+  }
+  const REWRITES={
+    'короче':{
+      'Вступление':'Запускаем ИИ-агента: снимает с юристов рутину переписки и типовых документов. Ниже — состав, цена, сроки.',
+      'Следующий шаг':'Созвон на 30 минут — покажем агента на ваших делах. Готовы стартовать на неделе.',
+      '_default':'(тот же смысл, короче — переписан только этот блок)'
+    },
+    'строже, официальнее':{
+      'Вступление':'Настоящим предлагаем внедрение ИИ-агента для автоматизации подготовки типовой переписки и документов юридического отдела. Ниже приведён состав работ, стоимость и сроки.',
+      'Следующий шаг':'Предлагаем провести установочную встречу продолжительностью 30 минут для демонстрации решения на материалах вашей практики.',
+      '_default':'(официальный тон — переписан только этот блок)'
+    },
+    'добавить выгоду клиенту':{
+      'Вступление':'Предлагаем запустить ИИ-агента, который снимет с юристов рутину переписки и типовых документов — по нашим внедрениям это до 40 часов в месяц на специалиста. Ниже — состав, стоимость и сроки.',
+      'Следующий шаг':'Созвон на 30 минут: покажем агента на ваших делах и посчитаем экономию именно для вашего бюро. Готовы начать на неделе.',
+      '_default':'(добавлена измеримая выгода — переписан только этот блок)'
+    }
+  };
+  function agentApply(mode){
+    agentbox.classList.remove('on');
+    if(!selBlk)return;
+    const blk=selBlk, name=blk.dataset.blk||'';
+    const map=REWRITES[mode]||{};
+    const lead=blk.classList.contains('lead')||blk.classList.contains('p');
+    setTimeout(()=>{
+      if(lead && map[name]){
+        const tag=blk.querySelector('.changed-tag');
+        blk.textContent=map[name];
+        if(tag)blk.appendChild(tag);
+      }
+      blk.classList.remove('sel');
+      blk.classList.add('just-changed');
+      setTimeout(()=>blk.classList.remove('just-changed'),1700);
+      toast('Агент переписал <b>только блок «'+name+'»</b> ('+mode+'). Соседние 4 блока — байт-в-байт те же.');
+      hideTools();
+    },380);
+  }
+
+  // ---- theme swap (pain 0: assets as assets) ----
+  function setTheme(btn,which){
+    document.querySelectorAll('.themebtns button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const c=document.getElementById('canvas'), badge=document.getElementById('logo-badge'), nm=document.getElementById('logo-name');
+    if(which==='uklad'){
+      c.style.setProperty('--brandaccent','#3D7A3E');
+      c.style.setProperty('--brandband','#F4EFE6');
+      badge.style.background='#3D7A3E'; badge.textContent='У'; nm.textContent='Уклад';
+      toast('Тема переключена мгновенно — блоки те же, бренд-ассеты применились заново. Текст не переписывался.');
+    } else {
+      c.style.setProperty('--brandaccent','#1F3A5F');
+      c.style.setProperty('--brandband','#fff');
+      badge.style.background='#1F3A5F'; badge.textContent='Я'; nm.textContent='Юрбюро «Ясно»';
+      toast('Тема «Ясно»: логотип-файл, палитра и шрифты клиента наложены на те же блоки.');
+    }
+  }
+
+  // ---- give out → memory (pain 3) ----
+  function giveOut(){
+    const b=document.getElementById('membanner');
+    b.classList.add('on');
+    toast('Документ отдан клиенту → помечен как объявленная истина, обязательства ушли в память');
+    setTimeout(()=>b.scrollIntoView({behavior:'smooth',block:'center'}),200);
+  }
+
+  // ---- toast ----
+  let toastT;
+  function toast(html){ const t=document.getElementById('toast'); t.innerHTML=html; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),3400); }
+
+  // filters cosmetic
+  document.querySelectorAll('.filt').forEach(f=>f.onclick=()=>{document.querySelectorAll('.filt').forEach(x=>x.classList.remove('active'));f.classList.add('active');});
+</script>
+</body>
+</html>
