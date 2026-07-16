@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Задачи, которые закрываются сами — прототип Уклад</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --glina:#B85C3C; --glina-d:#A24E32; --zelen:#3D7A3E; --zelen-d:#2F5F30; --zelen-l:#9CC791;
+    --glina-soft:#F2E3DB; --zelen-soft:#E2EEDB; --bumaga:#F4EFE6; --bumaga2:#EDE6D8;
+    --yadro:#EBD9CE; --chernila:#201C17; --mute:#6B6258; --line:#E5DCCD;
+    --wait:#B8862B; --wait-d:#8F681E; --wait-soft:#F6ECD3; --wait-line:#E4CE9A;
+    --alarm:#C0392B; --alarm-d:#9E2C20; --alarm-soft:#F7E1DD; --alarm-line:#E6B7AE;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bumaga);color:var(--chernila);font-family:"IBM Plex Sans",-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;}
+  h1,h2,h3,h4,.f{font-family:"Fraunces",Georgia,serif;letter-spacing:-.02em;}
+  .wrap{max-width:1120px;margin:0 auto;padding:30px 24px 70px;}
+
+  .brandbar{display:flex;align-items:center;gap:11px;margin-bottom:22px;}
+  .brandbar .name{font-weight:600;font-size:15px;}
+  .brandbar .name small{color:var(--mute);font-weight:400;}
+  h1.title{font-size:27px;line-height:1.14;max-width:920px;}
+  h1.title em{font-style:normal;color:var(--glina-d);}
+  .lede{margin-top:11px;font-size:14.5px;color:var(--mute);max-width:850px;}
+  .lede b{color:var(--chernila);font-weight:600;}
+
+  .badge{font-size:11px;font-weight:700;border-radius:999px;padding:3px 11px;letter-spacing:.4px;}
+  .badge.proto{color:#fff;background:var(--glina-d);}
+  .forwhom{margin-top:14px;font-size:12.5px;color:var(--mute);background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 13px;max-width:850px;}
+  .forwhom b{color:var(--glina-d);}
+
+  .pains{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px;}
+  .pain{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;color:var(--mute);}
+  .pain b{color:var(--chernila);}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 22px;font-size:12px;color:var(--mute);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dotc{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  .tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .tab{font-size:13.5px;font-weight:600;color:var(--mute);background:none;border:none;border-bottom:2px solid transparent;padding:9px 4px;margin-bottom:-1px;cursor:pointer;}
+  .tab.on{color:var(--chernila);border-bottom-color:var(--glina);}
+  .tab small{font-weight:400;color:var(--mute);}
+  .view{display:none;} .view.on{display:block;}
+
+  /* ==== MY LIST ==== */
+  .listtop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .seg{display:flex;gap:6px;flex-wrap:wrap;}
+  .seg .s{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;color:var(--mute);cursor:pointer;}
+  .seg .s.active{background:var(--yadro);color:var(--chernila);border-color:var(--glina);}
+  .btn{font-size:13px;font-weight:600;color:#fff;background:var(--zelen);border:none;border-radius:11px;padding:9px 15px;cursor:pointer;}
+  .btn:hover{background:var(--zelen-d);}
+  .btn.ghost{background:#fff;color:var(--zelen-d);border:1px solid var(--zelen);}
+  .btn.ghost:hover{background:var(--zelen-soft);}
+
+  .group{margin-bottom:26px;}
+  .group .gh{display:flex;align-items:center;gap:9px;margin:0 2px 10px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);}
+  .group .gh .cnt{background:var(--yadro);color:var(--chernila);border-radius:999px;padding:1px 9px;font-size:11px;}
+  .group.alarm .gh{color:var(--alarm-d);}
+  .group.alarm .gh .cnt{background:var(--alarm-soft);color:var(--alarm-d);}
+
+  .task{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px 17px;margin-bottom:11px;box-shadow:0 1px 2px rgba(32,28,23,.04),0 10px 26px rgba(32,28,23,.035);border-left:3px solid var(--line);}
+  .task.b-mine{border-left-color:var(--zelen);}
+  .task.b-wait{border-left-color:var(--wait);}
+  .task.b-alarm{border-left-color:var(--alarm);}
+  .task .thead{display:flex;align-items:flex-start;gap:11px;cursor:pointer;}
+  .task .tball{flex:none;width:11px;height:11px;border-radius:50%;margin-top:5px;}
+  .b-mine .tball{background:var(--zelen);} .b-wait .tball{background:var(--wait);} .b-alarm .tball{background:var(--alarm);}
+  .task .tmain{flex:1;min-width:0;}
+  .task .ttl{font-size:15.5px;font-weight:600;font-family:"Fraunces";}
+  .task .sub{margin-top:3px;font-size:12.5px;color:var(--mute);display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;}
+  .task .sub b{color:var(--chernila);}
+  .state{font-size:11px;font-weight:700;border-radius:999px;padding:2px 10px;white-space:nowrap;}
+  .state.mine{background:var(--zelen-soft);color:var(--zelen-d);}
+  .state.wait{background:var(--wait-soft);color:var(--wait-d);}
+  .state.alarm{background:var(--alarm-soft);color:var(--alarm-d);}
+  .task .chev{flex:none;color:var(--mute);font-size:13px;margin-top:2px;transition:transform .2s;}
+  .task.open .chev{transform:rotate(90deg);}
+
+  .touches{display:none;margin:14px 0 2px;padding-top:13px;border-top:1px dashed var(--line);}
+  .task.open .touches{display:block;}
+  .touchhint{font-size:11.5px;color:var(--mute);margin-bottom:10px;}
+  .touchhint b{color:var(--chernila);}
+  .touch{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #F1EAdb;}
+  .touch:last-child{border-bottom:none;}
+  .touch .tb{flex:none;width:9px;height:9px;border-radius:50%;margin-top:5px;transition:background .2s;}
+  .touch.mine .tb{background:var(--zelen);} .touch.wait .tb{background:var(--wait);} .touch.alarm .tb{background:var(--alarm);} .touch.done .tb{background:#C7BFB0;}
+  .touch .tc{flex:1;min-width:0;}
+  .touch .tt{font-size:13.5px;font-weight:500;}
+  .touch.done .tt{color:var(--mute);text-decoration:line-through;}
+  .touch .meta{margin-top:3px;font-size:12px;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 12px;}
+  .touch .meta b{color:var(--chernila);}
+  .touch .meta .over{color:var(--alarm-d);font-weight:700;}
+  .prov{margin-top:6px;font-size:11.5px;color:var(--mute);background:var(--bumaga);border:1px solid var(--line);border-radius:8px;padding:6px 9px;display:inline-flex;gap:7px;align-items:flex-start;max-width:100%;}
+  .prov .src{color:var(--glina-d);font-weight:600;cursor:pointer;white-space:nowrap;}
+  .prov.byagent{background:var(--zelen-soft);border-color:var(--zelen-l);}
+  .prov.byagent .lab{color:var(--zelen-d);font-weight:700;}
+  .tacts{margin-top:9px;display:flex;gap:7px;flex-wrap:wrap;}
+  .tacts button{font-size:12px;font-weight:600;border-radius:8px;padding:6px 11px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--chernila);}
+  .tacts button.go{background:var(--zelen);color:#fff;border-color:var(--zelen);}
+  .tacts button.go:hover{background:var(--zelen-d);}
+  .tacts button.wa{background:#fff;color:var(--wait-d);border-color:var(--wait-line);}
+  .tacts button.wa:hover{background:var(--wait-soft);}
+  .tacts button:hover{background:var(--bumaga2);}
+  .addtouch{margin-top:12px;font-size:12.5px;color:var(--zelen-d);background:none;border:1px dashed var(--zelen-l);border-radius:9px;padding:8px 12px;cursor:pointer;width:100%;text-align:left;}
+  .addtouch:hover{background:var(--zelen-soft);}
+
+  /* ==== FEST VIEW ==== */
+  .festintro{background:linear-gradient(180deg,var(--zelen-soft),#fff);border:1px solid var(--zelen-l);border-radius:14px;padding:16px 18px;margin-bottom:20px;}
+  .festintro .lbl{font-size:11px;font-weight:700;color:var(--zelen-d);text-transform:uppercase;letter-spacing:.5px;}
+  .festintro h3{font-family:"Fraunces";font-size:17px;margin:6px 0 4px;}
+  .festintro p{font-size:13px;color:#45403a;max-width:740px;}
+  .flog{position:relative;margin-left:8px;padding-left:22px;border-left:2px solid var(--line);}
+  .fev{position:relative;padding:2px 0 20px;}
+  .fev::before{content:"";position:absolute;left:-29px;top:3px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--zelen);}
+  .fev.ask::before{border-color:var(--wait);}
+  .fev.watch::before{border-color:var(--mute);}
+  .fev .time{font-size:11.5px;color:var(--mute);}
+  .fev .fev-t{font-size:13.5px;margin-top:2px;}
+  .fev .fev-t .did{color:var(--zelen-d);font-weight:600;}
+  .fev .card{margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .fev .card.decide{border-color:var(--wait-line);background:var(--wait-soft);}
+  .fev .card .q{font-size:13px;font-weight:600;}
+  .fev .card .drafted{font-size:12.5px;color:#45403a;background:var(--bumaga);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:8px;font-style:italic;}
+  .fev .card .row{margin-top:10px;display:flex;gap:7px;flex-wrap:wrap;}
+  .fev .card .row button{font-size:12px;font-weight:600;border-radius:8px;padding:6px 12px;cursor:pointer;border:1px solid var(--line);background:#fff;}
+  .fev .card .row button.go{background:var(--zelen);color:#fff;border-color:var(--zelen);}
+  .fev .card .row button.go:hover{background:var(--zelen-d);}
+  .fev .card .row button:hover{background:var(--bumaga2);}
+
+  /* ==== HOW IT WORKS ==== */
+  h2.sec{font-size:20px;margin:34px 0 6px;}
+  h2.sec:first-child{margin-top:4px;}
+  .secsub{font-size:13px;color:var(--mute);margin-bottom:16px;max-width:780px;}
+  .mech{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .mcard{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 19px;}
+  .mcard h4{font-size:15.5px;margin-bottom:4px;}
+  .mcard .cap{font-size:12px;color:var(--mute);margin-bottom:12px;}
+  .mrow{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid #F1EAdb;}
+  .mrow:last-child{border-bottom:none;}
+  .mrow .ic{flex:none;width:26px;height:26px;border-radius:8px;background:var(--bumaga2);display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .mrow.live .ic{background:var(--zelen-soft);}
+  .mrow .mt{font-size:13px;}
+  .mrow .mt b{font-weight:600;}
+  .mrow .mt .how{color:var(--mute);}
+  .mrow .flag{margin-left:auto;font-size:10px;font-weight:700;border-radius:999px;padding:2px 8px;white-space:nowrap;align-self:flex-start;}
+  .flag.live{background:var(--zelen-soft);color:var(--zelen-d);}
+  .flag.soon{background:var(--glina-soft);color:var(--glina-d);}
+
+  .maria{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 19px;}
+  .maria h4{font-size:15.5px;margin-bottom:10px;}
+  .mstep{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #F1EAdb;font-size:13px;}
+  .mstep:last-child{border-bottom:none;}
+  .mstep .was{flex:1;color:var(--mute);}
+  .mstep .was b{color:var(--chernila);}
+  .mstep .arr{flex:none;color:var(--glina);font-weight:700;align-self:center;}
+  .mstep .now{flex:1;}
+  .mstep .now b{color:var(--zelen-d);}
+
+  .honest{margin-top:14px;background:var(--wait-soft);border:1px solid var(--wait-line);border-radius:14px;padding:15px 18px;font-size:13px;color:#5a4a1e;}
+  .honest b{color:var(--wait-d);}
+  .honest .h4{font-family:"Fraunces";font-size:15px;font-weight:600;margin-bottom:6px;color:#5a4a1e;}
+
+  .autonomy{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px 19px;}
+  .autonomy h4{font-size:15.5px;margin-bottom:12px;}
+  .rung{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #F1EAdb;font-size:13px;}
+  .rung:last-child{border-bottom:none;}
+  .rung .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--yadro);color:var(--chernila);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .rung.now .n{background:var(--zelen);color:#fff;}
+  .rung .rt b{color:var(--chernila);} .rung .rt{color:var(--mute);}
+  .rung .tag{margin-left:auto;font-size:10.5px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap;}
+  .rung.now .tag{background:var(--zelen-soft);color:var(--zelen-d);}
+  .rung .tag.later{background:var(--bumaga2);color:var(--mute);}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--chernila);color:#fff;font-size:13px;padding:12px 18px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.3s;z-index:50;max-width:90vw;}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast b{color:var(--zelen-l);}
+  footer{margin-top:40px;font-size:12px;color:var(--mute);border-top:1px solid var(--line);padding-top:16px;}
+  @media(max-width:820px){.mech{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brandbar">
+    <svg width="30" height="30" viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#p)" stroke-width="3.4" stroke-linecap="round"/><circle cx="14" cy="18.5" r="6.6" fill="#B85C3C"/><circle cx="34" cy="18.5" r="6.6" fill="#3D7A3E"/><defs><linearGradient id="p" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg>
+    <div class="name">Уклад · Задачи <small>— прототип по вашей хотелке</small></div>
+    <span style="flex:1"></span>
+    <span class="badge proto">ПРОТОТИП · ДО КОДА</span>
+  </div>
+
+  <h1 class="title">Список задач, который <em>ведёт агент</em>, а не вы.<br>Он видит чаты и встречи — значит знает, у кого мяч, и <em>закрывает задачи сам</em>.</h1>
+  <div class="lede">Маша, это по вашей хотелке — «follow-up reminder, как я делала в Клоде»: помечать, кому что должна, от кого жду ответ, ставить дату возврата и красить просрочку. Мы это оставляем полностью — и добавляем главное: <b>агент сам выводит состояние из ваших чатов и встреч</b>, а вы только принимаете решения. Одна задача держит <b>несколько касаний</b> («обновить лицензию» = юрист + аренда + пошлина) — без дробления на микрозадачи, иначе «будет куча всего».</div>
+
+  <div class="forwhom">👋 Всё, что зелёное, — делает <b>Фест (первый агент)</b>. Терракота — ваш ход. Всё кликабельно: разворачивайте задачи, жмите кнопки. Данные — иллюстрация на ваших примерах, это ещё не живой кабинет.</div>
+
+  <div class="pains">
+    <span class="pain"><b>1.</b> В одной задаче много ожиданий — микрозадачи плодить не хочу</span>
+    <span class="pain"><b>2.</b> С одного взгляда: где мяч у меня, где я жду</span>
+    <span class="pain"><b>3.</b> Просрочку нельзя проигнорировать</span>
+    <span class="pain"><b>4.</b> Не хочу вести это руками</span>
+  </div>
+  <div class="legend">
+    <span><i class="dotc" style="background:var(--zelen)"></i> Мой ход — следующий шаг за мной</span>
+    <span><i class="dotc" style="background:var(--wait)"></i> Жду ответа — мяч у другого</span>
+    <span><i class="dotc" style="background:var(--alarm)"></i> Просрочено — срок прошёл, ответа нет</span>
+    <span><i class="dotc" style="background:#C7BFB0"></i> Закрыто</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="showTab(this,'mylist')">Мой список <small>— как вижу я</small></button>
+    <button class="tab" onclick="showTab(this,'fest')">Что делает Фест <small>— агент-оператор</small></button>
+    <button class="tab" onclick="showTab(this,'how')">Как это работает <small>— пополнение и закрытие</small></button>
+  </div>
+
+  <!-- ================= VIEW: MY LIST ================= -->
+  <div class="view on" id="v-mylist">
+    <div class="listtop">
+      <div class="seg">
+        <span class="s active">Всё <b>(9)</b></span>
+        <span class="s" style="color:var(--alarm-d)">🔴 Просрочено <b>(2)</b></span>
+        <span class="s">🟢 Мой ход <b>(3)</b></span>
+        <span class="s">🟡 Жду <b>(4)</b></span>
+        <span class="s">✅ Закрытые</span>
+      </div>
+      <button class="btn ghost" onclick="toast('Задачу можно завести руками — но чаще она рождается сама из чата или встречи')">+ Задача вручную</button>
+    </div>
+
+    <!-- OVERDUE -->
+    <div class="group alarm">
+      <div class="gh">🔴 Просрочено — пора реагировать <span class="cnt">2</span></div>
+
+      <!-- HERO: license (Maria's own example) -->
+      <div class="task b-alarm open" onclick="tog(this,event)">
+        <div class="thead">
+          <span class="tball"></span>
+          <div class="tmain">
+            <div class="ttl">Обновить лицензию компании</div>
+            <div class="sub"><span>3 касания · <b>1 просрочено</b>, 1 мой ход, 1 закрыто</span><span class="state alarm">🔴 просрочено 1 день</span></div>
+          </div>
+          <span class="chev">›</span>
+        </div>
+        <div class="touches">
+          <div class="touchhint">Ваш пример из хотелки: одна задача, а внутри — «отписать юристу, отправить договор на аренду офиса, заплатить пошлину». Мелочь отдельными задачами не заводим — <b>«будет куча всего»</b>. Статус задачи = самое горячее касание.</div>
+
+          <div class="touch alarm">
+            <span class="tb"></span>
+            <div class="tc">
+              <div class="tt">Юрист — прислать перечень документов на продление</div>
+              <div class="meta"><span>мяч у него</span><span class="over">возврат был на 15 июля — прошёл, ответа нет</span></div>
+              <div class="prov byagent"><span class="lab">Фест:</span> <span>вы отписали юристу 12 июля, ответа в чате нет. <span class="src">чат с юристом ↗</span></span></div>
+              <div class="tacts">
+                <button class="go" onclick="event.stopPropagation();toast('Фест подготовил вежливое напоминание — откроется на согласование')">Напомнить (черновик готов)</button>
+                <button class="wa" onclick="event.stopPropagation();snooze(this)">Подождать ещё 2 дня</button>
+                <button onclick="event.stopPropagation();markDone(this)">Готово</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="touch mine">
+            <span class="tb"></span>
+            <div class="tc">
+              <div class="tt">Отправить договор на аренду офиса</div>
+              <div class="meta"><span><b>мяч у вас</b></span><span>сегодня</span></div>
+              <div class="tacts">
+                <button class="go" onclick="event.stopPropagation();toast('Открыл черновик письма с приложенным договором')">Отправить</button>
+                <button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button>
+                <button onclick="event.stopPropagation();markDone(this)">Готово</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="touch done">
+            <span class="tb"></span>
+            <div class="tc">
+              <div class="tt">Заплатить госпошлину</div>
+              <div class="meta"><span>закрыто</span></div>
+              <div class="prov byagent"><span class="lab">Фест:</span> <span>увидел в чате бухгалтерии подтверждение платежа — закрыл касание сам. <span class="src">чат «Бухгалтерия» ↗</span></span></div>
+            </div>
+          </div>
+
+          <button class="addtouch" onclick="event.stopPropagation();toast('Новое касание добавлено внутрь этой задачи — не отдельная задача')">+ Добавить касание в эту задачу</button>
+        </div>
+      </div>
+
+      <!-- second overdue -->
+      <div class="task b-alarm" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain">
+            <div class="ttl">Организовать доставку тортов на конференцию 24 июля</div>
+            <div class="sub"><span>мяч у кондитерской</span><span class="state alarm">🔴 просрочено 2 дня</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches">
+          <div class="touch alarm"><span class="tb"></span><div class="tc">
+            <div class="tt">Кондитерская «Сластёна» — прислать цену на 50 порций</div>
+            <div class="meta"><span>мяч у них</span><span class="over">напоминание было на 14 июля — прошло 2 дня</span></div>
+            <div class="prov byagent"><span class="lab">Фест:</span> <span>последнее сообщение от вас 11 июля, ответа кондитера нет. <span class="src">чат «Сластёна» ↗</span></span></div>
+            <div class="tacts"><button class="go" onclick="event.stopPropagation();toast('Черновик напоминания готов')">Напомнить</button><button class="wa" onclick="event.stopPropagation();snooze(this)">Подождать ещё</button></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY MOVE -->
+    <div class="group">
+      <div class="gh">🟢 Мой ход — следующий шаг за мной <span class="cnt">3</span></div>
+
+      <div class="task b-mine" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain"><div class="ttl">Отписать юристу по правкам к партнёрскому договору</div>
+            <div class="sub"><span>мяч у вас · Фест собрал контекст</span><span class="state mine">🟢 мой ход</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches"><div class="touch mine"><span class="tb"></span><div class="tc">
+          <div class="tt">Ответить на 2 правки по тексту договора</div>
+          <div class="meta"><span><b>мяч у вас</b></span><span>появилось из чата, сегодня 12:03</span></div>
+          <div class="prov byagent"><span class="lab">Фест:</span> <span>в рабочем чате партнёр прислал 2 пункта по договору — вынес в касание. <span class="src">чат ↗</span></span></div>
+          <div class="tacts"><button class="go" onclick="event.stopPropagation();toast('Черновик ответа готов')">Ответить (черновик)</button><button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
+        </div></div></div>
+      </div>
+
+      <div class="task b-mine" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain"><div class="ttl">Найти подрядчика на монтаж стенда</div>
+            <div class="sub"><span>мяч у вас · 2 касания</span><span class="state mine">🟢 мой ход</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches">
+          <div class="touch mine"><span class="tb"></span><div class="tc"><div class="tt">Запросить 3 сметы</div><div class="meta"><span><b>мяч у вас</b></span><span>сегодня</span></div>
+            <div class="tacts"><button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
+          </div></div>
+          <div class="touch done"><span class="tb"></span><div class="tc"><div class="tt">Составить ТЗ на стенд</div><div class="meta"><span>закрыто</span></div>
+            <div class="prov byagent"><span class="lab">Фест:</span> <span>увидел, что ТЗ отправлено в чат — закрыл касание сам. <span class="src">чат «Стенд» ↗</span></span></div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="task b-mine" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain"><div class="ttl">Записать команду на медосмотр</div>
+            <div class="sub"><span>мяч у вас</span><span class="state mine">🟢 мой ход</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches"><div class="touch mine"><span class="tb"></span><div class="tc"><div class="tt">Выбрать дату и разослать команде</div><div class="meta"><span><b>мяч у вас</b></span></div>
+          <div class="tacts"><button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
+        </div></div></div>
+      </div>
+    </div>
+
+    <!-- WAITING -->
+    <div class="group">
+      <div class="gh">🟡 Жду ответа — мяч не у меня <span class="cnt">4</span></div>
+
+      <div class="task b-wait" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain"><div class="ttl">Печать баннеров для конференции</div>
+            <div class="sub"><span>жду <b>типографию</b> · напомнить <b>завтра</b></span><span class="state wait">🟡 жду ответа</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches"><div class="touch wait"><span class="tb"></span><div class="tc">
+          <div class="tt">Типография — прислать превью макета</div>
+          <div class="meta"><span>мяч у них</span><span>следующее касание: <b>завтра, 17 июля</b></span></div>
+          <div class="prov byagent"><span class="lab">Фест:</span> <span>макет ушёл 14 июля, обещали превью «за 2-3 дня». Слежу — если завтра тихо, подниму сам. <span class="src">чат «Типография» ↗</span></span></div>
+        </div></div></div>
+      </div>
+
+      <div class="task b-wait" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain"><div class="ttl">Согласовать бюджет мероприятия с финдиром</div>
+            <div class="sub"><span>жду <b>финдира</b> · напомнить <b>пн</b></span><span class="state wait">🟡 жду ответа</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches"><div class="touch wait"><span class="tb"></span><div class="tc">
+          <div class="tt">Финдир — утвердить смету 340 000</div>
+          <div class="meta"><span>мяч у него</span><span>следующее касание: <b>пн, 20 июля</b></span></div>
+          <div class="prov byagent"><span class="lab">Фест:</span> <span>смета отправлена, финдир «вернусь после выходных». <span class="src">чат с финдиром ↗</span></span></div>
+        </div></div></div>
+      </div>
+
+      <div class="task b-wait" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain"><div class="ttl">Фото зала от площадки</div>
+            <div class="sub"><span>жду <b>площадку</b> · напомнить <b>ср</b></span><span class="state wait">🟡 жду ответа</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches"><div class="touch wait"><span class="tb"></span><div class="tc"><div class="tt">Площадка — прислать фото для раскладки</div><div class="meta"><span>мяч у них</span><span>напомнить <b>ср, 22 июля</b></span></div></div></div></div>
+      </div>
+
+      <div class="task b-wait" onclick="tog(this,event)">
+        <div class="thead"><span class="tball"></span>
+          <div class="tmain"><div class="ttl">Кейтеринг — подтвердить меню</div>
+            <div class="sub"><span>жду <b>кейтеринг</b> · напомнить <b>чт</b></span><span class="state wait">🟡 жду ответа</span></div>
+          </div><span class="chev">›</span>
+        </div>
+        <div class="touches"><div class="touch wait"><span class="tb"></span><div class="tc"><div class="tt">Кейтеринг — финальное меню на 80 человек</div><div class="meta"><span>мяч у них</span><span>напомнить <b>чт, 23 июля</b></span></div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= VIEW: FEST ================= -->
+  <div class="view" id="v-fest">
+    <div class="festintro">
+      <div class="lbl">Фест как оператор задач</div>
+      <h3>Я веду список, вы принимаете решения</h3>
+      <p>Я читаю чаты и встречи, которые привязаны к задаче, и сам двигаю мяч: пришёл ответ — перевожу «жду» в «ваш ход» с сутью; появилось поручение на встрече — завожу касание; прошёл срок — готовлю напоминание. Спорное или наружу — не делаю молча, спрашиваю. Ниже — что я сделал за сегодня.</p>
+    </div>
+
+    <div class="flog">
+      <div class="fev"><div class="time">Сегодня, 14:20</div>
+        <div class="fev-t"><b>Обновить лицензию</b> · <span class="did">закрыл касание сам</span> — увидел в чате бухгалтерии подтверждение оплаты пошлины.</div></div>
+
+      <div class="fev"><div class="time">Сегодня, 12:03</div>
+        <div class="fev-t"><b>Партнёрский договор</b> · <span class="did">завёл касание из чата</span> — партнёр прислал 2 правки. Мяч у вас.</div></div>
+
+      <div class="fev ask"><div class="time">Сегодня, 09:05</div>
+        <div class="fev-t"><b>Лицензия → юрист</b> · просрочка 1 день. Подготовил напоминание — отправить?</div>
+        <div class="card decide">
+          <div class="q">Напомнить юристу про перечень документов на продление?</div>
+          <div class="drafted">«Добрый день! Возвращаюсь к вопросу продления лицензии — подскажите, пожалуйста, какой перечень документов нужен с нашей стороны? Спасибо!»</div>
+          <div class="row">
+            <button class="go" onclick="toast('Отправлено. Касание → «жду ответа», напомню через 2 дня')">Отправить</button>
+            <button onclick="toast('Открыл черновик на правку')">Поправить</button>
+            <button onclick="toast('Ок, пока не трогаю')">Не сейчас</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fev"><div class="time">Вчера, 18:30</div>
+        <div class="fev-t"><b>Бюджет мероприятия</b> · <span class="did">перевёл в «жду»</span> — финдир написал «вернусь после выходных». Поставил касание на пн.</div></div>
+
+      <div class="fev ask"><div class="time">Вчера, 16:12</div>
+        <div class="fev-t"><b>Новая тема в чате площадки</b> · не уверен — это новая задача или часть доставки тортов?</div>
+        <div class="card decide">
+          <div class="q">«Пришлите список гостей до пятницы» — куда отнести?</div>
+          <div class="row">
+            <button class="go" onclick="toast('Заведу отдельной задачей, мяч у вас, срок пт')">Новая задача</button>
+            <button onclick="toast('Добавлю касанием в «Доставку тортов»')">Касание в тортах</button>
+            <button onclick="toast('Пропустил')">Не задача</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fev watch"><div class="time">Вчера, 12:00</div>
+        <div class="fev-t"><b>Типография</b> · слежу за чатом — обещали превью «за 2-3 дня». Пока молчу, напомню завтра, если тихо.</div></div>
+    </div>
+  </div>
+
+  <!-- ================= VIEW: HOW IT WORKS ================= -->
+  <div class="view" id="v-how">
+    <h2 class="sec">Откуда берутся задачи и как они закрываются</h2>
+    <div class="secsub">Главная идея: список — это не то, что вы ведёте руками. Это то, что <b>Фест поддерживает, наблюдая вашу работу</b> — чаты и встречи, которые платформа уже собирает. Руки остаются как запасной путь и как последнее слово.</div>
+
+    <div class="mech">
+      <div class="mcard">
+        <h4>Как список <span style="color:var(--zelen-d)">пополняется</span></h4>
+        <div class="cap">четыре источника — три автоматических, один ручной</div>
+        <div class="mrow live"><span class="ic">🎙️</span><div class="mt"><b>Из встречи.</b> <span class="how">После звонка Фест вытаскивает поручения из расшифровки и предлагает завести их задачами.</span></div><span class="flag live">уже работает</span></div>
+        <div class="mrow"><span class="ic">💬</span><div class="mt"><b>Из чата.</b> <span class="how">Замечает «просьбу сделать», «жду ответа», названный срок → предлагает задачу или касание, со ссылкой на сообщение.</span></div><span class="flag soon">эта фича</span></div>
+        <div class="mrow"><span class="ic">📄</span><div class="mt"><b>Из документа.</b> <span class="how">Отдали клиенту КП со сроками — обязательства становятся задачами со своими датами.</span></div><span class="flag soon">дальше</span></div>
+        <div class="mrow live"><span class="ic">✍️</span><div class="mt"><b>Вручную.</b> <span class="how">Заводите сами в кабинете или диктуете боту — всегда доступно.</span></div><span class="flag live">уже работает</span></div>
+      </div>
+
+      <div class="mcard">
+        <h4>Как задача <span style="color:var(--zelen-d)">закрывается</span></h4>
+        <div class="cap">мяч двигается сам, но последнее слово за вами</div>
+        <div class="mrow live"><span class="ic">✓</span><div class="mt"><b>Вы жмёте «Готово».</b> <span class="how">Ручное закрытие всегда под рукой — как в вашем Клоде.</span></div><span class="flag live">уже работает</span></div>
+        <div class="mrow"><span class="ic">↩️</span><div class="mt"><b>Пришёл ответ → мяч к вам.</b> <span class="how">Тот, кого ждали, написал — касание из «жду» становится «ваш ход», с сутью ответа.</span></div><span class="flag soon">эта фича</span></div>
+        <div class="mrow"><span class="ic">🤖</span><div class="mt"><b>Закрытие по факту.</b> <span class="how">Фест видит в чате «всё получили / оплачено / отправлено» → закрывает касание, показывая источник.</span></div><span class="flag soon">эта фича</span></div>
+        <div class="mrow"><span class="ic">🔴</span><div class="mt"><b>Просрочка поднимает, не закрывает.</b> <span class="how">Срок касания прошёл, ответа нет → красным + готовый черновик напоминания.</span></div><span class="flag soon">эта фича</span></div>
+      </div>
+    </div>
+
+    <div class="maria">
+      <h4>Ваш сценарий из Клода — один в один</h4>
+      <div class="mstep"><div class="was"><b>Создаёшь задачу</b></div><span class="arr">→</span><div class="now">так же — <b>плюс</b> она часто рождается сама из чата/встречи</div></div>
+      <div class="mstep"><div class="was">есть продвижение → жмёшь <b>«Написал»</b>, отмечаешь контакт («попросили 2 дня») и ставишь дату возврата → задача сдвигается</div><span class="arr">→</span><div class="now">кнопка <b>«Написал — жду ответ»</b>: касание уходит в «жду», дата следующего касания проставляется</div></div>
+      <div class="mstep"><div class="was">подсветка <b>«ждём ответ»</b> — не готова, но и мяч не у тебя; вернуться, только если не ответят</div><span class="arr">→</span><div class="now">жёлтый мяч — <b>и Фест сам следит</b>, поднимет, если тишина к сроку</div></div>
+      <div class="mstep"><div class="was">кнопка <b>«Готово»</b>, когда всё завершено</div><span class="arr">→</span><div class="now">так же — <b>плюс</b> Фест может закрыть касание сам по факту из чата</div></div>
+    </div>
+
+    <h2 class="sec">Что уже умеем, а что появится</h2>
+    <div class="secsub">Честно, без обещаний вперёд кода — чтобы не было как с напоминаниями.</div>
+    <div class="mcard">
+      <div class="mrow live"><span class="ic">🎙️</span><div class="mt"><b>Встреча → задачи.</b> <span class="how">Из расшифровки Read.ai поручения превращаются в задачи по подтверждению.</span></div><span class="flag live">сейчас</span></div>
+      <div class="mrow live"><span class="ic">🗂️</span><div class="mt"><b>Задачи по людям.</b> <span class="how">Задача привязывается к контакту, есть отметка «готово».</span></div><span class="flag live">сейчас</span></div>
+      <div class="mrow"><span class="ic">🧩</span><div class="mt"><b>Несколько касаний в одной задаче.</b> <span class="how">Ровно ваша боль — ожидания внутри без дробления.</span></div><span class="flag soon">эта фича</span></div>
+      <div class="mrow"><span class="ic">🟡</span><div class="mt"><b>«Жду ответа» + дата возврата + красная просрочка в списке.</b></div><span class="flag soon">эта фича</span></div>
+      <div class="mrow"><span class="ic">📋</span><div class="mt"><b>Отдельный экран «Задачи» в кабинете.</b> <span class="how">Сейчас его в меню нет — появится с этой фичей.</span></div><span class="flag soon">эта фича</span></div>
+      <div class="mrow"><span class="ic">🤖</span><div class="mt"><b>Фест сам двигает мяч из чатов и закрывает по факту.</b></div><span class="flag soon">эта фича</span></div>
+    </div>
+
+    <div class="honest">
+      <div class="h4">Отдельно — про напоминания</div>
+      То, что вы не нашли в кабинете, — это <b>напоминания</b> (мы заводили их Антону): сейчас они живут в боте, а экрана для них нет. Это отдельный пункт, уже взяли в работу. Задачи и напоминания сведём в одном месте, чтобы не искать «где что».
+    </div>
+
+    <div class="autonomy">
+      <h4>Насколько Фест решает сам — двигаем по мере доверия</h4>
+      <div class="rung now"><span class="n">1</span><div class="rt"><b>Предлагает.</b> Всё, что двигает мяч или уходит наружу, — показывает на согласование. С этого начинаем.</div><span class="tag">старт</span></div>
+      <div class="rung"><span class="n">2</span><div class="rt"><b>Авто на безопасном.</b> Перевести «пришёл ответ → ваш ход», закрыть касание по явному факту — сам, вы видите в логе.</div><span class="tag later">дальше</span></div>
+      <div class="rung"><span class="n">3</span><div class="rt"><b>Сам дожимает.</b> Рутинные напоминания шлёт по расписанию без спроса, эскалирует только застрявшее.</div><span class="tag later">когда доверитесь</span></div>
+    </div>
+  </div>
+
+  <footer>
+    Прототип до кода. Кликабельный. Данные — иллюстрация на ваших примерах, не живой кабинет. Зелёное — Фест, терракота — вы. Уклад · Слаживание.
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+  function showTab(el,id){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+    el.classList.add('on');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+    document.getElementById('v-'+id).classList.add('on');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function tog(el,e){ if(e.target.closest('button')) return; el.classList.toggle('open'); }
+  function markDone(btn){
+    const t=btn.closest('.touch'); t.className='touch done';
+    t.querySelector('.meta').innerHTML='<span>закрыто только что</span>';
+    const a=t.querySelector('.tacts'); if(a) a.remove();
+    toast('Касание закрыто ✓');
+  }
+  function markWaiting(btn){
+    const t=btn.closest('.touch'); t.className='touch wait';
+    t.querySelector('.meta').innerHTML='<span>мяч у другого</span><span>следующее касание: <b>через 2 дня</b></span>';
+    const a=t.querySelector('.tacts'); if(a) a.remove();
+    toast('Отметил «жду ответа». Дата возврата — через 2 дня, Фест напомнит');
+  }
+  function snooze(btn){
+    const t=btn.closest('.touch'); t.className='touch wait';
+    const m=t.querySelector('.meta'); if(m) m.innerHTML='<span>мяч у другого</span><span>следующее касание: <b>+2 дня</b></span>';
+    toast('Ожидание продлено на 2 дня');
+  }
+  let tm;
+  function toast(msg){
+    const t=document.getElementById('toast');
+    t.innerHTML=msg; t.classList.add('on');
+    clearTimeout(tm); tm=setTimeout(()=>t.classList.remove('on'),2800);
+  }
+</script>
+</body>
+</html>
