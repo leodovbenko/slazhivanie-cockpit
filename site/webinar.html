@@ -49,6 +49,16 @@
     .takeaways li{position:relative;padding-left:30px;font-size:16px;color:var(--dark);line-height:1.5}
     .takeaways li::before{content:"";position:absolute;left:2px;top:6px;width:14px;height:14px;background:var(--green);border-radius:50%}
     @media(max-width:760px){.why,.takeaways{grid-template-columns:1fr}}
+    /* Блок регистрации через Telegram (bot-first) */
+    .tgreg{background:var(--white);border:1px solid var(--line-light);border-radius:18px;padding:30px 28px}
+    .tgreg-steps{list-style:none;counter-reset:s;padding:0;margin:0 0 24px}
+    .tgreg-steps li{position:relative;counter-increment:s;padding:0 0 14px 42px;font-size:15.5px;color:var(--t2d);line-height:1.5}
+    .tgreg-steps li:last-child{padding-bottom:0}
+    .tgreg-steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--green);color:#fff;border-radius:50%;font-weight:700;font-size:14px}
+    .tgreg-steps li b{color:var(--dark)}
+    .tgreg-note{text-align:center;font-size:14px;color:var(--t3);margin:16px 0 0;line-height:1.5}
+    .tgreg-fallback{text-align:center;font-size:14px;color:var(--t3);margin:10px 0 0}
+    .tgreg-fallback a{color:var(--green-d);font-weight:600}
     /* На телефоне чуть уже контент — больше боковых полей (страничный оверрайд .wrap) */
     @media(max-width:560px){.wrap{padding:0 30px}}
   </style>
@@ -93,11 +103,10 @@
       <span class="pill">Открытый вебинар</span>
       <h1>Как снизить ФОТ на 30% и делать в 20 раз больше работы — на связке <span class="green">человек + ИИ-агенты</span>.</h1>
       <p class="sub">Мы построили среду и прогнали через неё собственный бизнес — наём, продажи, контент, документы, встречи. Работающая система, а не дек про ИИ-трансформацию. На вебинаре покажем вживую, как это работает.</p>
-      <!-- TODO: подставить дату/время/площадку -->
       <div class="whenbar">
-        <span class="wb"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18" stroke-linecap="round"/></svg> <b>— дату назначим —</b></span>
-        <span class="wb"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>— время —</b></span>
-        <span class="wb"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3" stroke-linecap="round"/></svg> Онлайн · запись участникам</span>
+        <span class="wb"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18" stroke-linecap="round"/></svg> <b>30 июля, четверг</b></span>
+        <span class="wb"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>17:00 МСК</b></span>
+        <span class="wb"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3" stroke-linecap="round"/></svg> Онлайн в Zoom · запись участникам</span>
       </div>
       <div class="hero-btns">
         <a href="#reg" class="btn btn-green">Зарегистрироваться</a>
@@ -222,36 +231,19 @@
           <h2 class="h-sec">Занять место на вебинаре</h2>
         </div>
       </div>
-      <p class="lead" style="text-align:center;margin-bottom:28px;color:var(--t2)">Пришлём ссылку на трансляцию, а после — запись. Место бесплатно.</p>
-      <div class="form-wrap">
-        <form id="regform">
-          <div class="form-row">
-            <div class="field">
-              <label for="f-name">Как к вам обращаться</label>
-              <input id="f-name" name="name" type="text" required placeholder="Имя">
-            </div>
-            <div class="field">
-              <label for="f-company">Компания и сфера</label>
-              <input id="f-company" name="company" type="text" placeholder="Компания, отрасль">
-            </div>
-          </div>
-          <div class="field">
-            <label for="f-contact">Куда прислать ссылку</label>
-            <input id="f-contact" name="contact" type="text" required placeholder="Почта или телефон">
-          </div>
-          <div class="field">
-            <label for="f-task">Что хотите разобрать на вебинаре (необязательно)</label>
-            <textarea id="f-task" name="task" placeholder="Какой процесс хотите автоматизировать"></textarea>
-          </div>
-          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-          <button type="submit" class="btn btn-green" style="width:100%">Зарегистрироваться</button>
-          <p class="form-consent">Регистрируясь, вы соглашаетесь на обработку контактных данных, чтобы прислать ссылку и запись.</p>
-        </form>
-        <div class="form-ok" id="formok">
-          <div class="ic-ok"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0FA06C" stroke-width="2.4"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <h3>Вы записаны — спасибо</h3>
-          <p>Пришлём ссылку на трансляцию ближе к дате. Если срочно — напишите: <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
-        </div>
+      <p class="lead" style="text-align:center;margin-bottom:28px;color:var(--t2)">Регистрация проходит в Telegram — так мы пришлём ссылку на Zoom и напомним за полчаса до старта. Место бесплатно, запись участникам.</p>
+      <div class="tgreg">
+        <ol class="tgreg-steps">
+          <li><b>Жмёте кнопку</b> — открывается наш бот в Telegram.</li>
+          <li><b>Агент спросит</b>, как к вам обращаться и чем занимаетесь, — и подтвердит место.</li>
+          <li><b>За 30 минут до старта</b> пришлём ссылку на Zoom, а после — запись и материалы.</li>
+        </ol>
+        <a href="https://t.me/Webinar_uklad_bot" id="tgreg-btn" class="btn btn-green" style="width:100%;font-size:17px;padding:16px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-4px;margin-right:8px"><path d="M21.9 4.3l-3.3 15.6c-.25 1.1-.9 1.37-1.83.85l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1 .5l.36-5.1L18 5.6c.4-.36-.09-.56-.62-.2L6.4 12.3l-4.9-1.53c-1.07-.34-1.09-1.07.22-1.58l19.2-7.4c.9-.33 1.68.2 1.38 1.5z"/></svg>
+          Зарегистрироваться в Telegram
+        </a>
+        <p class="tgreg-note">Регистрацию ведёт наш ИИ-агент — вебинар про связку человек + агенты, и запись на него тоже идёт через неё.</p>
+        <p class="tgreg-fallback">Нет Telegram? Напишите <a href="mailto:leo@dovbenko.me">leo@dovbenko.me</a> — запишем вручную и пришлём ссылку на почту.</p>
       </div>
       <p style="text-align:center;margin-top:24px;font-size:15px;color:var(--t3)">127006, Москва, ул. Долгоруковская, 27с1 · <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
     </div>
@@ -278,27 +270,17 @@
     b.addEventListener('click',function(){m.classList.toggle('open')});
     m.addEventListener('click',function(e){if(e.target.tagName==='A')m.classList.remove('open')});
 
-    // Регистрация на вебинар → тот же серверный путь (uklad.ai/lead), помечаем source=webinar,
-    // маркер [ВЕБИНАР] в задаче — чтобы отличить регистрации от обычных лидов без правки сервера.
-    // Если сервер недоступен (сеть/РФ) — запасной путь через почту.
-    var rf=document.getElementById('regform');
-    if(rf){rf.addEventListener('submit',function(e){
-      e.preventDefault();
-      var d=new FormData(rf);
-      var task=(d.get('task')||'').trim();
-      var payload={name:d.get('name')||'',company:d.get('company')||'',contact:d.get('contact')||'',task:'[ВЕБИНАР] '+task,website:d.get('website')||'',lang:'ru',source:'slazhivanie.ru/webinar'};
-      var btn=rf.querySelector('button[type=submit]'); if(btn){btn.disabled=true;btn.textContent='Записываем…';}
-      function done(){rf.style.display='none';document.getElementById('formok').classList.add('show');}
-      function fallbackMail(){
-        var body='Имя: '+payload.name+'\nКомпания и сфера: '+payload.company+'\nКонтакт: '+payload.contact+'\nЧто хочет разобрать: '+task;
-        window.location.href='mailto:leo@dovbenko.me?subject='+encodeURIComponent('Регистрация на вебинар — Слаживание')+'&body='+encodeURIComponent(body);
-        done();
-      }
-      fetch('https://uklad.ai/lead',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)})
-        .then(function(r){return r.ok?r.json():Promise.reject();})
-        .then(function(){done();})
-        .catch(fallbackMail);
-    });}
+    // Метку промоутера (utm_source из адреса страницы) прокидываем в start-параметр бота,
+    // чтобы регистрация в Telegram знала, кто привёл человека (leo / kaloy / …).
+    // Telegram допускает в start только [A-Za-z0-9_-], до 64 символов — санитайзим.
+    (function(){
+      var btn=document.getElementById('tgreg-btn'); if(!btn) return;
+      var p=new URLSearchParams(location.search);
+      var src=(p.get('utm_source')||p.get('ref')||'site').replace(/[^A-Za-z0-9_-]/g,'').slice(0,64) || 'site';
+      btn.href='https://t.me/Webinar_uklad_bot?start='+src;
+      // Метрика: цель «клик по регистрации» с меткой источника.
+      btn.addEventListener('click',function(){ try{ ym(110175627,'reachGoal','webinar_reg_click',{source:src}); }catch(e){} });
+    })();
   </script>
 </body>
 </html>
