@@ -178,6 +178,24 @@
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--chernila);color:#fff;font-size:13px;padding:12px 18px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.3s;z-index:50;max-width:90vw;}
   .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast b{color:var(--zelen-l);}
+
+  /* «Отметить контакт» — модалка ровно как у Маши */
+  .modal-bg{position:fixed;inset:0;background:rgba(32,28,23,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;}
+  .modal-bg.on{display:flex;}
+  .modal{background:#fff;border-radius:16px;padding:20px 22px;max-width:430px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .modal h4{font-size:16px;margin-bottom:14px;}
+  .modal label{font-size:12px;font-weight:600;color:var(--mute);display:block;margin-bottom:6px;}
+  .modal textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13px;resize:vertical;min-height:54px;margin-bottom:15px;background:var(--bumaga);color:var(--chernila);}
+  .modal input[type=date]{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13px;margin-bottom:9px;background:#fff;color:var(--chernila);}
+  .modal .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:17px;}
+  .modal .chips button{font-size:12px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;cursor:pointer;color:var(--chernila);}
+  .modal .chips button:hover,.modal .chips button.sel{background:var(--zelen-soft);border-color:var(--zelen-l);font-weight:600;}
+  .modal .mrow2{display:flex;gap:8px;justify-content:flex-end;}
+  .modal .mrow2 button{font-size:13px;font-weight:600;border-radius:10px;padding:9px 16px;cursor:pointer;}
+  .modal .cancel{background:#fff;border:1px solid var(--line);color:var(--mute);}
+  .modal .save{background:var(--zelen);color:#fff;border:none;}
+  .modal .save:hover{background:var(--zelen-d);}
+
   footer{margin-top:40px;font-size:12px;color:var(--mute);border-top:1px solid var(--line);padding-top:16px;}
   @media(max-width:820px){.mech{grid-template-columns:1fr;}}
 </style>
@@ -269,7 +287,7 @@
               <div class="meta"><span><b>мяч у вас</b></span><span>сегодня</span></div>
               <div class="tacts">
                 <button class="go" onclick="event.stopPropagation();toast('Открыл черновик письма с приложенным договором')">Отправить</button>
-                <button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button>
+                <button class="wa" onclick="event.stopPropagation();openContact(this)">✍️ Написал — жду ответ</button>
                 <button onclick="event.stopPropagation();markDone(this)">Готово</button>
               </div>
             </div>
@@ -321,7 +339,7 @@
           <div class="tt">Ответить на 2 правки по тексту договора</div>
           <div class="meta"><span><b>мяч у вас</b></span><span>появилось из чата, сегодня 12:03</span></div>
           <div class="prov byagent"><span class="lab">Фест:</span> <span>в рабочем чате партнёр прислал 2 пункта по договору — вынес в касание. <span class="src">чат ↗</span></span></div>
-          <div class="tacts"><button class="go" onclick="event.stopPropagation();toast('Черновик ответа готов')">Ответить (черновик)</button><button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
+          <div class="tacts"><button class="go" onclick="event.stopPropagation();toast('Черновик ответа готов')">Ответить (черновик)</button><button class="wa" onclick="event.stopPropagation();openContact(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
         </div></div></div>
       </div>
 
@@ -333,7 +351,7 @@
         </div>
         <div class="touches">
           <div class="touch mine"><span class="tb"></span><div class="tc"><div class="tt">Запросить 3 сметы</div><div class="meta"><span><b>мяч у вас</b></span><span>сегодня</span></div>
-            <div class="tacts"><button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
+            <div class="tacts"><button class="wa" onclick="event.stopPropagation();openContact(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
           </div></div>
           <div class="touch done"><span class="tb"></span><div class="tc"><div class="tt">Составить ТЗ на стенд</div><div class="meta"><span>закрыто</span></div>
             <div class="prov byagent"><span class="lab">Фест:</span> <span>увидел, что ТЗ отправлено в чат — закрыл касание сам. <span class="src">чат «Стенд» ↗</span></span></div>
@@ -348,7 +366,7 @@
           </div><span class="chev">›</span>
         </div>
         <div class="touches"><div class="touch mine"><span class="tb"></span><div class="tc"><div class="tt">Выбрать дату и разослать команде</div><div class="meta"><span><b>мяч у вас</b></span></div>
-          <div class="tacts"><button class="wa" onclick="event.stopPropagation();markWaiting(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
+          <div class="tacts"><button class="wa" onclick="event.stopPropagation();openContact(this)">✍️ Написал — жду ответ</button><button onclick="event.stopPropagation();markDone(this)">Готово</button></div>
         </div></div></div>
       </div>
     </div>
@@ -513,6 +531,28 @@
   </footer>
 </div>
 
+<!-- «Отметить контакт» — модалка как в инструменте Маши -->
+<div class="modal-bg" id="contactModal">
+  <div class="modal">
+    <h4>Отметить контакт</h4>
+    <label>Что обсудили (необязательно)</label>
+    <textarea id="cmNote" placeholder="Коротко: о чём договорились"></textarea>
+    <label>Следующий контакт</label>
+    <input type="date" id="cmDate">
+    <div class="chips">
+      <button onclick="setNext(this,3)">+3 дня</button>
+      <button onclick="setNext(this,7)">+7 дней</button>
+      <button onclick="setNext(this,14)">+14 дней</button>
+      <button onclick="setNext(this,30)">+30 дней</button>
+      <button onclick="setNext(this,90)">+3 мес</button>
+    </div>
+    <div class="mrow2">
+      <button class="cancel" onclick="closeContact()">Отмена</button>
+      <button class="save" onclick="saveContact()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <script>
   function showTab(el,id){
@@ -551,11 +591,38 @@
     const a=t.querySelector('.tacts'); if(a) a.remove();
     toast('Касание закрыто ✓');
   }
-  function markWaiting(btn){
-    const t=btn.closest('.touch'); t.className='touch wait';
-    t.querySelector('.meta').innerHTML='<span>мяч у другого</span><span>следующее касание: <b>через 2 дня</b></span>';
-    const a=t.querySelector('.tacts'); if(a) a.remove();
-    toast('Отметил «жду ответа». Дата возврата — через 2 дня, Фест напомнит');
+  // «Отметить контакт» — модалка как в инструменте Маши
+  let cmTarget=null;
+  function openContact(btn){
+    cmTarget=btn.closest('.touch');
+    document.getElementById('cmNote').value='';
+    setNext(document.querySelectorAll('#contactModal .chips button')[1],7); // дефолт +7 дней
+    document.getElementById('contactModal').classList.add('on');
+  }
+  function closeContact(){ document.getElementById('contactModal').classList.remove('on'); cmTarget=null; }
+  function setNext(el,days){
+    const d=new Date(2026,6,16); d.setDate(d.getDate()+days); // якорь прототипа — 16.07.2026
+    const iso=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    document.getElementById('cmDate').value=iso;
+    document.querySelectorAll('#contactModal .chips button').forEach(b=>b.classList.remove('sel'));
+    if(el&&el.classList) el.classList.add('sel');
+  }
+  function saveContact(){
+    if(!cmTarget){ closeContact(); return; }
+    const iso=document.getElementById('cmDate').value;
+    const note=document.getElementById('cmNote').value.trim();
+    const human=iso ? new Date(iso+'T00:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long'}) : 'через пару дней';
+    cmTarget.className='touch wait';
+    cmTarget.querySelector('.meta').innerHTML='<span>мяч у другого</span><span>следующий контакт: <b>'+human+'</b></span>';
+    const tc=cmTarget.querySelector('.tc'), acts=cmTarget.querySelector('.tacts');
+    if(note){
+      const p=document.createElement('div'); p.className='prov'; p.style.marginTop='6px';
+      p.innerHTML='<span><b>Вы отметили:</b> '+note.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))+'</span>';
+      if(acts) tc.insertBefore(p,acts); else tc.appendChild(p);
+    }
+    if(acts) acts.remove();
+    closeContact();
+    toast('Отмечено. Мяч у другого, вернётесь <b>'+human+'</b> — Фест напомнит, если тишина');
   }
   function snooze(btn){
     const t=btn.closest('.touch'); t.className='touch wait';
