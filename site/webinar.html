@@ -49,6 +49,8 @@
     .takeaways li{position:relative;padding-left:30px;font-size:16px;color:var(--dark);line-height:1.5}
     .takeaways li::before{content:"";position:absolute;left:2px;top:6px;width:14px;height:14px;background:var(--green);border-radius:50%}
     @media(max-width:760px){.why,.takeaways{grid-template-columns:1fr}}
+    /* На телефоне чуть уже контент — больше боковых полей (страничный оверрайд .wrap) */
+    @media(max-width:560px){.wrap{padding:0 30px}}
   </style>
 </head>
 <body>
@@ -148,7 +150,7 @@
         </div>
       </div>
       <div class="steps">
-        <div class="step"><div class="n">01</div><h3>Начали внедрять ИИ</h3><p>В свои же процессы — как операторы, а не теоретики. На реальных задачах, а не на слайдах.</p></div>
+        <div class="step"><div class="n">01</div><h3>Начали внедрять ИИ</h3><p>В свои же процессы, на реальных задачах — руками операторов. Сначала на себе, потом клиентам.</p></div>
         <div class="step"><div class="n">02</div><h3>Увидели 5 уровней</h3><p>Аудит → дашборд/советник → ассистент → агент → автономный агент. Зрелость внедрения растёт по ступеням.</p></div>
         <div class="step"><div class="n">03</div><h3>Споткнулись на 4-м</h3><p>Агент, который ведёт участок сам, — это страх увольнений и одиночная сборка под каждого клиента с нуля.</p></div>
         <div class="step"><div class="n">04</div><h3>Поняли: нужен Уклад</h3><p>На третьем агенте стало ясно: строить их по одному не масштабируется. Нужен слой под ними, где память, коннекторы и способности копятся.</p></div>
