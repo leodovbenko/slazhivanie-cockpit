@@ -220,14 +220,16 @@
   <div class="view on" id="v-mylist">
     <div class="listtop">
       <div class="seg">
-        <span class="s active">Всё <b>(9)</b></span>
-        <span class="s" style="color:var(--alarm-d)">🔴 Просрочено <b>(2)</b></span>
-        <span class="s">🟢 Мой ход <b>(3)</b></span>
-        <span class="s">🟡 Жду <b>(4)</b></span>
-        <span class="s">✅ Закрытые</span>
+        <span class="s active" onclick="filt(this,'all')">Всё <b>(9)</b></span>
+        <span class="s" style="color:var(--alarm-d)" onclick="filt(this,'alarm')">🔴 Просрочено <b>(2)</b></span>
+        <span class="s" onclick="filt(this,'mine')">🟢 Мой ход <b>(3)</b></span>
+        <span class="s" onclick="filt(this,'wait')">🟡 Жду <b>(4)</b></span>
+        <span class="s" onclick="filt(this,'done')">✅ Закрытые</span>
       </div>
       <button class="btn ghost" onclick="toast('Задачу можно завести руками — но чаще она рождается сама из чата или встречи')">+ Задача вручную</button>
     </div>
+
+    <div id="emptyfilt" style="display:none;background:#fff;border:1px dashed var(--line);border-radius:14px;padding:26px;text-align:center;color:var(--mute);font-size:13.5px;">Закрытые задачи в этом примере лежат внутри задач (касания «закрыто»). Разверните любую задачу — увидите закрытые касания с пометкой, что Фест закрыл их сам.</div>
 
     <!-- OVERDUE -->
     <div class="group alarm">
@@ -520,7 +522,29 @@
     document.getElementById('v-'+id).classList.add('on');
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  function tog(el,e){ if(e.target.closest('button')) return; el.classList.toggle('open'); }
+  function tog(el,e){ if(e.target.closest('button')||e.target.closest('.src')) return; el.classList.toggle('open'); }
+  function filt(el,state){
+    document.querySelectorAll('#v-mylist .seg .s').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+    const empty=document.getElementById('emptyfilt');
+    const groups=document.querySelectorAll('#v-mylist .group');
+    if(state==='done'){ groups.forEach(g=>g.style.display='none'); empty.style.display='block'; return; }
+    empty.style.display='none';
+    groups.forEach(g=>{
+      let vis=0;
+      g.querySelectorAll('.task').forEach(t=>{
+        const show = state==='all' || t.classList.contains('b-'+state);
+        t.style.display = show ? '' : 'none';
+        if(show) vis++;
+      });
+      g.style.display = vis ? '' : 'none';
+    });
+  }
+  // клики по ссылкам-источникам (это прототип — реального чата нет)
+  document.addEventListener('click',function(e){
+    const s=e.target.closest('.src');
+    if(s){ e.stopPropagation(); toast('В рабочем кабинете здесь открылся бы чат-источник — сообщение, из которого Фест это вывел'); }
+  });
   function markDone(btn){
     const t=btn.closest('.touch'); t.className='touch done';
     t.querySelector('.meta').innerHTML='<span>закрыто только что</span>';
