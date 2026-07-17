@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Встреча по ссылке — календарь наоборот</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #F4EFE6;
+    color: #201C17;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 34px 24px 56px; }
+  header { margin-bottom: 26px; }
+  h1 { font-size: 25px; line-height: 1.25; letter-spacing: -0.3px; max-width: 880px; }
+  h1 em { font-style: normal; color: #9A6250; }
+  .sub { margin-top: 11px; font-size: 14px; color: #7A7264; max-width: 820px; }
+  .badge { font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 11px; letter-spacing: 0.4px; color: #fff; background: #9A6250; display: inline-block; margin-bottom: 12px; }
+
+  .stage { display: grid; grid-template-columns: 360px 1fr; gap: 34px; align-items: start; margin-top: 10px; }
+
+  /* ── ТЕЛЕФОН ── */
+  .phone { background: #0f1613; border-radius: 38px; padding: 12px; box-shadow: 0 20px 46px rgba(30,20,10,0.2); position: sticky; top: 24px; }
+  .screen { background: #F7F3EC; border-radius: 28px; overflow: hidden; min-height: 720px; display: flex; flex-direction: column; }
+
+  /* браузерная строка */
+  .urlbar { background: #ECE6DA; padding: 9px 14px; display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #7A7264; }
+  .urlbar .lock { font-size: 10px; }
+  .urlbar .u { font-family: ui-monospace, Menlo, monospace; letter-spacing: -0.2px; }
+
+  .page { padding: 24px 22px 26px; flex: 1; display: flex; flex-direction: column; }
+
+  /* шапка приглашения */
+  .brand { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #A79D8B; text-transform: uppercase; }
+  .host { margin-top: 18px; display: flex; align-items: center; gap: 13px; }
+  .host .av { width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg,#B07A5F,#9A6250); color: #fff; display: grid; place-items: center; font-size: 20px; font-weight: 700; flex: none; }
+  .host .who { font-size: 18px; font-weight: 700; }
+  .host .what { font-size: 13px; color: #7A7264; margin-top: 1px; }
+  .lead { margin-top: 16px; font-size: 14px; color: #45403a; }
+  .lead b { color: #201C17; }
+
+  .step-lbl { margin-top: 22px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #A79D8B; }
+
+  /* слоты */
+  .slots { margin-top: 10px; display: flex; flex-direction: column; gap: 9px; }
+  .slot { border: 1.5px solid #E4DBCB; background: #FFFDF8; border-radius: 13px; padding: 13px 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all .15s; }
+  .slot:hover { border-color: #DDBBAD; }
+  .slot .rad { width: 19px; height: 19px; border-radius: 50%; border: 2px solid #C9BCA4; flex: none; position: relative; transition: all .15s; }
+  .slot .st { }
+  .slot .d { font-size: 14.5px; font-weight: 700; color: #201C17; }
+  .slot .t { font-size: 12.5px; color: #7A7264; margin-top: 1px; }
+  .slot.on { border-color: #6E9464; background: #F1F6EC; }
+  .slot.on .rad { border-color: #6E9464; background: #6E9464; }
+  .slot.on .rad::after { content: "✓"; color: #fff; font-size: 12px; position: absolute; top: -2px; left: 2px; }
+
+  /* рельс напоминания */
+  .rail { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .chan { border: 1.5px solid #E4DBCB; background: #FFFDF8; border-radius: 11px; padding: 9px 12px; font-size: 12.5px; color: #55503F; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .15s; }
+  .chan.on { border-color: #9A6250; background: #F9EEE9; color: #7A4E3E; font-weight: 600; }
+  .railnote { margin-top: 9px; font-size: 11.5px; color: #9a9384; }
+
+  .cta { margin-top: auto; padding-top: 20px; }
+  .confirm { width: 100%; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 700; color: #fff; background: #6E9464; cursor: pointer; transition: all .15s; font-family: inherit; }
+  .confirm:disabled { background: #C9BCA4; cursor: default; }
+  .noacc { margin-top: 11px; text-align: center; font-size: 11.5px; color: #9a9384; }
+
+  /* ── ЭКРАН «ГОТОВО» ── */
+  .done { display: none; padding: 30px 22px; flex: 1; flex-direction: column; }
+  .done.show { display: flex; }
+  .page.hide { display: none; }
+  .check { width: 58px; height: 58px; border-radius: 50%; background: #6E9464; color: #fff; display: grid; place-items: center; font-size: 28px; margin: 6px auto 0; }
+  .done h2 { text-align: center; font-size: 20px; margin-top: 16px; }
+  .done .dsub { text-align: center; font-size: 13px; color: #7A7264; margin-top: 5px; }
+  .mcard { margin-top: 22px; background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 15px; padding: 16px 17px; }
+  .mrow { display: flex; gap: 11px; padding: 8px 0; font-size: 13.5px; color: #45403a; align-items: center; }
+  .mrow:not(:last-child) { border-bottom: 1px solid #EFE7D8; }
+  .mrow .ic { font-size: 15px; width: 20px; text-align: center; }
+  .mrow b { color: #201C17; }
+  .addcal { margin-top: 16px; display: flex; gap: 8px; }
+  .addcal a { flex: 1; text-align: center; font-size: 12.5px; font-weight: 600; color: #55503F; background: #F1EADD; border-radius: 11px; padding: 11px; text-decoration: none; }
+  .promise { margin-top: 20px; background: #F1F6EC; border: 1px solid #C9D8BC; border-radius: 13px; padding: 14px 15px; font-size: 13px; color: #35502F; }
+  .promise b { color: #26331e; }
+
+  /* ── РАЗБОР СПРАВА ── */
+  .notes h2 { font-size: 19px; letter-spacing: -0.2px; margin-bottom: 4px; }
+  .notes .nsub { font-size: 13.5px; color: #7A7264; margin-bottom: 20px; max-width: 600px; }
+  .principle { display: flex; gap: 13px; padding: 15px 0; }
+  .principle:not(:last-child) { border-bottom: 1px solid #E4DBCB; }
+  .principle .mk { flex: none; width: 27px; height: 27px; border-radius: 50%; background: #9A6250; color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; }
+  .principle h4 { font-size: 14.5px; }
+  .principle p { font-size: 13px; color: #55503F; margin-top: 3px; max-width: 560px; }
+  .principle p b { color: #201C17; }
+
+  .vs { margin-top: 26px; background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 14px; overflow: hidden; }
+  .vs .vh { display: grid; grid-template-columns: 1fr 1fr; }
+  .vs .vh div { padding: 11px 16px; font-size: 12px; font-weight: 700; letter-spacing: 0.3px; }
+  .vs .vh .a { color: #A79D8B; background: #FBF5EC; }
+  .vs .vh .b { color: #7A4E3E; background: #F9EEE9; }
+  .vs .vr { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #EFE7D8; }
+  .vs .vr div { padding: 11px 16px; font-size: 12.5px; color: #55503F; }
+  .vs .vr .a { border-right: 1px solid #EFE7D8; color: #8a8170; }
+  .vs .vr .b { color: #45403a; }
+  .vs .vr .b b { color: #201C17; }
+
+  footer { margin-top: 34px; font-size: 12px; color: #A79D8B; }
+  @media (max-width: 840px) { .stage { grid-template-columns: 1fr; } .phone { position: static; max-width: 380px; margin: 0 auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="badge">ПРОТОТИП · ДО КОДА · КЛИКАБЕЛЬНО</span>
+  <h1>Встреча <em>по ссылке</em>: что видит человек не из Уклада, тапнув линк из лички.</h1>
+  <div class="sub">Не «приди в мою сетку и разбирайся» (Calendly), а «Leo уже выбрал за тебя — подтверди в один тап». Без логина, без аккаунта. Тапай слот и «Подтвердить» — прото живой.</div>
+</header>
+
+<div class="stage">
+  <!-- ТЕЛЕФОН -->
+  <div class="phone">
+    <div class="screen">
+      <div class="urlbar"><span class="lock">🔒</span><span class="u">uklad.ai/m/leo-a3k</span></div>
+
+      <!-- ЭКРАН 1: ВЫБОР -->
+      <div class="page" id="pick">
+        <div class="brand">▲ uklad</div>
+
+        <div class="host">
+          <div class="av">L</div>
+          <div>
+            <div class="who">Leo зовёт на Zoom</div>
+            <div class="what">Обсудить пилот · 30 минут</div>
+          </div>
+        </div>
+        <div class="lead">Leo предложил <b>два удобных ему окна</b>. Выбери, что подходит — остальное соберётся само.</div>
+
+        <div class="step-lbl">1 · Когда удобно</div>
+        <div class="slots" id="slots">
+          <div class="slot" data-slot="Чт 24 июля · 11:00–11:30">
+            <div class="rad"></div>
+            <div class="st"><div class="d">Чт, 24 июля</div><div class="t">11:00 – 11:30 · МСК</div></div>
+          </div>
+          <div class="slot" data-slot="Пт 25 июля · 16:00–16:30">
+            <div class="rad"></div>
+            <div class="st"><div class="d">Пт, 25 июля</div><div class="t">16:00 – 16:30 · МСК</div></div>
+          </div>
+        </div>
+
+        <div class="step-lbl">2 · Куда напомнить за 5 минут</div>
+        <div class="rail" id="rail">
+          <div class="chan on" data-ch="calendar">📅 В календарь</div>
+          <div class="chan" data-ch="email">✉️ На почту</div>
+          <div class="chan" data-ch="tg">✈️ В Telegram</div>
+        </div>
+        <div class="railnote" id="railnote">Ссылка на Zoom ляжет прямо в событие календаря — искать в почте не придётся.</div>
+
+        <div class="cta">
+          <button class="confirm" id="confirm" disabled>Выбери слот</button>
+          <div class="noacc">Регистрация не нужна · это займёт 3 секунды</div>
+        </div>
+      </div>
+
+      <!-- ЭКРАН 2: ГОТОВО -->
+      <div class="done" id="done">
+        <div class="check">✓</div>
+        <h2>Готово, встреча стоит</h2>
+        <div class="dsub">Leo уже уведомлён. Ты ничего не настраивал.</div>
+
+        <div class="mcard">
+          <div class="mrow"><span class="ic">👤</span><span>с <b>Leo</b> · про пилот</span></div>
+          <div class="mrow"><span class="ic">🗓️</span><span id="m-when"><b>Чт, 24 июля · 11:00 МСК</b></span></div>
+          <div class="mrow"><span class="ic">🎥</span><span>Zoom создан · ссылка <b>внутри события</b></span></div>
+          <div class="mrow"><span class="ic">🔔</span><span id="m-rem">Напомним <b>в календаре</b> за 5 минут</span></div>
+        </div>
+
+        <div class="addcal">
+          <a href="#">＋ Google Календарь</a>
+          <a href="#">＋ Apple / .ics</a>
+        </div>
+
+        <div class="promise">
+          <b>А дальше — ничего.</b> За 5 минут до созвона придёт напоминание с кнопкой «Подключиться». Ни искать ссылку в почте, ни думать «когда её кидать». Она придёт сама.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- РАЗБОР -->
+  <div class="notes">
+    <h2>Почему это «Calendly наоборот»</h2>
+    <div class="nsub">Та же задача — согласовать созвон с человеком снаружи. Но направление обратное: не человек идёт к твоей сетке, а твоя доступность приходит к нему одной ссылкой, уже суженной до двух вариантов.</div>
+
+    <div class="principle">
+      <div class="mk">1</div>
+      <div><h4>Слоты уже сужены — торга нет</h4>
+      <p>Не пустой грид на месяц. <b>Два окна, которые выбрал ты.</b> Человеку остаётся тап, а не работа по разбору твоего расписания.</p></div>
+    </div>
+    <div class="principle">
+      <div class="mk">2</div>
+      <div><h4>Ноль аккаунта, ноль логина</h4>
+      <p>Calendly всё равно тащит на страницу-приложение. Здесь — <b>лёгкая страница без регистрации</b>. Для 20-летнего из лички это разница между «тапнул» и «закрыл».</p></div>
+    </div>
+    <div class="principle">
+      <div class="mk">3</div>
+      <div><h4>Человек сам выбирает рельс напоминания</h4>
+      <p>Календарь / почта / Telegram. По умолчанию — <b>календарное событие</b>: единственная труба, которая есть у всех. Ссылка на Zoom уже внутри — вот и решение боли «когда кидать линк».</p></div>
+    </div>
+    <div class="principle">
+      <div class="mk">4</div>
+      <div><h4>Ссылка роняет встречу в канал, а не открывает страницу</h4>
+      <p>Итог тапа — не «страница подтверждения», а <b>событие у него и у тебя</b> + Zoom + напоминание в T-5. Страница исчезает, встреча остаётся там, где он её увидит.</p></div>
+    </div>
+
+    <div class="vs">
+      <div class="vh"><div class="a">Calendly · «приди ко мне»</div><div class="b">Уклад · «приду к тебе»</div></div>
+      <div class="vr"><div class="a">Пустая сетка, выбирай сам</div><div class="b"><b>2 слота, уже сужены</b></div></div>
+      <div class="vr"><div class="a">Открывает страницу-приложение</div><div class="b"><b>Роняет встречу в канал</b></div></div>
+      <div class="vr"><div class="a">Ссылку на Zoom ищешь в почте</div><div class="b"><b>Zoom внутри события</b></div></div>
+      <div class="vr"><div class="a">Напоминание — как настроит хост</div><div class="b"><b>Рельс выбирает гость</b></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>Прототип до кода. Это режим «чужой канал» из общего вижена (proto-inverse-calendar.html): когда мы не владеем чатом человека, ссылка — честный мост. Зелёное — предлагаемый флоу, кликабельно для примерки слов.</footer>
+
+</div>
+
+<script>
+  let slot = null;
+  let chan = 'calendar';
+  const chLabel = { calendar: 'в календаре', email: 'на почту', tg: 'в Telegram' };
+  const chNote = {
+    calendar: 'Ссылка на Zoom ляжет прямо в событие календаря — искать в почте не придётся.',
+    email: 'Пришлём письмо со ссылкой за 5 минут. Но код-встречи всё равно будет и в календаре.',
+    tg: 'Кинем напоминание с кнопкой «Подключиться» в Telegram за 5 минут.'
+  };
+  const btn = document.getElementById('confirm');
+
+  document.querySelectorAll('#slots .slot').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('#slots .slot').forEach(s => s.classList.remove('on'));
+      el.classList.add('on');
+      slot = el.dataset.slot;
+      btn.disabled = false;
+      btn.textContent = 'Подтвердить встречу';
+    });
+  });
+
+  document.querySelectorAll('#rail .chan').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('#rail .chan').forEach(c => c.classList.remove('on'));
+      el.classList.add('on');
+      chan = el.dataset.ch;
+      document.getElementById('railnote').textContent = chNote[chan];
+    });
+  });
+
+  btn.addEventListener('click', () => {
+    if (!slot) return;
+    const parts = slot.split(' · ');
+    document.getElementById('m-when').innerHTML = '<b>' + parts[0] + ' · ' + parts[1].replace('–', '–').split('–')[0] + ' МСК</b>';
+    document.getElementById('m-rem').innerHTML = 'Напомним <b>' + chLabel[chan] + '</b> за 5 минут';
+    document.getElementById('pick').classList.add('hide');
+    document.getElementById('done').classList.add('show');
+  });
+</script>
+</body>
+</html>
