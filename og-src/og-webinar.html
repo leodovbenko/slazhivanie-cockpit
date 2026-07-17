@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:630px}
+  body{background:#F4EFE6;font-family:'IBM Plex Sans',system-ui,sans-serif;position:relative;overflow:hidden}
+  .band{position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(90deg,#B85C3C,#3D7A3E)}
+  .glow{position:absolute;top:-160px;right:-160px;width:620px;height:620px;border-radius:50%;
+        background:radial-gradient(circle,rgba(61,122,62,.10),rgba(244,239,230,0) 70%)}
+  .wrap{position:relative;padding:88px 100px 80px;height:100%;display:flex;flex-direction:column}
+  .brand{display:flex;align-items:center;gap:22px;margin-bottom:auto}
+  .mark{width:74px;height:74px;border-radius:18px;background:#fff;border:1px solid #E5DCCD;
+        display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(32,28,23,.07)}
+  .wm{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:40px;color:#201C17;letter-spacing:-.01em}
+  .wm .g{color:#3D7A3E}
+  .tag{display:inline-flex;align-self:flex-start;align-items:center;gap:10px;margin-bottom:22px;
+       font-size:19px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#2F5F30;
+       background:#E2EEDB;border:1px solid #CFE3C4;padding:9px 18px;border-radius:999px}
+  .h{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:70px;line-height:1.05;
+     color:#201C17;letter-spacing:-.02em;max-width:1010px}
+  .h .clay{color:#B85C3C}
+  .sub{margin-top:26px;font-size:31px;line-height:1.4;color:#6B6258;font-weight:400;max-width:980px}
+  .foot{margin-top:auto;display:flex;align-items:baseline;gap:20px}
+  .url{font-size:28px;font-weight:600;color:#2F5F30}
+  .when{font-size:24px;font-weight:500;color:#8E877E}
+</style>
+</head>
+<body>
+  <div class="band"></div>
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark">
+        <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 30 C18 46 46 46 46 30" fill="none" stroke="#8E877E" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="19" cy="25" r="9.5" fill="#B85C3C"/>
+          <circle cx="45" cy="25" r="9.5" fill="#3D7A3E"/>
+        </svg>
+      </div>
+      <div class="wm">слаживание<span class="g">.</span></div>
+    </div>
+    <div class="tag">Вебинар «Уклад ИИ»</div>
+    <div class="h">Снизить ФОТ и делать <span class="clay">в 20 раз больше</span> работы — люди + ИИ-агенты</div>
+    <div class="sub">Покажем вживую среду, через которую прогнали свой бизнес: наём, продажи, контент, документы, встречи.</div>
+    <div class="foot"><div class="url">slazhivanie.ru/webinar</div><div class="when">30 июля, чт · 17:00 МСК · Zoom</div></div>
+  </div>
+</body>
+</html>
