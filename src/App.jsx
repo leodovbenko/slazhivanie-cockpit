@@ -389,7 +389,7 @@ function Catalog({ onOpenSol }) {
           );
         })}
       </div>
-      <div style={{ marginTop: 14, fontSize: 12, color: c.dim2 }}>Каталог · {CATALOG.length} модулей · демо на базе Open Service</div>
+      <div style={{ marginTop: 14, fontSize: 12, color: c.dim2 }}>Каталог · {CATALOG.length} модулей · демо на базе Вега Сервис</div>
     </div>
   );
 }
@@ -729,7 +729,7 @@ function KairosDash({ a }) {
   ];
   return (<div>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
-      <div><div style={{ fontSize: 17, fontWeight: 700 }}>Kairos — Дашборд собственника</div><div style={{ fontSize: 12.5, color: c.dim }}>{cName(a.client)} · управление по объектам, ограничениям и спринтам · by Open Service</div></div>
+      <div><div style={{ fontSize: 17, fontWeight: 700 }}>Kairos — Дашборд собственника</div><div style={{ fontSize: 12.5, color: c.dim }}>{cName(a.client)} · управление по объектам, ограничениям и спринтам · by Вега Сервис</div></div>
       <Badge color={c.violet} bg={`${c.violet}12`}>build 26</Badge>
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 10, marginBottom: 18 }}>{kpi.map(([v, l, col], i) => <Tile key={i} v={v} l={l} col={col} />)}</div>
