@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Уклад — Окно входа: личное × рабочее</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#12151d; --panel2:#171b25; --line:#242a38;
+    --ink:#e8ecf4; --dim:#8b93a7; --dim2:#5f6678;
+    --me:#2b6cff; --priv:#7c5cff; --priv-bg:rgba(124,92,255,.14);
+    --work:#20c997; --work-bg:rgba(32,201,151,.13);
+    --warn:#ffb020;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:32px 20px 80px}
+  .wrap{max-width:1120px;margin:0 auto}
+  .eyebrow{color:var(--priv);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+  h1{font-size:30px;margin:8px 0 6px;letter-spacing:-.02em}
+  .lede{color:var(--dim);max-width:720px;font-size:16px}
+  .lede b{color:var(--ink);font-weight:600}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .card-h{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .card-h .t{font-weight:600}
+  .card-h .s{color:var(--dim2);font-size:13px;margin-left:auto}
+  .dot{width:9px;height:9px;border-radius:50%}
+
+  /* ---- web space switcher ---- */
+  .web{display:flex;min-height:430px}
+  .rail{width:190px;border-right:1px solid var(--line);padding:12px 10px;background:var(--panel2)}
+  .rail .lbl{color:var(--dim2);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:6px 8px}
+  .space{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;cursor:pointer;
+    color:var(--dim);font-size:14px;margin-bottom:2px;border:1px solid transparent}
+  .space:hover{background:#1c212d}
+  .space .ic{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:12px;flex:none}
+  .space.on{background:#1c212d;color:var(--ink);border-color:var(--line)}
+  .space.on.priv{border-color:rgba(124,92,255,.5)}
+  .space.on.work{border-color:rgba(32,201,151,.4)}
+  .space small{display:block;color:var(--dim2);font-size:11px;line-height:1.2}
+  .webmain{flex:1;display:flex;flex-direction:column}
+  .ctx{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);min-height:46px}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
+  .chip.priv{background:var(--priv-bg);color:#b7a6ff}
+  .chip.work{background:var(--work-bg);color:#5fe3bd}
+  .webbody{flex:1;padding:18px 16px;color:var(--dim);font-size:14px}
+  .webbody .ex{color:var(--dim2);font-size:12.5px;margin-top:14px;border-left:2px solid var(--line);padding-left:12px}
+  .mini-in{margin:12px 16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;color:var(--dim2);font-size:13px;display:flex;align-items:center;gap:8px}
+
+  /* ---- telegram phone ---- */
+  .tg{padding:18px;display:flex;justify-content:center}
+  .phone{width:310px;background:#0e1116;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  .tg-h{background:#17212b;padding:10px 14px;display:flex;align-items:center;gap:10px}
+  .tg-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#5b8cff,#7c5cff);display:grid;place-items:center;font-size:14px;font-weight:700}
+  .tg-h .n{font-weight:600;font-size:14px}
+  .tg-h .u{color:#6d7a89;font-size:11px}
+  .tg-ctx{background:#1b2836;border-bottom:1px solid #24313f;padding:7px 12px;font-size:11.5px;color:#8fa5bb;display:flex;align-items:center;gap:6px;cursor:pointer}
+  .tg-ctx b{color:#cfe0f0}
+  .tg-ctx .car{margin-left:auto;color:#6d7a89}
+  .tg-body{background:#0e1621;padding:14px 12px;display:flex;flex-direction:column;gap:9px;min-height:340px}
+  .msg{max-width:82%;padding:8px 11px;border-radius:14px;font-size:13px;line-height:1.4}
+  .msg.me{align-self:flex-end;background:#2b5278;border-bottom-right-radius:5px}
+  .msg.ag{align-self:flex-start;background:#1c2733;border-bottom-left-radius:5px}
+  .msg .file{display:flex;align-items:center;gap:8px;font-size:12.5px}
+  .msg .file .fi{width:26px;height:26px;border-radius:6px;background:#e15b64;display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
+  .tag{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:10px;margin-top:6px}
+  .tag.priv{background:var(--priv-bg);color:#b7a6ff}
+  .tag.work{background:var(--work-bg);color:#5fe3bd}
+  .ctxpill{align-self:flex-start;font-size:10.5px;color:#8fa5bb;background:#152030;border:1px solid #24313f;border-radius:10px;padding:3px 9px}
+  .tg-in{background:#17212b;padding:9px 12px;display:flex;align-items:center;gap:9px;color:#5c6b7a;font-size:13px}
+  .tg-in .snd{margin-left:auto;color:#5b8cff}
+
+  .note{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.5}
+  .note.priv{background:var(--priv-bg);border:1px solid rgba(124,92,255,.3);color:#c9bcff}
+  .note.work{background:var(--work-bg);border:1px solid rgba(32,201,151,.3);color:#9ff0d5}
+
+  .rule{margin-top:34px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+  .rule h2{font-size:19px;margin:0 0 14px}
+  .rule ol{margin:0;padding-left:20px}
+  .rule li{margin-bottom:10px;color:var(--dim)}
+  .rule li b{color:var(--ink)}
+  .k{color:var(--priv);font-weight:700}
+  .footline{margin-top:22px;color:var(--dim2);font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Уклад · вижен-прото</div>
+  <h1>Окно входа: личное × рабочее — без копипаста между проектами</h1>
+  <p class="lede">В Claude чтобы «обстучать вопрос со всех сторон», приходится вручную перекидывать чат из проекта в проект — проекты силосы. В Укладе все контексты <b>твои</b>, поэтому Первый агент сводит их в одном приватном треде сам. Вопрос был один: <b>как тред понимает, это сейчас личное или рабочее.</b> Ниже — ответ для веба и для телеги.</p>
+
+  <div class="grid">
+    <!-- ============ WEB ============ -->
+    <div class="card">
+      <div class="card-h"><span class="dot" style="background:var(--work)"></span><span class="t">Веб-кабинет</span><span class="s">контекст выбираешь ты — как проект в Claude</span></div>
+      <div class="web">
+        <div class="rail">
+          <div class="lbl">Мои пространства</div>
+          <div class="space priv on" data-ctx="priv">
+            <span class="ic" style="background:var(--priv-bg)">🔒</span>
+            <span>Личное<small>анализы · психолог · финансы</small></span>
+          </div>
+          <div class="space work" data-ctx="biz1">
+            <span class="ic" style="background:var(--work-bg)">A</span>
+            <span>Ромашка<small>цели · команда · узкие места</small></span>
+          </div>
+          <div class="space work" data-ctx="biz2">
+            <span class="ic" style="background:var(--work-bg)">O</span>
+            <span>Аврора<small>пилот · сделки</small></span>
+          </div>
+          <div class="space work" data-ctx="biz3">
+            <span class="ic" style="background:var(--work-bg)">J</span>
+            <span>Вектор<small>внедрение</small></span>
+          </div>
+          <div class="lbl" style="margin-top:10px">Синтез</div>
+          <div class="space" data-ctx="mix" style="color:#b7a6ff">
+            <span class="ic" style="background:linear-gradient(135deg,var(--priv-bg),var(--work-bg))">✦</span>
+            <span>Свести вместе<small>личное + бизнес в одном</small></span>
+          </div>
+        </div>
+        <div class="webmain">
+          <div class="ctx" id="webctx"></div>
+          <div class="webbody" id="webbody"></div>
+          <div class="mini-in">✎ Написать в этом пространстве…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TELEGRAM ============ -->
+    <div class="card">
+      <div class="card-h"><span class="dot" style="background:var(--priv)"></span><span class="t">Телеграм · личка с Первым</span><span class="s">по умолчанию — приватно</span></div>
+      <div class="tg">
+        <div class="phone">
+          <div class="tg-h">
+            <div class="tg-ava">1</div>
+            <div><div class="n">Первый агент</div><div class="u">твоё доверенное лицо</div></div>
+          </div>
+          <div class="tg-ctx">Контекст: <b>🔒 Личное</b> · по умолчанию <span class="car">▾ сменить</span></div>
+          <div class="tg-body">
+            <div class="msg me">
+              <div class="file"><span class="fi">PDF</span><span>анализы_крови_июль.pdf</span></div>
+            </div>
+            <div class="msg ag">Принял. Сравнил с апрельскими — ферритин подрос, D в норме. Положил к твоим показателям.
+              <div class="tag priv">🔒 → личная память · в команду не уйдёт</div>
+            </div>
+            <div class="msg me">С учётом нагрузки в Ромашка — я не пережигаю? Смотри и здоровье, и цели по команде.</div>
+            <div class="ctxpill">✦ свёл: 🔒 Личное + Ромашка · виден только тебе</div>
+            <div class="msg ag">Судя по показателям сна и трём поздним релизам на неделе — да, режим на грани. По цели Ромашка «нанять лида до августа» это и есть узкое место: ты закрываешь собой то, что должен снять найм.
+              <div class="tag work">Ромашка · рабочий контекст прочитан, не изменён</div>
+            </div>
+          </div>
+          <div class="tg-in">✎ Сообщение<span class="snd">➤</span></div>
+        </div>
+      </div>
+      <div style="padding:0 18px 18px">
+        <div class="note priv">По умолчанию личка = дверь в <b>Личное</b>. Кинул анализы — они в личной памяти, наружу никогда. Ошибка распознавания всегда падает в сторону «приватно» — тот же fail-safe, что уже исключает личку Первого из общей памяти.</div>
+        <div class="note work">Рабочий контекст — <b>накладка по запросу</b>: сказал «с учётом Ромашка» / сменил чип. Агент читает бизнес (твой доступ туда), но факт остаётся в бизнесе, а личное — в личном. Синтез живёт в твоём приватном треде и не виден никому, кроме тебя.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RULE ============ -->
+  <div class="rule">
+    <h2>Правило маршрутизации — коротко</h2>
+    <ol>
+      <li><b>Пространство = проект.</b> 🔒 Личное (над всеми компаниями) + по пространству на бизнес (тенант). Это уже есть в схеме — не строим с нуля.</li>
+      <li><b>Веб решает явно.</b> Переключатель слева, как проекты в Claude. Отдельный режим <span class="k">«Свести вместе»</span> — синтез личного и рабочего в одном чате.</li>
+      <li><b>Телега решает по умолчанию.</b> Личка 1:1 с Первым = Личное, приватно. Бизнес подмешивается только по явному сигналу (упоминание / чип / закреплённый контекст).</li>
+      <li><b>Неоднозначность → в приватное.</b> Fail-safe: лучше не поднять рабочий контекст, чем утащить личное в команду. Личная память читается только твоим агентом в твоих контекстах.</li>
+      <li><span class="k">Круче Claude:</span> синтез across контекстов без ручного переброса чатов — потому что все контексты твои, а граница наружу закрыта гвардами.</li>
+    </ol>
+  </div>
+
+  <div class="footline">прото v1 · реагируй — что режет, чего не хватает, где ощущается не так</div>
+</div>
+
+<script>
+  const CTX = {
+    priv:{badge:'<span class="chip priv">🔒 Личное</span>',
+      body:'Приватное пространство. Здесь анализы, психолог, финансы. Видишь только ты — оператор и команда сюда не заходят.',
+      ex:'Пример: «Разбери мои анализы и сведи с прошлыми» · «Прикинь личный бюджет на квартал»'},
+    biz1:{badge:'<span class="chip work">Ромашка</span>',
+      body:'Рабочее пространство компании. Цели, команда, узкие места, сделки. Видно по твоему членству и роли.',
+      ex:'Пример: «Где стоит найм лида?» · «Собери узкие места спринта»'},
+    biz2:{badge:'<span class="chip work">Аврора</span>',
+      body:'Рабочее пространство пилота Аврора. Контекст сделок и внедрения.',
+      ex:'Пример: «Статус пилота» · «Что с последней встречей?»'},
+    biz3:{badge:'<span class="chip work">Вектор</span>',
+      body:'Рабочее пространство Вектор. Внедрение и команда.',
+      ex:'Пример: «Что нового по внедрению?»'},
+    mix:{badge:'<span class="chip priv">🔒 Личное</span><span style="color:var(--dim2)">+</span><span class="chip work">Ромашка</span>',
+      body:'Режим синтеза: агент читает оба контекста и отвечает тебе, сводя личное и рабочее. Результат виден только тебе — ничего не перетекает между пространствами.',
+      ex:'Пример: «С учётом здоровья и целей Ромашка — я не пережигаю?» — тот самый вопрос, ради которого в Claude ты копировал чат между проектами.'}
+  };
+  const rail=document.querySelectorAll('.space');
+  const ctxEl=document.getElementById('webctx');
+  const bodyEl=document.getElementById('webbody');
+  function pick(key,el){
+    rail.forEach(s=>s.classList.remove('on'));
+    el.classList.add('on');
+    const c=CTX[key];
+    ctxEl.innerHTML='Контекст: '+c.badge;
+    bodyEl.innerHTML=c.body+'<div class="ex">'+c.ex+'</div>';
+  }
+  rail.forEach(s=>s.addEventListener('click',()=>pick(s.dataset.ctx,s)));
+  pick('priv',document.querySelector('.space.priv'));
+</script>
+</body>
+</html>
