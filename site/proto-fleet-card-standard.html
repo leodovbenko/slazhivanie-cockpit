@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Стандарт карточки флота — прото</title>
+<style>
+  :root { --bg:#F4EFE6; --panel:#FFFFFF; --panelHi:#F7F1E7; --line:rgba(32,28,23,0.09); --lineHi:rgba(32,28,23,0.18);
+    --txt:#201C17; --dim:#6B6258; --dim2:#8E877E; --cyan:#4C7A6B; --violet:#9A6250; --green:#3D7A3E; --amber:#B8863C; --red:#B24A32; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:14px; line-height:1.5; }
+  .wrap { max-width:1080px; margin:0 auto; padding:30px 22px 70px; }
+  h1 { font-size:23px; font-weight:700; margin:0 0 4px; letter-spacing:-.3px; }
+  .sub { color:var(--dim); font-size:13.5px; margin:0 0 26px; max-width:680px; }
+  h2 { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; color:var(--dim2); margin:34px 0 14px; }
+
+  /* легенда стандарта */
+  .spec { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:8px; }
+  .spec ol { margin:0; padding-left:20px; }
+  .spec li { margin:7px 0; font-size:13.5px; }
+  .spec b { color:var(--txt); }
+  .k { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; background:var(--panelHi); border:1px solid var(--lineHi); color:var(--dim); }
+  .rule { color:var(--dim); font-size:13px; margin:10px 0 0; }
+
+  /* карточка — единый скелет */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:11px; position:relative; }
+  .card.accent { border-color:var(--violet); box-shadow:0 0 0 1px rgba(154,98,80,.18); }
+  .head { display:flex; align-items:flex-start; gap:12px; }
+  .ic { width:44px; height:44px; border-radius:12px; background:rgba(154,98,80,.12); display:grid; place-items:center; font-size:22px; flex:0 0 44px; }
+  .htext { min-width:0; flex:1; }
+  .nm { font-size:16.5px; font-weight:700; letter-spacing:-.2px; }
+  .kind { font-size:11.5px; color:var(--dim2); font-weight:600; margin-top:1px; }
+  /* СТАТУС — единый словарь: два состояния */
+  .pill { font-size:11px; font-weight:800; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+  .pill.work { background:rgba(61,122,62,.14); color:var(--green); }
+  .pill.cat  { background:rgba(32,28,23,.06); color:var(--dim2); }
+  .ds { color:var(--dim); font-size:13px; line-height:1.45; flex:1; }
+  /* ПЛАШКИ-СПОСОБНОСТИ — кап 4, единый стиль */
+  .tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .tag { font-size:11px; padding:3px 9px; border-radius:999px; background:rgba(76,122,107,.12); color:#34605A; }
+  /* ПОМОЩНИКИ (суб-агенты) — одна строка, если есть */
+  .helpers { font-size:12px; color:var(--dim); display:flex; align-items:center; gap:7px; flex-wrap:wrap; padding-top:2px; }
+  .helpers .hl { font-weight:800; text-transform:uppercase; letter-spacing:.4px; font-size:10px; color:var(--dim2); }
+  .helper { display:inline-flex; align-items:center; gap:4px; background:var(--panelHi); border:1px solid var(--line); border-radius:999px; padding:2px 8px; }
+  /* ПАНЕЛЬ ДЕЙСТВИЙ — 1 primary (filled) + ghost secondary в фикс-порядке */
+  .actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:2px; align-items:center; }
+  .btn { border:0; border-radius:10px; padding:9px 15px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; }
+  .btn.primary { background:var(--violet); color:#fff; }
+  .btn.ghost { background:var(--panelHi); border:1px solid var(--lineHi); color:var(--txt); }
+  .btn.link { background:none; color:var(--violet); padding:9px 6px; }
+
+  .note { margin-top:8px; font-size:12px; color:var(--dim2); }
+  .badge-demo { position:absolute; top:12px; right:14px; font-size:10px; font-weight:800; letter-spacing:.5px; color:var(--dim2); text-transform:uppercase; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Стандарт карточки флота</h1>
+  <p class="sub">Сейчас карточки собирают четыре разных рендера — у каждого свой словарь статуса и свой набор кнопок. Это прото единого скелета: одни и те же слоты в одном порядке у всех агентов, что бы они ни делали.</p>
+
+  <div class="spec">
+    <ol>
+      <li><b>Шапка</b> — иконка · имя · тип (<span class="k">часть Первого</span> / <span class="k">отдельный агент</span>) · <b>статус-пилюля</b>.</li>
+      <li><b>Статус — два слова, один словарь:</b> <span class="pill work">● В работе</span> (нанят/подключён/активен) или <span class="pill cat">Каталог</span> (ещё не в контуре). Больше никаких «подключён / нанят / активна / появится» вразнобой.</li>
+      <li><b>Описание</b> — одна–две строки, ровно. Что это за агент.</li>
+      <li><b>Плашки-способности</b> — что делает. Оставляем (это самый быстрый скан), но кап 3–4 чипа и единый стиль → карточки выравниваются.</li>
+      <li><b>Помощники</b> (суб-агенты) — одна строка, только если есть. Единое место, а не блок то там то тут.</li>
+      <li><b>Панель действий</b> — <b>одна главная кнопка</b> (заливка) слева, дальше вторичные (контур) в фиксированном порядке.</li>
+    </ol>
+    <p class="rule"><b>Грамматика кнопок (всегда одинаковая):</b><br>
+      • <b>В работе:</b> <span class="k">Открыть …</span> (главная дверь агента: чат / @бот / доску) → <span class="k">Настроить</span> → <span class="k">Помощники</span> (если есть).<br>
+      • <b>Каталог:</b> <span class="k">Нанять</span> (само-найм) <i>или</i> <span class="k">Заказать</span> (мы свяжемся) → <span class="k">Подробнее →</span> (продающий лендинг). Нет лендинга — кнопку не показываем, без битых ссылок.</p>
+  </div>
+
+  <h2>Как это выглядит — примеры в каждом состоянии</h2>
+  <div class="grid">
+
+    <!-- 1. Первый агент — В работе, «начните с него» -->
+    <div class="card accent">
+      <span class="badge-demo">В работе · @бот</span>
+      <div class="head">
+        <div class="ic">🤝</div>
+        <div class="htext">
+          <div class="nm">Первый агент</div>
+          <div class="kind">начните с него</div>
+        </div>
+        <span class="pill work">● В работе</span>
+      </div>
+      <div class="ds">Агент команды в Telegram: отвечает в контексте компании, понимает голос, фото и документы, публикует в командный чат.</div>
+      <div class="tags"><span class="tag">Telegram</span><span class="tag">память</span><span class="tag">голос/фото/док</span></div>
+      <div class="actions">
+        <a class="btn primary" href="#">Открыть @Slazhivanie_team_bot</a>
+        <a class="btn ghost" href="#">Настроить</a>
+      </div>
+    </div>
+
+    <!-- 2. Гермес — В работе + помощники -->
+    <div class="card">
+      <span class="badge-demo">В работе · помощники</span>
+      <div class="head">
+        <div class="ic">⚡</div>
+        <div class="htext">
+          <div class="nm">Гермес — SMM-агент</div>
+          <div class="kind">отдельный агент</div>
+        </div>
+        <span class="pill work">● В работе</span>
+      </div>
+      <div class="ds">Сырая мысль → посты, карусели и рилсы в вашем голосе, по расписанию.</div>
+      <div class="tags"><span class="tag">SMM</span><span class="tag">соцсети</span><span class="tag">рилсы</span><span class="tag">голос</span></div>
+      <div class="helpers"><span class="hl">Помощники</span><span class="helper">🤖 SEObot</span></div>
+      <div class="actions">
+        <a class="btn primary" href="#">Открыть →</a>
+        <a class="btn ghost" href="#">Настроить</a>
+        <a class="btn ghost" href="#">Помощники</a>
+      </div>
+    </div>
+
+    <!-- 3. Продакт — В работе, роль внутри Первого -->
+    <div class="card">
+      <span class="badge-demo">В работе · доска</span>
+      <div class="head">
+        <div class="ic">🗂</div>
+        <div class="htext">
+          <div class="nm">Продакт — развитие продукта</div>
+          <div class="kind">часть Первого</div>
+        </div>
+        <span class="pill work">● В работе</span>
+      </div>
+      <div class="ds">Замечает в чатах пожелания клиентов, копит их в бэклог и приоритизирует.</div>
+      <div class="tags"><span class="tag">продукт</span><span class="tag">бэклог</span><span class="tag">обратная связь</span></div>
+      <div class="actions">
+        <a class="btn primary" href="#">Открыть доску продукта →</a>
+        <a class="btn ghost" href="#">Настроить</a>
+      </div>
+    </div>
+
+    <!-- 4. Рекрутёр — Каталог, нанимаемый (само-найм) -->
+    <div class="card">
+      <span class="badge-demo">Каталог · само-найм</span>
+      <div class="head">
+        <div class="ic">🧭</div>
+        <div class="htext">
+          <div class="nm">Рекрутёр — подбор</div>
+          <div class="kind">отдельный агент</div>
+        </div>
+        <span class="pill cat">Каталог</span>
+      </div>
+      <div class="ds">Читает резюме и раскладывает кандидатов по вакансии: сильные/слабые, оценка, что уточнить.</div>
+      <div class="tags"><span class="tag">HR</span><span class="tag">подбор</span></div>
+      <div class="actions">
+        <a class="btn primary" href="#">Нанять</a>
+        <a class="btn link" href="#">Подробнее →</a>
+      </div>
+    </div>
+
+    <!-- 5. Коммерсант — Каталог + помощники (мы свяжемся) -->
+    <div class="card">
+      <span class="badge-demo">Каталог · заказ</span>
+      <div class="head">
+        <div class="ic">💼</div>
+        <div class="htext">
+          <div class="nm">Коммерсант — продажи</div>
+          <div class="kind">отдельный агент</div>
+        </div>
+        <span class="pill cat">Каталог</span>
+      </div>
+      <div class="ds">Ведёт сделки по этапам, готовит КП и следит за застрявшими. Ход сделки подтверждает человек.</div>
+      <div class="tags"><span class="tag">продажи</span><span class="tag">CRM</span></div>
+      <div class="helpers"><span class="hl">Помощники</span><span class="helper">🛰 Аргус</span></div>
+      <div class="actions">
+        <a class="btn primary" href="#">Заказать</a>
+        <a class="btn link" href="#">Подробнее →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="note">Прото оформления. Данные-примеры для витрины; реальные статусы/имена тянутся из /agents, /space/telegram, /connectors.</p>
+</div>
+</body>
+</html>
