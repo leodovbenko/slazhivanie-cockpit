@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренер, который видит твой календарь — WHOOP/Oura + Первый агент</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Слаживание">
+<meta property="og:title" content="Тренер, который видит твой календарь | Слаживание">
+<meta property="og:description" content="WHOOP и Oura говорят «сегодня можно грузиться», но не видят рабочий календарь. Первый агент знает и тело, и день — и находит окно для зала.">
+<meta property="og:url" content="https://slazhivanie.ru/proto-fitness-coach.html">
+<meta property="og:image" content="https://slazhivanie.ru/og.png?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Тренер, который видит твой календарь | Слаживание">
+<meta name="twitter:image" content="https://slazhivanie.ru/og.png?v=2">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #F4EFE6;
+    color: #201C17;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 36px 26px 52px; }
+  header { margin-bottom: 30px; }
+  h1 { font-size: 27px; line-height: 1.24; letter-spacing: -0.3px; max-width: 980px; }
+  h1 em { font-style: normal; color: #9A6250; }
+  .sub { margin-top: 12px; font-size: 14.5px; color: #7A7264; max-width: 900px; }
+
+  .badge { font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 11px; letter-spacing: 0.4px; }
+  .badge.proto { color: #fff; background: #9A6250; }
+
+  .section { margin-top: 42px; }
+  .sec-title { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+  .sec-title h2 { font-size: 20px; letter-spacing: -0.2px; }
+  .sec-sub { font-size: 13.5px; color: #7A7264; margin-bottom: 20px; max-width: 920px; }
+
+  /* ── КЛИН: два столбца ── */
+  .flip { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .flip-card { border-radius: 16px; padding: 22px 24px; }
+  .flip-card.old { background: #FBF5EC; border: 1px solid #E4DBCB; }
+  .flip-card.new { background: #F9EEE9; border: 1px solid #DDBBAD; }
+  .flip-card .cap { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .flip-card.old .cap { color: #A79D8B; }
+  .flip-card.new .cap { color: #7A4E3E; }
+  .flip-card h3 { font-size: 17px; margin-top: 5px; }
+  .flow { margin-top: 16px; }
+  .step { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; padding: 7px 0; }
+  .step .ic { flex: none; width: 20px; margin-top: 1px; }
+  .step .t { color: #55503F; }
+  .step .t b { color: #201C17; }
+  .old .step.pain .t { color: #9A6250; }
+  .flip-card .verdict { margin-top: 16px; font-size: 12.5px; color: #55503F; border-top: 1px dashed #DDBBAD; padding-top: 12px; }
+  .old .verdict { border-top-color: #E4DBCB; color: #7A7264; }
+  .flip-card .verdict b { color: #201C17; }
+
+  /* ── ТЕЛЕФОН / ЧАТ ── */
+  .stage { display: grid; grid-template-columns: 340px 1fr; gap: 30px; align-items: start; }
+  .phone { background: #0f1613; border-radius: 34px; padding: 11px; box-shadow: 0 18px 40px rgba(30,20,10,0.18); }
+  .screen { background: #e7ebe4; border-radius: 26px; overflow: hidden; }
+  .tg-top { background: #FFFDF8; padding: 12px 16px 10px; border-bottom: 1px solid #E4DBCB; display: flex; align-items: center; gap: 10px; }
+  .tg-top .av { width: 34px; height: 34px; border-radius: 50%; background: #6E9464; display: grid; place-items: center; font-size: 15px; }
+  .tg-top .nm { font-size: 14px; font-weight: 700; }
+  .tg-top .st { font-size: 11px; color: #7A7264; }
+  .tg-body { padding: 14px 12px 16px; min-height: 560px; background:
+     linear-gradient(180deg, #eef1ea 0%, #e7ebe4 100%); }
+  .day { text-align: center; font-size: 10.5px; color: #8a8170; margin: 8px 0 10px; }
+  .bub { max-width: 82%; padding: 8px 12px; border-radius: 15px; font-size: 13px; margin-bottom: 8px; position: relative; }
+  .bub.me { background: #D9EBCB; color: #26331e; margin-left: auto; border-top-right-radius: 5px; }
+  .bub .tm { font-size: 9.5px; color: #6d8a58; float: right; margin: 4px 0 -2px 8px; }
+
+  /* агентская карточка внутри чата */
+  .agentcard { background: #FFFDF8; border: 1.5px solid #DDBBAD; border-radius: 15px; padding: 12px 13px; margin-bottom: 8px; max-width: 90%; }
+  .agentcard.rest { border-color: #C9BCA4; }
+  .agentcard .who { font-size: 10.5px; font-weight: 700; color: #7A4E3E; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .agentcard.rest .who { color: #6d6350; }
+  .agentcard .txt { font-size: 12.5px; color: #45403a; }
+  .agentcard .txt b { color: #201C17; }
+  /* строка биометрии */
+  .bio { display: flex; gap: 6px; margin: 9px 0 4px; }
+  .bio .chip { flex: 1; background: #F4EFE6; border-radius: 9px; padding: 6px 4px; text-align: center; }
+  .bio .chip .v { font-size: 15px; font-weight: 700; color: #35502F; line-height: 1.1; }
+  .bio .chip.warn .v { color: #9A6250; }
+  .bio .chip .k { font-size: 8.5px; color: #8a8170; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+  /* окно календаря */
+  .win { margin-top: 9px; background: #F9EEE9; border: 1px solid #E7C6B6; border-radius: 11px; padding: 9px 11px; }
+  .win .wl { font-size: 10px; font-weight: 700; color: #7A4E3E; letter-spacing: 0.3px; text-transform: uppercase; }
+  .win .wt { font-size: 13px; font-weight: 600; color: #45403a; margin-top: 3px; }
+  .win .wm { font-size: 10.5px; color: #8a8170; margin-top: 2px; }
+  .acts { margin-top: 9px; display: flex; gap: 6px; }
+  .act { flex: 1; font-size: 12px; font-weight: 700; border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .act.yes { background: #6E9464; color: #fff; }
+  .act.no { background: #F1EADD; color: #7A7264; }
+  .ledger { margin: 2px 0 10px; text-align: center; font-size: 10.5px; color: #8a8170; }
+  .ledger b { color: #55503F; }
+
+  /* правая колонка — разбор кадров */
+  .frame { display: flex; gap: 14px; padding: 15px 0; }
+  .frame:not(:last-child) { border-bottom: 1px solid #E4DBCB; }
+  .frame .mark { flex: none; width: 26px; height: 26px; border-radius: 50%; background: #9A6250; color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+  .frame .mark.live { background: #6E9464; }
+  .frame .ftxt h4 { font-size: 14.5px; }
+  .frame .ftxt p { font-size: 13px; color: #55503F; margin-top: 3px; max-width: 640px; }
+  .frame .tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; border-radius: 6px; padding: 1px 7px; margin-top: 7px; }
+  .tag.live { color: #35502F; background: #DDE7D3; }
+  .tag.new { color: #7A4E3E; background: #F3DDD1; }
+
+  /* ── ТРИ ВОПРОСА ── */
+  .loop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .lq { background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 14px; padding: 18px 18px; }
+  .lq .n { font-size: 11px; font-weight: 700; color: #9A6250; letter-spacing: 0.4px; text-transform: uppercase; }
+  .lq h4 { font-size: 15px; margin-top: 5px; }
+  .lq .src { font-size: 12px; color: #55503F; margin-top: 8px; }
+  .lq .src b { color: #201C17; }
+  .lq .badge2 { display: inline-block; margin-top: 10px; font-size: 10.5px; font-weight: 700; border-radius: 6px; padding: 2px 8px; }
+  .b-body { color: #35502F; background: #DDE7D3; }
+  .b-cal { color: #7A4E3E; background: #F3DDD1; }
+  .b-goal { color: #45403a; background: #EFE7D8; }
+  .arrow-row { text-align: center; margin: 14px 0 0; font-size: 13.5px; color: #55503F; }
+  .arrow-row b { color: #7A4E3E; }
+
+  /* ── СПОСОБНОСТЬ ── */
+  .cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cap-card { background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 14px; padding: 18px 20px; }
+  .cap-card .ct { font-size: 11px; color: #A79D8B; letter-spacing: 0.5px; text-transform: uppercase; }
+  .cap-card h4 { font-size: 15px; margin-top: 4px; }
+  .cap-card ul { margin-top: 10px; padding-left: 0; list-style: none; }
+  .cap-card li { font-size: 13px; color: #55503F; padding: 5px 0 5px 18px; position: relative; }
+  .cap-card li::before { content: "→"; position: absolute; left: 0; color: #9A6250; }
+  .cap-card li b { color: #201C17; }
+  .cap-card code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; background: #F1EADD; color: #7A4E3E; border-radius: 5px; padding: 1px 5px; }
+
+  .checklist { margin-top: 16px; background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 14px; padding: 20px 22px; }
+  .checklist h3 { font-size: 15px; margin-bottom: 12px; }
+  .chk { display: flex; gap: 10px; font-size: 13px; color: #55503F; padding: 6px 0; align-items: flex-start; }
+  .chk .bx { flex: none; width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid #C9BCA4; margin-top: 1px; }
+  .chk b { color: #201C17; }
+  .chk code { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; background: #F1EADD; color: #7A4E3E; border-radius: 5px; padding: 1px 5px; }
+
+  /* ── ЧТО ОТДАЁТ ЖЕЛЕЗО ── */
+  .data { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .dcard { border-radius: 16px; padding: 20px 22px; }
+  .dcard.whoop { background: #10110f; color: #e6e3da; }
+  .dcard.oura { background: #FBF5EC; border: 1px solid #E4DBCB; }
+  .dcard .dh { font-size: 15px; font-weight: 700; }
+  .dcard.whoop .dh { color: #fff; }
+  .dcard .dhs { font-size: 12px; margin-top: 2px; }
+  .dcard.whoop .dhs { color: #9a9384; }
+  .dcard.oura .dhs { color: #7A7264; }
+  .dcard .row { font-size: 12.5px; padding: 6px 0; border-top: 1px solid rgba(120,110,90,0.18); }
+  .dcard .row:first-of-type { margin-top: 12px; }
+  .dcard .row b { font-weight: 700; }
+  .dcard.whoop .row b { color: #C6E4A8; }
+  .dcard.oura .row b { color: #7A4E3E; }
+  .dcard .star { color: #E7C6B6; font-weight: 700; }
+
+  .weak { margin-top: 42px; background: #FBF5EC; border: 1px solid #DDBBAD; border-left: 4px solid #9A6250; border-radius: 12px; padding: 20px 24px; }
+  .weak h3 { font-size: 15px; color: #7A4E3E; }
+  .weak p { font-size: 13.5px; color: #55503F; margin-top: 10px; max-width: 900px; }
+  .weak p b { color: #201C17; }
+
+  footer { margin-top: 30px; font-size: 12px; color: #A79D8B; }
+  @media (max-width: 860px) {
+    .flip, .cap-grid, .data { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .stage { grid-template-columns: 1fr; }
+    .phone { max-width: 360px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Тренер, который <em>видит твой календарь</em>: WHOOP и Oura говорят «сегодня можно грузиться» — но не знают, что у тебя весь день созвоны. Первый агент знает и то, и другое — и находит окно.</h1>
+  <div class="sub">Кольцо и ремешок умеют считать восстановление и цель по нагрузке. Чего они физически не могут — заглянуть в рабочий календарь, который лепится из встреч. Совет «потренируйся сегодня» повисает: <b>когда</b>? Первый агент видит тело и календарь в одних руках — и вежливо предлагает конкретное окно. Или честно говорит: сегодня не в зал, а спать.</div>
+</header>
+
+<!-- ============ КЛИН ============ -->
+<div class="section">
+  <div class="sec-title"><h2>В чём клин</h2></div>
+  <div class="sec-sub">Одна и та же цель по фитнесу. Слева — что умеет само железо. Справа — что добавляет агент, у которого есть и биометрия, и рабочий календарь.</div>
+
+  <div class="flip">
+    <div class="flip-card old">
+      <div class="cap">WHOOP / Oura сами</div>
+      <h3>«Тебе полезно потренироваться» — и тишина</h3>
+      <div class="flow">
+        <div class="step"><span class="ic">💍</span><span class="t">Считают recovery/readiness и цель по нагрузке — <b>это они умеют хорошо</b></span></div>
+        <div class="step"><span class="ic">🔔</span><span class="t">Пушат «пора двигаться» / «закрой кольцо активности»</span></div>
+        <div class="step pain"><span class="ic">🕳️</span><span class="t">Но <b>не видят рабочий календарь</b> — не знают, что до 19:00 сплошные звонки</span></div>
+        <div class="step pain"><span class="ic">😶</span><span class="t">Совет висит в воздухе: «когда?» решаешь ты сам, обычно = никогда</span></div>
+      </div>
+      <div class="verdict">Данные отличные, но <b>слепы к твоему дню</b>. Мотивация без окна — ещё одно уведомление, которое мьютишь.</div>
+    </div>
+
+    <div class="flip-card new">
+      <div class="cap">Первый агент</div>
+      <h3>«Телу можно + вот реальное окно 15:00»</h3>
+      <div class="flow">
+        <div class="step"><span class="ic">💍</span><span class="t">Читает то же тело через API WHOOP/Oura (per-user коннектор)</span></div>
+        <div class="step"><span class="ic">📅</span><span class="t">Видит рабочий календарь — <b>где сегодня честная дыра между встречами</b></span></div>
+        <div class="step"><span class="ic">🎯</span><span class="t">Держит твою цель/челлендж и сверяет: в графике ты или отстаёшь</span></div>
+        <div class="step"><span class="ic">💬</span><span class="t">Сводит в <b>одну фразу раз в несколько дней</b> — с конкретным окном и кнопкой «да / не сегодня»</span></div>
+      </div>
+      <div class="verdict">Ценность не в графиках, а в <b>решении</b>: пойти в зал в 15:00. То, что кольцу недоступно by design.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ПРОТОТИП ЧАТА ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">ПРОТОТИП · ДО КОДА</span><h2>Как это звучит в личке с Первым агентом</h2></div>
+  <div class="sec-sub">Слева — тред с агентом (Telegram / веб-виджет). Два дня подряд: в хороший день зовёт в зал в реальное окно, в плохой — честно тормозит. Справа — разбор по кадрам: что откуда берётся и что уже живёт в платформе.</div>
+
+  <div class="stage">
+    <!-- ТЕЛЕФОН -->
+    <div class="phone">
+      <div class="screen">
+        <div class="tg-top">
+          <div class="av">🤖</div>
+          <div>
+            <div class="nm">Первый агент</div>
+            <div class="st">на твоей стороне · тихий режим</div>
+          </div>
+        </div>
+        <div class="tg-body">
+
+          <div class="day">чт · 08:40</div>
+
+          <!-- ХОРОШИЙ ДЕНЬ -->
+          <div class="agentcard">
+            <div class="who">🤖 Первый агент</div>
+            <div class="txt">Доброе. Тело сегодня <b>в форме</b> — можно грузиться.</div>
+            <div class="bio">
+              <div class="chip"><div class="v">78%</div><div class="k">recovery</div></div>
+              <div class="chip"><div class="v">62</div><div class="k">HRV ms</div></div>
+              <div class="chip"><div class="v">7:20</div><div class="k">сон</div></div>
+            </div>
+            <div class="txt" style="margin-top:8px">По твоей цели <b>2 из 3 тренировок</b> на этой неделе — одна в долгу. Глянул календарь:</div>
+            <div class="win">
+              <div class="wl">свободное окно</div>
+              <div class="wt">15:00–16:00 · между звонком с клиентом и синком</div>
+              <div class="wm">зал в 8 минутах · успеваешь с запасом</div>
+            </div>
+            <div class="acts">
+              <div class="act yes">Забронить 15:00</div>
+              <div class="act no">Не сегодня</div>
+            </div>
+          </div>
+
+          <div class="bub me">Давай, бронь <span class="tm">08:41</span></div>
+          <div class="ledger">📇 15:00–16:00 «Зал» в календаре · звонки не тронуты · напомню в 14:50</div>
+
+          <!-- ПЛОХОЙ ДЕНЬ -->
+          <div class="day">пт · 08:35</div>
+          <div class="agentcard rest">
+            <div class="who">🤖 Первый агент</div>
+            <div class="txt">Сегодня <b>не про зал</b>. Ночь короткая, восстановление низкое — если грузить, только в минус.</div>
+            <div class="bio">
+              <div class="chip warn"><div class="v">34%</div><div class="k">recovery</div></div>
+              <div class="chip warn"><div class="v">41</div><div class="k">HRV ms</div></div>
+              <div class="chip warn"><div class="v">5:10</div><div class="k">сон</div></div>
+            </div>
+            <div class="txt" style="margin-top:8px">Цель подождёт — тренировку добьём в выходные, окна есть. На сегодня один ход: <b>вечер свободен в 21:00, ляг раньше</b>. Ничего бронировать не буду.</div>
+          </div>
+          <div class="bub me">Согласен, спасибо 🙏 <span class="tm">08:37</span></div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- РАЗБОР -->
+    <div>
+      <div class="frame">
+        <div class="mark live">1</div>
+        <div class="ftxt">
+          <h4>Биометрия — вход, а не витрина</h4>
+          <p>Recovery / HRV / сон тянутся из WHOOP или Oura по OAuth (каждый подключает своё устройство сам). Агент не показывает дашборд — он читает три числа, чтобы принять одно решение: грузить или беречь.</p>
+          <span class="tag new">достраиваем: коннектор WHOOP/Oura</span>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="mark live">2</div>
+        <div class="ftxt">
+          <h4>Рабочий календарь — уже в платформе</h4>
+          <p>Per-user коннектор календаря у нас есть (тот же, что для координации встреч). Агент находит честную дыру между событиями — не «свободен ли ты вообще», а «есть ли реальное окно + время на дорогу».</p>
+          <span class="tag live">коннектор календаря в проде</span>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="mark">3</div>
+        <div class="ftxt">
+          <h4>Логика «грузить/беречь» — не перевёрнута</h4>
+          <p>Ключевой инвариант: высокий recovery → предложить тренировку; низкий → предложить отдых и ранний сон. «Хорошие цифры → в зал» само по себе неверно. Берём рекомендованный дневной таргет (WHOOP strain / Oura readiness) как вход, а не выдумываем.</p>
+          <span class="tag new">достраиваем: правило readiness→действие</span>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="mark">4</div>
+        <div class="ftxt">
+          <h4>Одна фраза, легко сказать «нет»</h4>
+          <p>Не ежедневный «доброе утро, вот цифры», а редкий пинок, когда реально сошлось: телу можно + есть окно + отстаёшь от цели. Кнопка «Не сегодня» без повтора и вины. Молчание — фича, не баг.</p>
+          <span class="tag new">достраиваем: тихая петля-напоминание</span>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="mark">5</div>
+        <div class="ftxt">
+          <h4>Бронь молча, звонки нетронуты</h4>
+          <p>На «да» агент кладёт событие «Зал» в свободное окно и роняет напоминание в T-10. Рабочие встречи не двигает без спроса. В плохой день — ничего не бронирует, только совет.</p>
+          <span class="tag new">достраиваем: рука book_focus_block</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ТРИ ВОПРОСА ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">ДВИЖОК</span><h2>Петля из трёх вопросов → одна фраза</h2></div>
+  <div class="sec-sub">Не «фитнес-приложение», а тихий склей трёх сигналов. Агент отвечает на три вопроса и произносит рекомендацию, только если все три сошлись в пользу действия.</div>
+
+  <div class="loop">
+    <div class="lq">
+      <div class="n">Вопрос 1</div>
+      <h4>Тебе сегодня грузиться или беречься?</h4>
+      <div class="src">recovery / HRV / сон → правило readiness. Плохой день = совет отдыхать, не тренироваться.</div>
+      <span class="badge2 b-body">WHOOP recovery · Oura readiness</span>
+    </div>
+    <div class="lq">
+      <div class="n">Вопрос 2</div>
+      <h4>Ты в графике по своей цели?</h4>
+      <div class="src">Челлендж задаёшь <b>ты</b> (3 тренировки/нед и т.п.). Агент сверяет факт с целью — не ставит цель за тебя.</div>
+      <span class="badge2 b-goal">твоя цель + strain/activity</span>
+    </div>
+    <div class="lq">
+      <div class="n">Вопрос 3</div>
+      <h4>Когда в дне есть честное окно?</h4>
+      <div class="src">Дыра между встречами + время на дорогу. Тот сигнал, которого у железа нет в принципе.</div>
+      <span class="badge2 b-cal">рабочий календарь</span>
+    </div>
+  </div>
+  <div class="arrow-row">Все три «за» → <b>«Recovery 78%, отстаёшь на тренировку, окно 15:00 — забронить?»</b> · хоть один против → агент молчит либо тормозит.</div>
+</div>
+
+<!-- ============ ЧТО ОТДАЁТ ЖЕЛЕЗО ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">ИСТОЧНИКИ</span><h2>Что реально отдаёт API — под этот сценарий</h2></div>
+  <div class="sec-sub">Обоим хватает данных под петлю. Разница: у WHOOP сильнее модель «нагрузка↔восстановление», у Oura — отдельная дневная метрика стресса и временной ряд пульса (пригодится для второй гипотезы про встречи).</div>
+
+  <div class="data">
+    <div class="dcard whoop">
+      <div class="dh">WHOOP · API v2</div>
+      <div class="dhs">OAuth 2.0 · вебхуки на свежие данные</div>
+      <div class="row"><b>recovery_score</b> 0–100, <b>hrv_rmssd</b>, resting HR</div>
+      <div class="row"><b>strain</b> 0–21 за сутки + рекомендованный дневной таргет</div>
+      <div class="row">sleep: фазы, эффективность, respiratory rate, «долг сна»</div>
+      <div class="row">skin_temp, spo2</div>
+      <div class="row">workout: strain, пульс, зоны, дистанция</div>
+    </div>
+    <div class="dcard oura">
+      <div class="dh">Oura · API v2</div>
+      <div class="dhs">OAuth 2.0 · токены живут долго (~30 дней)</div>
+      <div class="row"><b>daily_readiness</b> score + вклады (hrv_balance, RHR…)</div>
+      <div class="row"><b>daily_activity</b>: шаги, калории, MET-минуты, цели</div>
+      <div class="row">daily_sleep: фазы, HRV/RHR во сне, температура</div>
+      <div class="row"><span class="star">★</span> <b>daily_stress</b> + <b>heartrate</b> временной ряд (5 мин)</div>
+      <div class="row">spo2, resilience, cardiovascular_age, VO2 max</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ СПОСОБНОСТЬ ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">СПОСОБНОСТЬ АГЕНТА</span><h2>Что достраиваем в платформе</h2></div>
+  <div class="sec-sub">Не приложение-трекер, а ещё одна рука Первого агента: он уже в чате, уже видит календарь, уже держит цели. Добавляем биометрию как вход и тихую петлю как поведение.</div>
+
+  <div class="cap-grid">
+    <div class="cap-card">
+      <div class="ct">Руки (что агент реально делает)</div>
+      <h4>Вход + решение + бронь</h4>
+      <ul>
+        <li><b>connect_wearable</b> — OAuth к WHOOP/Oura, per-user, токены в хранилище коннекторов</li>
+        <li><b>read_readiness</b> — recovery/HRV/сон/цель → правило «грузить или беречь»</li>
+        <li><b>find_window</b> — честная дыра в календаре + время на дорогу (переиспользуем календарный коннектор)</li>
+        <li><b>book_focus_block</b> — на «да» кладёт «Зал» в окно, роняет напоминание T-10, встречи не двигает</li>
+        <li><b>nudge_loop</b> — тихий таймер: пинг только когда все три вопроса «за»</li>
+      </ul>
+    </div>
+    <div class="cap-card">
+      <div class="ct">Принципы (наши инварианты)</div>
+      <h4>Тихо, честно, на твоей стороне</h4>
+      <ul>
+        <li><b>Логика не перевёрнута.</b> Плохой день → отдых, а не зал. readiness правит действие</li>
+        <li><b>Редко и легко отказать.</b> Не ежедневный шум; «Не сегодня» без повтора</li>
+        <li><b>Цель — твоя.</b> Агент держит и сверяет, но не назначает челлендж сам</li>
+        <li><b>Приватность.</b> Тело + календарь — интимно: только opt-in, только личный контур, не примешивать к клиентским данным</li>
+        <li><b>Пусто — честно.</b> Нет окна / нет данных устройства → так и говорит, не выдумывает слот</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h3>Гейт по чек-листу агента (новая способность — список B)</h3>
+    <div class="chk"><span class="bx"></span><span><b>Декларация first.</b> <code>capability: fitness.coach</code> в шаблоне агента (<code>upsertAgentTemplate</code>) — паспорт/контракт/техспека тянутся из неё</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Биндинг.</b> <code>setCapabilityBindings</code> + коннекторы WHOOP/Oura (внешние) и уже существующий календарь</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Руки.</b> домен + роуты + миграция (wearable-токены, цели/челленджи, лог пингов)</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Витрина.</b> <code>flowSVG</code>/<code>realCfg</code>, <code>/agent-specs</code>, <code>/agent-contract</code> — способность видна снаружи</span></div>
+    <div class="chk"><span class="bx"></span><span><b>PLATFORM_FEATURES.</b> одна запись → Справка + ответ агента по фиче + недельный дайджест</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Гейты.</b> tsc + declaration + verify (code-reviewer) перед коммитом</span></div>
+  </div>
+</div>
+
+<!-- ============ САМОЕ СЛАБОЕ МЕСТО ============ -->
+<div class="weak">
+  <h3>Веду с самого слабого места — до того как строить</h3>
+  <p><b>Усталость от пинков — кладбище фитнес-приложений.</b> Как только «дружеский пинок» приходит каждый день, его мьютят, и вся фича мертва. Риск не в данных, а в частоте: петля обязана быть <b>редкой и с лёгким «нет»</b>. Если не удержим тишину — построим красивый спам.</p>
+  <p><b>Перевёрнутая логика recovery → действие.</b> Соблазн «хорошие цифры → в зал» физиологически неверен в половине случаев: низкое восстановление = телу нужен отдых, и «давай тренироваться» тут вредный совет. Правило readiness→действие — не украшение, а сердце способности.</p>
+  <p><b>Приватность и контур.</b> Тело + рабочий календарь в одних руках — самое интимное, что мы собираем. Только явный opt-in, только личный контур, жёсткая изоляция от клиентских данных. Это личная способность, а не то, что показываем вендору о клиенте.</p>
+</div>
+
+<footer>Прототип до кода. Зелёное — работает сейчас (Первый в чате, коннектор календаря, удержание целей), терракота — предложение. Смотрим, договариваемся о словах — потом строим декларация-первой по чек-листу агента.</footer>
+
+</div>
+</body>
+</html>
