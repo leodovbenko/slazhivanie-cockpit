@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Календарь наоборот — встреча живёт в чате</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #F4EFE6;
+    color: #201C17;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 36px 26px 52px; }
+  header { margin-bottom: 30px; }
+  h1 { font-size: 27px; line-height: 1.24; letter-spacing: -0.3px; max-width: 960px; }
+  h1 em { font-style: normal; color: #9A6250; }
+  .sub { margin-top: 12px; font-size: 14.5px; color: #7A7264; max-width: 880px; }
+
+  .badge { font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 11px; letter-spacing: 0.4px; }
+  .badge.live { color: #35502F; background: #DDE7D3; }
+  .badge.proto { color: #fff; background: #9A6250; }
+
+  .section { margin-top: 42px; }
+  .sec-title { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; flex-wrap: wrap; }
+  .sec-title h2 { font-size: 20px; letter-spacing: -0.2px; }
+  .sec-sub { font-size: 13.5px; color: #7A7264; margin-bottom: 20px; max-width: 900px; }
+
+  /* ── ПЕРЕВОРОТ: два столбца ── */
+  .flip { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .flip-card { border-radius: 16px; padding: 22px 24px; }
+  .flip-card.old { background: #FBF5EC; border: 1px solid #E4DBCB; }
+  .flip-card.new { background: #F9EEE9; border: 1px solid #DDBBAD; }
+  .flip-card .cap { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .flip-card.old .cap { color: #A79D8B; }
+  .flip-card.new .cap { color: #7A4E3E; }
+  .flip-card h3 { font-size: 17px; margin-top: 5px; }
+  .flow { margin-top: 16px; }
+  .step { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; padding: 7px 0; }
+  .step .n { flex: none; width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+  .old .n { background: #EFE7D8; color: #8a8170; }
+  .new .n { background: #E7C6B6; color: #7A4E3E; }
+  .step .t { color: #55503F; }
+  .step .t b { color: #201C17; }
+  .old .step.pain .t { color: #9A6250; }
+  .flip-card .verdict { margin-top: 16px; font-size: 12.5px; color: #55503F; border-top: 1px dashed #DDBBAD; padding-top: 12px; }
+  .old .verdict { border-top-color: #E4DBCB; color: #7A7264; }
+  .flip-card .verdict b { color: #201C17; }
+
+  /* ── ТЕЛЕФОН / ЧАТ ── */
+  .stage { display: grid; grid-template-columns: 340px 1fr; gap: 30px; align-items: start; }
+  .phone { background: #0f1613; border-radius: 34px; padding: 11px; box-shadow: 0 18px 40px rgba(30,20,10,0.18); }
+  .screen { background: #e7ebe4; border-radius: 26px; overflow: hidden; }
+  .tg-top { background: #FFFDF8; padding: 12px 16px 10px; border-bottom: 1px solid #E4DBCB; display: flex; align-items: center; gap: 10px; }
+  .tg-top .av { width: 34px; height: 34px; border-radius: 50%; background: #C9BCA4; display: grid; place-items: center; font-size: 14px; color: #fff; font-weight: 700; }
+  .tg-top .nm { font-size: 14px; font-weight: 700; }
+  .tg-top .st { font-size: 11px; color: #7A7264; }
+  .tg-body { padding: 14px 12px 16px; min-height: 520px; background:
+     linear-gradient(180deg, #eef1ea 0%, #e7ebe4 100%); }
+  .day { text-align: center; font-size: 10.5px; color: #8a8170; margin: 4px 0 10px; }
+  .bub { max-width: 80%; padding: 8px 12px; border-radius: 15px; font-size: 13px; margin-bottom: 8px; position: relative; }
+  .bub .who { font-size: 10.5px; font-weight: 700; margin-bottom: 2px; }
+  .bub.them { background: #FFFDF8; color: #2b2721; border-top-left-radius: 5px; }
+  .bub.them .who { color: #7A7264; }
+  .bub.me { background: #D9EBCB; color: #26331e; margin-left: auto; border-top-right-radius: 5px; }
+  .bub .tm { font-size: 9.5px; color: #9a9384; float: right; margin: 4px 0 -2px 8px; }
+  .bub.me .tm { color: #6d8a58; }
+
+  /* агентская карточка внутри чата */
+  .agentcard { background: #FFFDF8; border: 1.5px solid #DDBBAD; border-radius: 15px; padding: 11px 12px; margin-bottom: 8px; max-width: 88%; }
+  .agentcard .who { font-size: 10.5px; font-weight: 700; color: #7A4E3E; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+  .agentcard .txt { font-size: 12.5px; color: #45403a; }
+  .slots { margin-top: 9px; display: flex; flex-direction: column; gap: 6px; }
+  .slot { font-size: 12.5px; font-weight: 600; color: #7A4E3E; background: #F9EEE9; border: 1px solid #E7C6B6; border-radius: 10px; padding: 8px 11px; text-align: center; }
+  .slot.picked { background: #6E9464; color: #fff; border-color: #6E9464; }
+  .slot.picked::after { content: " ✓"; }
+  .ledger { margin: 2px 0 10px; text-align: center; font-size: 10.5px; color: #8a8170; }
+  .ledger b { color: #55503F; }
+  .joincard { background: #26331e; border-radius: 15px; padding: 12px 14px; margin-bottom: 8px; max-width: 88%; }
+  .joincard .lbl { font-size: 10px; font-weight: 700; color: #b7d29e; letter-spacing: 0.4px; text-transform: uppercase; }
+  .joincard .ttl { font-size: 13px; color: #fff; margin-top: 3px; font-weight: 600; }
+  .joincard .btn { margin-top: 9px; display: block; text-align: center; font-size: 13px; font-weight: 700; color: #26331e; background: #C6E4A8; border-radius: 10px; padding: 9px; }
+  .joincard .meta { margin-top: 7px; font-size: 10.5px; color: #9fb98a; }
+
+  /* правая колонка — разбор кадров */
+  .frames { }
+  .frame { display: flex; gap: 14px; padding: 15px 0; }
+  .frame:not(:last-child) { border-bottom: 1px solid #E4DBCB; }
+  .frame .mark { flex: none; width: 26px; height: 26px; border-radius: 50%; background: #9A6250; color: #fff; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+  .frame .mark.live { background: #6E9464; }
+  .frame .ftxt h4 { font-size: 14.5px; }
+  .frame .ftxt p { font-size: 13px; color: #55503F; margin-top: 3px; max-width: 620px; }
+  .frame .tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; border-radius: 6px; padding: 1px 7px; margin-top: 7px; }
+  .tag.live { color: #35502F; background: #DDE7D3; }
+  .tag.new { color: #7A4E3E; background: #F1DAce; background: #F3DDD1; }
+
+  /* ── СПОСОБНОСТЬ / чек-лист ── */
+  .cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cap-card { background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 14px; padding: 18px 20px; }
+  .cap-card .ct { font-size: 11px; color: #A79D8B; letter-spacing: 0.5px; text-transform: uppercase; }
+  .cap-card h4 { font-size: 15px; margin-top: 4px; }
+  .cap-card ul { margin-top: 10px; padding-left: 0; list-style: none; }
+  .cap-card li { font-size: 13px; color: #55503F; padding: 5px 0 5px 18px; position: relative; }
+  .cap-card li::before { content: "→"; position: absolute; left: 0; color: #9A6250; }
+  .cap-card li b { color: #201C17; }
+  .cap-card code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; background: #F1EADD; color: #7A4E3E; border-radius: 5px; padding: 1px 5px; }
+
+  .checklist { margin-top: 16px; background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 14px; padding: 20px 22px; }
+  .checklist h3 { font-size: 15px; margin-bottom: 12px; }
+  .chk { display: flex; gap: 10px; font-size: 13px; color: #55503F; padding: 6px 0; align-items: flex-start; }
+  .chk .bx { flex: none; width: 17px; height: 17px; border-radius: 5px; border: 1.5px solid #C9BCA4; margin-top: 1px; }
+  .chk .bx.on { background: #6E9464; border-color: #6E9464; position: relative; }
+  .chk .bx.on::after { content: "✓"; color: #fff; font-size: 12px; position: absolute; top: -3px; left: 2px; }
+  .chk b { color: #201C17; }
+
+  /* ── ДВА РЕЖИМА ── */
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .mode { border-radius: 16px; padding: 20px 22px; }
+  .mode.own { background: #EFF3E9; border: 1px solid #C9D8BC; }
+  .mode.out { background: #FBF5EC; border: 1px solid #E4DBCB; }
+  .mode .mh { display: flex; align-items: center; gap: 9px; }
+  .mode .mh .pill { font-size: 10px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; border-radius: 6px; padding: 2px 8px; }
+  .mode.own .pill { color: #35502F; background: #DDE7D3; }
+  .mode.out .pill { color: #7A4E3E; background: #F3DDD1; }
+  .mode h3 { font-size: 16px; }
+  .mode .desc { font-size: 13px; color: #55503F; margin-top: 8px; }
+  .mode .desc b { color: #201C17; }
+  /* мини IG-личка */
+  .igdm { margin-top: 14px; background: #fff; border: 1px solid #E4DBCB; border-radius: 14px; overflow: hidden; }
+  .igdm .bar { padding: 9px 13px; border-bottom: 1px solid #EFE7D8; font-size: 12px; font-weight: 700; color: #45403a; display: flex; align-items: center; gap: 7px; }
+  .igdm .bar .ig { width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(45deg,#f09433,#dc2743,#bc1888); }
+  .igdm .body { padding: 12px 13px; background: #fafafa; }
+  .igdm .m { max-width: 82%; padding: 7px 11px; border-radius: 15px; font-size: 12.5px; margin-bottom: 7px; }
+  .igdm .m.them { background: #efefef; color: #262626; }
+  .igdm .m.me { background: #3797f0; color: #fff; margin-left: auto; }
+  .igdm .m .lk { color: #cfe6ff; text-decoration: underline; }
+  .igdm .hint { font-size: 10.5px; color: #9a9384; margin-top: 2px; }
+  /* zero-login страница */
+  .zlp { margin-top: 14px; background: #FFFDF8; border: 1px solid #DDBBAD; border-radius: 14px; padding: 16px 16px 14px; }
+  .zlp .u { font-size: 11px; color: #A79D8B; font-family: ui-monospace, Menlo, monospace; margin-bottom: 10px; }
+  .zlp .from { font-size: 13px; color: #201C17; font-weight: 600; }
+  .zlp .sub2 { font-size: 12px; color: #7A7264; margin-top: 2px; }
+  .zlp .picks { margin-top: 12px; display: flex; flex-direction: column; gap: 7px; }
+  .zlp .pk { font-size: 13px; font-weight: 600; color: #7A4E3E; background: #F9EEE9; border: 1px solid #E7C6B6; border-radius: 10px; padding: 9px; text-align: center; }
+  .zlp .pk.on { background: #6E9464; color: #fff; border-color: #6E9464; }
+  .zlp .pk.on::after { content: " ✓"; }
+  .zlp .rail { margin-top: 12px; border-top: 1px dashed #DDBBAD; padding-top: 10px; }
+  .zlp .rail .q { font-size: 11px; color: #A79D8B; text-transform: uppercase; letter-spacing: 0.4px; }
+  .zlp .rail .opts { margin-top: 7px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .zlp .rail .o { font-size: 11.5px; color: #55503F; background: #F1EADD; border-radius: 8px; padding: 4px 9px; }
+  .zlp .rail .o.on { background: #E7C6B6; color: #7A4E3E; font-weight: 600; }
+  .zlp .rail .note { font-size: 11px; color: #7A7264; margin-top: 8px; }
+  .irony { margin-top: 18px; background: #F9EEE9; border: 1px solid #DDBBAD; border-radius: 12px; padding: 16px 20px; font-size: 13.5px; color: #55503F; }
+  .irony b { color: #7A4E3E; }
+
+  /* ── ЕЩЁ ДВА УЗЛА ── */
+  .scen { margin-top: 30px; }
+  .scen:first-of-type { margin-top: 8px; }
+  .scen-h { font-size: 16px; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .scen-h .k { font-size: 10px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: #7A4E3E; background: #F3DDD1; border-radius: 6px; padding: 2px 8px; }
+  .scen-q { font-size: 13px; color: #7A7264; font-style: italic; margin: 7px 0 16px; max-width: 780px; }
+  .act { display: flex; gap: 6px; margin-top: 9px; }
+  .act .go { flex: 1; text-align: center; font-size: 12.5px; font-weight: 700; color: #fff; background: #6E9464; border: 1px solid #6E9464; border-radius: 10px; padding: 8px 10px; }
+  .act .ghost { flex: none; font-size: 12.5px; font-weight: 600; color: #7A4E3E; background: #F9EEE9; border: 1px solid #E7C6B6; border-radius: 10px; padding: 8px 12px; }
+  .efield { font-size: 12.5px; color: #45403a; background: #fff; border: 1px solid #E7C6B6; border-radius: 9px; padding: 9px 11px; display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+  .efield .ph { color: #b3a993; }
+  .efield .role { margin-left: auto; font-size: 10px; font-weight: 700; color: #7A4E3E; background: #F3DDD1; border-radius: 6px; padding: 1px 7px; white-space: nowrap; }
+
+  .weak { margin-top: 42px; background: #FBF5EC; border: 1px solid #DDBBAD; border-left: 4px solid #9A6250; border-radius: 12px; padding: 20px 24px; }
+  .weak h3 { font-size: 15px; color: #7A4E3E; }
+  .weak p { font-size: 13.5px; color: #55503F; margin-top: 8px; max-width: 880px; }
+  .weak p b { color: #201C17; }
+
+  footer { margin-top: 30px; font-size: 12px; color: #A79D8B; }
+  @media (max-width: 860px) {
+    .flip, .cap-grid { grid-template-columns: 1fr; }
+    .stage { grid-template-columns: 1fr; }
+    .phone { max-width: 360px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Календарь <em>наоборот</em>: встреча не назначается в календаре — она рождается в чате, а календарь молча ведёт запись.</h1>
+  <div class="sub">Инсайт из трёх сообщений: у нового поколения календарь и почта — не способ договориться. Договариваются там, где уже общаются. «10 из 10 раз путаница, когда кидать ссылку» — это не про людей, это про то, что мы гоняем координацию через инструмент, к которому никто не идёт. Переворачиваем причинность: <b>чат координирует — календарь записывает</b>.</div>
+</header>
+
+<!-- ============ ПЕРЕВОРОТ ============ -->
+<div class="section">
+  <div class="sec-title"><h2>В чём переворот</h2></div>
+  <div class="sec-sub">Одна и та же встреча. Слева — как гоняем сейчас (time-first: сначала сетка, потом люди). Справа — наоборот (chat-first: сначала разговор, календарь — тихий бэкенд).</div>
+
+  <div class="flip">
+    <div class="flip-card old">
+      <div class="cap">Сейчас · time-first</div>
+      <h3>Идёшь в календарь координировать</h3>
+      <div class="flow">
+        <div class="step"><span class="n">1</span><span class="t">Обсуждаем слоты — <b>неловкий торг</b> «а когда тебе удобно»</span></div>
+        <div class="step"><span class="n">2</span><span class="t">Шлёшь <b>почту</b>, ждёшь инвайт в календарь</span></div>
+        <div class="step pain"><span class="n">3</span><span class="t">Инвайт где-то в почте, ссылка где-то в инвайте</span></div>
+        <div class="step pain"><span class="n">4</span><span class="t">10/10 — путаница: <b>кинуть линк сейчас или за 5 минут?</b></span></div>
+      </div>
+      <div class="verdict">Календарь — <b>поверхность координации</b>. К ней надо идти, её надо открывать. Молодые не идут; взрослые (Анна) держат его как внутренний реестр компании, не как канал к чужому человеку.</div>
+    </div>
+
+    <div class="flip-card new">
+      <div class="cap">Наоборот · chat-first</div>
+      <h3>Календарь сам приходит в чат — в нужную секунду</h3>
+      <div class="flow">
+        <div class="step"><span class="n">1</span><span class="t">В чате прозвучало «давай созвонимся» — агент <b>предлагает 2–3 слота кнопками прямо здесь</b></span></div>
+        <div class="step"><span class="n">2</span><span class="t">Один тап — слот зафиксирован. <b>Ни почты, ни выхода из чата</b></span></div>
+        <div class="step"><span class="n">3</span><span class="t">Календарь пишет запись <b>молча</b> — как реестр, тебя в приложение не гонит</span></div>
+        <div class="step"><span class="n">4</span><span class="t">За 5 минут <b>кнопка «Подключиться» падает в тот же чат</b> — вопрос «когда кидать линк» исчезает</span></div>
+      </div>
+      <div class="verdict">Календарь перестаёт быть местом, куда ходят. Он <b>молчит и появляется ровно тогда, когда нужен</b>. Идентичность в чате = инвайт. Анне не надо понимать «какой планировщик» — она уже в чате.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ПРОТОТИП ЧАТА ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">ПРОТОТИП · ДО КОДА</span><h2>Как это выглядит в одном треде</h2></div>
+  <div class="sec-sub">Слева — живой чат (Telegram / Instagram / веб-виджет — там, где вы уже говорите). Справа — разбор по кадрам: что делает человек, что делает Первый агент, где включается календарь-реестр.</div>
+
+  <div class="stage">
+    <!-- ТЕЛЕФОН -->
+    <div class="phone">
+      <div class="screen">
+        <div class="tg-top">
+          <div class="av">A</div>
+          <div>
+            <div class="nm">Анна Кузнецова</div>
+            <div class="st">Первый агент в чате · онлайн</div>
+          </div>
+        </div>
+        <div class="tg-body">
+          <div class="day">сегодня</div>
+
+          <div class="bub me">Анна, давайте на неделе созвонимся на 30 минут, обсудить пилот <span class="tm">14:39</span></div>
+          <div class="bub them"><div class="who">Анна</div>Давайте! Только не понимаю про календарь — мы внутренним Битриксом пользуемся 🙏 <span class="tm">14:41</span></div>
+
+          <div class="agentcard">
+            <div class="who">🤖 Первый агент</div>
+            <div class="txt">Ничего настраивать не нужно — выберите слот прямо здесь. Свёл ваши свободные окна:</div>
+            <div class="slots">
+              <div class="slot">Ср 23.07 · 15:00–15:30</div>
+              <div class="slot picked">Чт 24.07 · 11:00–11:30</div>
+              <div class="slot">Пт 25.07 · 16:00–16:30</div>
+            </div>
+          </div>
+
+          <div class="bub them"><div class="who">Анна</div>Чт 11:00 идеально <span class="tm">14:43</span></div>
+
+          <div class="ledger">📇 Записано в календарь у обоих · <b>Zoom создан</b> · напоминание за 5 мин — сюда</div>
+
+          <div class="day">чт 24.07 · 10:55</div>
+
+          <div class="joincard">
+            <div class="lbl">через 5 минут</div>
+            <div class="ttl">Созвон с Анной · пилот</div>
+            <a class="btn">🎥 Подключиться</a>
+            <div class="meta">Ссылка появилась сама. Никто её не искал в почте.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- РАЗБОР -->
+    <div class="frames">
+      <div class="frame">
+        <div class="mark live">1</div>
+        <div class="ftxt">
+          <h4>Человек просто пишет как обычно</h4>
+          <p>«Давайте созвонимся» — в том же чате, где и так идёт разговор. Никакого «пришли мне слоты», «скинь календли», «я вышлю инвайт».</p>
+          <span class="tag live">чат-вход уже в проде</span>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="mark">2</div>
+        <div class="ftxt">
+          <h4>Агент ловит интент и предлагает слоты прямо в треде</h4>
+          <p>Первый видит «созвониться / встретиться», смотрит свободные окна обеих сторон и кидает 2–3 кнопки. Торга нет — есть готовые варианты. Один тап = согласовано.</p>
+          <span class="tag new">достраиваем: рука propose_slots</span>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="mark">3</div>
+        <div class="ftxt">
+          <h4>Календарь пишет молча — как реестр, не как канал</h4>
+          <p>Запись падает в календари обеих сторон, создаётся ссылка на созвон. Но это фон: никого не гонят открывать приложение. Календарь — база данных, а не место встречи.</p>
+          <span class="tag new">достраиваем: рука book_meeting</span>
+        </div>
+      </div>
+      <div class="frame">
+        <div class="mark">4</div>
+        <div class="ftxt">
+          <h4>Ссылка приходит сама — за 5 минут, в тот же чат</h4>
+          <p>Убивает ровно ту боль из голосовой: «кидать линк сейчас или за 5 минут». Никто не кидает. Кнопка «Подключиться» появляется в треде в T-5. Напоминание там, где ты уже сидишь.</p>
+          <span class="tag new">достраиваем: таймер just-in-time join</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ СПОСОБНОСТЬ ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">СПОСОБНОСТЬ АГЕНТА</span><h2>Что достраиваем в платформе</h2></div>
+  <div class="sec-sub">Это не отдельное приложение-планировщик, а ещё одна рука Первого агента — он уже живёт в чате, читает тред и ведёт задачи. Добавляем «координацию встреч» как способность: домен + руки + декларация в паспорте.</div>
+
+  <div class="cap-grid">
+    <div class="cap-card">
+      <div class="ct">Руки (что агент реально делает)</div>
+      <h4>Три инструмента + один таймер</h4>
+      <ul>
+        <li><b>propose_slots</b> — по интенту «встретиться» собрать свободные окна обеих сторон, отдать 2–3 кнопки в чат <code>replyKeyboard</code></li>
+        <li><b>capture_agreement</b> — поймать договорённость из живой речи («завтра в три» — «да»), развернуть в слот, показать и ждать подтверждения — не бронировать молча</li>
+        <li><b>book_meeting</b> — на тап зафиксировать слот, записать в календари, создать ссылку на созвон (Zoom/Meet/встроенная)</li>
+        <li><b>add_guests / on behalf</b> — ставить встречу за хозяина времени; добавлять гостей по имейлу (гость / организатор / хозяин)</li>
+        <li><b>reschedule / cancel</b> — «давай перенесём» в чате → правит запись, не заставляя лезть в календарь</li>
+        <li><b>just-in-time join</b> — таймер T-5 роняет кнопку «Подключиться» в тот же тред обеим сторонам</li>
+      </ul>
+    </div>
+    <div class="cap-card">
+      <div class="ct">Принципы (наши инварианты)</div>
+      <h4>Чат ведёт, календарь записывает</h4>
+      <ul>
+        <li><b>Ноль почты, ноль «открой приложение».</b> Идентичность в чате = инвайт</li>
+        <li><b>Явное согласие, не автобронь.</b> Слот встаёт только на тап человека — не угадываем</li>
+        <li><b>Календарь = реестр.</b> Внешний (Google/Битрикс) — коннектор; нет своего — <b>локальный</b> календарь платформы, чтоб работало без интеграции</li>
+        <li><b>Пусто — честно.</b> Нет свободных окон / нет данных календаря → агент прямо говорит, а не выдумывает слот</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h3>Гейт по чек-листу агента (способность к существующему — список B)</h3>
+    <div class="chk"><span class="bx"></span><span><b>Декларация first.</b> <code>capability: meeting.coordinate</code> в шаблоне агента (<code>upsertAgentTemplate</code>) — паспорт/контракт/техспека тянутся из неё</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Биндинг.</b> <code>setCapabilityBindings</code> + локальный коннектор-календарь (внешний Google/Битрикс не обязателен для старта)</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Руки.</b> домен + роуты + миграция под встречи (slots, bookings, join-таймеры)</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Витрина.</b> схема <code>flowSVG</code>/<code>realCfg</code>, <code>/agent-specs</code>, <code>/agent-contract</code> — способность видна снаружи</span></div>
+    <div class="chk"><span class="bx"></span><span><b>PLATFORM_FEATURES.</b> одна запись → Справка + ответ агента по фиче + недельный дайджест</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Лендинг кокпита.</b> Ситуация → Проблема → Решение → Выгода («встреча без календаря»)</span></div>
+    <div class="chk"><span class="bx"></span><span><b>Гейты.</b> tsc + declaration + verify (code-reviewer) перед коммитом</span></div>
+  </div>
+</div>
+
+<!-- ============ ДВА РЕЖИМА ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">ДВА РЕЖИМА</span><h2>А если человек не из Уклада? Зумимся из лички</h2></div>
+  <div class="sec-sub">Кнопки в треде работают, только когда мы владеем каналом. Для чужого человека в чужой личке (Instagram, WhatsApp) агент внутрь чата залезть не может — API не даёт. Тогда режим деградирует красиво: не кнопки, а <b>одна умная ссылка</b>. Не «приди в мою сетку» (Calendly), а «Leo уже выбрал — подтверди».</div>
+
+  <div class="modes">
+    <!-- РЕЖИМ А -->
+    <div class="mode own">
+      <div class="mh"><span class="pill">Свой канал</span><h3>Telegram / веб-виджет / оба в Укладе</h3></div>
+      <div class="desc">Агент живёт в треде → роняет <b>кнопки-слоты прямо в чат</b>, кнопка «Подключиться» приходит в T-5 туда же. Ссылка не нужна вообще. Это основная сцена выше.</div>
+      <div class="desc" style="margin-top:10px; color:#35502F;">✓ Полный «календарь наоборот»: ноль ссылок, ноль выхода из чата.</div>
+    </div>
+
+    <!-- РЕЖИМ Б -->
+    <div class="mode out">
+      <div class="mh"><span class="pill">Чужой канал</span><h3>Instagram DM / WhatsApp / незнакомец</h3></div>
+      <div class="desc">Агент готовит тебе одну строку — ты вставляешь её в личку. Человеку: две даты (уже сужены тобой) + короткая ссылка. Ноль трения, ноль аккаунта.</div>
+
+      <div class="igdm">
+        <div class="bar"><span class="ig"></span>Личка · Instagram</div>
+        <div class="body">
+          <div class="m me">Давай в Zoom — чт 11:00 или пт 16:00: <span class="lk">uklad.ai/m/leo-a3k</span></div>
+          <div class="hint">↑ строку собрал Первый агент в твоём треде, ты просто вставил</div>
+          <div class="m them">Тапнул чт 11:00 👍</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- zero-login страница по ссылке -->
+  <div class="modes" style="margin-top:18px;">
+    <div class="mode out" style="grid-column: 1 / -1;">
+      <div class="mh"><span class="pill">по ссылке</span><h3>Что видит человек, тапнув ссылку — без логина</h3></div>
+      <div class="zlp">
+        <div class="u">uklad.ai/m/leo-a3k</div>
+        <div class="from">Leo зовёт на Zoom · 30 минут</div>
+        <div class="sub2">Выберите слот — аккаунт не нужен</div>
+        <div class="picks">
+          <div class="pk on">Чт 24.07 · 11:00–11:30</div>
+          <div class="pk">Пт 25.07 · 16:00–16:30</div>
+        </div>
+        <div class="rail">
+          <div class="q">Куда напомнить за 5 минут?</div>
+          <div class="opts">
+            <span class="o on">📅 В календарь</span>
+            <span class="o">✉️ На почту</span>
+            <span class="o">✈️ В Telegram</span>
+          </div>
+          <div class="note">По умолчанию — нотификация календарного события: единственный рельс, который есть у всех. Ссылка на Zoom уже внутри события — искать в почте не надо.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="irony">
+    <b>Острый поворот.</b> Календарь, который мы «похоронили» как <b>место, куда ходят договариваться</b>, возвращается как <b>универсальный рельс доставки</b> для тех, с кем у нас нет общего чата. Он не умер — ушёл в фон и всплывает как канал напоминания, а не как поверхность координации. Мир не «без календаря» — мир, где <b>координация ушла в чат, а календарь стал тихой трубой</b>: записью и напоминалкой.
+  </div>
+</div>
+
+<!-- ============ ЕЩЁ ДВА УЗЛА ============ -->
+<div class="section">
+  <div class="sec-title"><span class="badge proto">ЕЩЁ ДВА ЖИВЫХ УЗЛА</span><h2>Договорились словами · Ставит ассистент за другого</h2></div>
+  <div class="sec-sub">Кнопки-слоты и умная ссылка закрывают не всё. Две ситуации из жизни, где встреча рождается иначе, а календарь всё равно должен молча записать.</div>
+
+  <!-- ── СЦЕНАРИЙ 1: договорились словами ── -->
+  <div class="scen">
+    <div class="scen-h"><span class="k">Сценарий 1</span><span>Договорились свободным текстом — никто не нажимал кнопку</span></div>
+    <div class="scen-q">«Я у него в чате пишу: дружище, завтра в три нормально? Он говорит — да. И что я делаю?»</div>
+
+    <div class="stage">
+      <div class="phone">
+        <div class="screen">
+          <div class="tg-top">
+            <div class="av">В</div>
+            <div>
+              <div class="nm">Вася Петров</div>
+              <div class="st">Первый агент в треде · онлайн</div>
+            </div>
+          </div>
+          <div class="tg-body">
+            <div class="day">сегодня</div>
+
+            <div class="bub me">Вась, давай завтра в три на полчаса, добьём макет? <span class="tm">14:02</span></div>
+            <div class="bub them"><div class="who">Вася</div>Ага, давай 👍 <span class="tm">14:05</span></div>
+
+            <div class="agentcard">
+              <div class="who">🤖 Первый агент</div>
+              <div class="txt">Похоже, вы договорились. Прочитал из переписки:</div>
+              <div class="slots">
+                <div class="slot picked">Завтра · чт 24.07 · 15:00–15:30</div>
+              </div>
+              <div class="act">
+                <span class="go">Записать и позвать Васю</span>
+                <span class="ghost">Поправить</span>
+              </div>
+            </div>
+
+            <div class="ledger">📇 Записано у тебя · <b>Васе ушла ссылка-подтверждение</b> · Zoom создан · напоминание за 5 мин — сюда</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="frames">
+        <div class="frame">
+          <div class="mark live">1</div>
+          <div class="ftxt">
+            <h4>Время назвали сами люди — в словах, не в сетке</h4>
+            <p>Никаких «пришли слоты». Двое договорились как в жизни: «завтра в три» — «да». Кнопок агент не предлагал и не был нужен.</p>
+            <span class="tag live">чат-вход уже в проде</span>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="mark">2</div>
+          <div class="ftxt">
+            <h4>Агент ловит договорённость из живой речи</h4>
+            <p>Читает тред, видит взаимное «да» на конкретное время, разворачивает «завтра в три» в дату и слот. Не молча бронирует — <b>показывает, что понял, и ждёт один тап</b>. «Завтра в три» ночью или днём, ваш ли это часовой пояс — уточняет, а не угадывает.</p>
+            <span class="tag new">достраиваем: рука capture_agreement</span>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="mark">3</div>
+          <div class="ftxt">
+            <h4>Тап — и запись падает обоим по их рельсу</h4>
+            <p>Тебе — в календарь и в этот чат. Васе, даже без Уклада, — та же умная ссылка-подтверждение (нотификация календарного события со ссылкой на Zoom внутри). Никто не открывал планировщик.</p>
+            <span class="tag new">достраиваем: book_meeting + доставка по рельсу</span>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="mark live">4</div>
+          <div class="ftxt">
+            <h4>А если чат — не наш?</h4>
+            <p>Если вы писали Васе в его личке, куда агент не вхож, — просто скажете своему Первому «поставь с Васей завтра 15:00». Тот же результат: у тебя запись, Васе ссылка. Разговор ведёт человек, ввод — диктовкой, как задачу.</p>
+            <span class="tag live">диктовка боту уже в проде</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── СЦЕНАРИЙ 2: ставит ассистент ── -->
+  <div class="scen">
+    <div class="scen-h"><span class="k">Сценарий 2</span><span>Встречу ставит ассистент — за тебя, с гостями по имейлу</span></div>
+    <div class="scen-q">«Лена ставит мне собеседование с кандидатом. Сама в личке договаривается про слоты. Глядя в мою ссылку, хочет вписать его имейл и свой — чтобы инвайты пришли и ей, и ему. Что она делает?»</div>
+
+    <div class="stage">
+      <div class="phone">
+        <div class="screen">
+          <div class="tg-top">
+            <div class="av" style="background:#9A6250;">Л</div>
+            <div>
+              <div class="nm">Лена · подбор</div>
+              <div class="st">личка с кандидатом</div>
+            </div>
+          </div>
+          <div class="tg-body">
+            <div class="day">Лена ↔ кандидат</div>
+
+            <div class="bub them"><div class="who">Кандидат</div>Мне удобно чт или пт после обеда <span class="tm">11:20</span></div>
+            <div class="bub me">Отлично, смотрю окна Лео — держите, выберите слот 👇 <span class="tm">11:22</span></div>
+            <div class="bub me" style="background:#EFF3E9;">uklad.ai/m/leo-hr7 <span class="tm">11:22</span></div>
+            <div class="bub them"><div class="who">Кандидат</div>Взял чт 14:00 🙌 <span class="tm">11:31</span></div>
+
+            <div class="ledger">📇 Лена договаривается сама · <b>слот встал в календарь Лео</b> · инвайты ушли троим</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="frames">
+        <div class="frame">
+          <div class="mark">1</div>
+          <div class="ftxt">
+            <h4>Ставит не участник встречи, а ассистент</h4>
+            <p>Лена организует, но сама может и не сидеть на созвоне. Хозяин времени — Лео: слот проверяется по <b>его</b> свободным окнам, событие ложится в <b>его</b> календарь. Лена — распорядитель, не владелец.</p>
+            <span class="tag new">достраиваем: booking on behalf</span>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="mark">2</div>
+          <div class="ftxt">
+            <h4>Договаривается в своей личке — как ей привычно</h4>
+            <p>С кандидатом она общается там, где уже общается. Ссылка Лео — не «приди в мою сетку», а «Лео открыл эти окна, выбери». Кандидату аккаунт не нужен.</p>
+            <span class="tag live">умная ссылка уже в проекте выше</span>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="mark">3</div>
+          <div class="ftxt">
+            <h4>Вписывает гостей по имейлу — и себя, и кандидата</h4>
+            <p>После выбора слота ссылка спрашивает: <b>кому слать инвайт</b>. Лена вбивает имейл кандидата и свой. Инвайт с событием и ссылкой на Zoom уходит всем: Лео (хозяин), кандидату (гость), Лене (организатор). Ниже — что она видит.</p>
+            <span class="tag new">достраиваем: add_guests по email</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- страница по ссылке: шаг «кто получит инвайт» -->
+    <div class="modes" style="margin-top:18px;">
+      <div class="mode out" style="grid-column: 1 / -1;">
+        <div class="mh"><span class="pill">по ссылке · шаг гостей</span><h3>Что Лена видит, тапнув ссылку Лео</h3></div>
+        <div class="zlp">
+          <div class="u">uklad.ai/m/leo-hr7</div>
+          <div class="from">Лео открыл окна для собеседования · 45 минут</div>
+          <div class="sub2">Выберите слот — аккаунт не нужен</div>
+          <div class="picks">
+            <div class="pk on">Чт 24.07 · 14:00–14:45</div>
+            <div class="pk">Пт 25.07 · 15:00–15:45</div>
+          </div>
+          <div class="rail">
+            <div class="q">Кто получит инвайт?</div>
+            <div class="efield"><span class="ph">имейл кандидата</span><span class="role">гость</span></div>
+            <div class="efield"><span class="ph">ваш имейл</span><span class="role">организатор</span></div>
+            <div class="note">Лео добавляется как хозяин события автоматически — его вписывать не нужно. Инвайт каждому уходит со ссылкой на Zoom внутри: искать в почте не придётся.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ САМОЕ СЛАБОЕ МЕСТО ============ -->
+<div class="weak">
+  <h3>Веду с самого слабого места — до того как строить</h3>
+  <p><b>Свободные окна.</b> «Собрать свободные окна обеих сторон» звучит красиво, но требует доступа к календарю обеих. У Анны — внутренний Битрикс, к которому у нас доступа нет. Значит честный старт: <b>слоты предлагает та сторона, чей календарь мы видим</b> (наш оператор), а вторая просто тапает. Двусторонний free/busy — второй слайс, по коннектору. Не обещаем «магию с двух сторон» на витрине, пока её нет.</p>
+  <p style="margin-top:12px"><b>Где живёт кнопка «Подключиться».</b> В Telegram/веб-виджете — можем ронять сообщение в T-5. В Instagram DM (откуда пришёл инсайт про молодых) API ограниченнее. Слайс 1 — там, где мы владеем каналом (Telegram, веб). IG/WhatsApp — отдельно, честно помечаем «soon», а не рисуем как готовое.</p>
+  <p style="margin-top:12px"><b>Поймать «завтра в три» (сценарий 1).</b> Развернуть живую речь в дату — самое хрупкое: относительное время, часовой пояс, «в три» днём или ночью, взаимное ли «да» или один ещё думает. Поэтому рука <b>только предлагает запись и ждёт тап</b> — молча не бронирует. Ошиблись в разборе — человек правит одной кнопкой, не мы навязали слот. И ловим лишь в треде, где агент реально присутствует; чужая личка — через диктовку своему Первому, не через чтение чужого чата.</p>
+  <p style="margin-top:12px"><b>Гости по имейлу на публичной ссылке (сценарий 2).</b> Поле «впиши имейл» на ссылке без логина — это открытая дверь: по украденной ссылке можно засыпать инвайтами чужие адреса. Значит: ссылка одноразовая/с коротким сроком, число гостей ограничено, хозяин времени видит, кого добавили, и может отозвать. Хозяином события всегда остаётся владелец окон (Лео) — распорядитель (Лена) помечен как организатор, не как владелец: провенанс «кто поставил» не теряем.</p>
+</div>
+
+<footer>Прототип до кода. Зелёное — работает сейчас (чат-вход, Первый в треде, задачи), терракота — предложение. Смотрим, договариваемся о словах — потом строим декларация-первой.</footer>
+
+</div>
+</body>
+</html>
