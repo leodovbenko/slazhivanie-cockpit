@@ -575,6 +575,24 @@
   </section>
 
   <!-- ============ ПАМЯТЬ КОМПАНИИ ============ -->
+  <style>
+    .mem-scene{margin-top:34px;background:var(--white);border:1px solid var(--line-light);border-radius:18px;padding:28px clamp(18px,3vw,34px)}
+    .mem-scene-head{margin-bottom:20px}
+    .mem-scene-head h3{font-size:clamp(20px,2.6vw,26px);color:var(--t1);margin-top:4px}
+    .mem-chat{display:flex;flex-direction:column;gap:14px;max-width:760px}
+    .mem-msg{display:flex;gap:12px;align-items:flex-start}
+    .mem-msg.human{flex-direction:row-reverse;margin-left:auto;max-width:74%}
+    .mem-msg.agent{max-width:88%}
+    .mem-av{flex-shrink:0;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:700;font-size:15px;background:var(--clay-soft);color:var(--clay-d)}
+    .mem-av.a{background:var(--green-soft);color:var(--green-d)}
+    .mem-bub{padding:13px 17px;border-radius:15px;font-size:15.5px;line-height:1.5;color:var(--t1)}
+    .mem-msg.human .mem-bub{background:var(--clay-soft);border-top-right-radius:5px}
+    .mem-msg.agent .mem-bub{background:var(--paper-2);border:1px solid var(--line-light);border-top-left-radius:5px}
+    .mem-cta{margin-top:11px;display:inline-block;font-weight:600;font-size:14px;color:var(--green-d);border:1px solid var(--green-lite);border-radius:9px;padding:7px 13px;background:var(--white)}
+    .mem-caption{margin-top:22px;max-width:820px;font-size:15.5px;line-height:1.6;color:var(--t2)}
+    .mem-caption b{color:var(--t1)}
+    @media(max-width:560px){.mem-msg.human,.mem-msg.agent{max-width:100%}}
+  </style>
   <section class="sec light-block" id="memory">
     <div class="wrap">
       <div class="sec-head">
@@ -609,6 +627,28 @@
           <h3>Агенты отвечают по ней</h3>
           <p>Любой агент флота опирается на одну и ту же память</p>
         </div>
+      </div>
+
+      <!-- Память в действии: агент отвечает из памяти организации и сокращает путь -->
+      <div class="mem-scene" role="img" aria-label="Диалог: новый сотрудник спрашивает, как включить запись встреч; агент отвечает из памяти компании — вспоминает, кто это настроил и на какой встрече говорил, и предлагает написать коллеге">
+        <div class="mem-scene-head">
+          <span class="eyebrow">Единый контекст в действии</span>
+          <h3>Один ответ вместо часа расспросов</h3>
+        </div>
+        <div class="mem-chat">
+          <div class="mem-msg human">
+            <div class="mem-av">Н</div>
+            <div class="mem-bub">Как включить автозапись встреч? Туплю второй час, не нахожу, где это настраивается.</div>
+          </div>
+          <div class="mem-msg agent">
+            <div class="mem-av a">П</div>
+            <div class="mem-bub">
+              У Игоря это уже работает. На встрече <b>3 июля</b> он рассказывал, что подключил запись через API-ключ сервиса — готовый рабочий вариант. Быстрее взять настроенное у него, чем собирать с нуля.
+              <div class="mem-cta">Написать Игорю →</div>
+            </div>
+          </div>
+        </div>
+        <p class="mem-caption">Агент ответил не общей эрудицией, а <b>памятью организации</b>: помнит, кто в команде что настроил и на какой встрече это прозвучало — и сразу связывает с нужным человеком. Единый контекст <b>сокращает путь</b>: вопрос, на который ушёл бы час расспросов, закрывается одним сообщением.</p>
       </div>
 
       <div class="grid-2" style="margin-top:8px">
