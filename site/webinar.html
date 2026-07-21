@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Вебинар «Уклад ИИ» — как снизить ФОТ и делать больше работы на связке человек + ИИ-агенты</title>
-  <meta name="description" content="Открытый вебинар от операторов: с 2010 года автоматизируем бизнес — 10+ ИТ-продуктов, 25 000 клиентов, 1000+ сотрудников. Покажем вживую среду, через которую прогнали собственный бизнес: наём, продажи, контент, документы, встречи.">
+  <title>Вебинар «Рост и защита бизнеса» — Леонид Довбенко × Калой Ахильгов · 30 июля</title>
+  <meta name="description" content="Два спикера за один эфир: как расти через ИИ и порядок в процессах (Леонид Довбенко) и как защитить бизнес от проверок, обысков и налоговых рисков (адвокат по уголовным делам Калой Ахильгов). 30 июля, онлайн в Zoom.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="canonical" href="https://slazhivanie.ru/webinar.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Слаживание">
-  <meta property="og:title" content="Вебинар «Уклад ИИ» — среда, где люди и ИИ-агенты делают больше работы вместе">
-  <meta property="og:description" content="Живая среда, через которую мы прогнали собственный бизнес — наём, продажи, контент, документы, встречи. Покажем вживую, как это работает.">
+  <meta property="og:title" content="Вебинар «Рост и защита бизнеса» — два спикера, 30 июля">
+  <meta property="og:description" content="Один вебинар — два контура устойчивости бизнеса. Эффективность через ИИ (Леонид Довбенко) и защита от проверок и уголовных рисков (адвокат Калой Ахильгов).">
   <meta property="og:url" content="https://slazhivanie.ru/webinar.html">
-  <meta property="og:image" content="https://slazhivanie.ru/og-webinar.png">
+  <meta property="og:image" content="https://slazhivanie.ru/og-webinar.png?v=2">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="ru_RU">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Вебинар «Уклад ИИ» — как делать в 20 раз больше работы">
-  <meta name="twitter:image" content="https://slazhivanie.ru/og-webinar.png">
+  <meta name="twitter:title" content="Вебинар «Рост и защита бизнеса» — Довбенко × Ахильгов, 30 июля">
+  <meta name="twitter:image" content="https://slazhivanie.ru/og-webinar.png?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -36,19 +36,68 @@
   <noscript><div><img src="https://mc.yandex.ru/watch/110175627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
   <!-- /Yandex.Metrika counter -->
   <style>
-    /* Локальные добавки лендинга вебинара — на базе style.css */
+    /* Локальные добавки лендинга вебинара — на базе style.css.
+       Два спикера = два цвета из логотипа: зелёный (эффективность / Леонид), глина (безопасность / Калой). */
     .whenbar{display:inline-flex;flex-wrap:wrap;align-items:center;gap:10px 20px;background:var(--white);border:1px solid var(--line-light);border-radius:14px;padding:14px 20px;margin:6px 0 28px}
     .whenbar .wb{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:600;color:var(--dark)}
     .whenbar .wb svg{width:18px;height:18px;stroke:var(--green-d);fill:none;stroke-width:1.9;flex-shrink:0}
     .whenbar .wb b{color:var(--green-d)}
+
+    /* Спикеры — две карточки с акцентом сверху */
+    .speakers{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .spk{background:var(--white);border:1px solid var(--line-light);border-top:4px solid var(--green);border-radius:16px;padding:28px}
+    .spk.sec{border-top-color:var(--clay)}
+    .spk .kicker{display:inline-block;font-family:'Fraunces',serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green-d);margin-bottom:12px}
+    .spk.sec .kicker{color:var(--clay-d)}
+    .spk .name{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--t1);line-height:1.1;letter-spacing:-.01em}
+    .spk .role{margin:8px 0 16px;font-size:15px;color:var(--t2);line-height:1.45}
+    .spk ul{list-style:none;padding:0;margin:0}
+    .spk ul li{position:relative;padding:0 0 10px 22px;font-size:14.5px;color:var(--t2);line-height:1.5}
+    .spk ul li:last-child{padding-bottom:0}
+    .spk ul li::before{content:"";position:absolute;left:2px;top:7px;width:9px;height:9px;background:var(--green);border-radius:50%}
+    .spk.sec ul li::before{background:var(--clay)}
+    .spk ul li b{color:var(--dark)}
+
+    /* Два контура */
     .why{display:grid;grid-template-columns:1fr 1fr;gap:20px}
     .why .card{border-left:3px solid var(--green)}
+    .why .card.sec{border-left-color:var(--clay)}
     .why .big{font-family:'Fraunces',serif;font-size:clamp(30px,4vw,42px);font-weight:700;color:var(--green-d);line-height:1;letter-spacing:-.02em;margin-bottom:14px}
+    .why .card.sec .big{color:var(--clay-d)}
     .why .card p b{color:var(--dark)}
+    .contour-note{margin-top:30px;max-width:760px;font-size:clamp(17px,2vw,19px);color:var(--t1);line-height:1.5}
+    .contour-note b{color:var(--green-d)}
+
+    /* Боли (крестики) — сторона безопасности */
+    .pains{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 34px}
+    .pains li{position:relative;padding-left:32px;font-size:15.5px;color:var(--t2);line-height:1.5}
+    .pains li::before{content:"✕";position:absolute;left:4px;top:0;color:var(--clay);font-weight:700;font-size:16px}
+    .pain-key{margin-top:30px;background:var(--white);border:1px solid var(--line-light);border-left:3px solid var(--clay);border-radius:12px;padding:24px 26px;font-size:17px;color:var(--t1);line-height:1.5;max-width:840px}
+    .pain-key b{color:var(--clay-d)}
+
+    /* Программа — две дорожки */
+    .tracks{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .track{background:var(--white);border:1px solid var(--line-light);border-top:4px solid var(--green);border-radius:16px;padding:26px}
+    .track.sec{border-top-color:var(--clay)}
+    .track .kicker{display:inline-block;font-family:'Fraunces',serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green-d)}
+    .track.sec .kicker{color:var(--clay-d)}
+    .track .tname{font-family:'Fraunces',serif;font-size:21px;font-weight:700;color:var(--t1);margin:6px 0 18px;line-height:1.15}
+    .plist{list-style:none;counter-reset:p;padding:0;margin:0}
+    .plist li{position:relative;counter-increment:p;padding:0 0 16px 42px}
+    .plist li:last-child{padding-bottom:0}
+    .plist li::before{content:counter(p,decimal-leading-zero);position:absolute;left:0;top:1px;font-family:'Fraunces',serif;font-weight:700;font-size:15px;color:var(--green-d)}
+    .track.sec .plist li::before{color:var(--clay-d)}
+    .plist li b{display:block;font-size:16px;color:var(--t1);margin-bottom:3px}
+    .plist li span{font-size:14px;color:var(--t2);line-height:1.5}
+
+    /* Что заберёте */
     .takeaways{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 30px}
     .takeaways li{position:relative;padding-left:30px;font-size:16px;color:var(--dark);line-height:1.5}
     .takeaways li::before{content:"";position:absolute;left:2px;top:6px;width:14px;height:14px;background:var(--green);border-radius:50%}
-    @media(max-width:760px){.why,.takeaways{grid-template-columns:1fr}}
+    .takeaways li.sec::before{background:var(--clay)}
+
+    @media(max-width:760px){.speakers,.why,.tracks,.pains,.takeaways{grid-template-columns:1fr}}
+
     /* Блок регистрации через Telegram (bot-first) */
     .tgreg{background:var(--white);border:1px solid var(--line-light);border-radius:18px;padding:30px 28px}
     .tgreg-steps{list-style:none;counter-reset:s;padding:0;margin:0 0 24px}
@@ -73,11 +122,10 @@
         слаживание<span class="green">.</span>
       </a>
       <nav class="nav-links">
-        <a href="index.html#about">Что такое</a>
+        <a href="#speakers">Спикеры</a>
         <a href="platform.html">Платформа</a>
         <a href="solutions.html">Решения</a>
         <a href="cases.html">Кейсы</a>
-        <a href="team.html">Команда</a>
         <a href="https://blog.slazhivanie.ru/blog">Блог</a>
         <a href="#program">Программа</a>
       </nav>
@@ -85,11 +133,10 @@
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
     <div class="mmenu" id="mmenu">
-      <a href="index.html#about">Что такое</a>
+      <a href="#speakers">Спикеры</a>
       <a href="platform.html">Платформа</a>
       <a href="solutions.html">Решения</a>
       <a href="cases.html">Кейсы</a>
-      <a href="team.html">Команда</a>
       <a href="https://blog.slazhivanie.ru/blog">Блог</a>
       <a href="#program">Программа</a>
       <a href="#reg" class="btn btn-green">Зарегистрироваться</a>
@@ -100,9 +147,9 @@
   <section class="hero" id="top">
     <div class="hero-radar"></div>
     <div class="wrap hero-inner">
-      <span class="pill">Открытый вебинар</span>
-      <h1>Как снизить ФОТ на 30% и делать в 20 раз больше работы — на связке <span class="green">человек + ИИ-агенты</span>.</h1>
-      <p class="sub">Мы построили среду и прогнали через неё собственный бизнес — наём, продажи, контент, документы, встречи. Работающая система, а не дек про ИИ-трансформацию. На вебинаре покажем вживую, как это работает.</p>
+      <span class="pill">Открытый вебинар · два спикера · 30 июля</span>
+      <h1>Как <span class="green">вырасти через ИИ</span> — и не потерять бизнес из-за одной проверки.</h1>
+      <p class="sub">Два практика за один эфир. <b>Леонид Довбенко</b> — как зарабатывать больше и тратить меньше на связке человек + ИИ-агенты. <b>Калой Ахильгов</b>, адвокат по уголовным делам, — как защитить бизнес от проверок, обысков и налоговых претензий. Рост и защита — в одном вебинаре.</p>
       <div class="whenbar">
         <span class="wb"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18" stroke-linecap="round"/></svg> <b>30 июля, четверг</b></span>
         <span class="wb"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"/></svg> <b>17:00 МСК</b></span>
@@ -115,47 +162,129 @@
     </div>
   </section>
 
-  <!-- ============ КТО ВЕДЁТ (нулевой тезис) ============ -->
-  <section class="stats">
-    <div class="wrap stats-grid">
-      <div class="stat"><div class="num">с 2010</div><div class="lbl">года автоматизируем бизнес — как операторы, не лекторы</div></div>
-      <div class="stat"><div class="num">10+</div><div class="lbl">собственных ИТ-продуктов, доведённых до рынка</div></div>
-      <div class="stat"><div class="num">25 000</div><div class="lbl">клиентов пользуются нашими продуктами</div></div>
-      <div class="stat"><div class="num">1000+</div><div class="lbl">сотрудников в наших компаниях</div></div>
-    </div>
-  </section>
-
-  <!-- ============ ПОЧЕМУ ============ -->
-  <section class="sec" id="why">
+  <!-- ============ СПИКЕРЫ ============ -->
+  <section class="sec" id="speakers">
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <span class="eyebrow">Зачем мы это делаем</span>
-          <h2 class="h-sec">Две вещи, в которые верим — и называем числом</h2>
+          <span class="eyebrow">Кто ведёт</span>
+          <h2 class="h-sec">Два спикера, два контура устойчивости</h2>
+        </div>
+      </div>
+      <div class="speakers">
+        <div class="spk">
+          <span class="kicker">Эффективность</span>
+          <div class="name">Леонид Довбенко</div>
+          <div class="role">Основатель «Слаживания». Оператор-внедренец ИИ — не лектор: прогнал через собственную среду свой же бизнес.</div>
+          <ul>
+            <li><b>С 2010 года</b> автоматизирует бизнес — как оператор, а не консультант.</li>
+            <li><b>10+</b> собственных ИТ-продуктов, доведённых до рынка.</li>
+            <li><b>25 000</b> клиентов пользуются этими продуктами.</li>
+            <li><b>1000+</b> сотрудников в его компаниях.</li>
+          </ul>
+        </div>
+        <div class="spk sec">
+          <span class="kicker">Безопасность</span>
+          <div class="name">Калой Ахильгов</div>
+          <div class="role">Адвокат по уголовным делам, управляющий партнёр адвокатского бюро KALOY.RU. Специализация — защита бизнеса и собственников.</div>
+          <ul>
+            <li><b>Почти 20 лет</b> работы в адвокатуре: экономические и налоговые составы, проверки, обыски, допросы.</li>
+            <li>Основатель <b>AdvoCall</b> — адвокат на связи 24/7, срочный выезд на обыск и допрос. СМИ называют его «первым в России Uber для адвокатов, у которого получилось».</li>
+            <li>Автор Telegram-канала <b>@akaloy</b> — 52 000+ подписчиков, 141 000+ на YouTube.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ДВА КОНТУРА (зачем вместе) ============ -->
+  <section class="sec light-block" id="why">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">Зачем в одном эфире</span>
+          <h2 class="h-sec">Рост и защита — две половины одного дела</h2>
         </div>
       </div>
       <div class="why">
         <div class="card">
-          <div class="big">−30% ФОТ</div>
-          <h3>Аккуратно, постепенно — но надёжно и навсегда</h3>
-          <p>Каждая функция тихо перестраивается на связку человек + агенты — без «уволить отдел». Экономия остаётся с вами и не откатывается назад.</p>
+          <div class="big">−30% ФОТ · ×20</div>
+          <h3>Эффективность — Леонид Довбенко</h3>
+          <p>Каждая функция тихо перестраивается на связку человек + агенты — без «уволить отдел». <b>Пример на себе: делал 4 поста в LinkedIn в месяц — теперь 60.</b> Тот же человек, рядом агенты; стоимость единицы работы идёт вниз.</p>
         </div>
-        <div class="card">
-          <div class="big">×20 работы</div>
-          <h3>Столько же денег — кратно больше сделанного</h3>
-          <p>Пример на себе: <b>делал 4 поста в LinkedIn в месяц — теперь делаю 60.</b> Тот же человек, та же голова, рядом — агенты: один человек тянет контент как целый отдел маркетинга, стоимость единицы работы — вниз.</p>
+        <div class="card sec">
+          <div class="big">Риск №1</div>
+          <h3>Безопасность — Калой Ахильгов</h3>
+          <p>Уголовное дело против собственника — <b>самый быстрый способ потерять бизнес.</b> Быстрее, чем плохой маркетинг, кассовый разрыв и уход ключевых людей вместе взятые. И почти всегда к нему можно было подготовиться заранее.</p>
+        </div>
+      </div>
+      <p class="contour-note">Рост без защиты — это дом без фундамента. Защита без роста — фундамент без дома. <b>30 июля разберём обе части.</b></p>
+    </div>
+  </section>
+
+  <!-- ============ БОЛИ (сторона безопасности) ============ -->
+  <section class="sec" id="pains">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">Знакомо?</span>
+          <h2 class="h-sec">Узнаёте свой бизнес хотя бы в одном пункте?</h2>
+        </div>
+      </div>
+      <ul class="pains">
+        <li>Запросили документы ИФНС или УЭБ, вызвали на «комиссию по легализации» — и непонятно, это рутина или начало дела.</li>
+        <li>Контрагент оказался «технической компанией», и разрывы по НДС теперь вешают на вас.</li>
+        <li>Дробление бизнеса, которое «все так делают», в 2026 году читается налоговой как схема.</li>
+        <li>Банк заблокировал счёт по 115-ФЗ — деньги есть, а платить нельзя.</li>
+        <li>Корпоративный конфликт или долг превращается из арбитража в заявление о мошенничестве.</li>
+        <li>Сотрудника вызвали на допрос — и он за 40 минут наговорил на дело против директора.</li>
+      </ul>
+      <p class="pain-key">Обыск в офисе в 7 утра — и никто в компании не знает, что можно, а что нельзя. <b>Первые 24 часа определяют исход дела больше, чем следующие два года.</b> На вебинаре Калой даёт алгоритм — что делать заранее, чтобы проверка не остановила бизнес.</p>
+    </div>
+  </section>
+
+  <!-- ============ ПРОГРАММА (две дорожки) ============ -->
+  <section class="sec light-block" id="program">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">Программа</span>
+          <h2 class="h-sec">Что будет на вебинаре</h2>
+        </div>
+      </div>
+      <div class="tracks">
+        <div class="track">
+          <span class="kicker">Эффективность</span>
+          <div class="tname">Леонид Довбенко — рост через ИИ</div>
+          <ol class="plist">
+            <li><b>История пути</b><span>5 уровней внедрения, где именно споткнулись и почему одиночные агенты — это снова консалтинг с нуля.</span></li>
+            <li><b>Как устроена среда</b><span>Люди и агенты вместе: агент работает через доступ сотрудника, человек — гейт на действиях наружу. Память копится как актив.</span></li>
+            <li><b>Демо сквозного кейса</b><span>Одна задача от начала до конца: агент подхватил → сделал работу → человек подтвердил → результат осел в память.</span></li>
+            <li><b>Семь линий продукта</b><span>Рекрутёр, Коммерсант, Гермес (контент), документы-объекты, ИИ-Продакт, видео-ведущий и Первый-координатор.</span></li>
+          </ol>
+        </div>
+        <div class="track sec">
+          <span class="kicker">Безопасность</span>
+          <div class="tname">Калой Ахильгов — защита бизнеса</div>
+          <ol class="plist">
+            <li><b>Карта рисков 2026</b><span>Откуда реально приходят проблемы: налоговая, банки, силовики, контрагенты, собственные сотрудники. Что изменилось за год.</span></li>
+            <li><b>Налоги как уголовный риск</b><span>Дробление, «технички», НДС-разрывы. Где заканчивается налоговый спор и начинается статья УК.</span></li>
+            <li><b>Первые 24 часа</b><span>Обыск, допрос, задержание: что говорить, что не говорить, что подписывать, кому звонить.</span></li>
+            <li><b>Сотрудники как уязвимость</b><span>Как показания рядового бухгалтера становятся основой дела против руководителя — и как выстроить правила без паранойи.</span></li>
+            <li><b>Превентивная защита</b><span>Что можно сделать за 2–4 недели: аудит уголовных рисков, регламенты, инструктаж команды, адвокат на связи.</span></li>
+          </ol>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ ИСТОРИЯ (как появился Уклад) ============ -->
+  <!-- ============ ИСТОРИЯ (глубина стороны Леонида) ============ -->
   <section class="sec process" id="history">
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <span class="eyebrow on-dark">Как появился продукт</span>
-          <h2 class="h-sec">Мы прошли этот путь сами</h2>
+          <span class="eyebrow on-dark">Леонид · как появился продукт</span>
+          <h2 class="h-sec">Этот путь мы прошли сами</h2>
         </div>
       </div>
       <div class="steps">
@@ -168,42 +297,8 @@
     </div>
   </section>
 
-  <!-- ============ ПРОГРАММА ============ -->
-  <section class="sec" id="program">
-    <div class="wrap">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">Программа</span>
-          <h2 class="h-sec">Что будет на вебинаре</h2>
-        </div>
-      </div>
-      <div class="grid-4">
-        <div class="card">
-          <span class="eyebrow">01 · Честно</span>
-          <h3 style="font-size:19px;margin-bottom:8px">История пути</h3>
-          <p>5 уровней внедрения, где именно споткнулись и почему одиночные агенты — это снова консалтинг с нуля.</p>
-        </div>
-        <div class="card">
-          <span class="eyebrow">02 · Каркас</span>
-          <h3 style="font-size:19px;margin-bottom:8px">Как устроена среда</h3>
-          <p>Люди и агенты вместе: агент работает через доступ сотрудника, человек — гейт на действиях наружу. Память копится как актив.</p>
-        </div>
-        <div class="card">
-          <span class="eyebrow">03 · Вживую</span>
-          <h3 style="font-size:19px;margin-bottom:8px">Демо сквозного кейса</h3>
-          <p>Одна задача от начала до конца: агент подхватил → сделал работу → человек подтвердил → результат осел в память.</p>
-        </div>
-        <div class="card">
-          <span class="eyebrow">04 · Обзором</span>
-          <h3 style="font-size:19px;margin-bottom:8px">Семь линий продукта</h3>
-          <p>Рекрутёр, Коммерсант, Гермес (контент), документы-объекты, ИИ-Продакт, видео-ведущий и Первый-координатор.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ ЧТО ЗАБЕРЁТЕ ============ -->
-  <section class="sec light-block" id="takeaways">
+  <section class="sec" id="takeaways">
     <div class="wrap">
       <div class="sec-head">
         <div>
@@ -212,18 +307,20 @@
         </div>
       </div>
       <ul class="takeaways">
-        <li>Карта из 5 уровней внедрения — где ваша компания сейчас и куда идти дальше.</li>
+        <li>Карта из 5 уровней внедрения ИИ — где ваша компания сейчас и куда идти дальше.</li>
+        <li class="sec">Карта уголовных и налоговых рисков бизнеса на 2026 год.</li>
         <li>Понимание, почему «уклад» (цифровой порядок) идёт раньше ИИ-фикации.</li>
-        <li>Как устроена связка человек + агенты — и где человек остаётся гейтом.</li>
-        <li>Живые примеры на наём, продажи, контент, документы и встречи.</li>
+        <li class="sec">Алгоритм действий при обыске и допросе — памятка для себя и сотрудников.</li>
         <li>Как считать эффект в деньгах — снижение ФОТ и рост объёма работы.</li>
-        <li>С чего начать у себя без страха для команды и службы безопасности.</li>
+        <li class="sec">Чек-лист «Насколько ваш бизнес готов к проверке» — самодиагностика за 15 минут.</li>
+        <li>Как устроена связка человек + агенты — и где человек остаётся гейтом.</li>
+        <li class="sec">Какие «нормальные» практики ведения бизнеса сегодня читаются как схемы.</li>
       </ul>
     </div>
   </section>
 
   <!-- ============ РЕГИСТРАЦИЯ ============ -->
-  <section class="sec" id="reg">
+  <section class="sec light-block" id="reg">
     <div class="wrap" style="max-width:640px">
       <div class="sec-head" style="justify-content:center;text-align:center">
         <div>
@@ -253,11 +350,10 @@
     <div class="wrap foot">
       <a href="index.html" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
       <nav class="foot-links">
-        <a href="index.html#about">Что такое</a>
+        <a href="#speakers">Спикеры</a>
         <a href="platform.html">Платформа</a>
         <a href="solutions.html">Решения</a>
         <a href="cases.html">Кейсы</a>
-        <a href="team.html">Команда</a>
         <a href="#reg">Регистрация</a>
         <a href="/platform/">Посмотреть демо →</a>
       </nav>
