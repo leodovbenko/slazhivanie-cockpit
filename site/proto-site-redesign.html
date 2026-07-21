@@ -76,20 +76,21 @@
 
     /* ---------- hero ---------- */
     .hero{background:linear-gradient(135deg,var(--clay-soft),var(--green-soft));color:var(--t1);position:relative;overflow:hidden}
-    .hero-radar{position:absolute;top:-120px;right:-120px;width:560px;height:560px;border-radius:50%;opacity:.75;pointer-events:none;
-      background:
-        radial-gradient(circle, transparent 0 38%, rgba(61,122,62,.10) 38% 39%, transparent 39%),
-        radial-gradient(circle, transparent 0 56%, rgba(184,92,60,.08) 56% 57%, transparent 57%),
-        radial-gradient(circle, transparent 0 74%, rgba(61,122,62,.07) 74% 75%, transparent 75%),
-        radial-gradient(circle, transparent 0 92%, rgba(184,92,60,.06) 92% 93%, transparent 93%);}
-    .hero-dot{position:absolute;border-radius:50%;pointer-events:none}
-    .hero-inner{padding:92px 0 84px;position:relative;z-index:2;max-width:940px}
-    .hero h1{font-size:clamp(38px,6.2vw,66px);font-weight:700;letter-spacing:-.02em}
+    .hero-inner{padding:84px 0 76px;position:relative}
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(32px,5vw,64px);align-items:center}
+    .hero h1{font-size:clamp(36px,4.4vw,58px);font-weight:700;letter-spacing:-.02em}
     .hero .sub{margin-top:26px;font-size:clamp(17px,2.1vw,21px);color:var(--t2);max-width:640px;line-height:1.5}
     .hero-btns{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
     .pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green-d);background:rgba(255,255,255,.6);border:1px solid #CFE3C4;padding:7px 14px;border-radius:999px;margin-bottom:26px}
     .pill .dotp{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(61,122,62,.18)}
-    .hero-strip{position:relative;z-index:2;display:flex;gap:26px;flex-wrap:wrap;margin-top:44px;font-size:14px;color:var(--t2)}
+    .hero-strip{display:flex;gap:26px;flex-wrap:wrap;margin-top:44px;font-size:14px;color:var(--t2)}
+    /* иллюстрация «среды»: пара + спутники вокруг ядра-памяти. Всё живёт ВНУТРИ своего бокса */
+    .hero-viz{position:relative;width:100%;max-width:520px;margin-left:auto;aspect-ratio:520/480}
+    .hero-viz svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .hv-tag{position:absolute;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.88);border:1px solid var(--line-light);border-radius:999px;padding:4px 11px;white-space:nowrap;box-shadow:0 2px 8px rgba(32,28,23,.07);transform:translateX(-50%)}
+    .hv-human{color:var(--clay-d);left:23.3%;top:26.5%}
+    .hv-agent{color:var(--green-d);left:76.7%;top:26.5%}
+    .hv-core{color:var(--t2);left:50%;top:68.5%}
     .hero-strip .it{display:flex;align-items:center;gap:9px}
     .hero-strip .it svg{width:17px;height:17px;stroke:var(--green-d);flex-shrink:0}
 
@@ -147,6 +148,8 @@
     .st-int .d{background:var(--clay)}
     .st-adv{background:var(--paper-2);color:var(--t2)}
     .st-adv .d{background:var(--t3)}
+    .agent-more{margin-top:14px;display:inline-block}
+    .agent-more::after{content:"";position:absolute;inset:0;border-radius:18px}
     .fleet-note{margin-top:26px;background:var(--paper-2);border:1px dashed #D8CCB8;border-radius:14px;padding:18px 22px;font-size:14px;color:var(--t2);line-height:1.55}
     .fleet-note b{color:var(--t1)}
 
@@ -279,12 +282,15 @@
       .flowline{grid-template-columns:1fr;gap:6px}
       .farrow{transform:rotate(90deg);padding:2px 0}
       .sec{padding:64px 0}
+      .hero-grid{grid-template-columns:1fr;gap:40px}
+      .hero-viz{margin:0 auto;max-width:400px}
     }
     @media(max-width:560px){
       body{font-size:16px}
       .grid-4,.grid-3,.grid-2,.novpn-grid{grid-template-columns:1fr}
       .hero-inner{padding:60px 0 56px}
       .hero-btns .btn{flex:1}
+      .hero-viz{display:none}
       .sec{padding:52px 0}
       .compare,.card,.agent,.invcal-txt,.form-wrap,.case-card{padding:22px}
       .form-row{grid-template-columns:1fr}
@@ -298,54 +304,95 @@
   <!-- ============ HEADER ============ -->
   <header>
     <div class="wrap nav">
-      <a href="#top" class="logo" aria-label="Слаживание — на главную">
+      <a href="proto-site-redesign.html" class="logo" aria-label="Слаживание — на главную">
         <span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>
         слаживание<span class="green">.</span>
       </a>
       <nav class="nav-links" aria-label="Основная навигация">
-        <a href="#platform">Платформа</a>
-        <a href="#agents">Агенты</a>
-        <a href="#productivity">Продуктивность</a>
-        <a href="#memory">Память</a>
-        <a href="#chats">Чаты</a>
-        <a href="#cases">Кейсы</a>
-        <a href="#mcp">Разработчикам</a>
+        <a href="proto-site-redesign.html#platform">Платформа</a>
+        <a href="proto-site-redesign.html#agents">Агенты</a>
+        <a href="proto-site-redesign.html#productivity">Продуктивность</a>
+        <a href="proto-site-redesign.html#memory">Память</a>
+        <a href="proto-site-redesign.html#chats">Чаты</a>
+        <a href="proto-site-redesign.html#cases">Кейсы</a>
+        <a href="proto-site-redesign.html#mcp">Разработчикам</a>
       </nav>
       <div class="nav-right">
         <div class="langsw" title="Английская версия — скоро"><span class="on">RU</span><span class="off">EN</span></div>
-        <a href="#contacts" class="btn btn-green">Запросить демо</a>
+        <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
       </div>
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
     <div class="mmenu" id="mmenu">
-      <a href="#platform">Платформа</a>
-      <a href="#agents">Агенты</a>
-      <a href="#productivity">Продуктивность</a>
-      <a href="#memory">Память</a>
-      <a href="#chats">Чаты</a>
-      <a href="#cases">Кейсы</a>
-      <a href="#mcp">Разработчикам</a>
-      <a href="#contacts" class="btn btn-green">Запросить демо</a>
+      <a href="proto-site-redesign.html#platform">Платформа</a>
+      <a href="proto-site-redesign.html#agents">Агенты</a>
+      <a href="proto-site-redesign.html#productivity">Продуктивность</a>
+      <a href="proto-site-redesign.html#memory">Память</a>
+      <a href="proto-site-redesign.html#chats">Чаты</a>
+      <a href="proto-site-redesign.html#cases">Кейсы</a>
+      <a href="proto-site-redesign.html#mcp">Разработчикам</a>
+      <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
     </div>
   </header>
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="top">
-    <div class="hero-radar" aria-hidden="true"></div>
-    <div class="hero-dot" style="top:120px;right:150px;width:14px;height:14px;background:#B85C3C;opacity:.85" aria-hidden="true"></div>
-    <div class="hero-dot" style="top:210px;right:320px;width:14px;height:14px;background:#3D7A3E;opacity:.85" aria-hidden="true"></div>
     <div class="wrap hero-inner">
-      <span class="pill"><span class="dotp"></span>Платформа Слаживание · Uklad AI</span>
-      <h1>Среда, в которой люди и ИИ-агенты <span class="green">делают больше работы вместе</span>.</h1>
-      <p class="sub">Команда пишет в привычный Telegram или веб-кабинет — а работает флот ИИ-агентов над общей памятью компании. Не отдельный бот, а связка: человек плюс агенты, которые помнят ваш контекст.</p>
-      <div class="hero-btns">
-        <a href="#contacts" class="btn btn-green">Запросить демо</a>
-        <a href="#agents" class="btn btn-ghost">Посмотреть агентов</a>
-      </div>
-      <div class="hero-strip">
-        <span class="it"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>Работает в вашем Telegram</span>
-        <span class="it"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>Сильные модели ИИ — без VPN</span>
-        <span class="it"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7l7-4z" stroke-linejoin="round"/></svg>Личное — не в общей памяти</span>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="pill"><span class="dotp"></span>Платформа Слаживание · Uklad AI</span>
+          <h1>Среда, в которой люди и ИИ-агенты <span class="green">делают больше работы вместе</span>.</h1>
+          <p class="sub">Команда пишет в привычный Telegram или веб-кабинет — а работает флот ИИ-агентов над общей памятью компании. Не отдельный бот, а связка: человек плюс агенты, которые помнят ваш контекст.</p>
+          <div class="hero-btns">
+            <a href="#contacts" class="btn btn-green">Запросить демо</a>
+            <a href="#agents" class="btn btn-ghost">Посмотреть агентов</a>
+          </div>
+          <div class="hero-strip">
+            <span class="it"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>Работает в вашем Telegram</span>
+            <span class="it"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>Сильные модели ИИ — без VPN</span>
+            <span class="it"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7l7-4z" stroke-linejoin="round"/></svg>Личное — не в общей памяти</span>
+          </div>
+        </div>
+
+        <!-- пара (человек + агент) и спутники-агенты вокруг общего ядра-памяти -->
+        <div class="hero-viz" aria-hidden="true">
+          <svg viewBox="0 0 520 480" fill="none">
+            <defs>
+              <linearGradient id="hv-arc" x1="121" y1="0" x2="399" y2="0" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/>
+              </linearGradient>
+              <linearGradient id="hv-core" x1="196" y1="186" x2="324" y2="314" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/>
+              </linearGradient>
+            </defs>
+            <!-- орбиты -->
+            <circle cx="260" cy="250" r="210" stroke="#B85C3C" stroke-opacity=".20" stroke-width="1.6" stroke-dasharray="2 8" stroke-linecap="round"/>
+            <circle cx="260" cy="250" r="150" stroke="#3D7A3E" stroke-opacity=".24" stroke-width="1.6" stroke-dasharray="2 8" stroke-linecap="round"/>
+            <!-- дуга связки (мотив логотипа), огибает ядро снизу -->
+            <path d="M121 214 C121 352 399 352 399 214" stroke="url(#hv-arc)" stroke-width="4.5" stroke-linecap="round" opacity=".9"/>
+            <!-- ядро-память -->
+            <circle cx="260" cy="256" r="64" fill="#201C17" opacity=".05"/>
+            <circle cx="260" cy="250" r="64" fill="#FFFFFF" stroke="#E5DCCD" stroke-width="1.5"/>
+            <circle cx="260" cy="250" r="44" stroke="#E2EEDB" stroke-width="2"/>
+            <circle cx="260" cy="250" r="27" stroke="#F2E3DB" stroke-width="2"/>
+            <circle cx="260" cy="250" r="9" fill="url(#hv-core)"/>
+            <!-- пара: человек (глина) + агент (зелень) -->
+            <circle cx="121" cy="196" r="34" fill="#B85C3C" stroke="rgba(255,255,255,.8)" stroke-width="4"/>
+            <circle cx="399" cy="196" r="34" fill="#3D7A3E" stroke="rgba(255,255,255,.8)" stroke-width="4"/>
+            <!-- спутники флота на орбитах -->
+            <circle cx="260" cy="100" r="6" fill="#B85C3C" opacity=".8" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <circle cx="140" cy="340" r="6.5" fill="#3D7A3E" opacity=".85" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <circle cx="380" cy="340" r="6.5" fill="#B85C3C" opacity=".85" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <circle cx="260" cy="40" r="6" fill="#3D7A3E" opacity=".75" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <circle cx="75" cy="150" r="7" fill="#B85C3C" opacity=".7" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <circle cx="445" cy="150" r="7" fill="#3D7A3E" opacity=".7" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <circle cx="150" cy="429" r="6" fill="#3D7A3E" opacity=".7" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <circle cx="370" cy="429" r="6" fill="#B85C3C" opacity=".7" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+          </svg>
+          <span class="hv-tag hv-human">Человек</span>
+          <span class="hv-tag hv-agent">Агент</span>
+          <span class="hv-tag hv-core">Память компании</span>
+        </div>
       </div>
     </div>
   </section>
@@ -399,7 +446,7 @@
         </div>
         <a href="#contacts" class="link-arrow">Посмотреть вживую на демо →</a>
       </div>
-      <p class="lead" style="margin:-16px 0 36px">Это не «функции в меню» — это действующие агенты платформы. Все работают над одной памятью команды: то, что узнал один, доступно остальным.</p>
+      <p class="lead" style="margin:-16px 0 36px">Это не «функции в меню» — это действующие агенты платформы. Все работают над одной памятью команды: то, что узнал один, доступно остальным. Ключевая пара флота: <b style="color:var(--t1)">Первый ждёт вопрос — Аргус работает фоном и приносит сам.</b></p>
 
       <div class="grid-3">
         <article class="agent">
@@ -407,16 +454,17 @@
             <div class="av g" aria-hidden="true">П</div>
             <div>
               <h3>Первый агент</h3>
-              <div class="role">Командный ассистент и координатор</div>
+              <div class="role">Единая точка входа и память команды</div>
             </div>
           </div>
-          <p class="quote">«Как ChatGPT — но помнит контекст вашей команды.»</p>
+          <p class="quote">«Помнит контекст вашей команды — вы спрашиваете, он отвечает. Не общая эрудиция, а ваша компания.»</p>
           <ul>
-            <li>Помнит людей, проекты и договорённости команды</li>
-            <li>Видит календарь и ставит встречи словами; утренний бриф встреч дня</li>
-            <li>Ведёт задачи; подключает других агентов — продажи, здоровье</li>
+            <li>С ним просто разговаривают: голос, текст, фото, документы — в Telegram и кабинете</li>
+            <li>Отвечает по чатам, встречам, задачам и календарю — из памяти компании</li>
+            <li>Ставит встречи и задачи словами; подключает других агентов флота</li>
           </ul>
           <span class="agent-status st-live"><span class="d"></span>В работе у команд</span>
+          <a href="proto-agent-first.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
 
         <article class="agent">
@@ -424,16 +472,17 @@
             <div class="av g" aria-hidden="true">А</div>
             <div>
               <h3>Аргус</h3>
-              <div class="role">Chief of Staff</div>
+              <div class="role">Chief of Staff — работает фоном</div>
             </div>
           </div>
-          <p class="quote">Держит картину дня, чтобы её не держали вы.</p>
+          <p class="quote">«Аргуса не спрашивают — он приходит сам, с готовым.»</p>
           <ul>
-            <li>Разбирает переписку, звонки и встречи</li>
-            <li>Ведёт картотеку людей — кто есть кто и в каком контексте</li>
-            <li>Утренний бриф и дневная сводка по узкому месту</li>
+            <li>По расписанию и по событиям разбирает поток: переписку, звонки, встречи</li>
+            <li>Ведёт картотеку людей и задачи — кто есть кто и что висит</li>
+            <li>Утренний бриф и вечерняя сводка по самому узкому месту — без запроса</li>
           </ul>
-          <span class="agent-status st-live"><span class="d"></span>В работе у команд</span>
+          <span class="agent-status st-live"><span class="d"></span>Флагман — покажем на демо</span>
+          <a href="proto-agent-argus.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
 
         <article class="agent">
@@ -451,6 +500,7 @@
             <li>Очередь публикаций; видео-ведущий канала — рилс с лицом и голосом бренда</li>
           </ul>
           <span class="agent-status st-live"><span class="d"></span>В работе у команд</span>
+          <a href="proto-agent-hermes.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
 
         <article class="agent">
@@ -458,16 +508,17 @@
             <div class="av c" aria-hidden="true">К</div>
             <div>
               <h3>Коммерсант</h3>
-              <div class="role">Стажёр-продавец</div>
+              <div class="role">Продажи и сделки</div>
             </div>
           </div>
-          <p class="quote">Наружу клиенту сам не пишет — он стажёр при вашем продавце.</p>
+          <p class="quote">Наружу клиенту сам не пишет — работает под присмотром вашего продавца.</p>
           <ul>
             <li>Досье по каждой сделке — из того, что команда надиктовала в чаты</li>
             <li>Здоровье воронки; готовит КП; связка с amoCRM</li>
             <li>Тёплые лиды с сайта падают в воронку сами</li>
           </ul>
-          <span class="agent-status st-int"><span class="d"></span>Стажёр</span>
+          <span class="agent-status st-int"><span class="d"></span>Под присмотром человека</span>
+          <a href="proto-agent-kommersant.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
 
         <article class="agent">
@@ -475,16 +526,17 @@
             <div class="av c" aria-hidden="true">Р</div>
             <div>
               <h3>Рекрутёр</h3>
-              <div class="role">Стажёр по подбору</div>
+              <div class="role">Подбор и найм</div>
             </div>
           </div>
-          <p class="quote">Читает резюме целиком, а не по ключевым словам.</p>
+          <p class="quote">Читает резюме целиком, а не по ключевым словам, — и учится на ваших правках.</p>
           <ul>
             <li>Сценарий найма из вашего ТЗ; светофор по кандидатам с цитатами</li>
             <li>Разбирает собеседование по записи встречи</li>
             <li>Работа с hh.ru; пульт HRD по воронке найма</li>
           </ul>
-          <span class="agent-status st-int"><span class="d"></span>Стажёр</span>
+          <span class="agent-status st-int"><span class="d"></span>Под присмотром человека</span>
+          <a href="proto-agent-recruiter.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
 
         <article class="agent">
@@ -499,8 +551,10 @@
           <ul>
             <li>Единый отчёт-воронка: охват → заявки → сделки → затраты</li>
             <li>План «что делать дальше» по цифрам, а не по ощущениям</li>
+            <li>Пока советник: рекомендует людям, а не командует исполнителями</li>
           </ul>
           <span class="agent-status st-adv"><span class="d"></span>Пока советник</span>
+          <a href="proto-agent-marketing.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
       </div>
 
@@ -892,18 +946,18 @@
     <div class="wrap">
       <div class="foot">
         <div>
-          <a href="#top" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lmf)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lmf" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
+          <a href="proto-site-redesign.html" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lmf)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lmf" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
           <p class="tagline">Среда, в которой люди и ИИ-агенты делают больше работы вместе — над общей памятью команды.</p>
         </div>
         <nav class="foot-links" aria-label="Навигация в подвале">
-          <a href="#platform">Платформа</a>
-          <a href="#agents">Агенты</a>
-          <a href="#productivity">Продуктивность</a>
-          <a href="#memory">Память</a>
-          <a href="#chats">Чаты</a>
-          <a href="#cases">Кейсы</a>
-          <a href="#mcp">Разработчикам</a>
-          <a href="#contacts">Контакты</a>
+          <a href="proto-site-redesign.html#platform">Платформа</a>
+          <a href="proto-site-redesign.html#agents">Агенты</a>
+          <a href="proto-site-redesign.html#productivity">Продуктивность</a>
+          <a href="proto-site-redesign.html#memory">Память</a>
+          <a href="proto-site-redesign.html#chats">Чаты</a>
+          <a href="proto-site-redesign.html#cases">Кейсы</a>
+          <a href="proto-site-redesign.html#mcp">Разработчикам</a>
+          <a href="proto-site-redesign.html#contacts">Контакты</a>
         </nav>
       </div>
       <div class="foot-bottom">
