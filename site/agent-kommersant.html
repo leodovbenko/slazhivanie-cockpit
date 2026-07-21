@@ -3,9 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex">
   <title>Коммерсант — агент по сделкам | Слаживание</title>
-  <meta name="description" content="Коммерсант — ИИ-агент платформы Слаживание: ведёт досье по каждой сделке из командных каналов и звонков, по утрам подаёт очередь «кому написать», двигает стадии на доказательствах. Наружу — ничего без «ок» человека.">
+  <meta name="description" content="Коммерсант — ИИ-агент платформы Слаживание: ведёт досье сделок из командных каналов и звонков, по утрам подаёт очередь «кому написать», двигает стадии на доказательствах. Наружу — ничего без «ок» человека.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://slazhivanie.ru/agent-kommersant.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Слаживание">
+  <meta property="og:title" content="Коммерсант — агент по сделкам | Слаживание">
+  <meta property="og:description" content="Коммерсант — ИИ-агент платформы Слаживание: ведёт досье сделок из командных каналов и звонков, по утрам подаёт очередь «кому написать», двигает стадии на доказательствах. Наружу — ничего без «ок» человека.">
+  <meta property="og:url" content="https://slazhivanie.ru/agent-kommersant.html">
+  <meta property="og:image" content="https://slazhivanie.ru/og.png?v=2">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Коммерсант — агент по сделкам | Слаживание">
+  <meta name="twitter:image" content="https://slazhivanie.ru/og.png?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -375,7 +388,7 @@
     .km-gate-note b{color:var(--t1d)}
 
     /* другие агенты */
-    .km-others{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+    .km-others{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
     .km-other{background:var(--white);border:1px solid var(--line-light);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px;transition:.2s}
     .km-other:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(32,28,23,.08);border-color:#D8CCB8}
     .km-other .av{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:700;font-size:16px}
@@ -404,40 +417,52 @@
       .km-gate-step,.km-other{padding:18px}
     }
   </style>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,"script","https://mc.yandex.ru/metrika/tag.js?id=110175627", "ym");
+    ym(110175627, "init", {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/110175627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 </head>
 <body>
 
   <!-- ============ HEADER ============ -->
   <header>
     <div class="wrap nav">
-      <a href="proto-site-redesign.html" class="logo" aria-label="Слаживание — на главную">
+      <a href="/" class="logo" aria-label="Слаживание — на главную">
         <span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>
         слаживание<span class="green">.</span>
       </a>
       <nav class="nav-links" aria-label="Основная навигация">
-        <a href="proto-site-redesign.html#platform">Платформа</a>
-        <a href="proto-site-redesign.html#agents">Агенты</a>
-        <a href="proto-site-redesign.html#productivity">Продуктивность</a>
-        <a href="proto-site-redesign.html#memory">Память</a>
-        <a href="proto-site-redesign.html#chats">Чаты</a>
-        <a href="proto-site-redesign.html#cases">Кейсы</a>
-        <a href="proto-site-redesign.html#mcp">Разработчикам</a>
+        <a href="/#platform">Платформа</a>
+        <a href="/#agents">Агенты</a>
+        <a href="/#productivity">Продуктивность</a>
+        <a href="/#memory">Память</a>
+        <a href="/#chats">Чаты</a>
+        <a href="/#cases">Кейсы</a>
+        <a href="/#mcp">Разработчикам</a>
       </nav>
       <div class="nav-right">
         <div class="langsw" title="Английская версия — скоро"><span class="on">RU</span><span class="off">EN</span></div>
-        <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
+        <a href="/#contacts" class="btn btn-green">Запросить демо</a>
       </div>
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
     <div class="mmenu" id="mmenu">
-      <a href="proto-site-redesign.html#platform">Платформа</a>
-      <a href="proto-site-redesign.html#agents">Агенты</a>
-      <a href="proto-site-redesign.html#productivity">Продуктивность</a>
-      <a href="proto-site-redesign.html#memory">Память</a>
-      <a href="proto-site-redesign.html#chats">Чаты</a>
-      <a href="proto-site-redesign.html#cases">Кейсы</a>
-      <a href="proto-site-redesign.html#mcp">Разработчикам</a>
-      <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
+      <a href="/#platform">Платформа</a>
+      <a href="/#agents">Агенты</a>
+      <a href="/#productivity">Продуктивность</a>
+      <a href="/#memory">Память</a>
+      <a href="/#chats">Чаты</a>
+      <a href="/#cases">Кейсы</a>
+      <a href="/#mcp">Разработчикам</a>
+      <a href="/#contacts" class="btn btn-green">Запросить демо</a>
     </div>
   </header>
 
@@ -446,13 +471,13 @@
     <div class="wrap km-hero-inner">
       <div class="km-hero-grid">
         <div>
-          <div class="km-crumb"><a href="proto-site-redesign.html#agents">Флот агентов</a><span aria-hidden="true">/</span><span>Коммерсант</span></div>
+          <div class="km-crumb"><a href="/#agents">Флот агентов</a><span aria-hidden="true">/</span><span>Коммерсант</span></div>
           <span class="eyebrow" style="display:block;margin-bottom:14px">Dealmaker</span>
           <h1>Коммерсант</h1>
-          <p class="sub">Продавец-стажёр вашего отдела продаж. По каждой сделке ведёт <b>досье</b> — из того, что команда и так пишет в рабочие каналы, и из звонков. А каждое утро подаёт очередь: <b>кому написать сегодня и почему</b>.</p>
+          <p class="sub">Продавец-стажёр отдела продаж. По каждой сделке ведёт <b>досье</b> — из того, что команда и так пишет в рабочие каналы, и из звонков. Каждое утро подаёт очередь: <b>кому написать сегодня и почему</b>.</p>
           <div class="hero-btns">
-            <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
-            <a href="proto-site-redesign.html#agents" class="btn btn-ghost">← Все агенты</a>
+            <a href="/#contacts" class="btn btn-green">Запросить демо</a>
+            <a href="/#agents" class="btn btn-ghost">← Все агенты</a>
           </div>
           <span class="km-gate-pill"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke-linecap="round"/></svg>Наружу клиенту сам не пишет — всё под вашим «ок»</span>
         </div>
@@ -484,22 +509,22 @@
     <div class="wrap">
       <span class="eyebrow">Ситуация</span>
       <h2 class="h-sec" style="max-width:840px">Сделки живут в головах, чатах и звонках — а CRM заполняется «со слов»</h2>
-      <p class="lead" style="margin-top:18px">Знакомая картина: продавец держит историю клиента в голове, половина договорённостей — в рабочем чате, ещё часть — в записях звонков, которые никто не переслушивает. В CRM попадает то, что успели вспомнить в конце дня.</p>
+      <p class="lead" style="margin-top:18px">Продавец держит историю клиента в голове, половина договорённостей — в рабочем чате, часть — в записях звонков, которые никто не переслушивает. В CRM попадает то, что вспомнили в конце дня.</p>
       <div class="grid-3" style="margin-top:40px">
         <div class="card">
           <div class="ic clay" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20c.6-3.8 3.2-6 7-6s6.4 2.2 7 6" stroke-linecap="round"/></svg></div>
           <h3>История — в голове продавца</h3>
-          <p>Кто что обещал этому клиенту и на чём остановились — знает один человек. Ушёл в отпуск или из компании — история ушла с ним.</p>
+          <p>Кто что обещал клиенту и на чём остановились — знает один человек. Ушёл в отпуск или из компании — история ушла с ним.</p>
         </div>
         <div class="card">
           <div class="ic clay" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 12a8 8 0 01-8 8H4l2-3a8 8 0 1115-5z" stroke-linejoin="round"/><path d="M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01" stroke-linecap="round"/></svg></div>
           <h3>Касания рассыпаны по каналам</h3>
-          <p>Договорённость из чата, обещание из звонка, файл из переписки — всё в разных местах. Целой картины сделки нет ни у кого.</p>
+          <p>Договорённость — в чате, обещание — в звонке, файл — в переписке. Целой картины сделки нет ни у кого.</p>
         </div>
         <div class="card">
           <div class="ic clay" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5" stroke-linecap="round"/><path d="M15.5 16.5l2 2 3-3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>CRM заполняется «со слов»</h3>
-          <p>Стадия сделки в CRM — это то, как её вспомнил продавец, а не то, что реально сказал клиент. Проверить нечем.</p>
+          <p>Стадия в CRM — как её вспомнил продавец, а не что сказал клиент. Проверить нечем.</p>
         </div>
       </div>
     </div>
@@ -518,13 +543,13 @@
         <div>
           <ul class="clist was" style="gap:16px">
             <li style="font-size:16px"><b style="color:var(--t1)">Непонятно, что обещано и когда.</b> Клиент ждёт расчёт со вторника, а об этом помнит только чат, который никто не перечитает.</li>
-            <li style="font-size:16px"><b style="color:var(--t1)">Не видно, где застряло и у кого мяч.</b> Сделка молчит две недели — потому что ждём клиента? Или потому что забыли мы?</li>
+            <li style="font-size:16px"><b style="color:var(--t1)">Не видно, где застряло и у кого мяч.</b> Сделка молчит две недели — ждём клиента или забыли мы?</li>
             <li style="font-size:16px"><b style="color:var(--t1)">Стадии не подтверждены.</b> «Согласование договора» в CRM может означать что угодно — от «клиент попросил договор» до «вроде было что-то такое».</li>
             <li style="font-size:16px"><b style="color:var(--t1)">Звонки не разобраны.</b> В записях звонков лежат обещания, возражения и имена ЛПР — и никто их оттуда не достаёт.</li>
           </ul>
         </div>
         <div class="fleet-note" style="margin-top:0;align-self:start">
-          <b>Итог — прогноз «на глаз».</b> Планёрка по продажам превращается в опрос по памяти: каждый пересказывает свои сделки, как запомнил. Решения — где дожать, кого отпустить, что пообещать — принимаются на этой пересказанной картине. Коммерсант меняет ровно это: картину сделки он собирает из первоисточников.
+          <b>Итог — прогноз «на глаз».</b> Планёрка превращается в опрос по памяти: каждый пересказывает свои сделки, как запомнил, и на этой картине решают, где дожать и кого отпустить. Коммерсант собирает картину сделки из первоисточников.
         </div>
       </div>
     </div>
@@ -539,7 +564,7 @@
           <h2 class="h-sec" style="max-width:780px">Что Коммерсант делает со сделками</h2>
         </div>
       </div>
-      <p class="lead" style="margin:-16px 0 36px">Команда работает как работала — пишет в свои каналы, звонит клиентам. Коммерсант собирает из этого потока досье и держит воронку в порядке. Всё, что уходит наружу или в CRM, — только после «ок» человека.</p>
+      <p class="lead" style="margin:-16px 0 36px">Команда работает как работала — пишет в каналы, звонит клиентам. Коммерсант собирает из этого потока досье и держит воронку в порядке. Наружу и в CRM — только после «ок» человека.</p>
       <div class="km-sol-grid">
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 6h16v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6z"/><path d="M4 6l2-3h12l2 3M9 10h6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -574,7 +599,7 @@
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" stroke-linecap="round"/><circle cx="12" cy="12" r="3.5"/></svg></div>
           <h3>Советует</h3>
-          <p>По каждой сделке — не десять идей, а конкретика.</p>
+          <p>По каждой сделке — конкретика.</p>
           <ul>
             <li><b>Одно следующее лучшее действие</b> — что сделать именно сейчас</li>
             <li><b>Вероятность сделки</b> — и рычаги, которые её меняют</li>
@@ -595,7 +620,7 @@
         <div class="card" style="background:var(--paper-2);border-style:dashed;border-color:#D8CCB8">
           <div class="ic clay" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke-linecap="round"/></svg></div>
           <h3>И всё это — под гейтом</h3>
-          <p>Коммерсант — стажёр: наружу клиенту он не пишет вообще, а черновики и записи в CRM проходят через ваше «ок». Почему это сила, а не ограничение — <a href="#gate" class="link-arrow" style="font-size:14px">ниже →</a></p>
+          <p>Коммерсант — стажёр: наружу клиенту не пишет вообще, черновики и записи в CRM проходят через ваше «ок». Как это устроено — <a href="#gate" class="link-arrow" style="font-size:14px">ниже →</a></p>
         </div>
       </div>
     </div>
@@ -610,7 +635,7 @@
           <h2 class="h-sec" style="max-width:760px">Все функции и экраны</h2>
         </div>
       </div>
-      <p class="lead" style="margin:-16px 0 0">Каждая способность Коммерсанта объявлена в платформе как отдельная «рука» — это не маркетинговый список, а реальные функции из его паспорта. Вот они, человеческим языком:</p>
+      <p class="lead" style="margin:-16px 0 0">Каждая способность Коммерсанта объявлена в платформе как «рука» — реальные функции из его паспорта, человеческим языком:</p>
 
       <div class="km-hands" aria-label="Список рук Коммерсанта">
         <span class="km-hand"><code>ingest.team-history</code>касания из командных каналов</span>
@@ -673,7 +698,7 @@
     <div class="wrap">
       <span class="eyebrow on-dark">Гейт доверия</span>
       <h2 class="h-sec" style="max-width:820px">Наружу — ничего без вашего «ок». Это устройство платформы, а не оговорка</h2>
-      <p class="lead" style="margin-top:18px">Коммерсант работает в грейде стажёра. Ваш клиент никогда не получит сообщение, письмо или КП, которое написал ИИ и не проверил человек. Отношения с клиентами — самое дорогое, что есть у отдела продаж, и платформа устроена так, что рисковать ими агент не может физически.</p>
+      <p class="lead" style="margin-top:18px">Коммерсант работает в грейде стажёра: клиент не получит сообщение, письмо или КП, которое не проверил человек. Платформа устроена так, что рисковать отношениями с клиентами агент не может.</p>
       <div class="km-gate-steps">
         <div class="km-gate-step">
           <span class="n" aria-hidden="true">1</span>
@@ -694,7 +719,7 @@
         </div>
       </div>
       <div class="km-gate-note">
-        <b>Стажёр растёт под присмотром.</b> В платформе у агентов есть грейды доверия: чем стабильнее агент попадает в «ок» без правок, тем больше рутины ему можно доверить. Решение о каждом следующем шаге доверия принимаете вы — не агент. И отдельно про данные: из записей звонков персональные данные вырезаются по 152-ФЗ ещё до того, как текст уходит в модель.
+        <b>Стажёр растёт под присмотром.</b> У агентов есть грейды доверия: чем чаще «ок» без правок, тем больше рутины ему можно доверить. Каждый шаг доверия решаете вы, не агент. Про данные: персональные данные из записей звонков вырезаются по 152-ФЗ до отправки текста в модель.
       </div>
     </div>
   </section>
@@ -712,12 +737,12 @@
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 12l2 2 4-5" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="4" width="16" height="16" rx="3"/></svg></div>
           <h3>Досье и стадии — на доказательствах</h3>
-          <p>Воронке можно верить: за каждой стадией — цитата клиента и источник, а не «на глаз» и не пересказ на планёрке.</p>
+          <p>За каждой стадией — цитата клиента и источник, а не пересказ на планёрке. Воронке можно верить.</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Каждое утро ясно, кому написать</h3>
-          <p>День продавца начинается с готовой очереди с причинами — где тишина, где мяч у нас, где обещали и забыли, — а не с раскопок в чатах.</p>
+          <p>День начинается с готовой очереди с причинами — где тишина, где мяч у нас, где обещали и забыли, — а не с раскопок в чатах.</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2 12 12 0 0112 12 2 2 0 01-2 2h-2.5a1.5 1.5 0 01-1.4-1l-.8-2.3a1.5 1.5 0 01.6-1.7l1.6-1a10 10 0 00-4.1-4.1l-1 1.6a1.5 1.5 0 01-1.7.6L5.4 8.3A1.5 1.5 0 014.4 7L5 5z" stroke-linejoin="round"/></svg></div>
@@ -726,7 +751,7 @@
         </div>
       </div>
       <div class="fleet-note">
-        <b>И это общая память, а не отдельный ящик.</b> Досье сделок живёт в памяти компании: Первый агент отвечает по ним на вопросы в чате, встречи с клиентами из общего контура встреч подтягиваются в сделки. То, что узнал Коммерсант, доступно всей команде.
+        <b>Это общая память, а не отдельный ящик.</b> Досье сделок живёт в памяти компании: Первый агент отвечает по ним в чате, встречи с клиентами подтягиваются в сделки. Что узнал Коммерсант — доступно всей команде.
       </div>
     </div>
   </section>
@@ -739,34 +764,28 @@
           <span class="eyebrow">Флот</span>
           <h2 class="h-sec">Другие агенты платформы</h2>
         </div>
-        <a href="proto-site-redesign.html#agents" class="link-arrow">Все агенты на главной →</a>
+        <a href="/#agents" class="link-arrow">Все агенты на главной →</a>
       </div>
       <div class="km-others">
-        <a class="km-other" href="proto-agent-first.html">
+        <a class="km-other" href="agent-first.html">
           <span class="av g" aria-hidden="true">П</span>
           <h3>Первый агент</h3>
-          <span class="r">Единая точка входа и память команды</span>
+          <span class="r">Единая точка входа, память команды — и приносит сам</span>
           <span class="link-arrow">Подробнее →</span>
         </a>
-        <a class="km-other" href="proto-agent-argus.html">
-          <span class="av g" aria-hidden="true">А</span>
-          <h3>Аргус</h3>
-          <span class="r">Chief of Staff — работает фоном</span>
-          <span class="link-arrow">Подробнее →</span>
-        </a>
-        <a class="km-other" href="proto-agent-hermes.html">
+        <a class="km-other" href="agent-hermes.html">
           <span class="av g" aria-hidden="true">Г</span>
           <h3>Гермес</h3>
           <span class="r">Контент и SMM</span>
           <span class="link-arrow">Подробнее →</span>
         </a>
-        <a class="km-other" href="proto-agent-recruiter.html">
+        <a class="km-other" href="agent-recruiter.html">
           <span class="av c" aria-hidden="true">Р</span>
           <h3>Рекрутёр</h3>
           <span class="r">Подбор и найм</span>
           <span class="link-arrow">Подробнее →</span>
         </a>
-        <a class="km-other" href="proto-agent-marketing.html">
+        <a class="km-other" href="agent-marketing.html">
           <span class="av c" aria-hidden="true">М</span>
           <h3>Маркетинг-тимлид</h3>
           <span class="r">Сводит маркетинг в одну воронку</span>
@@ -777,9 +796,9 @@
       <div class="km-cta">
         <div>
           <h3>Посмотрите, как Коммерсант разберёт вашу воронку</h3>
-          <p>Приходите на демо с реальной сделкой из вашей практики — покажем, как из чатов и звонков складывается досье и очередь дня.</p>
+          <p>Приходите на демо с реальной сделкой — покажем, как из чатов и звонков складывается досье и очередь дня.</p>
         </div>
-        <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
+        <a href="/#contacts" class="btn btn-green">Запросить демо</a>
       </div>
     </div>
   </section>
@@ -789,18 +808,18 @@
     <div class="wrap">
       <div class="foot">
         <div>
-          <a href="proto-site-redesign.html" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lmf)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lmf" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
+          <a href="/" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lmf)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lmf" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
           <p class="tagline">Среда, в которой люди и ИИ-агенты делают больше работы вместе — над общей памятью команды.</p>
         </div>
         <nav class="foot-links" aria-label="Навигация в подвале">
-          <a href="proto-site-redesign.html#platform">Платформа</a>
-          <a href="proto-site-redesign.html#agents">Агенты</a>
-          <a href="proto-site-redesign.html#productivity">Продуктивность</a>
-          <a href="proto-site-redesign.html#memory">Память</a>
-          <a href="proto-site-redesign.html#chats">Чаты</a>
-          <a href="proto-site-redesign.html#cases">Кейсы</a>
-          <a href="proto-site-redesign.html#mcp">Разработчикам</a>
-          <a href="proto-site-redesign.html#contacts">Контакты</a>
+          <a href="/#platform">Платформа</a>
+          <a href="/#agents">Агенты</a>
+          <a href="/#productivity">Продуктивность</a>
+          <a href="/#memory">Память</a>
+          <a href="/#chats">Чаты</a>
+          <a href="/#cases">Кейсы</a>
+          <a href="/#mcp">Разработчикам</a>
+          <a href="/#contacts">Контакты</a>
         </nav>
       </div>
       <div class="foot-bottom">

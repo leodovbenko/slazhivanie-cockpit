@@ -3,9 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex">
   <title>Рекрутёр — ИИ-агент подбора | Слаживание</title>
-  <meta name="description" content="Рекрутёр — ИИ-агент платформы Слаживание: читает каждое резюме целиком, раскладывает кандидатов по вашему сценарию найма светофором с цитатой на каждом шаге, разбирает собеседования и замыкает петлю с нанимающим.">
+  <meta name="description" content="Рекрутёр — ИИ-агент платформы Слаживание: читает каждое резюме целиком, раскладывает кандидатов по вашему сценарию найма светофором с цитатами, разбирает собеседования и замыкает петлю с нанимающим.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://slazhivanie.ru/agent-recruiter.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Слаживание">
+  <meta property="og:title" content="Рекрутёр — ИИ-агент подбора | Слаживание">
+  <meta property="og:description" content="Рекрутёр — ИИ-агент платформы Слаживание: читает каждое резюме целиком, раскладывает кандидатов по вашему сценарию найма светофором с цитатами, разбирает собеседования и замыкает петлю с нанимающим.">
+  <meta property="og:url" content="https://slazhivanie.ru/agent-recruiter.html">
+  <meta property="og:image" content="https://slazhivanie.ru/og.png?v=2">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Рекрутёр — ИИ-агент подбора | Слаживание">
+  <meta name="twitter:image" content="https://slazhivanie.ru/og.png?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -376,40 +389,52 @@
     .fx-cols{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:start;margin-top:36px}
     @media(max-width:900px){.fx-cols{grid-template-columns:1fr}}
   </style>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,"script","https://mc.yandex.ru/metrika/tag.js?id=110175627", "ym");
+    ym(110175627, "init", {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/110175627" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 </head>
 <body>
 
   <!-- ============ HEADER ============ -->
   <header>
     <div class="wrap nav">
-      <a href="proto-site-redesign.html" class="logo" aria-label="Слаживание — на главную">
+      <a href="/" class="logo" aria-label="Слаживание — на главную">
         <span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>
         слаживание<span class="green">.</span>
       </a>
       <nav class="nav-links" aria-label="Основная навигация">
-        <a href="proto-site-redesign.html#platform">Платформа</a>
-        <a href="proto-site-redesign.html#agents">Агенты</a>
-        <a href="proto-site-redesign.html#productivity">Продуктивность</a>
-        <a href="proto-site-redesign.html#memory">Память</a>
-        <a href="proto-site-redesign.html#chats">Чаты</a>
-        <a href="proto-site-redesign.html#cases">Кейсы</a>
-        <a href="proto-site-redesign.html#mcp">Разработчикам</a>
+        <a href="/#platform">Платформа</a>
+        <a href="/#agents">Агенты</a>
+        <a href="/#productivity">Продуктивность</a>
+        <a href="/#memory">Память</a>
+        <a href="/#chats">Чаты</a>
+        <a href="/#cases">Кейсы</a>
+        <a href="/#mcp">Разработчикам</a>
       </nav>
       <div class="nav-right">
         <div class="langsw" title="Английская версия — скоро"><span class="on">RU</span><span class="off">EN</span></div>
-        <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
+        <a href="/#contacts" class="btn btn-green">Запросить демо</a>
       </div>
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
     <div class="mmenu" id="mmenu">
-      <a href="proto-site-redesign.html#platform">Платформа</a>
-      <a href="proto-site-redesign.html#agents">Агенты</a>
-      <a href="proto-site-redesign.html#productivity">Продуктивность</a>
-      <a href="proto-site-redesign.html#memory">Память</a>
-      <a href="proto-site-redesign.html#chats">Чаты</a>
-      <a href="proto-site-redesign.html#cases">Кейсы</a>
-      <a href="proto-site-redesign.html#mcp">Разработчикам</a>
-      <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
+      <a href="/#platform">Платформа</a>
+      <a href="/#agents">Агенты</a>
+      <a href="/#productivity">Продуктивность</a>
+      <a href="/#memory">Память</a>
+      <a href="/#chats">Чаты</a>
+      <a href="/#cases">Кейсы</a>
+      <a href="/#mcp">Разработчикам</a>
+      <a href="/#contacts" class="btn btn-green">Запросить демо</a>
     </div>
   </header>
 
@@ -420,10 +445,10 @@
         <div class="hero-copy">
           <span class="eyebrow">Recruiter · агент флота</span>
           <h1>Рекрутёр</h1>
-          <p class="sub">Читает каждое резюме целиком — не по ключевым словам — и раскладывает кандидатов по <b style="color:var(--t1)">вашему сценарию найма</b>. На каждом шаге показывает цитату: видно, почему кандидат зелёный, и что именно спросить у жёлтого.</p>
+          <p class="sub">Читает каждое резюме целиком — не по ключевым словам — и раскладывает кандидатов по <b style="color:var(--t1)">вашему сценарию найма</b>. На каждом шаге — цитата: видно, почему кандидат зелёный и что спросить у жёлтого.</p>
           <div class="hero-btns">
-            <a href="proto-site-redesign.html#contacts" class="btn btn-green">Запросить демо</a>
-            <a href="proto-site-redesign.html#agents" class="btn btn-ghost">← Все агенты</a>
+            <a href="/#contacts" class="btn btn-green">Запросить демо</a>
+            <a href="/#agents" class="btn btn-ghost">← Все агенты</a>
           </div>
           <div class="hero-strip">
             <span class="it"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 6H3M17 12H3M13 18H3" stroke-linecap="round"/></svg>Каждый вердикт — с цитатой</span>
@@ -454,7 +479,7 @@
               <div class="gate-top"><span class="gd y"></span>Опыт наставничества</div>
               <div class="gate-quote">В резюме об этом ни слова — спросить на собеседовании</div>
             </div>
-            <div class="cand-foot"><b>Жёлтый — не отказ.</b> Это вопрос, который агент подготовил к собесу, а решение остаётся за вами.</div>
+            <div class="cand-foot"><b>Жёлтый — не отказ,</b> а готовый вопрос к собесу. Решение за вами.</div>
           </div>
         </div>
       </div>
@@ -465,23 +490,23 @@
   <section class="sec" id="situation">
     <div class="wrap">
       <span class="eyebrow">Ситуация</span>
-      <h2 class="h-sec" style="max-width:820px">Как обычно устроен найм, пока его никто не разгружает</h2>
-      <p class="lead" style="margin:18px 0 36px">Знакомая картина почти в любой компании, где нанимают чаще раза в квартал.</p>
+      <h2 class="h-sec" style="max-width:820px">Как устроен найм, пока его никто не разгружает</h2>
+      <p class="lead" style="margin:18px 0 36px">Картина почти любой компании, где нанимают чаще раза в квартал.</p>
       <div class="grid-3">
         <div class="card">
           <div class="ic clay" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 6h16v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6zM4 6l2-3h12l2 3M9 11h6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Отклики читаются «на глаз»</h3>
-          <p>Восемьдесят резюме на позицию, на каждое — секунд десять. Кого позвали, а кого отсеяли, зависит от усталости и времени суток, а не от метода.</p>
+          <p>Восемьдесят резюме на позицию, по десять секунд на каждое. Кого позвали, а кого отсеяли — решают усталость и время суток, а не метод.</p>
         </div>
         <div class="card">
           <div class="ic clay" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 15a4 4 0 004-4V6a4 4 0 10-8 0v5a4 4 0 004 4z"/><path d="M19 11a7 7 0 01-14 0M12 18v3" stroke-linecap="round"/></svg></div>
           <h3>Собесы не структурированы</h3>
-          <p>Час разговора оседает в блокноте и в памяти интервьюера. Сравнить двух кандидатов через неделю нечем — остались ощущения.</p>
+          <p>Час разговора оседает в блокноте интервьюера. Через неделю сравнить двух кандидатов нечем — остались ощущения.</p>
         </div>
         <div class="card">
           <div class="ic clay" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M7 8h10M7 12h6M4 4h16v12H8l-4 4V4z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Обмен кандидатами — вручную</h3>
-          <p>Рекрутёр пересылает нанимающему резюме в личку, тот отвечает «гляну позже». Кандидат висит между двумя людьми, и ни у кого нет полной картины.</p>
+          <p>Рекрутёр шлёт нанимающему резюме в личку, тот отвечает «гляну позже». Кандидат висит между двумя людьми, полной картины нет ни у кого.</p>
         </div>
       </div>
     </div>
@@ -495,7 +520,7 @@
       <div class="grid-3" style="margin-top:36px">
         <div class="card">
           <h3>Решения без обоснования</h3>
-          <p>«Не зашёл» — вердикт, который нельзя ни проверить, ни оспорить. Сильные кандидаты режутся на входе молча, и никто об этом не узнаёт.</p>
+          <p>«Не зашёл» нельзя ни проверить, ни оспорить. Сильные кандидаты молча режутся на входе — и никто об этом не узнаёт.</p>
         </div>
         <div class="card">
           <h3>Поток теряется на этапах</h3>
@@ -503,7 +528,7 @@
         </div>
         <div class="card">
           <h3>Воронка вслепую</h3>
-          <p>Где именно режется поток — на скрининге, на приглашении, на собесе? И готов ли финалист к оферу — или в его картине остались дыры? Вопрос веры, а не данных.</p>
+          <p>Где режется поток — скрининг, приглашение, собес? Готов ли финалист к оферу или в картине остались дыры? Вопрос веры, а не данных.</p>
         </div>
       </div>
     </div>
@@ -513,48 +538,48 @@
   <section class="sec" id="solution">
     <div class="wrap">
       <span class="eyebrow">Решение</span>
-      <h2 class="h-sec" style="max-width:860px">Стажёр-рекрутёр, который делает разбор — а решения оставляет вам</h2>
-      <p class="lead" style="margin:18px 0 40px">Рекрутёр работает по вашему методу найма, а не по чужому шаблону. Всё, что уходит кандидату, — сначала черновик и ваше «ок».</p>
+      <h2 class="h-sec" style="max-width:860px">Стажёр-рекрутёр: разбор делает он, решаете вы</h2>
+      <p class="lead" style="margin:18px 0 40px">Работает по вашему методу найма, не по чужому шаблону. Всё, что уходит кандидату, — сначала черновик и ваше «ок».</p>
 
       <div class="grid-3">
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5zM14 3v5h5M9 13h6M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Сценарий найма из вашего ТЗ</h3>
-          <p>Вы даёте ТЗ на позицию — агент собирает из него сценарий: шаги-ворота, по которым пойдёт каждый кандидат. Черновик правите вы, версии сохраняются. Это ваш метод найма, зафиксированный в системе.</p>
+          <p>Вы даёте ТЗ на позицию — агент собирает сценарий: шаги-ворота, по которым пойдёт каждый кандидат. Черновик правите вы, версии сохраняются — метод остаётся вашим.</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="20" rx="3"/><circle cx="12" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg></div>
           <h3>Светофор с цитатами</h3>
-          <p>Каждое резюме прогоняется по воротам сценария: зелёный, жёлтый или красный — и на каждом шаге цитата из резюме. Не «на глаз», а с обоснованием, которое можно проверить и оспорить.</p>
+          <p>Каждое резюме идёт по воротам сценария: зелёный, жёлтый или красный, на каждом шаге — цитата из резюме. Обоснование, которое можно проверить и оспорить.</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 15a4 4 0 004-4V6a4 4 0 10-8 0v5a4 4 0 004 4z"/><path d="M19 11a7 7 0 01-14 0M12 18v3" stroke-linecap="round"/></svg></div>
           <h3>Разбирает собес</h3>
-          <p>После собеседования агент оценивает кандидата по тому же сценарию — по заметкам интервьюера, транскрипту или записи встречи из tl;dv и Zoom. Час разговора превращается в структурированную оценку.</p>
+          <p>После собеседования оценивает кандидата по тому же сценарию — из заметок интервьюера, транскрипта или записи встречи (tl;dv, Zoom). Час разговора становится структурированной оценкой.</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 12h4M18 16h4" stroke-linecap="round"/></svg></div>
           <h3>Ведёт воронку</h3>
-          <p>HRD-пульт: этапы воронки включаются переключателями, под каждый этап — свой промпт. Рядом аналитика: конверсии по этапам и узкое место, где отваливается поток.</p>
+          <p>HRD-пульт: этапы воронки включаются переключателями, под каждый — свой промпт. Рядом конверсии по этапам и узкое место, где отваливается поток.</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M21 6H8a5 5 0 00-5 5M7 22l-4-4 4-4M3 18h13a5 5 0 005-5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Замыкает петлю с нанимающим</h3>
-          <p>Зелёный шортлист приходит рекрутёру, карточка кандидата — нанимающему в Telegram. Ответ нанимающего возвращается обратно в систему и ложится в карточку. Кандидат больше не висит в чьей-то личке.</p>
+          <p>Зелёный шортлист — рекрутёру, карточка кандидата — нанимающему в Telegram. Ответ возвращается в систему и ложится в карточку: кандидат не висит в чьей-то личке.</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Вывод по позиции</h3>
-          <p>Все касания кандидата — резюме, скрининг, собесы, ответы нанимающего — сводятся в один вывод: готов или не готов к оферу, и какие дыры в картине ещё стоит закрыть.</p>
+          <p>Резюме, скрининг, собесы, ответы нанимающего сводятся в один вывод: готов ли к оферу и какие дыры в картине осталось закрыть.</p>
         </div>
       </div>
 
       <div class="fleet-note" style="margin-top:28px">
-        <b>Право действия — лестницей доверия, а оценка не решает за вас.</b> Приглашения и отказы агент готовит черновиком; наружу письмо уходит только после вашего «ок». Право на действия растёт грейдами — чем больше аппрувов без правок, тем больше доверия:
+        <b>Право действия — лестницей доверия.</b> Приглашения и отказы агент готовит черновиком; наружу письмо уходит после вашего «ок». Право растёт грейдами — чем больше аппрувов без правок, тем больше доверия:
         <span class="grades" aria-label="Лестница грейдов от J1 до M2">
           <span class="grade cur">J1</span><span class="grade-arrow">→</span><span class="grade">J2</span><span class="grade-arrow">→</span><span class="grade">S1</span><span class="grade-arrow">→</span><span class="grade">S2</span><span class="grade-arrow">→</span><span class="grade">M1</span><span class="grade-arrow">→</span><span class="grade">M2</span>
         </span>
-        <span style="display:block;margin-top:12px">И на любом грейде светофор — это обоснование, а не приговор: жёлтый значит «спросить, что за этим стоит», а не автоотказ. Оценка помогает решать — решает человек.</span>
+        <span style="display:block;margin-top:12px">На любом грейде светофор — обоснование, а не приговор: жёлтый значит «спросить», а не автоотказ. Решает человек.</span>
       </div>
     </div>
   </section>
@@ -568,7 +593,7 @@
           <h2 class="h-sec">Что у Рекрутёра под капотом — и где это видно</h2>
         </div>
       </div>
-      <p class="lead" style="margin:-16px 0 0">Это не обещания с роадмапа — это руки агента, объявленные в платформе. Слева — что он умеет, справа — экраны, где вы это видите.</p>
+      <p class="lead" style="margin:-16px 0 0">Не обещания с роадмапа — руки агента, объявленные в платформе. Слева — что умеет, справа — экраны, где это видно.</p>
 
       <div class="fx-cols">
         <!-- руки -->
@@ -632,7 +657,7 @@
           <h3 style="font-size:clamp(22px,2.8vw,30px);margin-bottom:14px">Кандидат доходит до нанимающего — и ответ возвращается</h3>
           <ul class="chat-feats" style="margin-top:22px">
             <li><b>Карточка вместо пересланного файла.</b> Нанимающий получает в Telegram не «резюме во вложении», а разбор: светофор по воротам и цитаты.</li>
-            <li><b>Ответ в один тап.</b> «Зовите на собес», «отказ», «вопрос рекрутёру» — решение нанимающего сразу ложится в карточку кандидата.</li>
+            <li><b>Ответ в один тап.</b> «Зовите на собес», «отказ», «вопрос рекрутёру» — решение сразу ложится в карточку кандидата.</li>
             <li><b>Ничего не висит.</b> Рекрутёр видит статус каждого показанного кандидата — «гляну позже» перестаёт быть чёрной дырой.</li>
           </ul>
         </div>
@@ -668,7 +693,7 @@
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 6H3M17 12H3M13 18H3" stroke-linecap="round"/></svg></div>
           <h3>Каждое решение — с цитатой</h3>
-          <p>Вердикт по кандидату можно проверить и оспорить: рядом всегда обоснование из его же резюме или собеса, а не «не зашёл».</p>
+          <p>Вердикт можно проверить и оспорить: рядом обоснование из резюме или собеса, а не «не зашёл».</p>
         </div>
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M2 14h4M10 12h4M18 16h4" stroke-linecap="round"/></svg></div>
@@ -683,7 +708,7 @@
         <div class="card">
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7l7-4z" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>Черновики готовы, наружу — с «ок»</h3>
-          <p>Приглашения и отказы не пишутся с нуля и не уходят сами: агент готовит, человек утверждает. Быстро — и под контролем.</p>
+          <p>Агент готовит приглашения и отказы, человек утверждает. Ничего не уходит само.</p>
         </div>
       </div>
     </div>
@@ -697,48 +722,41 @@
           <span class="eyebrow">Флот</span>
           <h2 class="h-sec">Другие агенты платформы</h2>
         </div>
-        <a href="proto-site-redesign.html#agents" class="link-arrow">Весь флот на главной →</a>
+        <a href="/#agents" class="link-arrow">Весь флот на главной →</a>
       </div>
       <div class="grid-3">
         <article class="agent">
           <div class="agent-top">
             <div class="av g" aria-hidden="true">П</div>
-            <div><h3>Первый агент</h3><div class="role">Единая точка входа и память команды</div></div>
+            <div><h3>Первый агент</h3><div class="role">Единая точка входа, память команды — и приносит сам</div></div>
           </div>
-          <a href="proto-agent-first.html" class="agent-more link-arrow">Подробнее →</a>
-        </article>
-        <article class="agent">
-          <div class="agent-top">
-            <div class="av g" aria-hidden="true">А</div>
-            <div><h3>Аргус</h3><div class="role">Chief of Staff — работает фоном</div></div>
-          </div>
-          <a href="proto-agent-argus.html" class="agent-more link-arrow">Подробнее →</a>
+          <a href="agent-first.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
         <article class="agent">
           <div class="agent-top">
             <div class="av g" aria-hidden="true">Г</div>
             <div><h3>Гермес</h3><div class="role">Контент и SMM</div></div>
           </div>
-          <a href="proto-agent-hermes.html" class="agent-more link-arrow">Подробнее →</a>
+          <a href="agent-hermes.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
         <article class="agent">
           <div class="agent-top">
             <div class="av c" aria-hidden="true">К</div>
             <div><h3>Коммерсант</h3><div class="role">Продажи и сделки</div></div>
           </div>
-          <a href="proto-agent-kommersant.html" class="agent-more link-arrow">Подробнее →</a>
+          <a href="agent-kommersant.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
         <article class="agent">
           <div class="agent-top">
             <div class="av c" aria-hidden="true">М</div>
             <div><h3>Маркетинг-тимлид</h3><div class="role">Сводит маркетинг в одну воронку</div></div>
           </div>
-          <a href="proto-agent-marketing.html" class="agent-more link-arrow">Подробнее →</a>
+          <a href="agent-marketing.html" class="agent-more link-arrow">Подробнее →</a>
         </article>
         <article class="agent" style="background:var(--paper-2);border-style:dashed;justify-content:center;text-align:center">
           <h3 style="font-size:19px;margin-bottom:8px">Посмотреть Рекрутёра вживую</h3>
           <p style="font-size:14px;color:var(--t2);margin-bottom:18px">Приходите с реальной позицией и стопкой откликов — разберём на демо.</p>
-          <a href="proto-site-redesign.html#contacts" class="btn btn-green" style="align-self:center">Запросить демо</a>
+          <a href="/#contacts" class="btn btn-green" style="align-self:center">Запросить демо</a>
         </article>
       </div>
     </div>
@@ -749,18 +767,18 @@
     <div class="wrap">
       <div class="foot">
         <div>
-          <a href="proto-site-redesign.html" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lmf)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lmf" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
+          <a href="/" class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lmf)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lmf" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></a>
           <p class="tagline">Среда, в которой люди и ИИ-агенты делают больше работы вместе — над общей памятью команды.</p>
         </div>
         <nav class="foot-links" aria-label="Навигация в подвале">
-          <a href="proto-site-redesign.html#platform">Платформа</a>
-          <a href="proto-site-redesign.html#agents">Агенты</a>
-          <a href="proto-site-redesign.html#productivity">Продуктивность</a>
-          <a href="proto-site-redesign.html#memory">Память</a>
-          <a href="proto-site-redesign.html#chats">Чаты</a>
-          <a href="proto-site-redesign.html#cases">Кейсы</a>
-          <a href="proto-site-redesign.html#mcp">Разработчикам</a>
-          <a href="proto-site-redesign.html#contacts">Контакты</a>
+          <a href="/#platform">Платформа</a>
+          <a href="/#agents">Агенты</a>
+          <a href="/#productivity">Продуктивность</a>
+          <a href="/#memory">Память</a>
+          <a href="/#chats">Чаты</a>
+          <a href="/#cases">Кейсы</a>
+          <a href="/#mcp">Разработчикам</a>
+          <a href="/#contacts">Контакты</a>
         </nav>
       </div>
       <div class="foot-bottom">

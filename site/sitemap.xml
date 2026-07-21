@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://slazhivanie.ru/</loc><lastmod>2026-07-09</lastmod><priority>1.0</priority></url>
-  <url><loc>https://slazhivanie.ru/platform.html</loc><lastmod>2026-07-09</lastmod><priority>0.9</priority></url>
-  <url><loc>https://slazhivanie.ru/solutions.html</loc><lastmod>2026-07-12</lastmod><priority>0.9</priority></url>
-  <url><loc>https://slazhivanie.ru/iiko.html</loc><lastmod>2026-07-12</lastmod><priority>0.9</priority></url>
-  <url><loc>https://slazhivanie.ru/1c-fresh.html</loc><lastmod>2026-07-12</lastmod><priority>0.9</priority></url>
-  <url><loc>https://slazhivanie.ru/chats.html</loc><lastmod>2026-07-12</lastmod><priority>0.9</priority></url>
-  <url><loc>https://slazhivanie.ru/approach.html</loc><lastmod>2026-07-09</lastmod><priority>0.8</priority></url>
-  <url><loc>https://slazhivanie.ru/cases.html</loc><lastmod>2026-07-09</lastmod><priority>0.8</priority></url>
-  <url><loc>https://slazhivanie.ru/team.html</loc><lastmod>2026-07-09</lastmod><priority>0.7</priority></url>
+  <url><loc>https://slazhivanie.ru/</loc><lastmod>2026-07-21</lastmod><priority>1.0</priority></url>
+  <url><loc>https://slazhivanie.ru/agent-first.html</loc><lastmod>2026-07-21</lastmod><priority>0.9</priority></url>
+  <url><loc>https://slazhivanie.ru/agent-hermes.html</loc><lastmod>2026-07-21</lastmod><priority>0.9</priority></url>
+  <url><loc>https://slazhivanie.ru/agent-kommersant.html</loc><lastmod>2026-07-21</lastmod><priority>0.9</priority></url>
+  <url><loc>https://slazhivanie.ru/agent-marketing.html</loc><lastmod>2026-07-21</lastmod><priority>0.9</priority></url>
+  <url><loc>https://slazhivanie.ru/agent-recruiter.html</loc><lastmod>2026-07-21</lastmod><priority>0.9</priority></url>
+  <url><loc>https://slazhivanie.ru/iiko.html</loc><lastmod>2026-07-12</lastmod><priority>0.7</priority></url>
+  <url><loc>https://slazhivanie.ru/1c-fresh.html</loc><lastmod>2026-07-12</lastmod><priority>0.7</priority></url>
 </urlset>
