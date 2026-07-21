@@ -90,11 +90,15 @@
     .plist li b{display:block;font-size:16px;color:var(--t1);margin-bottom:3px}
     .plist li span{font-size:14px;color:var(--t2);line-height:1.5}
 
-    /* Что заберёте */
-    .takeaways{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:14px 30px}
-    .takeaways li{position:relative;padding-left:30px;font-size:16px;color:var(--dark);line-height:1.5}
-    .takeaways li::before{content:"";position:absolute;left:2px;top:6px;width:14px;height:14px;background:var(--green);border-radius:50%}
-    .takeaways li.sec::before{background:var(--clay)}
+    /* Что заберёте — две независимые колонки, каждая пакуется плотно */
+    .takeaways{display:grid;grid-template-columns:1fr 1fr;gap:32px 40px}
+    .tk-col{display:flex;flex-direction:column;gap:14px}
+    .tk-col .kicker{display:inline-block;font-family:'Fraunces',serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green-d);margin-bottom:2px}
+    .tk-col.sec .kicker{color:var(--clay-d)}
+    .tk-col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+    .tk-col li{position:relative;padding-left:30px;font-size:16px;color:var(--dark);line-height:1.5}
+    .tk-col li::before{content:"";position:absolute;left:2px;top:6px;width:14px;height:14px;background:var(--green);border-radius:50%}
+    .tk-col.sec li::before{background:var(--clay)}
 
     @media(max-width:760px){.speakers,.why,.tracks,.pains,.takeaways{grid-template-columns:1fr}}
 
@@ -106,8 +110,6 @@
     .tgreg-steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--green);color:#fff;border-radius:50%;font-weight:700;font-size:14px}
     .tgreg-steps li b{color:var(--dark)}
     .tgreg-note{text-align:center;font-size:14px;color:var(--t3);margin:16px 0 0;line-height:1.5}
-    .tgreg-fallback{text-align:center;font-size:14px;color:var(--t3);margin:10px 0 0}
-    .tgreg-fallback a{color:var(--green-d);font-weight:600}
     /* На телефоне чуть уже контент — больше боковых полей (страничный оверрайд .wrap) */
     @media(max-width:560px){.wrap{padding:0 30px}}
   </style>
@@ -306,16 +308,26 @@
           <h2 class="h-sec">С чем уйдёте после вебинара</h2>
         </div>
       </div>
-      <ul class="takeaways">
-        <li>Карта из 5 уровней внедрения ИИ — где ваша компания сейчас и куда идти дальше.</li>
-        <li class="sec">Карта уголовных и налоговых рисков бизнеса на 2026 год.</li>
-        <li>Понимание, почему «уклад» (цифровой порядок) идёт раньше ИИ-фикации.</li>
-        <li class="sec">Алгоритм действий при обыске и допросе — памятка для себя и сотрудников.</li>
-        <li>Как считать эффект в деньгах — снижение ФОТ и рост объёма работы.</li>
-        <li class="sec">Чек-лист «Насколько ваш бизнес готов к проверке» — самодиагностика за 15 минут.</li>
-        <li>Как устроена связка человек + агенты — и где человек остаётся гейтом.</li>
-        <li class="sec">Какие «нормальные» практики ведения бизнеса сегодня читаются как схемы.</li>
-      </ul>
+      <div class="takeaways">
+        <div class="tk-col">
+          <span class="kicker">Эффективность · Леонид</span>
+          <ul>
+            <li>Карта из 5 уровней внедрения ИИ — где ваша компания сейчас и куда идти дальше.</li>
+            <li>Понимание, почему «уклад» (цифровой порядок) идёт раньше ИИ-фикации.</li>
+            <li>Как считать эффект в деньгах — снижение ФОТ и рост объёма работы.</li>
+            <li>Как устроена связка человек + агенты — и где человек остаётся гейтом.</li>
+          </ul>
+        </div>
+        <div class="tk-col sec">
+          <span class="kicker">Безопасность · Калой</span>
+          <ul>
+            <li>Карта уголовных и налоговых рисков бизнеса на 2026 год.</li>
+            <li>Алгоритм действий при обыске и допросе — памятка для себя и сотрудников.</li>
+            <li>Чек-лист «Насколько ваш бизнес готов к проверке» — самодиагностика за 15 минут.</li>
+            <li>Какие «нормальные» практики ведения бизнеса сегодня читаются как схемы.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -340,7 +352,6 @@
           Зарегистрироваться в Telegram
         </a>
         <p class="tgreg-note">Регистрацию ведёт наш ИИ-агент — вебинар про связку человек + агенты, и запись на него тоже идёт через неё.</p>
-        <p class="tgreg-fallback">Нет Telegram? Напишите <a href="mailto:leo@dovbenko.me">leo@dovbenko.me</a> — запишем вручную и пришлём ссылку на почту.</p>
       </div>
       <p style="text-align:center;margin-top:24px;font-size:15px;color:var(--t3)">127006, Москва, ул. Долгоруковская, 27с1 · <a href="mailto:leo@dovbenko.me" style="color:var(--green-d);font-weight:600">leo@dovbenko.me</a></p>
     </div>
