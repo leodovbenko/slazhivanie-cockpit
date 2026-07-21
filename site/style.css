@@ -90,7 +90,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(244,239,230,.86);backdro
     radial-gradient(circle, transparent 0 56%, rgba(184,92,60,.08) 56% 57%, transparent 57%),
     radial-gradient(circle, transparent 0 74%, rgba(61,122,62,.07) 74% 75%, transparent 75%),
     radial-gradient(circle, transparent 0 92%, rgba(184,92,60,.06) 92% 93%, transparent 93%);}
-.hero-inner{padding:84px 0 76px;position:relative;z-index:2;max-width:920px}
+.hero-inner{padding:84px 24px 76px;position:relative;z-index:2;max-width:920px}
 .hero h1{font-size:clamp(38px,6.4vw,68px);font-weight:700;letter-spacing:-.02em}
 .hero .sub{margin-top:26px;font-size:clamp(17px,2.1vw,21px);color:var(--t2);max-width:620px;line-height:1.5}
 .hero-btns{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
@@ -98,7 +98,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(244,239,230,.86);backdro
 
 /* page hero (subpages) — светлый, компактнее */
 .phero{background:linear-gradient(135deg,var(--clay-soft),var(--green-soft));color:var(--t1);position:relative;overflow:hidden}
-.phero-inner{padding:72px 0 64px;position:relative;z-index:2;max-width:860px}
+.phero-inner{padding:72px 24px 64px;position:relative;z-index:2;max-width:860px}
 .phero h1{font-size:clamp(32px,5vw,54px);font-weight:700;letter-spacing:-.02em;color:var(--t1)}
 .phero .sub{margin-top:22px;font-size:clamp(16px,2vw,20px);color:var(--t2);max-width:660px;line-height:1.5}
 
@@ -297,8 +297,8 @@ footer{background:var(--darker);color:var(--t3d);padding:40px 0;font-size:14px}
   body{font-size:16px}
   .grid-4,.grid-3,.steps,.stats-grid,.chips,.grid-2{grid-template-columns:1fr}
   .stats-grid{gap:28px}
-  .hero-inner{padding:60px 0 56px}
-  .phero-inner{padding:54px 0 48px}
+  .hero-inner{padding:60px 24px 56px}
+  .phero-inner{padding:54px 24px 48px}
   .hero-btns .btn{flex:1}
   .sec{padding:52px 0}
   .compare,.card,.price,.hrblock,.person-x,.econ .col{padding:22px}
