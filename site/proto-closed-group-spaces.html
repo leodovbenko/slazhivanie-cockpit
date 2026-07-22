@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Закрытые групповые пространства — круг участников + Первый агент</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Слаживание">
+<meta property="og:title" content="Закрытые групповые пространства | Слаживание">
+<meta property="og:description" content="Рабочее пространство на выбранный круг людей + Первый агент внутри: дорабатываете идею закрыто и выносите в команду готовый результат.">
+<meta property="og:url" content="https://slazhivanie.ru/proto-closed-group-spaces.html">
+<meta property="og:image" content="https://slazhivanie.ru/og.png?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Закрытые групповые пространства | Слаживание">
+<meta name="twitter:image" content="https://slazhivanie.ru/og.png?v=2">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #F4EFE6;
+    color: #201C17;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 36px 26px 52px; }
+  header.page { margin-bottom: 26px; }
+  h1 { font-size: 26px; line-height: 1.25; letter-spacing: -0.3px; max-width: 960px; }
+  h1 em { font-style: normal; color: #9A6250; }
+  .sub { margin-top: 10px; font-size: 14.5px; color: #7A7264; max-width: 860px; }
+  .badge { font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 11px; letter-spacing: 0.4px; display: inline-block; margin-bottom: 12px; }
+  .badge.proto { color: #fff; background: #9A6250; }
+
+  .card { background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 16px; }
+
+  /* ── APP LAYOUT ── */
+  .app { display: grid; grid-template-columns: 288px 1fr; overflow: hidden; min-height: 640px; }
+  .app-side { background: #FBF7EF; border-right: 1px solid #E4DBCB; padding: 20px 16px; }
+  .app-side h3 { font-size: 15px; padding: 0 4px; }
+  .app-side .side-sub { font-size: 12px; color: #7A7264; margin-top: 3px; padding: 0 4px; }
+  .grp { margin-top: 20px; }
+  .grp .ttl { font-size: 11px; color: #A79D8B; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; padding: 0 4px; display: flex; align-items: center; gap: 7px; }
+  .grp .ttl .hint { text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .sp { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border-radius: 10px; font-size: 13px; cursor: pointer; border: 1px solid transparent; user-select: none; }
+  .sp + .sp { margin-top: 4px; }
+  .sp:hover { background: #F4EDE0; }
+  .sp.active { background: #F9EEE9; border-color: #DDBBAD; font-weight: 600; }
+  .sp .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .dot.team { background: #6E9464; }
+  .dot.pers { background: #B98F44; }
+  .dot.closed { background: #9A6250; }
+  .sp small { margin-left: auto; font-size: 10.5px; color: #A79D8B; white-space: nowrap; }
+  .sp .lock { font-size: 11px; flex: none; }
+  .newspace { margin-top: 8px; display: flex; align-items: center; gap: 8px; padding: 9px 11px; border-radius: 10px; font-size: 12.5px; color: #7A4E3E; border: 1px dashed #DDBBAD; cursor: pointer; }
+  .newspace:hover { background: #F9EEE9; }
+
+  /* ── MAIN ── */
+  .app-main { padding: 22px 26px 26px; min-width: 0; }
+  .crumbs { font-size: 12px; color: #A79D8B; margin-bottom: 4px; }
+  .sp-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .sp-head h3 { font-size: 18px; letter-spacing: -0.2px; }
+  .chip { font-size: 12px; border-radius: 20px; padding: 4px 11px; background: #F1EADD; color: #55503F; display: inline-flex; align-items: center; gap: 5px; }
+  .chip.agent { background: #F9EEE9; color: #7A4E3E; }
+  .chip.ok { background: #DDE7D3; color: #35502F; }
+  .chip.lockchip { background: #F9EEE9; color: #7A4E3E; border: 1px solid #DDBBAD; }
+  .privline { margin-top: 8px; font-size: 12.5px; color: #7A4E3E; background: #F9EEE9; border-radius: 8px; padding: 6px 11px; display: inline-block; }
+  .privline.teamline { color: #35502F; background: #EFF3E9; }
+  .privline.persline { color: #6b5a2a; background: #F6EFDD; }
+
+  /* view-as segmented */
+  .viewas { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #A79D8B; }
+  .seg { display: inline-flex; background: #F1EADD; border-radius: 20px; padding: 3px; }
+  .seg a { font-size: 12px; padding: 4px 12px; border-radius: 16px; cursor: pointer; color: #7A7264; white-space: nowrap; }
+  .seg a.on { background: #FFFDF8; color: #201C17; font-weight: 600; box-shadow: 0 1px 2px rgba(60,45,25,.12); }
+
+  /* tabs */
+  .tabs { margin-top: 18px; display: flex; gap: 4px; border-bottom: 1px solid #E4DBCB; }
+  .tab { font-size: 13px; padding: 8px 14px; cursor: pointer; color: #7A7264; border-bottom: 2px solid transparent; margin-bottom: -1px; user-select: none; }
+  .tab:hover { color: #201C17; }
+  .tab.on { color: #9A6250; font-weight: 600; border-bottom-color: #9A6250; }
+  .tab small { color: #A79D8B; font-weight: 400; }
+
+  .body-grid { display: grid; grid-template-columns: 1fr 264px; gap: 22px; margin-top: 18px; align-items: start; }
+
+  /* thread */
+  .msg { padding: 11px 14px; border-radius: 12px; font-size: 13px; margin-top: 8px; max-width: 640px; }
+  .msg.human { background: #F1EADD; color: #3E3A31; }
+  .msg.agent { background: #F9EEE9; color: #55503F; }
+  .msg .who { font-size: 11px; font-weight: 700; margin-bottom: 3px; color: #6b6252; }
+  .msg.agent .who { color: #7A4E3E; }
+  .promoted-banner { margin-top: 10px; padding: 12px 15px; background: #EFF3E9; border: 1px solid #C9D8BC; border-radius: 12px; font-size: 13px; color: #35502F; }
+  .composer { margin-top: 16px; display: flex; gap: 8px; max-width: 640px; }
+  .composer input { flex: 1; font: inherit; font-size: 13px; padding: 10px 13px; border-radius: 10px; border: 1px solid #E4DBCB; background: #FFFDF8; color: #201C17; outline: none; }
+  .composer input:focus { border-color: #DDBBAD; }
+  .composer a { font-size: 13px; font-weight: 600; color: #fff; background: #9A6250; border-radius: 10px; padding: 9px 15px; cursor: pointer; white-space: nowrap; }
+  .composer .as { align-self: center; font-size: 11px; color: #A79D8B; white-space: nowrap; }
+
+  /* files */
+  .file-row { display: flex; align-items: center; gap: 10px; padding: 10px 4px; font-size: 13px; color: #55503F; }
+  .file-row:not(:last-child) { border-bottom: 1px solid #EFE7D8; }
+  .file-row .meta { margin-left: auto; font-size: 11.5px; color: #A79D8B; white-space: nowrap; }
+  .files-note { margin-top: 12px; font-size: 12px; color: #7A4E3E; background: #F9EEE9; border-radius: 8px; padding: 7px 11px; display: inline-block; }
+
+  /* draft */
+  .draft { background: #FBF7EF; border: 1px solid #E4DBCB; border-radius: 12px; padding: 18px 20px; max-width: 680px; }
+  .draft .d-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .draft h4 { font-size: 15px; }
+  .draft p { margin-top: 10px; font-size: 13px; color: #55503F; }
+  .draft p b { color: #201C17; }
+  .draft .keyline { margin-top: 12px; padding: 10px 13px; background: #F9EEE9; border: 1px solid #DDBBAD; border-radius: 10px; font-size: 13px; color: #55503F; }
+  .draft .byline { margin-top: 12px; font-size: 11.5px; color: #A79D8B; }
+
+  /* participants rail */
+  .rail-card { background: #FBF7EF; border: 1px solid #E4DBCB; border-radius: 12px; padding: 15px 15px 13px; }
+  .rail-card + .rail-card { margin-top: 14px; }
+  .rail-card .ttl { font-size: 11px; color: #A79D8B; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .prt { display: flex; align-items: center; gap: 9px; padding: 6px 0; position: relative; }
+  .prt:not(:last-child) { border-bottom: 1px solid #EFE7D8; }
+  .ava { width: 28px; height: 28px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+  .ava.bot { background: #F9EEE9; border: 1px solid #DDBBAD; font-size: 13px; }
+  .prt .nm { font-size: 12.5px; line-height: 1.25; min-width: 0; }
+  .prt .nm small { display: block; font-size: 10.5px; color: #A79D8B; font-weight: 400; }
+  .rolebadge { margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: .3px; border-radius: 20px; padding: 2px 8px; white-space: nowrap; }
+  .rolebadge.admin { background: #F9EEE9; color: #7A4E3E; border: 1px solid #DDBBAD; }
+  .rolebadge.member { background: #F1EADD; color: #7A7264; }
+  .rolebadge.bot { background: #EFF3E9; color: #35502F; }
+  .kebab { flex: none; width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #A79D8B; font-size: 15px; line-height: 1; margin-left: 4px; }
+  .kebab:hover { background: #F1EADD; color: #201C17; }
+  .menu { position: absolute; right: 0; top: 32px; z-index: 30; background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 10px; box-shadow: 0 8px 24px rgba(60,45,25,.16); padding: 5px; min-width: 218px; }
+  .menu a { display: block; font-size: 12.5px; padding: 7px 10px; border-radius: 7px; cursor: pointer; color: #55503F; }
+  .menu a:hover { background: #F9EEE9; color: #201C17; }
+  .menu a.warn { color: #8a4a3a; }
+  .menu .mnote { font-size: 10.5px; color: #A79D8B; padding: 4px 10px 5px; }
+  .add-btn { margin-top: 10px; display: block; text-align: center; font-size: 12.5px; font-weight: 600; color: #7A4E3E; border: 1px dashed #DDBBAD; border-radius: 9px; padding: 8px 10px; cursor: pointer; }
+  .add-btn:hover { background: #F9EEE9; }
+  .add-locked { margin-top: 10px; font-size: 11.5px; color: #A79D8B; text-align: center; padding: 7px 8px; border: 1px dashed #E4DBCB; border-radius: 9px; }
+
+  /* promote card */
+  .promo { background: #EFF3E9; border: 1px solid #C9D8BC; border-radius: 12px; padding: 15px; }
+  .promo .lbl { font-size: 11px; font-weight: 700; color: #35502F; letter-spacing: 0.5px; text-transform: uppercase; }
+  .promo p { margin-top: 7px; font-size: 12px; color: #465440; }
+  .promo .btn { margin-top: 11px; display: block; text-align: center; font-size: 13px; font-weight: 600; color: #fff; background: #6E9464; border-radius: 10px; padding: 9px 14px; cursor: pointer; }
+  .promo .btn.off { background: #C9D8BC; cursor: default; }
+  .promo .keep { margin-top: 9px; font-size: 11px; color: #7A7264; }
+  .priv-card { background: #F9EEE9; border: 1px solid #DDBBAD; border-radius: 12px; padding: 13px 15px; font-size: 12px; color: #7A4E3E; }
+  .priv-card b { color: #5f3a2c; }
+
+  /* modal */
+  .overlay { position: fixed; inset: 0; background: rgba(32,28,23,.42); display: none; align-items: flex-start; justify-content: center; padding: 60px 20px; z-index: 90; }
+  .overlay.open { display: flex; }
+  .modal { background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 16px; width: 100%; max-width: 520px; padding: 24px 26px; box-shadow: 0 22px 60px rgba(60,45,25,.28); }
+  .modal h3 { font-size: 17px; display: flex; align-items: center; gap: 9px; }
+  .modal .m-sub { margin-top: 6px; font-size: 12.5px; color: #7A7264; }
+  .modal .f-lbl { margin-top: 16px; font-size: 11px; color: #A79D8B; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 7px; }
+  .modal input[type=text] { width: 100%; font: inherit; font-size: 14px; padding: 10px 13px; border-radius: 10px; border: 1px solid #E4DBCB; background: #FBF7EF; color: #201C17; outline: none; }
+  .modal input[type=text]:focus { border-color: #DDBBAD; }
+  .circle-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .pick { display: flex; align-items: center; gap: 9px; padding: 8px 6px; border-radius: 9px; }
+  .pick:not(:last-child) { border-bottom: 1px solid #EFE7D8; }
+  .pick .nm { font-size: 13px; }
+  .pick .nm small { display: block; font-size: 10.5px; color: #A79D8B; }
+  .pick .tog { margin-left: auto; font-size: 12px; font-weight: 600; color: #7A4E3E; border: 1px solid #DDBBAD; border-radius: 20px; padding: 3px 12px; cursor: pointer; white-space: nowrap; }
+  .pick .tog.in { background: #F9EEE9; }
+  .pick .tog:hover { background: #F9EEE9; }
+  .m-note { margin-top: 14px; font-size: 12px; color: #7A4E3E; background: #F9EEE9; border-radius: 9px; padding: 9px 12px; }
+  .m-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
+  .btn-main { font-size: 13px; font-weight: 600; color: #fff; background: #9A6250; border-radius: 10px; padding: 9px 18px; cursor: pointer; }
+  .btn-main.green { background: #6E9464; }
+  .btn-ghost { font-size: 13px; color: #7A7264; padding: 9px 12px; cursor: pointer; border-radius: 10px; }
+  .btn-ghost:hover { background: #F1EADD; }
+
+  /* toast */
+  #toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(16px); background: #201C17; color: #F4EFE6; font-size: 13px; border-radius: 12px; padding: 10px 18px; opacity: 0; pointer-events: none; transition: all .25s ease; z-index: 99; max-width: 90vw; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .legend { margin-top: 34px; background: #FFFDF8; border: 1px solid #E4DBCB; border-radius: 16px; padding: 22px 26px; }
+  .legend h3 { font-size: 15px; margin-bottom: 14px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 34px; }
+  .legend-item { font-size: 13px; color: #55503F; }
+  .legend-item b { color: #9A6250; }
+  footer { margin-top: 26px; font-size: 12px; color: #A79D8B; }
+
+  @media (max-width: 960px) {
+    .app { grid-template-columns: 1fr; }
+    .app-side { border-right: none; border-bottom: 1px solid #E4DBCB; }
+    .body-grid { grid-template-columns: 1fr; }
+    .legend-grid { grid-template-columns: 1fr; }
+    .viewas { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <span class="badge proto">ПРОТОТИП · ДО КОДА</span>
+  <h1>Рабочее пространство теперь можно закрыть <em>на выбранный круг людей</em> — с Первым агентом внутри.</h1>
+  <div class="sub">Было два типа: командное (видно всем) и личное (только я + агент). Добавляется третий — закрытый круг: несколько человек и агент прорабатывают вопрос вместе, а команда увидит только то, что круг сам решит вынести. Всё кликается: пространства слева, круг участников, роли, вкладки, «Вынести в команду».</div>
+</header>
+
+<div class="card app">
+  <!-- ═══ SIDEBAR ═══ -->
+  <div class="app-side">
+    <h3>Пространства · Open Service</h3>
+    <div class="side-sub">Кабинет Первого агента</div>
+    <div id="side-groups"></div>
+  </div>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="app-main" id="main"></div>
+</div>
+
+<!-- ═══ ЛЕГЕНДА ═══ -->
+<div class="legend">
+  <h3>Как устроены роли и приватность в закрытом круге</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><b>Создатель = админ.</b> Кто завёл пространство, тот и админ по умолчанию. Только админ добавляет людей в круг — попроситься со стороны нельзя: пространство не видно тем, кто не в круге.</div>
+    <div class="legend-item"><b>Админов может быть несколько.</b> Через меню участника админ назначает второго админа или полностью передаёт роль — на случай отпуска или ухода из проекта. Круг не остаётся без хозяина.</div>
+    <div class="legend-item"><b>Первый агент — внутри по умолчанию.</b> Он полноправный участник круга: помнит контекст, помогает формулировать, ведёт черновик. Но то, что обсуждается в круге, он не выносит в командную память.</div>
+    <div class="legend-item"><b>Наружу — только по решению круга.</b> Кнопка «Вынести в команду» публикует готовый результат (черновик/итог) в командное пространство. Обсуждение, файлы и черновые версии остаются внутри.</div>
+  </div>
+</div>
+
+<footer>Прототип до кода: хотелка Open Service «закрытые групповые пространства». Смотрим, договариваемся о словах — потом строим. Данные на экране — демонстрационные.</footer>
+
+</div>
+
+<!-- ═══ MODAL: новое закрытое пространство ═══ -->
+<div class="overlay" id="ov-new">
+  <div class="modal">
+    <h3>🔒 Новое закрытое пространство</h3>
+    <div class="m-sub">Видно только тем, кого вы соберёте в круг. Первый агент уже внутри.</div>
+    <div class="f-lbl">Название</div>
+    <input type="text" id="new-name" placeholder="Например: Реорганизация склада — прикидка">
+    <div class="f-lbl">Круг участников</div>
+    <div class="circle-chips" id="new-fixed"></div>
+    <div class="f-lbl" style="margin-top:14px">Добавить из команды</div>
+    <div id="new-pick"></div>
+    <div class="m-note">Вы создаёте круг — значит вы админ. Добавлять людей потом сможет только админ; попроситься со стороны нельзя.</div>
+    <div class="m-actions">
+      <a class="btn-ghost" onclick="closeModals()">Отмена</a>
+      <a class="btn-main" onclick="createSpace()">Создать пространство</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: добавить в круг ═══ -->
+<div class="overlay" id="ov-add">
+  <div class="modal">
+    <h3>Добавить в круг</h3>
+    <div class="m-sub">Человек получит доступ ко всему обсуждению, файлам и черновику этого пространства.</div>
+    <div class="f-lbl" style="margin-top:14px">Команда Open Service</div>
+    <div id="add-pick"></div>
+    <div class="m-actions">
+      <a class="btn-ghost" onclick="closeModals()">Готово</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: вынести в команду ═══ -->
+<div class="overlay" id="ov-promote">
+  <div class="modal">
+    <h3>Вынести в команду?</h3>
+    <div class="m-sub">Круг сам решает, когда результат готов к показу. Вот что произойдёт:</div>
+    <div class="m-note" style="background:#EFF3E9;color:#465440;border:1px solid #C9D8BC"><b style="color:#35502F">Уйдёт наружу:</b> черновик хотелки (текущая версия) — в «Общее · Open Service», от имени круга.</div>
+    <div class="m-note"><b>Останется внутри:</b> всё обсуждение, файлы и черновые версии. Команда увидит итог, а не кухню.</div>
+    <div class="m-actions">
+      <a class="btn-ghost" onclick="closeModals()">Пока рано</a>
+      <a class="btn-main green" onclick="confirmPromote()">✓ Вынести в команду</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ─────────── ДАННЫЕ (демо) ─────────── */
+const PEOPLE = {
+  marina: { name: 'Марина Ковалёва', init: 'МК', color: '#9A6250', title: 'Руководитель поддержки' },
+  oleg:   { name: 'Олег Трушин',     init: 'ОТ', color: '#6E9464', title: 'Инженер on-call' },
+  petr:   { name: 'Пётр Глухов',     init: 'ПГ', color: '#B98F44', title: 'Системный инженер' },
+  inna:   { name: 'Инна Белова',     init: 'ИБ', color: '#7E6B94', title: 'Сервис-менеджер' },
+  dima:   { name: 'Дмитрий Ракитин', init: 'ДР', color: '#4E7A8A', title: 'Директор сервиса' },
+  agent:  { name: 'Первый агент',    init: '🤖', color: '', bot: true, title: 'в круге по умолчанию' }
+};
+const ME = 'marina'; // кто сидит в кабинете
+
+const spaces = [
+  { id: 'common', type: 'team', name: 'Общее · Open Service', sub: '12 тем',
+    thread: [
+      { who: 'dima', text: 'Коллеги, по итогам квартала соберёмся в четверг в 15:00 — Первый агент разошлёт приглашения.' },
+      { who: 'agent', text: 'Приглашения разосланы, повестка — в файлах пространства. Напомню всем в четверг утром.' }
+    ] },
+  { id: 'monitoring', type: 'team', name: 'Мониторинг · Open Service', sub: '4 темы',
+    thread: [
+      { who: 'oleg', text: 'node_exporter раскатали на все 12 нод, порт закрыт файрволом на внешку.' },
+      { who: 'agent', text: 'Зафиксировал итог темы в контексте проекта: node_exporter 1.8, systemd, порт 9100 — только внутренняя сеть.' }
+    ] },
+  { id: 'personal', type: 'personal', name: 'Личное пространство', sub: 'только я',
+    thread: [
+      { who: 'marina', text: 'Напомни мне в пятницу пересмотреть график отпусков — пока никому не говорим.' },
+      { who: 'agent', text: 'Напомню в пятницу в 10:00. Это личное пространство — заметка не попадёт в командную память.' }
+    ] },
+  { id: 'duty', type: 'closed', name: 'Ночные алерты — хотелка', sub: '3 в круге',
+    members: [
+      { id: 'marina', role: 'admin' },
+      { id: 'oleg',   role: 'member' },
+      { id: 'agent',  role: 'bot' }
+    ],
+    tab: 'talk', viewAs: 'marina', promoted: false,
+    thread: [
+      { who: 'marina', text: 'Олег, хочу вынести команде идею про ночные алерты, но формулировка пока сырая. Давай докрутим здесь вдвоём с агентом, чтобы не устраивать балаган в общем чате.' },
+      { who: 'oleg',   text: 'Согласен. Только давай сразу с цифрами, а то опять скажут «кажется». У меня за прошлую неделю 212 ночных алертов, по делу — 31. Выгрузку положил в файлы.' },
+      { who: 'agent',  text: 'Забрал выгрузку из «Файлов» и посчитал: в среднем 40 алертов за смену, критичных 5–7. Обновил черновик хотелки — вкладка «Черновик», версия 3. Главное, что команда должна согласовать, вынес отдельной строкой: «будить дежурного только по критичным».' },
+      { who: 'marina', text: 'Хорошо читается. Перед выносом пусть Пётр глянет схему эскалации — добавлю его в круг.' }
+    ],
+    files: [
+      { icon: '📄', name: 'выгрузка-алертов-ночь.csv', who: 'Олег', meta: '212 строк · вчера' },
+      { icon: '🖼', name: 'схема-эскалации.png', who: 'Марина', meta: 'сегодня' }
+    ],
+    draft: {
+      title: 'Хотелка: ночные дежурства без ручного разбора алертов',
+      version: 3,
+      body: [
+        '<b>Сейчас:</b> ночной дежурный разбирает ~40 алертов за смену, по делу из них 5–7. Остальное — шум, который всё равно будит.',
+        '<b>Предлагаем:</b> Первый агент группирует ночные алерты и будит дежурного только по критичным. Остальное приходит утренней сводкой к началу смены.'
+      ],
+      key: 'Что просим у команды: согласовать пилот на 2 недели на кластере «Розница». Если не взлетит — откатываемся без последствий.',
+      byline: 'Версию 3 собрал Первый агент из обсуждения и цифр Олега · черновик виден только кругу'
+    }
+  }
+];
+
+let current = 'duty';
+let newCircle = [];          // выбранные id в модалке создания
+let openMenuFor = null;      // id участника с открытым меню
+
+/* ─────────── HELPERS ─────────── */
+const $ = id => document.getElementById(id);
+const sp = () => spaces.find(s => s.id === current);
+const esc = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function toast(t) {
+  const el = $('toast'); el.textContent = t; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('show'), 2600);
+}
+function ava(id, size) {
+  const p = PEOPLE[id];
+  if (p.bot) return `<span class="ava bot">🤖</span>`;
+  return `<span class="ava" style="background:${p.color}">${p.init}</span>`;
+}
+function closeModals() {
+  document.querySelectorAll('.overlay').forEach(o => o.classList.remove('open'));
+}
+document.addEventListener('click', e => {
+  if (openMenuFor === null) return; // ничего не открыто — не трогаем DOM (иначе клик в инпут теряет фокус)
+  if (!e.target.closest('.kebab') && !e.target.closest('.menu')) { openMenuFor = null; renderMain(); }
+}, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) closeModals(); }));
+
+/* ─────────── SIDEBAR ─────────── */
+function renderSide() {
+  const g = t => spaces.filter(s => s.type === t);
+  const item = s => {
+    const lock = s.type === 'closed' ? '<span class="lock">🔒</span>' : '';
+    return `<div class="sp ${s.id === current ? 'active' : ''}" onclick="selectSpace('${s.id}')">
+      <span class="dot ${s.type === 'team' ? 'team' : s.type === 'personal' ? 'pers' : 'closed'}"></span>
+      ${lock}<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</span><small>${s.sub}</small></div>`;
+  };
+  $('side-groups').innerHTML = `
+    <div class="grp"><div class="ttl">Командные <span class="hint">· видно всем</span></div>${g('team').map(item).join('')}</div>
+    <div class="grp"><div class="ttl">Личное <span class="hint">· только я + агент</span></div>${g('personal').map(item).join('')}</div>
+    <div class="grp"><div class="ttl">Закрытый круг <span class="chip lockchip" style="font-size:10px;padding:1px 8px">🔒 закрыто</span></div>
+      ${g('closed').map(item).join('')}
+      <div class="newspace" onclick="openNewSpace()">＋ Закрытое пространство</div>
+    </div>`;
+}
+function selectSpace(id) { current = id; openMenuFor = null; render(); }
+
+/* ─────────── MAIN ─────────── */
+function renderMain() {
+  const s = sp();
+  if (s.type !== 'closed') return renderSimple(s);
+  renderClosed(s);
+}
+
+function renderSimple(s) {
+  const line = s.type === 'team'
+    ? '<span class="privline teamline">👥 Командное пространство — видно всей команде Open Service</span>'
+    : '<span class="privline persline">🔐 Личное пространство — только вы и Первый агент, в командную память не попадает</span>';
+  $('main').innerHTML = `
+    <div class="crumbs">Open Service / пространства /</div>
+    <div class="sp-head"><h3>${s.name}</h3></div>
+    ${line}
+    <div class="thread" style="margin-top:14px">${s.thread.map(m => msgHtml(m)).join('')}</div>
+    <div style="margin-top:22px;font-size:12.5px;color:#A79D8B">Это существующие типы пространств — показаны для контраста. Новый тип — слева, с замком.</div>`;
+}
+
+function msgHtml(m) {
+  const p = PEOPLE[m.who];
+  return `<div class="msg ${p.bot ? 'agent' : 'human'}"><div class="who">${p.bot ? '🤖' : '👤'} ${p.name}</div>${m.text}</div>`;
+}
+
+function renderClosed(s) {
+  const viewer = s.viewAs;
+  const isAdmin = s.members.some(m => m.id === viewer && m.role === 'admin');
+  const humans = s.members.filter(m => !PEOPLE[m.id].bot);
+
+  /* view-as segmented */
+  const seg = humans.map(m => {
+    const r = m.role === 'admin' ? 'админ' : 'участник';
+    return `<a class="${viewer === m.id ? 'on' : ''}" onclick="setViewAs('${m.id}')">${PEOPLE[m.id].name.split(' ')[0]} · ${r}</a>`;
+  }).join('');
+
+  /* tabs */
+  const tabs = [
+    ['talk', `Обсуждение <small>· ${s.thread.length}</small>`],
+    ['files', `Файлы <small>· ${s.files.length}</small>`],
+    ['draft', 'Черновик']
+  ].map(([id, label]) => `<div class="tab ${s.tab === id ? 'on' : ''}" onclick="setTab('${id}')">${label}</div>`).join('');
+
+  /* content */
+  let content = '';
+  if (s.tab === 'talk') {
+    content = `
+      ${s.promoted ? '<div class="promoted-banner">✓ Вынесено в команду — черновик хотелки ушёл в «Общее · Open Service». Обсуждение и файлы остались внутри круга.</div>' : ''}
+      <div class="thread">${s.thread.map(msgHtml).join('')}</div>
+      <div class="composer">
+        <span class="as">${PEOPLE[viewer].init} ·</span>
+        <input id="composer-input" type="text" placeholder="Написать в круг…" onkeydown="if(event.key==='Enter')sendMsg()">
+        <a onclick="sendMsg()">Отправить</a>
+      </div>`;
+  } else if (s.tab === 'files') {
+    content = `
+      ${s.files.map(f => `<div class="file-row"><span>${f.icon}</span><span>${f.name}</span><span class="meta">${f.who} · ${f.meta}</span></div>`).join('')}
+      <div class="files-note">🔒 Файлы видны только кругу. При выносе в команду наружу уходит только то, что круг выберет.</div>`;
+  } else {
+    const d = s.draft;
+    content = `
+      <div class="draft">
+        <div class="d-head"><h4>${d.title}</h4><span class="chip agent">версия ${d.version}</span>${s.promoted ? '<span class="chip ok">✓ вынесено в команду</span>' : ''}</div>
+        ${d.body.map(p => `<p>${p}</p>`).join('')}
+        <div class="keyline">👉 ${d.key}</div>
+        <div class="byline">${d.byline}</div>
+      </div>`;
+  }
+
+  /* participants rail */
+  const prtRows = s.members.map(m => {
+    const p = PEOPLE[m.id];
+    const badge = p.bot ? '<span class="rolebadge bot">Первый агент</span>'
+      : m.role === 'admin' ? '<span class="rolebadge admin">Админ</span>'
+      : '<span class="rolebadge member">Участник</span>';
+    const canManage = isAdmin && !p.bot && m.id !== viewer;
+    const kebab = canManage ? `<span class="kebab" onclick="toggleMenu(event,'${m.id}')">⋯</span>` : '';
+    let menu = '';
+    if (openMenuFor === m.id && canManage) {
+      const acts = m.role === 'member'
+        ? `<a onclick="makeAdmin('${m.id}')">Сделать админом</a>
+           <a onclick="transferAdmin('${m.id}')">Передать роль администратора</a>
+           <div class="mnote">вы станете обычным участником — на случай ухода из проекта</div>
+           <a class="warn" onclick="removeMember('${m.id}')">Убрать из круга</a>`
+        : `<a onclick="revokeAdmin('${m.id}')">Снять роль админа</a>
+           <a class="warn" onclick="removeMember('${m.id}')">Убрать из круга</a>`;
+      menu = `<div class="menu">${acts}</div>`;
+    }
+    const sub = m.id === viewer ? 'это вы' : p.title;
+    return `<div class="prt">${ava(m.id)}<div class="nm">${p.name}<small>${sub}</small></div>${badge}${kebab}${menu}</div>`;
+  }).join('');
+
+  const addBlock = isAdmin
+    ? `<a class="add-btn" onclick="openAddModal()">＋ Добавить в круг</a>`
+    : `<div class="add-locked">Добавлять участников может только админ.<br>Попроситься со стороны нельзя — пространство не видно тем, кто не в круге.</div>`;
+
+  const promoBlock = s.promoted
+    ? `<div class="promo"><div class="lbl">Вынесено в команду</div><p>Черновик хотелки опубликован в «Общее · Open Service». Круг продолжает жить — можно дорабатывать и выносить обновления.</p><a class="btn off">✓ Уже в команде</a></div>`
+    : isAdmin
+      ? `<div class="promo"><div class="lbl">Когда будете готовы</div><p>Команда увидит только то, что круг решит показать. До этого всё остаётся внутри.</p><a class="btn" onclick="openPromote()">Вынести в команду</a><div class="keep">Обсуждение и файлы наружу не уходят.</div></div>`
+      : `<div class="promo"><div class="lbl">Когда будете готовы</div><p>Вынести результат в команду может админ круга. Обсуждение и файлы наружу не уходят.</p></div>`;
+
+  $('main').innerHTML = `
+    <div class="crumbs">Open Service / закрытый круг /</div>
+    <div class="sp-head">
+      <h3>🔒 ${s.name}</h3>
+      <span class="chip lockchip">Закрыто · круг из ${s.members.length}</span>
+      <div class="viewas">смотрим глазами: <div class="seg">${seg}</div></div>
+    </div>
+    <span class="privline">🔒 Видно только кругу · не попадает в командный чат и командную память</span>
+    <div class="tabs">${tabs}</div>
+    <div class="body-grid">
+      <div>${content}</div>
+      <div>
+        <div class="rail-card"><div class="ttl">Круг участников</div>${prtRows}${addBlock}</div>
+        <div class="rail-card" style="padding:0;background:none;border:none">${promoBlock}</div>
+        <div class="rail-card priv-card" style="margin-top:14px"><b>Первый агент внутри по умолчанию.</b> Помогает формулировать и ведёт черновик, но не выносит обсуждение в командную память.</div>
+      </div>
+    </div>`;
+}
+
+/* ─────────── ACTIONS ─────────── */
+function setTab(t) { sp().tab = t; renderMain(); }
+function setViewAs(id) {
+  sp().viewAs = id; openMenuFor = null; renderMain();
+  const isAdmin = sp().members.some(m => m.id === id && m.role === 'admin');
+  toast(isAdmin ? 'Вид админа: можно добавлять людей и выносить результат' : 'Вид участника: без прав добавлять людей — это умеет только админ');
+}
+function toggleMenu(e, id) { e.stopPropagation(); openMenuFor = openMenuFor === id ? null : id; renderMain(); }
+
+function makeAdmin(id) {
+  const m = sp().members.find(m => m.id === id); m.role = 'admin';
+  openMenuFor = null; renderMain();
+  toast(`${PEOPLE[id].name} теперь тоже админ круга`);
+}
+function revokeAdmin(id) {
+  const s = sp();
+  const admins = s.members.filter(m => m.role === 'admin');
+  if (admins.length === 1) { toast('Нельзя оставить круг без админа — сначала назначьте другого'); return; }
+  s.members.find(m => m.id === id).role = 'member';
+  openMenuFor = null; renderMain();
+  toast(`${PEOPLE[id].name} — снова обычный участник`);
+}
+function transferAdmin(id) {
+  const s = sp();
+  s.members.find(m => m.id === id).role = 'admin';
+  s.members.find(m => m.id === s.viewAs).role = 'member';
+  openMenuFor = null; renderMain();
+  toast(`Роль администратора передана: теперь круг ведёт ${PEOPLE[id].name}`);
+}
+function removeMember(id) {
+  const s = sp();
+  s.members = s.members.filter(m => m.id !== id);
+  s.sub = `${s.members.length} в круге`;
+  openMenuFor = null; renderSide(); renderMain();
+  toast(`${PEOPLE[id].name} убран(а) из круга — пространство для него(неё) исчезло`);
+}
+
+function sendMsg() {
+  const inp = $('composer-input'); if (!inp || !inp.value.trim()) return;
+  const s = sp();
+  s.thread.push({ who: s.viewAs, text: esc(inp.value.trim()) });
+  renderMain();
+  const el = $('composer-input'); if (el) el.focus();
+}
+
+/* добавить в круг */
+function openAddModal() {
+  const s = sp();
+  const outside = Object.keys(PEOPLE).filter(id => !PEOPLE[id].bot && !s.members.some(m => m.id === id));
+  $('add-pick').innerHTML = outside.length
+    ? outside.map(id => `<div class="pick">${ava(id)}<div class="nm">${PEOPLE[id].name}<small>${PEOPLE[id].title}</small></div><a class="tog" onclick="addToCircle('${id}')">＋ в круг</a></div>`).join('')
+    : '<div style="font-size:13px;color:#A79D8B;padding:8px 4px">Вся команда уже в круге.</div>';
+  $('ov-add').classList.add('open');
+}
+function addToCircle(id) {
+  const s = sp();
+  s.members.push({ id, role: 'member' });
+  s.sub = `${s.members.length} в круге`;
+  renderSide(); renderMain(); openAddModal();
+  toast(`${PEOPLE[id].name} добавлен(а) в круг — теперь видит всё пространство`);
+}
+
+/* новое пространство */
+function openNewSpace() {
+  newCircle = [];
+  $('new-name').value = '';
+  $('new-fixed').innerHTML = `
+    <span class="chip lockchip">${PEOPLE[ME].init} ${PEOPLE[ME].name} · вы, админ</span>
+    <span class="chip agent">🤖 Первый агент · уже в круге</span>`;
+  renderNewPick();
+  $('ov-new').classList.add('open');
+  setTimeout(() => $('new-name').focus(), 50);
+}
+function renderNewPick() {
+  const candidates = Object.keys(PEOPLE).filter(id => !PEOPLE[id].bot && id !== ME);
+  $('new-pick').innerHTML = candidates.map(id => {
+    const inC = newCircle.includes(id);
+    return `<div class="pick">${ava(id)}<div class="nm">${PEOPLE[id].name}<small>${PEOPLE[id].title}</small></div><a class="tog ${inC ? 'in' : ''}" onclick="togglePick('${id}')">${inC ? '✓ в круге' : '＋ в круг'}</a></div>`;
+  }).join('');
+}
+function togglePick(id) {
+  newCircle = newCircle.includes(id) ? newCircle.filter(x => x !== id) : [...newCircle, id];
+  renderNewPick();
+}
+function createSpace() {
+  const name = $('new-name').value.trim() || 'Новое закрытое пространство';
+  const members = [{ id: ME, role: 'admin' }, ...newCircle.map(id => ({ id, role: 'member' })), { id: 'agent', role: 'bot' }];
+  const s = {
+    id: 'c' + Date.now(), type: 'closed', name, sub: `${members.length} в круге`,
+    members, tab: 'talk', viewAs: ME, promoted: false,
+    thread: [{ who: 'agent', text: `Я в круге. Это закрытое пространство «${esc(name)}» — видно только ${members.length <= 3 ? 'вам и кругу' : 'вашему кругу'}, в командный чат ничего не уходит. Кидайте контекст — соберу черновик, когда попросите.` }],
+    files: [],
+    draft: { title: name, version: 1, body: ['Черновика пока нет — попросите Первого агента собрать первую версию из обсуждения.'], key: 'Когда результат будет готов, круг сам решит, когда нажать «Вынести в команду».', byline: 'Пустой черновик · виден только кругу' }
+  };
+  spaces.push(s);
+  closeModals();
+  current = s.id;
+  render();
+  toast(`Создано закрытое пространство «${name}» — вы админ`);
+}
+
+/* вынос в команду */
+function openPromote() { $('ov-promote').classList.add('open'); }
+function confirmPromote() {
+  sp().promoted = true;
+  closeModals(); renderMain();
+  toast('Черновик хотелки вынесен в «Общее · Open Service». Круг остался закрытым.');
+}
+
+/* ─────────── INIT ─────────── */
+function render() { renderSide(); renderMain(); }
+render();
+</script>
+</body>
+</html>
