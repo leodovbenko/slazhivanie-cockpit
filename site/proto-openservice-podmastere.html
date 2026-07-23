@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Первый агент · Подмастерье — Open Service</title>
+<style>
+  :root{
+    --violet:#6C5CE7;
+    --violet-dark:#5747d1;
+    --violet-soft:#EEEBFD;
+    --violet-softer:#F6F4FE;
+    --green:#2fae5f;
+    --green-soft:#e7f6ec;
+    --green-line:#c8e9d4;
+    --green-dark:#20794a;
+    --amber:#b07a1e;
+    --amber-soft:#fdf3e0;
+    --amber-line:#f0dcb3;
+    --bg:#f7f7f8;
+    --card:#ffffff;
+    --border:#e6e6ea;
+    --line:#ececf0;
+    --text:#1d1d22;
+    --muted:#8a8a94;
+    --muted-2:#b3b3bc;
+    --hover:#fafaff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+
+  .page{max-width:1120px;margin:0 auto;padding:26px 22px 90px}
+
+  /* ── Шапка ─────────────────────────────────────── */
+  .crumbs{font-size:12.5px;color:var(--muted);margin-bottom:8px}
+  .crumbs b{color:var(--text);font-weight:500}
+  .head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+  .agent-ava{width:46px;height:46px;border-radius:14px;flex:0 0 46px;
+    background:linear-gradient(135deg,#8a7bf0,#5747d1);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;
+    box-shadow:0 4px 14px rgba(108,92,231,.28)}
+  h1{font-size:22px;font-weight:700;letter-spacing:-.01em}
+  h1 .sep{color:var(--muted-2);font-weight:400;margin:0 4px}
+  .head .sub{color:var(--muted);font-size:13.5px;margin-top:2px}
+  .head .sub b{color:var(--text);font-weight:600}
+  .tenant{margin-left:auto;display:flex;align-items:center;gap:9px;
+    background:var(--card);border:1px solid var(--border);border-radius:99px;
+    padding:6px 14px 6px 8px;font-size:13px;color:var(--muted)}
+  .tenant .t-logo{width:26px;height:26px;border-radius:50%;background:#1d1d22;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700}
+  .tenant b{color:var(--text);font-weight:600}
+
+  .principle{
+    display:flex;align-items:center;gap:9px;margin:14px 0 22px;
+    background:var(--violet-softer);border:1px solid #e3ddfb;border-radius:11px;
+    padding:9px 14px;font-size:13px;color:#55506e;max-width:720px}
+  .principle svg{width:16px;height:16px;flex:0 0 16px;stroke:var(--violet)}
+  .principle b{color:var(--text);font-weight:600}
+
+  /* ── Раскладка ─────────────────────────────────── */
+  .layout{display:grid;grid-template-columns:352px 1fr;gap:18px;align-items:start}
+
+  /* ── Лента входящего ───────────────────────────── */
+  .feed{background:var(--card);border:1px solid var(--border);border-radius:14px;
+    box-shadow:0 1px 2px rgba(20,20,40,.04),0 4px 16px rgba(20,20,40,.03);overflow:hidden}
+  .feed-head{padding:14px 16px 11px;border-bottom:1px solid var(--line);
+    display:flex;align-items:baseline;justify-content:space-between}
+  .feed-head h2{font-size:13px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .feed-head .n{font-size:12px;color:var(--violet);background:var(--violet-soft);
+    border-radius:99px;padding:2px 9px;font-weight:600}
+
+  .item{display:block;width:100%;text-align:left;font-family:inherit;font-size:inherit;color:inherit;
+    background:transparent;border:0;border-bottom:1px solid var(--line);
+    padding:14px 16px 13px;cursor:pointer;position:relative;transition:background .13s}
+  .item:last-child{border-bottom:0}
+  .item:hover{background:var(--hover)}
+  .item.active{background:var(--violet-softer)}
+  .item.active::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;
+    border-radius:0 3px 3px 0;background:var(--violet)}
+  .item .i-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .item .i-kind{font-size:11.5px;color:var(--muted);font-weight:550}
+  .item .i-title{font-size:14px;font-weight:600;line-height:1.38;letter-spacing:-.005em}
+  .item .i-foot{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .item .i-time{font-size:12px;color:var(--muted-2)}
+  .item.done .i-title{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--muted-2)}
+  .item .i-done-mark{display:none;font-size:12px;color:var(--green-dark);font-weight:600}
+  .item.done .i-done-mark{display:inline}
+
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;
+    border-radius:99px;padding:2.5px 9px;white-space:nowrap}
+  .badge .b-dot{width:6px;height:6px;border-radius:50%}
+  .badge.take{background:var(--green-soft);border:1px solid var(--green-line);color:var(--green-dark)}
+  .badge.take .b-dot{background:var(--green)}
+  .badge.keep{background:var(--amber-soft);border:1px solid var(--amber-line);color:var(--amber)}
+  .badge.keep .b-dot{background:#d99a2b}
+
+  .feed-note{padding:12px 16px 14px;font-size:12px;color:var(--muted);line-height:1.5;
+    border-top:1px dashed var(--line);background:#fbfbfc}
+  .feed-note b{color:var(--text);font-weight:600}
+
+  /* ── Карточка агента ───────────────────────────── */
+  .stage{min-width:0}
+  .scene{display:none;animation:rise .28s cubic-bezier(.2,.8,.3,1) both}
+  .scene.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+    box-shadow:0 1px 2px rgba(20,20,40,.04),0 4px 16px rgba(20,20,40,.03);overflow:hidden}
+  .card-head{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 0}
+  .card-head .agent-ava{width:36px;height:36px;flex-basis:36px;border-radius:11px;font-size:13px}
+  .card-head .ch-name{font-size:13px;font-weight:650}
+  .card-head .ch-when{font-size:12px;color:var(--muted-2);margin-top:1px}
+  .card-body{padding:14px 20px 20px}
+
+  .say{font-size:14.5px;line-height:1.55;max-width:640px}
+  .say b{font-weight:650}
+  .say + .say{margin-top:10px}
+  .say .chip{display:inline-block;font-size:12px;font-weight:600;color:var(--violet);
+    background:var(--violet-soft);border-radius:6px;padding:1px 8px;white-space:nowrap}
+
+  /* источники */
+  .sources{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+  .src{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:550;color:#5c5c68;
+    background:#f4f4f6;border:1px solid var(--border);border-radius:99px;padding:4.5px 11px;
+    cursor:pointer;font-family:inherit;transition:all .13s}
+  .src:hover{border-color:#cbc2f5;color:var(--violet);background:var(--violet-softer)}
+  .src svg{width:13px;height:13px;stroke:currentColor;opacity:.75}
+
+  /* блок-секция внутри карточки */
+  .sect{margin-top:16px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .sect-head{display:flex;align-items:center;gap:8px;padding:10px 14px;
+    background:#fafafb;border-bottom:1px solid var(--line);
+    font-size:12px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .sect-head .draft-tag{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.03em;
+    color:var(--amber);background:var(--amber-soft);border:1px solid var(--amber-line);
+    border-radius:99px;padding:2px 9px;text-transform:none}
+  .sect-body{padding:4px 14px}
+
+  .kv{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .kv:last-child{border-bottom:0}
+  .kv .k{flex:0 0 148px;color:var(--muted)}
+  .kv .v{flex:1;min-width:0;font-weight:550}
+  .kv .v .soft{font-weight:400;color:var(--muted)}
+  .file{display:inline-flex;align-items:center;gap:7px;background:#f4f4f6;border:1px solid var(--border);
+    border-radius:8px;padding:4px 10px;font-size:12.5px;font-weight:550}
+  .file svg{width:14px;height:14px;stroke:#d04b3e}
+
+  /* картина по контакту */
+  .facts{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .fact{border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:#fdfdfe;
+    transition:border-color .13s}
+  .fact:hover{border-color:#d8d2f5}
+  .fact .f-src{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;
+    letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .fact .f-src .f-ico{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;
+    justify-content:center;font-size:10px;font-weight:700;color:#fff;flex:0 0 20px}
+  .fact .f-main{font-size:13.5px;font-weight:600;line-height:1.4}
+  .fact .f-sub{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .f-ico.im{background:#3f9ddb}
+  .f-ico.py{background:#e2574c}
+  .f-ico.amo{background:#2b9df0}
+  .f-ico.zm{background:#4a5fd0}
+
+  /* таймлайн */
+  .tl{margin-top:14px;padding:4px 0 2px 6px}
+  .tl-row{display:flex;gap:13px;position:relative;padding-bottom:16px}
+  .tl-row:last-child{padding-bottom:2px}
+  .tl-row::before{content:"";position:absolute;left:5.5px;top:16px;bottom:-2px;border-left:2px solid var(--line)}
+  .tl-row:last-child::before{display:none}
+  .tl-dot{width:13px;height:13px;border-radius:50%;flex:0 0 13px;margin-top:3px;
+    border:3px solid #fff;box-shadow:0 0 0 1.5px var(--muted-2)}
+  .tl-dot.g{background:var(--green);box-shadow:0 0 0 1.5px var(--green)}
+  .tl-dot.v{background:var(--violet);box-shadow:0 0 0 1.5px var(--violet)}
+  .tl-dot.r{background:#e2574c;box-shadow:0 0 0 1.5px #e2574c}
+  .tl-dot.grey{background:var(--muted-2)}
+  .tl-when{font-size:12px;color:var(--muted);font-weight:550}
+  .tl-what{font-size:13.5px;line-height:1.45;margin-top:1px}
+  .tl-what b{font-weight:650}
+  .tl-what .why{display:inline-block;font-size:12px;color:#b0453a;background:#fdeceb;
+    border:1px solid #f6d3cf;border-radius:6px;padding:1px 8px;margin-top:4px;font-weight:550}
+
+  /* карточка человека (Екатерина) */
+  .person{display:flex;align-items:center;gap:11px;margin-top:14px;
+    border:1px solid var(--border);border-radius:12px;padding:11px 14px;background:#fdfdfe}
+  .p-ava{width:38px;height:38px;border-radius:50%;flex:0 0 38px;background:linear-gradient(135deg,#e88fb1,#c65e8b);
+    color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:650}
+  .p-name{font-size:14px;font-weight:650}
+  .p-role{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .p-state{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--green-dark);font-weight:550}
+  .p-state .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(47,174,95,.16)}
+
+  /* варианты хода */
+  .options{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .opt{border:1px solid var(--border);border-radius:12px;padding:13px 14px;background:#fff;
+    cursor:pointer;text-align:left;font-family:inherit;transition:all .14s;position:relative}
+  .opt:hover{border-color:#cbc2f5;box-shadow:0 4px 16px rgba(108,92,231,.10);transform:translateY(-1px)}
+  .opt .o-t{font-size:13.5px;font-weight:650;color:var(--text)}
+  .opt .o-d{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .opt.picked{border-color:var(--green);background:var(--green-soft)}
+  .opt.picked .o-t{color:var(--green-dark)}
+  .opt.picked::after{content:"✓";position:absolute;top:10px;right:12px;color:var(--green-dark);font-weight:700}
+
+  /* кнопки действий */
+  .actions{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap;align-items:center}
+  .btn{border:1px solid var(--border);background:#fff;color:#4b4b55;padding:9px 17px;border-radius:10px;
+    font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .14s;white-space:nowrap}
+  .btn:hover{border-color:#cfcfd8;background:var(--hover);color:var(--text)}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--violet);border-color:var(--violet);color:#fff;
+    box-shadow:0 3px 10px rgba(108,92,231,.28)}
+  .btn.primary:hover{background:var(--violet-dark);border-color:var(--violet-dark);color:#fff}
+  .btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+  .btn.ghost:hover{color:var(--text);background:#f1f1f4;border-color:transparent}
+  .btn:disabled{opacity:.55;cursor:default;transform:none}
+  .btn.confirmed{background:var(--green-soft);border-color:var(--green-line);color:var(--green-dark);
+    box-shadow:none;cursor:default}
+
+  .footnote{margin-top:13px;font-size:12px;color:var(--muted);line-height:1.5;
+    display:flex;align-items:flex-start;gap:7px}
+  .footnote svg{width:13px;height:13px;flex:0 0 13px;margin-top:2px;stroke:var(--muted-2)}
+
+  /* метки источника */
+  .src-tag{display:inline-flex;align-items:center;gap:4.5px;margin-left:auto;
+    font-size:10.5px;font-weight:600;color:#6d6d78;background:#f2f2f5;
+    border:1px solid var(--line);border-radius:99px;padding:2px 8px;white-space:nowrap}
+  .src-tag svg{width:11px;height:11px;flex:0 0 11px}
+  .src-tag.s-touch svg{stroke:#3f9ddb}
+  .src-tag.s-doc svg{stroke:#e2574c}
+  .src-tag.s-task svg{stroke:var(--violet)}
+  .src-tag.s-meet svg{stroke:#4a5fd0}
+  .src-tag.s-say svg{stroke:#c65e8b}
+
+  .legend{padding:11px 16px 12px;border-top:1px dashed var(--line);background:#fbfbfc}
+  .legend .lg-t{font-size:10.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted-2);margin-bottom:7px}
+  .legend .lg-row{display:flex;flex-wrap:wrap;gap:5px}
+  .legend .src-tag{margin-left:0}
+
+  /* подсветка карточки по клику из телефона */
+  .card.flash{animation:cardFlash 1.7s ease}
+  @keyframes cardFlash{
+    0%{box-shadow:0 0 0 0 rgba(108,92,231,0)}
+    16%{box-shadow:0 0 0 4px rgba(108,92,231,.4),0 4px 22px rgba(108,92,231,.18)}
+    70%{box-shadow:0 0 0 4px rgba(108,92,231,.18)}
+    100%{box-shadow:0 0 0 0 rgba(108,92,231,0)}}
+
+  /* ── Telegram-секция ───────────────────────────── */
+  .tg-section{margin-top:34px}
+  .tg-section > h2{font-size:13px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:4px}
+  .tg-section .tg-sub{font-size:13.5px;color:var(--muted);margin-bottom:18px;max-width:640px}
+  .tg-grid{display:grid;grid-template-columns:318px 1fr;gap:26px;align-items:start}
+
+  .phone{width:318px;background:#17171c;border-radius:44px;padding:11px;
+    box-shadow:0 22px 50px rgba(20,20,40,.22),0 3px 10px rgba(20,20,40,.12)}
+  .screen{background:#dde3ec;border-radius:34px;overflow:hidden;display:flex;flex-direction:column}
+  .tg-bar{display:flex;align-items:center;gap:10px;background:#fff;padding:14px 14px 10px;
+    border-bottom:1px solid #e8e8ec;position:relative}
+  .tg-bar::before{content:"";position:absolute;top:5px;left:50%;transform:translateX(-50%);
+    width:74px;height:4px;border-radius:99px;background:#e2e2e8}
+  .tg-bar .back{color:#3390ec;font-size:16px;font-weight:600;line-height:1;margin-top:4px}
+  .tg-ava{width:32px;height:32px;border-radius:50%;flex:0 0 32px;margin-top:4px;
+    background:linear-gradient(135deg,#8a7bf0,#5747d1);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700}
+  .tg-bar .tg-name{font-size:13.5px;font-weight:650;margin-top:4px}
+  .tg-bar .tg-status{font-size:11px;color:#8a8a94}
+  .tg-chat{padding:14px 11px 18px;min-height:372px;display:flex;flex-direction:column;
+    background:linear-gradient(180deg,#dfe6ef 0%,#dde3ec 60%,#dbe2ea 100%)}
+  .tg-day{align-self:center;font-size:10.5px;font-weight:600;color:#7d8894;background:rgba(255,255,255,.6);
+    border-radius:99px;padding:2px 10px;margin-bottom:11px}
+  .tg-msg{background:#fff;border-radius:14px 14px 14px 5px;padding:9px 12px 7px;
+    font-size:12.8px;line-height:1.46;max-width:94%;box-shadow:0 1px 1px rgba(20,20,40,.08);
+    position:relative;align-self:flex-start}
+  .tg-msg b{font-weight:650}
+  .tg-msg .tg-time{display:block;text-align:right;font-size:10px;color:#a9b2bc;margin-top:3px}
+  .tg-kb{display:flex;flex-direction:column;gap:4px;margin-top:5px;width:94%}
+  .tg-btn{border:0;background:rgba(255,255,255,.88);border-radius:10px;padding:8.5px 10px;
+    color:#3390ec;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;
+    transition:background .13s;box-shadow:0 1px 1px rgba(20,20,40,.05)}
+  .tg-btn:hover{background:#fff}
+  .tg-btn:active{transform:scale(.98)}
+  .tg-btn:disabled{color:#9fb4c8;cursor:default;transform:none;background:rgba(255,255,255,.55)}
+  .tg-btn.ok-done{color:var(--green-dark)}
+  .tg-reply{display:none;margin-top:9px}
+  .tg-reply.show{display:block;animation:rise .32s cubic-bezier(.2,.8,.3,1) both}
+
+  .tg-side{padding-top:6px;max-width:480px}
+  .tg-side .tg-p{font-size:14.5px;line-height:1.55}
+  .tg-side .tg-p b{font-weight:650}
+  .tg-side .tg-note{display:flex;gap:8px;align-items:flex-start;margin-top:14px;
+    font-size:12.5px;color:var(--muted);line-height:1.5;
+    background:var(--violet-softer);border:1px solid #e3ddfb;border-radius:11px;padding:9px 13px}
+  .tg-side .tg-note svg{width:14px;height:14px;flex:0 0 14px;margin-top:2px;stroke:var(--violet)}
+  .tg-side .tg-try{margin-top:14px;font-size:12px;color:var(--muted-2)}
+
+  /* ── «Где это живёт в кабинете» ────────────────── */
+  .live-section{margin-top:34px}
+  .live-section > h2{font-size:13px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:4px}
+  .live-sub{font-size:13.5px;color:var(--muted);margin-bottom:18px;max-width:680px}
+  .mock-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  .mock{background:var(--card);border:1px solid var(--border);border-radius:14px;
+    box-shadow:0 1px 2px rgba(20,20,40,.04),0 4px 16px rgba(20,20,40,.03);overflow:hidden}
+  .mock-chrome{display:flex;align-items:center;gap:5px;padding:9px 13px;background:#fafafb;
+    border-bottom:1px solid var(--line)}
+  .m-dot{width:8px;height:8px;border-radius:50%;background:#e3e3e8}
+  .m-dot.r{background:#f2b8b3}.m-dot.y{background:#f5ddb0}.m-dot.g{background:#c3e6cd}
+  .m-title{margin-left:7px;font-size:11.5px;font-weight:600;color:var(--muted)}
+  .mock-body{padding:14px 16px 15px}
+  .ms-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
+  .ms-head .ms-t{font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .ms-head .ms-c{font-size:12px;color:var(--muted-2)}
+  .ms-meta{font-size:12.5px;color:var(--muted);margin-bottom:11px}
+
+  .ap-strip{border:1px solid #e3ddfb;background:var(--violet-softer);border-radius:12px;
+    padding:10px 11px 11px;margin-bottom:13px}
+  .ap-strip .aps-t{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:650;
+    letter-spacing:.05em;text-transform:uppercase;color:var(--violet)}
+  .ap{background:#fff;border:1px solid #e3ddfb;border-radius:10px;padding:10px 12px 11px;margin-top:8px}
+  .ap-top{display:flex;align-items:flex-start;gap:8px}
+  .ap-title{font-size:13px;font-weight:600;line-height:1.4;flex:1}
+  .ap .src-tag{margin-left:0;flex:0 0 auto;margin-top:1px}
+  .ap-actions{display:flex;gap:7px;margin-top:9px}
+  .ap-btn{border:1px solid var(--border);background:#fff;color:#4b4b55;border-radius:8px;
+    padding:5px 12px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .13s}
+  .ap-btn:hover{border-color:#cfcfd8;color:var(--text)}
+  .ap-btn:active{transform:scale(.97)}
+  .ap-btn.ok{background:var(--violet);border-color:var(--violet);color:#fff}
+  .ap-btn.ok:hover{background:var(--violet-dark);border-color:var(--violet-dark);color:#fff}
+  .ap-done{display:none;font-size:12px;color:var(--green-dark);font-weight:600;margin-top:8px}
+  .ap.done .ap-title{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--muted-2)}
+  .ap.done .ap-actions{display:none}
+  .ap.done .ap-done{display:block}
+
+  .trow{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line)}
+  .trow:last-child{border-bottom:0}
+  .trow .cb{width:16px;height:16px;border:1.5px solid var(--muted-2);border-radius:5px;flex:0 0 16px}
+  .trow .t-n{font-size:13.5px;font-weight:550;flex:1;min-width:0}
+  .pri{font-size:10.5px;font-weight:650;border-radius:6px;padding:1.5px 7px;white-space:nowrap}
+  .pri.p2{color:var(--amber);background:var(--amber-soft);border:1px solid var(--amber-line)}
+  .pri.p3{color:var(--muted);background:#f2f2f5;border:1px solid var(--line)}
+  .trow .t-due{font-size:11.5px;color:var(--muted-2);white-space:nowrap}
+
+  .m-people{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+  .pp{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:550;color:#5c5c68;
+    background:#f4f4f6;border:1px solid var(--border);border-radius:99px;padding:3px 10px 3px 4px}
+  .pp .pp-a{width:19px;height:19px;border-radius:50%;color:#fff;font-size:8.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;flex:0 0 19px}
+  .sum{background:#fafafb;border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin-bottom:13px}
+  .sum .sum-t{font-size:10.5px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:6px}
+  .sum ul{margin:0;padding-left:16px}
+  .sum li{font-size:12.5px;line-height:1.55;color:#4b4b55}
+  .mock-cap{font-size:12px;color:var(--muted);line-height:1.5;margin-top:9px;padding:0 2px}
+  .live-note{margin-top:16px;font-size:12px;color:var(--muted);line-height:1.5;
+    display:flex;gap:7px;align-items:flex-start;max-width:740px}
+  .live-note svg{width:13px;height:13px;flex:0 0 13px;margin-top:2px;stroke:var(--muted-2)}
+
+  /* тост */
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(18px);
+    background:rgba(29,29,34,.94);color:#fff;font-size:13.5px;font-weight:550;
+    padding:11px 19px;border-radius:99px;white-space:nowrap;max-width:92vw;
+    overflow:hidden;text-overflow:ellipsis;
+    opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1.1);
+    z-index:60;display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast .tick{color:#7fe0a5;font-weight:700}
+
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr}
+    .facts{grid-template-columns:1fr}
+    .options{grid-template-columns:1fr}
+    .kv{flex-direction:column;gap:2px}
+    .kv .k{flex-basis:auto}
+    .tenant{display:none}
+    .page{padding:18px 14px 70px}
+    .card-head{padding:15px 15px 0}
+    .card-body{padding:12px 15px 16px}
+    .tg-grid{grid-template-columns:1fr}
+    .phone{margin:0 auto;max-width:100%}
+    .mock-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="crumbs">Кабинет &nbsp;›&nbsp; Первый агент &nbsp;›&nbsp; <b>Подмастерье</b></div>
+
+  <div class="head">
+    <div class="agent-ava">ПА</div>
+    <div>
+      <h1>Первый агент <span class="sep">·</span> Подмастерье</h1>
+      <div class="sub">Собираю контекст и предлагаю ход. Подтверждаешь ты. · рабочее место: <b>Александр, менеджер по партнёрам</b></div>
+    </div>
+    <div class="tenant"><span class="t-logo">OS</span> <span><b>Open Service</b> · amoCRM + Pyrus подключены</span></div>
+  </div>
+
+  <div class="principle">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V7l7-4z"/><path d="M9.2 12.2l2 2 3.6-3.9"/></svg>
+    <span>Ничего необратимого молча: я показываю картину и варианты, <b>решение и подтверждение — за тобой</b>.</span>
+  </div>
+
+  <div class="layout">
+
+    <!-- ═══ Лента входящего ═══ -->
+    <aside class="feed">
+      <div class="feed-head">
+        <h2>Над чем поработать</h2>
+        <span class="n" id="feedCount">5</span>
+      </div>
+
+      <button class="item active" id="it1" onclick="show(1)">
+        <div class="i-top">
+          <span class="i-kind">Рутина по документу</span>
+          <span class="src-tag s-doc" title="Источник: человек переслал агенту документ"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/></svg>Документ</span>
+        </div>
+        <div class="i-title">Доп-соглашение от партнёра «СтройМир» — оформить заявку юристу</div>
+        <div class="i-foot">
+          <span class="badge take"><span class="b-dot"></span>Могу забрать на себя</span>
+          <span class="i-time">12 мин назад</span>
+          <span class="i-done-mark">✓ отправлено</span>
+        </div>
+      </button>
+
+      <button class="item" id="it2" onclick="show(2)">
+        <div class="i-top">
+          <span class="i-kind">Картина по входящему касанию</span>
+          <span class="src-tag s-touch" title="Источник: сообщение от контакта / сдвиг сделки в amoCRM"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.8 8.8 0 01-3.8-.9L3 20l1-4.9a8.4 8.4 0 1117-3.6z"/></svg>Входящее</span>
+        </div>
+        <div class="i-title">Входящее от «ООО Зелёный Берег, Александр» — собрал картину</div>
+        <div class="i-foot">
+          <span class="badge take"><span class="b-dot"></span>Могу забрать на себя</span>
+          <span class="i-time">34 мин назад</span>
+          <span class="i-done-mark">✓ ход выбран</span>
+        </div>
+      </button>
+
+      <button class="item" id="it3" onclick="show(3)">
+        <div class="i-top">
+          <span class="i-kind">История клиента для передачи</span>
+          <span class="src-tag s-say" title="Источник: клиента упомянули в разговоре"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 12v1.5a2.5 2.5 0 005 0V12a9 9 0 10-3.6 7.2"/></svg>Упоминание</span>
+        </div>
+        <div class="i-title">Всплыла сеть «Балкон» — подать историю коммерческому</div>
+        <div class="i-foot">
+          <span class="badge keep"><span class="b-dot"></span>Остаётся на менеджере</span>
+          <span class="i-time">сегодня, 10:05</span>
+          <span class="i-done-mark">✓ передано</span>
+        </div>
+      </button>
+
+      <button class="item" id="it4" onclick="show(4)">
+        <div class="i-top">
+          <span class="i-kind">Рутина с экрана «Задачи»</span>
+          <span class="src-tag s-task" title="Источник: агент разметил рутину на экране «Задачи»"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12.5l2 2 4-4.5"/></svg>Задачи</span>
+        </div>
+        <div class="i-title">Задача «Собрать КП для „Дельта-Про“» — могу подготовить черновик</div>
+        <div class="i-foot">
+          <span class="badge take"><span class="b-dot"></span>Могу забрать на себя</span>
+          <span class="i-time">сегодня, 09:40</span>
+          <span class="i-done-mark">✓ черновик в работе</span>
+        </div>
+      </button>
+
+      <button class="item" id="it5" onclick="show(5)">
+        <div class="i-top">
+          <span class="i-kind">Итог встречи</span>
+          <span class="src-tag s-meet" title="Источник: итог встречи / звонка"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg>Встреча</span>
+        </div>
+        <div class="i-title">Итог встречи с «Норд-Ойл» — есть follow-up, оформить задачу</div>
+        <div class="i-foot">
+          <span class="badge take"><span class="b-dot"></span>Могу забрать на себя</span>
+          <span class="i-time">сегодня, 11:52</span>
+          <span class="i-done-mark">✓ задача заведена</span>
+        </div>
+      </button>
+
+      <div class="legend">
+        <div class="lg-t">Откуда прилетает</div>
+        <div class="lg-row">
+          <span class="src-tag s-touch"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.8 8.8 0 01-3.8-.9L3 20l1-4.9a8.4 8.4 0 1117-3.6z"/></svg>Входящее касание</span>
+          <span class="src-tag s-doc"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/></svg>Документ</span>
+          <span class="src-tag s-task"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12.5l2 2 4-4.5"/></svg>Экран «Задачи»</span>
+          <span class="src-tag s-meet"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg>Итог встречи/звонка</span>
+          <span class="src-tag s-say"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 12v1.5a2.5 2.5 0 005 0V12a9 9 0 10-3.6 7.2"/></svg>Упоминание в разговоре</span>
+        </div>
+      </div>
+
+      <div class="feed-note">Этап 1: я пока только <b>помечаю кандидатов</b> на «забрать на себя». Каждый пункт всё равно проходит через твоё подтверждение.</div>
+    </aside>
+
+    <!-- ═══ Сцена ═══ -->
+    <main class="stage">
+
+      <!-- ── Сценарий 1: рутина по документу ── -->
+      <section class="scene active" id="sc1">
+        <div class="card">
+          <div class="card-head">
+            <div class="agent-ava">ПА</div>
+            <div>
+              <div class="ch-name">Подмастерье</div>
+              <div class="ch-when">разобрал документ · 12 мин назад</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="say">Ты переслал мне доп-соглашение. Разобрал: партнёр <b>СтройМир</b>, действующий, лежит в воронке amoCRM <span class="chip">Партнёры</span>, есть открытая заявка юристу <b>№П-1042</b>.</p>
+
+            <div class="sources">
+              <button class="src" onclick="toast('Источник: сделка «СтройМир — партнёрство», воронка «Партнёры»')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2.5"/></svg>amoCRM · воронка «Партнёры»</button>
+              <button class="src" onclick="toast('Источник: заявка юристу №П-1042, открыта 09.07')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/></svg>Pyrus · заявка №П-1042</button>
+              <button class="src" onclick="toast('Файл получен от тебя в чате сегодня в 14:32')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M21 12.5l-8.2 8.2a6 6 0 01-8.5-8.5L12.9 3.6a4 4 0 015.7 5.7l-8.3 8.3a2 2 0 01-2.8-2.8l7.6-7.6"/></svg>файл из чата · 14:32</button>
+            </div>
+
+            <div class="sect">
+              <div class="sect-head">Что я оформил <span class="draft-tag">черновик, не отправлено</span></div>
+              <div class="sect-body">
+                <div class="kv"><span class="k">Партнёр</span><span class="v">ООО «СтройМир» <span class="soft">· действующий, в базе с 2024</span></span></div>
+                <div class="kv"><span class="k">Тип документа</span><span class="v">Доп-соглашение к договору №ОС-217/24</span></div>
+                <div class="kv"><span class="k">Файл</span><span class="v"><span class="file"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/></svg>dop_stroymir.pdf</span> <span class="soft">· 4 страницы</span></span></div>
+                <div class="kv"><span class="k">Вводные для юриста</span><span class="v">Изменение объёма поставки и графика платежей; связал с открытой заявкой №П-1042, дублей не будет <span class="soft">· срок партнёру обещан до пятницы</span></span></div>
+                <div class="kv"><span class="k">Куда уйдёт</span><span class="v">Pyrus → форма «Заявка юристу» → очередь юротдела</span></div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="b1" onclick="confirm1(this)">Подтвердить и отправить юристу</button>
+              <button class="btn" onclick="toast('Открыл бы черновик на правку — меняешь любое поле, потом подтверждаешь')">Изменить</button>
+              <button class="btn ghost" onclick="later(1)">Не сейчас</button>
+            </div>
+
+            <p class="footnote"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>Заявку в Pyrus пока завожу черновиком — ты подтверждаешь одним действием.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Сценарий 2: картина по входящему ── -->
+      <section class="scene" id="sc2">
+        <div class="card">
+          <div class="card-head">
+            <div class="agent-ava">ПА</div>
+            <div>
+              <div class="ch-name">Подмастерье</div>
+              <div class="ch-when">собрал картину по контакту · 34 мин назад</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="say">Входящее от <b>«ООО Зелёный Берег», Александр</b>. Прежде чем отвечать — вот всё, что у нас по нему есть, в одном месте:</p>
+
+            <div class="facts">
+              <div class="fact">
+                <div class="f-src"><span class="f-ico im">TG</span>Мессенджер</div>
+                <div class="f-main">Писал 3 дня назад про сроки поставки</div>
+                <div class="f-sub">Ответа по конкретной дате так и не получил — вероятно, поэтому пишет снова.</div>
+              </div>
+              <div class="fact">
+                <div class="f-src"><span class="f-ico py">Py</span>Pyrus</div>
+                <div class="f-main">Карточка партнёра — «на согласовании»</div>
+                <div class="f-sub">Форма заведена 08.07, ждёт визы юротдела.</div>
+              </div>
+              <div class="fact">
+                <div class="f-src"><span class="f-ico amo">a</span>amoCRM</div>
+                <div class="f-main">«Зелёный Берег — поставка» · этап «Договор»</div>
+                <div class="f-sub">Сумма 480 000 ₽, ответственный — ты.</div>
+              </div>
+              <div class="fact">
+                <div class="f-src"><span class="f-ico zm">Z</span>Встречи</div>
+                <div class="f-main">Zoom 12.07 — обсуждали объёмы</div>
+                <div class="f-sub">Договорились уточнить график после согласования карточки.</div>
+              </div>
+            </div>
+
+            <div class="sect" style="margin-top:16px">
+              <div class="sect-head">Варианты хода</div>
+              <div class="sect-body" style="padding:12px 14px">
+                <div class="options">
+                  <button class="opt" onclick="pickOpt(this,'Готовлю черновик формы в Pyrus — покажу перед отправкой')">
+                    <div class="o-t">Завести форму</div>
+                    <div class="o-d">Новая форма в Pyrus по этому касанию, с уже подставленными данными.</div>
+                  </button>
+                  <button class="opt" onclick="pickOpt(this,'Собираю пакет юристу на согласование — черновик будет здесь')">
+                    <div class="o-t">Отправить юристу на согласование</div>
+                    <div class="o-d">Подтолкнуть висящую карточку: соберу пакет и напомню юротделу.</div>
+                  </button>
+                  <button class="opt" onclick="pickOpt(this,'Набросал ответ в чат — проверь текст перед отправкой')">
+                    <div class="o-t">Ответить в чат</div>
+                    <div class="o-d">Черновик ответа про сроки — с учётом того, что обсуждали на Zoom 12.07.</div>
+                  </button>
+                </div>
+                <div class="actions" style="margin-top:12px">
+                  <button class="btn ghost" onclick="later(2)">Не сейчас</button>
+                </div>
+              </div>
+            </div>
+
+            <p class="footnote"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>Любой вариант я сначала готовлю черновиком и показываю тебе — наружу ничего не уходит без твоего «да».</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Сценарий 3: история для передачи ── -->
+      <section class="scene" id="sc3">
+        <div class="card">
+          <div class="card-head">
+            <div class="agent-ava">ПА</div>
+            <div>
+              <div class="ch-name">Подмастерье</div>
+              <div class="ch-when">сложил историю из памяти команды · сегодня, 10:05</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="say">Узнал в разговоре: партнёр теперь в ресторанной сети <b>«Балкон»</b>. Они рассматривают конкурента, а Open брать не хотят — из-за старого негатива.</p>
+            <p class="say">Это наш бывший клиент. Карта касаний:</p>
+
+            <div class="tl">
+              <div class="tl-row">
+                <span class="tl-dot g"></span>
+                <div><div class="tl-when">март 2023</div>
+                <div class="tl-what"><b>Пришли</b> — стартовали внедрение учёта по трём точкам сети.</div></div>
+              </div>
+              <div class="tl-row">
+                <span class="tl-dot v"></span>
+                <div><div class="tl-when">2023 — весна 2024</div>
+                <div class="tl-what"><b>Работали</b> — учёт и интеграция с кассами; на пике 5 точек, контакт — управляющий сетью.</div></div>
+              </div>
+              <div class="tl-row">
+                <span class="tl-dot r"></span>
+                <div><div class="tl-when">июнь 2024</div>
+                <div class="tl-what"><b>Ушли</b> <span class="why">причина: сорвали срок внедрения</span></div></div>
+              </div>
+              <div class="tl-row">
+                <span class="tl-dot grey"></span>
+                <div><div class="tl-when">сейчас</div>
+                <div class="tl-what">У конкурента, но решение пересматривают — окно, чтобы вернуться с честным разговором.</div></div>
+              </div>
+            </div>
+
+            <p class="say" style="margin-top:14px">Предлагаю передать коммерческому менеджеру <b>Екатерине</b> — она получит всю карту сразу, без раскопок по чатам и CRM.</p>
+
+            <div class="person">
+              <span class="p-ava">ЕК</span>
+              <div>
+                <div class="p-name">Екатерина</div>
+                <div class="p-role">Коммерческий менеджер · возвраты и сети</div>
+              </div>
+              <span class="p-state"><span class="dot"></span>сейчас на месте</span>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="b3" onclick="confirm3(this)">Передать Екатерине с историей</button>
+              <button class="btn" onclick="toast('Допиши, что знаешь сверх этого — я вошью в карту перед передачей')">Дополнить</button>
+              <button class="btn ghost" onclick="later(3)">Не сейчас</button>
+            </div>
+
+            <p class="footnote"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>Решение о передаче — твоё: это живой клиентский контакт, сам я его никуда не двигаю.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Сценарий 4: рутина с экрана «Задачи» ── -->
+      <section class="scene" id="sc4">
+        <div class="card">
+          <div class="card-head">
+            <div class="agent-ava">ПА</div>
+            <div>
+              <div class="ch-name">Подмастерье</div>
+              <div class="ch-when">разметил рутину на экране «Задачи» · сегодня, 09:40</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="say">На экране «Задачи» висит <b>«Собрать КП для „Дельта-Про“»</b>, срок — завтра. Это рутина, которую я умею: шаблон КП в базе есть, цены беру из действующего прайса, а этому же сегменту мы уже дважды считали похожее.</p>
+
+            <div class="sources">
+              <button class="src" onclick="toast('Источник: задача «Собрать КП для Дельта-Про», срок — завтра, поставил ты')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12.5l2 2 4-4.5"/></svg>экран «Задачи»</button>
+              <button class="src" onclick="toast('Источник: сделка «Дельта-Про — оснащение», этап «Переговоры»')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2.5"/></svg>amoCRM · «Дельта-Про»</button>
+              <button class="src" onclick="toast('Источник: память команды — КП этому сегменту за апрель и июнь')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/></svg>память · прошлые КП</button>
+            </div>
+
+            <div class="sect">
+              <div class="sect-head">Что подставлю в черновик <span class="draft-tag">черновик, не отправлено</span></div>
+              <div class="sect-body">
+                <div class="kv"><span class="k">Клиент</span><span class="v">ООО «Дельта-Про» <span class="soft">· сделка на этапе «Переговоры»</span></span></div>
+                <div class="kv"><span class="k">Шаблон</span><span class="v">КП «Оснащение точки» <span class="soft">· наш стандартный, последняя версия</span></span></div>
+                <div class="kv"><span class="k">Цены</span><span class="v">Из действующего прайса от 15.07 <span class="soft">· руками ничего не пересчитываю</span></span></div>
+                <div class="kv"><span class="k">Состав</span><span class="v">По запросу из переписки: две кассы + учёт склада</span></div>
+                <div class="kv"><span class="k">Чего не хватает</span><span class="v">Сроки монтажа <span class="soft">· оставлю поле пустым, уточнишь при проверке</span></span></div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="b4" onclick="confirm4(this)">Подтвердить — готовь черновик</button>
+              <button class="btn" onclick="toast('Открыл бы вводные на правку — шаблон, состав, цены меняешь до сборки')">Изменить</button>
+              <button class="btn ghost" onclick="later(4)">Не сейчас</button>
+            </div>
+
+            <p class="footnote"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>КП клиенту не уходит: черновик появится в задаче, проверяешь и отправляешь сам.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Сценарий 5: итог встречи ── -->
+      <section class="scene" id="sc5">
+        <div class="card">
+          <div class="card-head">
+            <div class="agent-ava">ПА</div>
+            <div>
+              <div class="ch-name">Подмастерье</div>
+              <div class="ch-when">разобрал итог встречи · сегодня, 11:52</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="say">Разобрал встречу с <b>«Норд-Ойл»</b> (Zoom, сегодня в 11:00). Там есть живая договорённость: <b>прислать расчёт по расширению до четверга</b>. Пока она существует только в записи разговора — предлагаю оформить задачей, чтобы не потерялась.</p>
+
+            <div class="sources">
+              <button class="src" onclick="toast('Источник: запись и расшифровка Zoom-встречи, сегодня 11:00–11:40')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg>встреча · Zoom, 11:00</button>
+              <button class="src" onclick="toast('Источник: сделка «Норд-Ойл — расширение», этап «Переговоры»')"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2.5"/></svg>amoCRM · «Норд-Ойл»</button>
+            </div>
+
+            <div class="sect">
+              <div class="sect-head">Что оформлю <span class="draft-tag">черновик, не отправлено</span></div>
+              <div class="sect-body">
+                <div class="kv"><span class="k">Договорённость</span><span class="v">Прислать расчёт по расширению на две точки <span class="soft">· цитата из расшифровки, 11:27</span></span></div>
+                <div class="kv"><span class="k">Срок</span><span class="v">До четверга, 30 июля <span class="soft">· как обещано на встрече</span></span></div>
+                <div class="kv"><span class="k">Задача</span><span class="v">«Расчёт для Норд-Ойл» на экран «Задачи» <span class="soft">· ответственный — ты</span></span></div>
+                <div class="kv"><span class="k">Follow-up</span><span class="v">Набросал короткое письмо-резюме встречи — приложу к задаче, отправишь когда решишь</span></div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="b5" onclick="confirm5(this)">Подтвердить — заведи задачу</button>
+              <button class="btn" onclick="toast('Правишь формулировку, срок или ответственного — потом подтверждаешь')">Изменить</button>
+              <button class="btn ghost" onclick="later(5)">Не сейчас</button>
+            </div>
+
+            <p class="footnote"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>Письмо клиенту само не уйдёт — задача внутренняя, follow-up лежит при ней черновиком.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ═══ Где это живёт в кабинете ═══ -->
+  <div class="live-section">
+    <h2>Где это живёт в кабинете</h2>
+    <p class="live-sub">Подмастерье — не отдельная комната, а слой. Одна и та же задача показывается там, где ты и так смотришь: в Задачах, на встрече, на сделке. Отдельный экран пришлось бы вспоминать и открывать — а этот слой догоняет тебя сам.</p>
+
+    <div class="mock-grid">
+
+      <!-- ── Мокап 1: экран «Задачи» ── -->
+      <div class="mock-col">
+        <div class="mock">
+          <div class="mock-chrome">
+            <span class="m-dot r"></span><span class="m-dot y"></span><span class="m-dot g"></span>
+            <span class="m-title">Кабинет · Задачи</span>
+          </div>
+          <div class="mock-body">
+            <div class="ms-head"><span class="ms-t">Задачи</span><span class="ms-c">4 на этой неделе</span></div>
+            <div class="ms-meta">Мои · Александр</div>
+
+            <div class="ap-strip">
+              <div class="aps-t">✦ От подмастерья · ждут твой Ок</div>
+
+              <div class="ap" id="ap1">
+                <div class="ap-top">
+                  <div class="ap-title">Доп-соглашение СтройМир → черновик заявки юристу готов</div>
+                  <span class="src-tag s-doc"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/></svg>Документ</span>
+                </div>
+                <div class="ap-actions">
+                  <button class="ap-btn" onclick="openScene(1)">Открыть</button>
+                  <button class="ap-btn ok" onclick="apOk1()">✓ Ок</button>
+                </div>
+                <div class="ap-done">✓ Ок дан — заявка ушла юристу</div>
+              </div>
+
+              <div class="ap" id="ap2">
+                <div class="ap-top">
+                  <div class="ap-title">КП для Дельта-Про → подготовил черновик</div>
+                  <span class="src-tag s-task"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12.5l2 2 4-4.5"/></svg>Задача</span>
+                </div>
+                <div class="ap-actions">
+                  <button class="ap-btn" onclick="openScene(4)">Открыть</button>
+                  <button class="ap-btn ok" onclick="apOk2()">✓ Ок</button>
+                </div>
+                <div class="ap-done">✓ Ок дан — черновик КП в работе</div>
+              </div>
+            </div>
+
+            <div class="trow">
+              <span class="cb"></span>
+              <span class="t-n">Позвонить в «Дельта-Про»</span>
+              <span class="pri p2">P2</span>
+              <span class="t-due">сегодня</span>
+            </div>
+            <div class="trow">
+              <span class="cb"></span>
+              <span class="t-n">Согласовать смету по объекту №7</span>
+              <span class="pri p3">P3</span>
+              <span class="t-due">до пятницы</span>
+            </div>
+          </div>
+        </div>
+        <p class="mock-cap">Плашки подмастерья живут прямо в общем списке задач — просто помечены и подняты наверх, а не спрятаны в отдельном разделе.</p>
+      </div>
+
+      <!-- ── Мокап 2: карточка встречи ── -->
+      <div class="mock-col">
+        <div class="mock">
+          <div class="mock-chrome">
+            <span class="m-dot r"></span><span class="m-dot y"></span><span class="m-dot g"></span>
+            <span class="m-title">Кабинет · Встреча</span>
+          </div>
+          <div class="mock-body">
+            <div class="ms-head"><span class="ms-t">Встреча · Норд-Ойл</span></div>
+            <div class="ms-meta">22.07, 11:00–11:40 · Zoom · запись разобрана</div>
+
+            <div class="m-people">
+              <span class="pp"><span class="pp-a" style="background:linear-gradient(135deg,#8a7bf0,#5747d1)">АЛ</span>Александр (ты)</span>
+              <span class="pp"><span class="pp-a" style="background:linear-gradient(135deg,#5aa9d6,#3a7fb0)">СГ</span>Сергей · Норд-Ойл</span>
+              <span class="pp"><span class="pp-a" style="background:linear-gradient(135deg,#e88fb1,#c65e8b)">МА</span>Марина · Норд-Ойл</span>
+            </div>
+
+            <div class="sum">
+              <div class="sum-t">Итоги</div>
+              <ul>
+                <li>Обсудили расширение на две точки, объёмы сходятся.</li>
+                <li>Обещали прислать КП до пятницы — за нами.</li>
+                <li>Монтаж — после согласования сметы с их стороны.</li>
+              </ul>
+            </div>
+
+            <div class="ap-strip" style="margin-bottom:0">
+              <div class="aps-t">✦ Подмастерье по этой встрече</div>
+              <div class="ap" id="ap3">
+                <div class="ap-top">
+                  <div class="ap-title">Есть follow-up: оформить задачу «Прислать КП до пятницы» ответственному</div>
+                  <span class="src-tag s-meet"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg>Встреча</span>
+                </div>
+                <div class="ap-actions">
+                  <button class="ap-btn" onclick="openScene(5)">Открыть</button>
+                  <button class="ap-btn ok" onclick="apOk3()">✓ Оформить задачу</button>
+                </div>
+                <div class="ap-done">✓ Задача оформлена — появится и в общей ленте «Задач»</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="mock-cap">Та же плашка follow-up, что и в ленте «Задач», — здесь показана в контексте своей встречи. Один объект, показан у источника.</p>
+      </div>
+
+    </div>
+
+    <p class="live-note"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg><span>В бэкенде это не новый экран, а признак на задаче: «от агента», «ждёт Ок», ссылка на источник (встреча / сделка / документ). Переиспользуем существующий экран Задачи.</span></p>
+  </div>
+
+  <!-- ═══ Telegram-сторона ═══ -->
+  <div class="tg-section">
+    <h2>Как это приходит в Telegram</h2>
+    <p class="tg-sub">Жить в кабинете не обязательно: когда агент навёл суету и нужен твой ОК — он сам приходит туда, где ты и так сидишь.</p>
+    <div class="tg-grid">
+
+      <div class="phone">
+        <div class="screen">
+          <div class="tg-bar">
+            <span class="back">‹</span>
+            <div class="tg-ava">ПА</div>
+            <div>
+              <div class="tg-name">Первый агент</div>
+              <div class="tg-status">бот · Open Service</div>
+            </div>
+          </div>
+          <div class="tg-chat">
+            <div class="tg-day">сегодня</div>
+            <div class="tg-msg">Александр, тебе переслали доп-соглашение от <b>СтройМира</b>. Я уже разобрал: партнёр в воронке «Партнёры», подготовил черновик заявки юристу с вводными и приложенным файлом. Нужен твой ОК, чтобы отправить.<span class="tg-time">14:34</span></div>
+            <div class="tg-kb" id="tgKb">
+              <button class="tg-btn" id="tgOk" onclick="tgConfirm()">✓ Подтвердить</button>
+              <button class="tg-btn" onclick="tgOpen()">Открыть в кабинете</button>
+              <button class="tg-btn" onclick="tgLater()">Не сейчас</button>
+            </div>
+            <div class="tg-msg tg-reply" id="tgReply">Готово, отправил юристу ✓ Заявка ушла в Pyrus, связал с №П-1042.<span class="tg-time">14:35</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tg-side">
+        <p class="tg-p">Простое подтверждаешь <b>прямо в Telegram</b>. Нужно рассмотреть целиком — «Открыть в кабинете». Это <b>одна и та же задача</b>, не два списка.</p>
+        <div class="tg-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 20a2 2 0 003.4 0"/></svg>
+          <span>Агент пишет в Telegram только когда навёл суету и нужен твой ОК. Мелкое копится в кабинете, шлёт дайджестом — не спамит.</span>
+        </div>
+        <p class="tg-try">Кнопки в телефоне живые: «Подтвердить» закроет плашку СтройМира и здесь, и в ленте слева; «Открыть в кабинете» подсветит её карточку.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="tick">✓</span><span id="toastText"></span></div>
+
+<script>
+  var toastTimer = null;
+  function toast(text, tick){
+    var t = document.getElementById('toast');
+    t.querySelector('.tick').style.display = (tick === false) ? 'none' : '';
+    document.getElementById('toastText').textContent = text;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+
+  function show(n){
+    for (var i = 1; i <= 5; i++){
+      document.getElementById('sc' + i).classList.toggle('active', i === n);
+      document.getElementById('it' + i).classList.toggle('active', i === n);
+    }
+  }
+
+  function markDone(n){
+    var it = document.getElementById('it' + n);
+    if (it.classList.contains('done')) return;
+    it.classList.add('done');
+    var left = document.querySelectorAll('.item:not(.done)').length;
+    document.getElementById('feedCount').textContent = left;
+  }
+
+  /* сценарий 1 — СтройМир. Кабинет и Telegram закрывают ОДНУ и ту же задачу */
+  var smDone = false;
+  function confirmStroymir(){
+    if (smDone) return false;
+    smDone = true;
+    var b = document.getElementById('b1');
+    b.disabled = true;
+    b.classList.remove('primary');
+    b.classList.add('confirmed');
+    b.textContent = '✓ Отправлено юристу';
+    var kb = document.getElementById('tgKb').querySelectorAll('.tg-btn');
+    for (var i = 0; i < kb.length; i++) kb[i].disabled = true;
+    var ok = document.getElementById('tgOk');
+    ok.classList.add('ok-done');
+    ok.textContent = '✓ Подтверждено';
+    document.getElementById('tgReply').classList.add('show');
+    markDone(1);
+    apMark('ap1');
+    return true;
+  }
+  function confirm1(btn){
+    if (confirmStroymir()) toast('Заявка ушла юристу в Pyrus, связал с №П-1042');
+  }
+
+  /* Telegram-кнопки в телефоне */
+  function tgConfirm(){
+    if (confirmStroymir()) toast('Подтвердил из Telegram — плашка в кабинете закрылась той же секундой');
+  }
+  function tgOpen(){
+    show(1);
+    var card = document.querySelector('#sc1 .card');
+    card.classList.remove('flash');
+    void card.offsetWidth;
+    card.classList.add('flash');
+    document.querySelector('.layout').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function tgLater(){
+    toast('Отложил — пункт остаётся в кабинете, напомню в утреннем дайджесте', false);
+  }
+
+  /* сценарий 2 */
+  var optPicked = false;
+  function pickOpt(el, msg){
+    if (optPicked) return;
+    optPicked = true;
+    el.classList.add('picked');
+    var all = el.parentElement.querySelectorAll('.opt');
+    for (var i = 0; i < all.length; i++){
+      if (all[i] !== el){ all[i].style.opacity = '.5'; all[i].style.cursor = 'default'; }
+    }
+    markDone(2);
+    toast(msg);
+  }
+
+  /* сценарий 3 */
+  function confirm3(btn){
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.remove('primary');
+    btn.classList.add('confirmed');
+    btn.textContent = '✓ Передано Екатерине';
+    markDone(3);
+    toast('Екатерина получила карту касаний по сети «Балкон»');
+  }
+
+  /* сценарий 4 */
+  function confirm4(btn){
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.remove('primary');
+    btn.classList.add('confirmed');
+    btn.textContent = '✓ Готовлю черновик КП';
+    markDone(4);
+    apMark('ap2');
+    toast('Черновик КП появится в задаче «Дельта-Про» — покажу перед отправкой');
+  }
+
+  /* сценарий 5 */
+  function confirm5(btn){
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.remove('primary');
+    btn.classList.add('confirmed');
+    btn.textContent = '✓ Задача заведена';
+    markDone(5);
+    apMark('ap3');
+    toast('Задача «Расчёт для Норд-Ойл, до четверга» — на экране «Задачи», письмо приложено');
+  }
+
+  /* «не сейчас» */
+  function later(n){
+    toast('Отложил — пункт останется в ленте, напомню завтра утром', false);
+  }
+
+  /* ── секция «Где это живёт в кабинете» ── */
+  function apMark(id){
+    var el = document.getElementById(id);
+    if (el && !el.classList.contains('done')) el.classList.add('done');
+  }
+
+  function openScene(n){
+    show(n);
+    var card = document.querySelector('#sc' + n + ' .card');
+    card.classList.remove('flash');
+    void card.offsetWidth;
+    card.classList.add('flash');
+    document.querySelector('.layout').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function apOk1(){
+    var ap = document.getElementById('ap1');
+    if (ap.classList.contains('done')) return;
+    ap.classList.add('done');
+    if (confirmStroymir()) toast('Ок из «Задач» — заявка ушла юристу, та же плашка закрылась и в ленте подмастерья, и в Telegram');
+  }
+
+  function apOk2(){
+    var ap = document.getElementById('ap2');
+    if (ap.classList.contains('done')) return;
+    ap.classList.add('done');
+    var b = document.getElementById('b4');
+    if (!b.disabled) confirm4(b);
+    else toast('Черновик уже в работе — задача одна, где ни нажми');
+  }
+
+  function apOk3(){
+    var ap = document.getElementById('ap3');
+    if (ap.classList.contains('done')) return;
+    ap.classList.add('done');
+    var b = document.getElementById('b5');
+    if (!b.disabled) confirm5(b);
+    else toast('Задача уже заведена — это та же плашка, что у встречи');
+  }
+</script>
+</body>
+</html>
