@@ -133,9 +133,15 @@ def is_git_commit(cmd):
     return False
 
 
-def resolve_repo(cmd):
-    """Целевой репозиторий коммита. Уважает кавычки (путь кокпита — с пробелами!)."""
-    repo = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+def resolve_repo(cmd, payload_cwd=None):
+    """Целевой репозиторий коммита. Уважает кавычки (путь кокпита — с пробелами!).
+
+    Приоритет: явный `git -C` / `cd` в команде → фактический cwd shell (payload.cwd,
+    иначе os.getcwd()). Раньше первым стоял CLAUDE_PROJECT_DIR (кокпит) — и `cd ~/slazhivanie`
+    в ПРЕДЫДУЩЕМ вызове Bash терялся: команда коммита без cd резолвилась в кокпит, и гейт
+    мисфайрил на чужих untracked-файлах кокпита. Проба 2026-07-23 подтвердила: и payload.cwd,
+    и os.getcwd() отражают реальную папку shell (включая cd из прошлого вызова) — на них и
+    опираемся. Коммитим в тот репо, где стоим, — его и ревьюим."""
     m = re.search(r'git\s+-C\s+' + _PATH, cmd)
     if m:
         repo = _first(m.groups())
@@ -143,6 +149,8 @@ def resolve_repo(cmd):
         cds = re.findall(r'(?:^|[\s;&|])cd\s+' + _PATH, cmd)
         if cds:
             repo = _first(cds[-1])
+        else:
+            repo = payload_cwd or os.getcwd()
     return os.path.expanduser(os.path.expandvars(repo))
 
 
@@ -193,7 +201,7 @@ scan = re.sub(r"'[^']*'", "''", scan)
 if not is_git_commit(scan):
     allow()
 
-repo = resolve_repo(cmd)
+repo = resolve_repo(cmd, data.get("cwd"))
 
 try:
     if git(repo, "rev-parse", "HEAD").returncode != 0:
