@@ -359,6 +359,29 @@
     display:flex;gap:7px;align-items:flex-start;max-width:740px}
   .live-note svg{width:13px;height:13px;flex:0 0 13px;margin-top:2px;stroke:var(--muted-2)}
 
+  /* ── «Итог дня» ─────────────────────────────────── */
+  .day-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+  .day-chip{display:inline-flex;align-items:baseline;gap:6px;font-size:12.5px;font-weight:550;color:#4b4b55;
+    background:#f4f4f6;border:1px solid var(--border);border-radius:99px;padding:5px 13px}
+  .day-chip b{font-size:14px;font-weight:700;color:var(--text)}
+  .speed{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .speed:last-child{border-bottom:0}
+  .speed-txt{font-size:13.5px;line-height:1.5;flex:1;min-width:0}
+  .speed-txt b{font-weight:650}
+  .speed .src-tag{margin-left:0;flex:0 0 auto;margin-top:2px}
+  .sect.hero-take{border-color:var(--green-line);box-shadow:0 4px 18px rgba(47,174,95,.08)}
+  .sect.hero-take .sect-head{background:var(--green-soft);border-bottom-color:var(--green-line);color:var(--green-dark)}
+  .offers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px 0}
+  .offer{border:1px solid var(--border);border-radius:12px;padding:13px 14px;background:#fdfdfe;
+    display:flex;flex-direction:column;gap:8px;transition:border-color .13s}
+  .offer:hover{border-color:var(--green-line)}
+  .offer .of-t{font-size:13.5px;font-weight:650}
+  .offer .of-d{font-size:12.5px;color:var(--muted);line-height:1.5;flex:1}
+  .offer .of-note{font-size:11.5px;color:var(--green-dark);line-height:1.45}
+  .btn.take{background:var(--green);border-color:var(--green);color:#fff;
+    box-shadow:0 3px 10px rgba(47,174,95,.26);align-self:flex-start}
+  .btn.take:hover{background:var(--green-dark);border-color:var(--green-dark);color:#fff}
+
   /* тост */
   .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(18px);
     background:rgba(29,29,34,.94);color:#fff;font-size:13.5px;font-weight:550;
@@ -382,6 +405,8 @@
     .tg-grid{grid-template-columns:1fr}
     .phone{margin:0 auto;max-width:100%}
     .mock-grid{grid-template-columns:1fr}
+    .offers{grid-template-columns:1fr}
+    .speed{flex-direction:column;gap:6px}
   }
 </style>
 </head>
@@ -742,6 +767,79 @@
     </main>
   </div>
 
+  <!-- ═══ Итог дня ═══ -->
+  <div class="live-section">
+    <h2>Итог дня · вечерний режим</h2>
+    <p class="live-sub">Всё, что выше, — дневной режим: я реагирую в моменте на письмо, документ, встречу. Вечером роль меняется: я прихожу сам — с итогом дня и предложениями, какую повторяющуюся рутину поставить на поток.</p>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="agent-ava">ПА</div>
+        <div>
+          <div class="ch-name">Подмастерье</div>
+          <div class="ch-when">итог дня · сегодня, 19:30</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="say">День закрыт. Считать твои часы я не умею и не берусь — но вижу все события в amoCRM и Pyrus. Вот что за день прошло через тебя:</p>
+
+        <div class="day-chips">
+          <span class="day-chip"><b>4</b> входящих касания разобрано</span>
+          <span class="day-chip"><b>2</b> звонка в сделках</span>
+          <span class="day-chip"><b>3</b> среза по клиентам собрано</span>
+          <span class="day-chip"><b>1</b> документ ушёл юристу</span>
+          <span class="day-chip"><b>1</b> встреча с follow-up</span>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">Можно ускориться</div>
+          <div class="sect-body">
+            <div class="speed">
+              <div class="speed-txt">КП для сегмента «оснащение точки» ты собрал руками <b>третий раз за неделю</b> — шаблон в базе уже есть, а начинаешь каждый раз с чистого листа.</div>
+              <span class="src-tag s-task"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12.5l2 2 4-4.5"/></svg>Задачи</span>
+            </div>
+            <div class="speed">
+              <div class="speed-txt">Карточка «Зелёного Берега» <b>вторую неделю висит на согласовании</b> — ты уже дважды напоминал юротделу вручную, оба раза после вопроса клиента.</div>
+              <span class="src-tag s-touch"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.8 8.8 0 01-3.8-.9L3 20l1-4.9a8.4 8.4 0 1117-3.6z"/></svg>Входящее</span>
+            </div>
+            <div class="speed">
+              <div class="speed-txt">Из четырёх встреч этой недели <b>две остались без задачи</b> — договорённости с них живут только в записи разговора. Сегодняшний «Норд-Ойл» мы поймали, прошлые две — нет.</div>
+              <span class="src-tag s-meet"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg>Встреча</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sect hero-take">
+          <div class="sect-head">Могу забрать на себя — на поток</div>
+          <div class="sect-body">
+            <div class="offers">
+              <div class="offer">
+                <div class="of-t">Follow-up после каждой встречи</div>
+                <div class="of-d">Как сегодня с «Норд-Ойл», только не жду напоминания: после каждой встречи сам готовлю задачу-черновик с договорённостью и сроком.</div>
+                <div class="of-note">черновиком · каждая ждёт твой Ок · отключается в любой момент</div>
+                <button class="btn take" onclick="trust(this,'Доверил — после каждой встречи буду готовить задачу-черновик с follow-up, каждая ждёт твой Ок; отключить можно в настройках агента')">Доверить</button>
+              </div>
+              <div class="offer">
+                <div class="of-t">Черновик КП по шаблону</div>
+                <div class="of-d">Падает задача «собрать КП» — я сразу собираю черновик из шаблона и действующего прайса, а не жду, пока ты сядешь копировать.</div>
+                <div class="of-note">черновиком · клиенту отправляешь ты · отключается в любой момент</div>
+                <button class="btn take" onclick="trust(this,'Доверил — черновик КП собираю сам, как только падает такая задача; клиенту без твоего Ок ничего не уходит')">Доверить</button>
+              </div>
+              <div class="offer">
+                <div class="of-t">Напоминание по зависшим карточкам</div>
+                <div class="of-d">Карточка стоит на согласовании дольше пяти дней — готовлю напоминание юротделу, чтобы ты не дёргал их вручную после звонка клиента.</div>
+                <div class="of-note">черновиком · уходит после твоего Ок · отключается в любой момент</div>
+                <button class="btn take" onclick="trust(this,'Доверил — по зависшим карточкам готовлю напоминание юротделу; уходит только после твоего Ок, отключить можно в настройках агента')">Доверить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="footnote"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>«Доверить» не значит «делает молча»: я готовлю черновик, каждое действие проходит через твой Ок, и любую доверенную рутину можно выключить в настройках агента.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ Где это живёт в кабинете ═══ -->
   <div class="live-section">
     <h2>Где это живёт в кабинете</h2>
@@ -1057,6 +1155,16 @@
     var b = document.getElementById('b5');
     if (!b.disabled) confirm5(b);
     else toast('Задача уже заведена — это та же плашка, что у встречи');
+  }
+
+  /* ── секция «Итог дня»: доверить рутину ── */
+  function trust(btn, msg){
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.classList.remove('take');
+    btn.classList.add('confirmed');
+    btn.textContent = '✓ Доверено';
+    toast(msg);
   }
 </script>
 </body>
