@@ -13,18 +13,6 @@
       "mcp__claude_ai_Google_Drive__get_file_metadata",
       "mcp__claude_ai_Buildin_Dxbx__API-search",
       "mcp__claude_ai_Buildin_Dxbx__API-semanticSearch"
-    ],
-    "ask": [
-      "Bash(rm -rf*)",
-      "Bash(rm -fr*)",
-      "Bash(rm -r *)",
-      "Bash(sudo rm*)",
-      "Bash(git push --force*)",
-      "Bash(git push -f *)",
-      "Bash(git reset --hard*)",
-      "Bash(git clean -f*)",
-      "Bash(dd *)",
-      "Bash(mkfs*)"
     ]
   },
   "hooks": {
