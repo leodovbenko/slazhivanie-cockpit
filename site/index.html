@@ -165,6 +165,36 @@
     .agent-more::after{content:"";position:absolute;inset:0;border-radius:18px}
     .fleet-note{margin-top:26px;background:var(--paper-2);border:1px dashed #D8CCB8;border-radius:14px;padding:18px 22px;font-size:14px;color:var(--t2);line-height:1.55}
     .fleet-note b{color:var(--t1)}
+    /* витрина флота по отделам (запечено из /roles) */
+    .fleet-dept{margin-bottom:36px}
+    .fleet-dept:last-of-type{margin-bottom:0}
+    .dept-title{display:flex;align-items:center;gap:14px;font-family:'Fraunces',serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:16px}
+    .dept-title::after{content:"";flex:1;height:1px;background:var(--line-light)}
+    .fleet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}
+    .fcard{background:var(--white);border:1px solid var(--line-light);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:12px;position:relative;transition:.2s}
+    .fcard:hover{box-shadow:0 2px 4px rgba(32,28,23,.04),0 16px 38px rgba(32,28,23,.09);transform:translateY(-2px);border-color:#D8CCB8}
+    .fcard.accent{border-color:var(--clay);box-shadow:0 0 0 1px rgba(184,92,60,.16)}
+    .fcard.accent:hover{border-color:var(--clay)}
+    .fcard-head{display:flex;align-items:flex-start;gap:12px}
+    .fcard-head .ht{min-width:0;flex:1}
+    .fcard-head h3{font-size:18px;font-weight:700;line-height:1.15}
+    .fcard-head .kind{font-size:12px;color:var(--t3);margin-top:3px}
+    .fcard.accent .kind{color:var(--clay-d);font-weight:600}
+    .fpill{font-size:11px;font-weight:700;letter-spacing:.04em;padding:4px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;cursor:default}
+    .fpill.green{background:var(--green-soft);color:var(--green-d)}
+    .fpill.amber{background:#F3E8D0;color:#8A6420}
+    .fpill.violet{background:var(--clay-soft);color:var(--clay-d)}
+    .fpill.blue{background:var(--paper-2);color:var(--t2)}
+    .fcard .blurb{font-size:14px;color:var(--t2);line-height:1.5;flex:1}
+    .ftags{display:flex;flex-wrap:wrap;gap:6px}
+    .ftag{font-size:11.5px;padding:3px 10px;border-radius:999px;background:var(--green-soft);color:var(--green-d)}
+    .fhelpers{font-size:12.5px;color:var(--t3)}
+    .fhelpers b{color:var(--t2);font-weight:600}
+    .fkpi{font-size:13px;font-weight:600;color:var(--green-d)}
+    .fkpi::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:8px;vertical-align:1px}
+    .fmore{display:inline-block;margin-top:2px}
+    .fmore::after{content:"";position:absolute;inset:0;border-radius:18px}
+    @media(max-width:560px){.fleet-grid{grid-template-columns:1fr}}
 
     /* ---------- продуктивность ---------- */
     .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
@@ -506,107 +536,227 @@
       <div class="sec-head">
         <div>
           <span class="eyebrow">Флот агентов</span>
-          <h2 class="h-sec">Пять агентов, каждый со своей работой</h2>
+          <h2 class="h-sec">По отделам, как у людей</h2>
         </div>
         <a href="#contacts" class="link-arrow">Посмотреть вживую на демо →</a>
       </div>
-      <p class="lead" style="margin:-16px 0 36px">Действующие агенты платформы над одной памятью команды: что узнал один — доступно остальным. Во главе Первый агент: <b style="color:var(--t1)">отвечает, когда спрашивают, — и приходит сам, когда не спрашивают.</b></p>
+      <p class="lead" style="margin:-16px 0 36px">Агенты сгруппированы по отделам, как люди в компании, и работают над одной памятью команды. У каждой роли — честный статус зрелости: от замысла до зрелой, проверенной реальными цифрами. Во главе — <b style="color:var(--t1)">Первый агент: начните с него.</b></p>
 
-      <div class="grid-3">
-        <article class="agent">
-          <div class="agent-top">
-            <div class="av g" aria-hidden="true">П</div>
-            <div>
-              <h3>Первый агент</h3>
-              <div class="role">Единая точка входа, память команды — и приносит сам</div>
+      <!-- roles:auto:start -->
+      <div class="fleet-dept">
+        <div class="dept-title">Секретариат</div>
+        <div class="fleet-grid">
+          <article class="fcard accent" data-role-id="role-first">
+            <div class="fcard-head">
+              <div class="av g" aria-hidden="true">П</div>
+              <div class="ht">
+                <h3>Первый агент</h3>
+                <div class="kind">начните с него</div>
+              </div>
+              <span class="fpill amber" title="работает у клиента, ловим первые баги на данных">Обкатка</span>
             </div>
-          </div>
-          <p class="quote">«Отвечает, когда спрашивают, — и приходит сам, когда не спрашивают.»</p>
-          <ul>
-            <li>С ним разговаривают: голос, текст, фото, документы — в Telegram и кабинете. Отвечает из памяти компании</li>
-            <li>Ставит встречи и задачи словами; утром сам приносит бриф, вечером — сводку дня</li>
-            <li>Картотека людей и договорённостей, разбор звонков — покажем на демо</li>
-          </ul>
-          <span class="agent-status st-live"><span class="d"></span>В работе у команд</span>
-          <a href="agent-first.html" class="agent-more link-arrow">Подробнее →</a>
-        </article>
-
-        <article class="agent">
-          <div class="agent-top">
-            <div class="av g" aria-hidden="true">Г</div>
-            <div>
-              <h3>Гермес</h3>
-              <div class="role">Контент и SMM</div>
-            </div>
-          </div>
-          <p class="quote">Надиктовали мысль — дальше он сам.</p>
-          <ul>
-            <li>Черновики постов вашим голосом из надиктованного</li>
-            <li>Один повод → версии под LinkedIn, Telegram, Instagram и блог</li>
-            <li>Очередь публикаций; видео-ведущий канала — рилс с лицом и голосом бренда</li>
-          </ul>
-          <span class="agent-status st-live"><span class="d"></span>В работе у команд</span>
-          <a href="agent-hermes.html" class="agent-more link-arrow">Подробнее →</a>
-        </article>
-
-        <article class="agent">
-          <div class="agent-top">
-            <div class="av c" aria-hidden="true">К</div>
-            <div>
-              <h3>Коммерсант</h3>
-              <div class="role">Продажи и сделки</div>
-            </div>
-          </div>
-          <p class="quote">Наружу клиенту сам не пишет — работает под присмотром вашего продавца.</p>
-          <ul>
-            <li>Досье по сделке — из того, что команда надиктовала в чаты</li>
-            <li>Здоровье воронки; готовит КП; связка с amoCRM</li>
-            <li>Тёплые лиды с сайта падают в воронку сами</li>
-          </ul>
-          <span class="agent-status st-int"><span class="d"></span>Под присмотром человека</span>
-          <a href="agent-kommersant.html" class="agent-more link-arrow">Подробнее →</a>
-        </article>
-
-        <article class="agent">
-          <div class="agent-top">
-            <div class="av c" aria-hidden="true">Р</div>
-            <div>
-              <h3>Рекрутёр</h3>
-              <div class="role">Подбор и найм</div>
-            </div>
-          </div>
-          <p class="quote">Читает резюме целиком, а не по ключевым словам, — и учится на ваших правках.</p>
-          <ul>
-            <li>Сценарий найма из вашего ТЗ; светофор по кандидатам с цитатами</li>
-            <li>Разбирает собеседование по записи встречи</li>
-            <li>Работа с hh.ru; пульт HRD по воронке найма</li>
-          </ul>
-          <span class="agent-status st-int"><span class="d"></span>Под присмотром человека</span>
-          <a href="agent-recruiter.html" class="agent-more link-arrow">Подробнее →</a>
-        </article>
-
-        <article class="agent">
-          <div class="agent-top">
-            <div class="av c" aria-hidden="true">М</div>
-            <div>
-              <h3>Маркетинг-тимлид</h3>
-              <div class="role">Сводит маркетинг в одну воронку</div>
-            </div>
-          </div>
-          <p class="quote">Весь маркетинг — как один P&L, а не десять отчётов.</p>
-          <ul>
-            <li>Единый отчёт-воронка: охват → заявки → сделки → затраты</li>
-            <li>План «что делать дальше» по цифрам, а не по ощущениям</li>
-            <li>Пока советник: рекомендует людям, а не командует исполнителями</li>
-          </ul>
-          <span class="agent-status st-adv"><span class="d"></span>Пока советник</span>
-          <a href="agent-marketing.html" class="agent-more link-arrow">Подробнее →</a>
-        </article>
+            <p class="blurb">Агент команды в Telegram и кабинете: отвечает в контексте компании, понимает голос, фото и документы, ведёт память и задачи.</p>
+            <div class="ftags"><span class="ftag">Telegram</span><span class="ftag">память</span><span class="ftag">голос/фото/док</span></div>
+            <div class="fkpi">1&nbsp;197&nbsp;документов собрано</div>
+            <a href="agent-first.html" class="fmore link-arrow">Подробнее →</a>
+          </article>
+        </div>
       </div>
+
+      <div class="fleet-dept">
+        <div class="dept-title">Коммерция и продажи</div>
+        <div class="fleet-grid">
+          <article class="fcard" data-role-id="role-commersant">
+            <div class="fcard-head">
+              <div class="av g" aria-hidden="true">К</div>
+              <div class="ht">
+                <h3>Коммерсант — продажи</h3>
+                <div class="kind">отдельный агент</div>
+              </div>
+              <span class="fpill green" title="проверен реальными цифрами">Зрелый</span>
+            </div>
+            <p class="blurb">Разбирает звонки телеколл-центра, ведёт сделки по этапам, готовит КП и следит за застрявшими. Ход сделки подтверждает человек.</p>
+            <div class="ftags"><span class="ftag">продажи</span><span class="ftag">звонки</span><span class="ftag">CRM</span></div>
+            <div class="fkpi">4&nbsp;553&nbsp;звонков разобрано</div>
+            <a href="agent-kommersant.html" class="fmore link-arrow">Подробнее →</a>
+          </article>
+
+          <article class="fcard" data-role-id="role-komdir">
+            <div class="fcard-head">
+              <div class="av c" aria-hidden="true">И</div>
+              <div class="ht">
+                <h3>ИИ-Комдир — контроль продаж</h3>
+                <div class="kind">часть Первого</div>
+              </div>
+              <span class="fpill blue" title="на ТЗ — разгоняем смысл, рисуем витрину">Замысел</span>
+            </div>
+            <p class="blurb">Смотрит на воронку глазами комдира: утренний пульс, кто загорелся, где узкое место. Надстройка над работой Коммерсанта.</p>
+            <div class="ftags"><span class="ftag">воронка</span><span class="ftag">пульс</span><span class="ftag">контроль</span></div>
+            <div class="fkpi" hidden></div>
+          </article>
+
+          <article class="fcard" data-role-id="role-farmer">
+            <div class="fcard-head">
+              <div class="av c" aria-hidden="true">Ф</div>
+              <div class="ht">
+                <h3>Фермер — сопровождение базы</h3>
+                <div class="kind">часть Первого</div>
+              </div>
+              <span class="fpill green" title="проверен реальными цифрами">Зрелый</span>
+            </div>
+            <p class="blurb">Ведёт действующую базу клиентов: входящие по живой сети — сигнал, а не молча в филиал. Мастер-справочник и синки.</p>
+            <div class="ftags"><span class="ftag">сопровождение</span><span class="ftag">база</span><span class="ftag">сигналы</span></div>
+            <div class="fkpi">12&nbsp;696&nbsp;записей в сопровождении</div>
+          </article>
+        </div>
+      </div>
+
+      <div class="fleet-dept">
+        <div class="dept-title">Маркетинг и контент</div>
+        <div class="fleet-grid">
+          <article class="fcard" data-role-id="role-hermes">
+            <div class="fcard-head">
+              <div class="av g" aria-hidden="true">Г</div>
+              <div class="ht">
+                <h3>Гермес — SMM-агент</h3>
+                <div class="kind">отдельный агент</div>
+              </div>
+              <span class="fpill amber" title="работает у клиента, ловим первые баги на данных">Обкатка</span>
+            </div>
+            <p class="blurb">Сырая мысль → посты, карусели и рилсы в вашем голосе, по расписанию, в подключённые соцсети.</p>
+            <div class="ftags"><span class="ftag">SMM</span><span class="ftag">соцсети</span><span class="ftag">рилсы</span><span class="ftag">голос</span></div>
+            <div class="fhelpers"><b>Помощники:</b> SEObot</div>
+            <div class="fkpi">57&nbsp;постов опубликовано</div>
+            <a href="agent-hermes.html" class="fmore link-arrow">Подробнее →</a>
+          </article>
+
+          <article class="fcard" data-role-id="role-marketing-lead">
+            <div class="fcard-head">
+              <div class="av g" aria-hidden="true">М</div>
+              <div class="ht">
+                <h3>Маркетинг-тимлид</h3>
+                <div class="kind">отдельный агент</div>
+              </div>
+              <span class="fpill amber" title="работает у клиента, ловим первые баги на данных">Обкатка</span>
+            </div>
+            <p class="blurb">Держит маркетинг-план и инсайты из звонков: что говорят клиенты, какие темы заходят, что дать контент-агенту.</p>
+            <div class="ftags"><span class="ftag">маркетинг</span><span class="ftag">инсайты</span><span class="ftag">план</span></div>
+            <div class="fkpi" hidden></div>
+            <a href="agent-marketing.html" class="fmore link-arrow">Подробнее →</a>
+          </article>
+
+          <article class="fcard" data-role-id="role-outreach">
+            <div class="fcard-head">
+              <div class="av g" aria-hidden="true">А</div>
+              <div class="ht">
+                <h3>Аутрич — исходящие касания</h3>
+                <div class="kind">отдельный агент</div>
+              </div>
+              <span class="fpill amber" title="работает у клиента, ловим первые баги на данных">Обкатка</span>
+            </div>
+            <p class="blurb">Тёплые исходящие касания по базе: находит повод, пишет персонально, ведёт последовательность.</p>
+            <div class="ftags"><span class="ftag">аутрич</span><span class="ftag">исходящие</span></div>
+            <div class="fhelpers"><b>Помощники:</b> Apollo</div>
+            <div class="fkpi" hidden></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="fleet-dept">
+        <div class="dept-title">Найм и HR</div>
+        <div class="fleet-grid">
+          <article class="fcard" data-role-id="role-recruiter">
+            <div class="fcard-head">
+              <div class="av g" aria-hidden="true">Р</div>
+              <div class="ht">
+                <h3>Рекрутёр — подбор</h3>
+                <div class="kind">отдельный агент</div>
+              </div>
+              <span class="fpill amber" title="работает у клиента, ловим первые баги на данных">Обкатка</span>
+            </div>
+            <p class="blurb">Читает резюме и раскладывает кандидатов по вакансии: сильные/слабые, оценка, что уточнить у нанимающего.</p>
+            <div class="ftags"><span class="ftag">HR</span><span class="ftag">подбор</span><span class="ftag">скоринг</span></div>
+            <div class="fkpi" hidden></div>
+            <a href="agent-recruiter.html" class="fmore link-arrow">Подробнее →</a>
+          </article>
+        </div>
+      </div>
+
+      <div class="fleet-dept">
+        <div class="dept-title">Финансы</div>
+        <div class="fleet-grid">
+          <article class="fcard" data-role-id="role-findir">
+            <div class="fcard-head">
+              <div class="av c" aria-hidden="true">А</div>
+              <div class="ht">
+                <h3>Ассистент финдиректора</h3>
+                <div class="kind">часть Первого</div>
+              </div>
+              <span class="fpill blue" title="на ТЗ — разгоняем смысл, рисуем витрину">Замысел</span>
+            </div>
+            <p class="blurb">Собирает финансовую картину: платежи, дебиторка, план/факт. Готовит сводку финдиректору. (На ТЗ.)</p>
+            <div class="ftags"><span class="ftag">финансы</span><span class="ftag">сводки</span></div>
+            <div class="fkpi" hidden></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="fleet-dept">
+        <div class="dept-title">Юридический</div>
+        <div class="fleet-grid">
+          <article class="fcard" data-role-id="role-legal">
+            <div class="fcard-head">
+              <div class="av c" aria-hidden="true">Л</div>
+              <div class="ht">
+                <h3>Легал-ассистент</h3>
+                <div class="kind">часть Первого</div>
+              </div>
+              <span class="fpill blue" title="на ТЗ — разгоняем смысл, рисуем витрину">Замысел</span>
+            </div>
+            <p class="blurb">Проверяет договоры на риски, готовит типовые документы, отвечает на правовые вопросы по регламентам компании. (На ТЗ.)</p>
+            <div class="ftags"><span class="ftag">право</span><span class="ftag">договоры</span></div>
+            <div class="fkpi" hidden></div>
+          </article>
+        </div>
+      </div>
+      <!-- roles:auto:end -->
 
       <div class="fleet-note">
         <b>Плюс способности внутри агентов.</b> Не всё — отдельный агент: тренер здоровья (WHOOP и Oura, утренние сводки по восстановлению) живёт внутри Первого агента, приём SEO-статей — рука Гермеса. Флот растёт способностями, а не зоопарком ботов.
       </div>
+
+      <script>
+      /* живое обновление статусов и цифр флота из /roles; при сбое остаётся статика */
+      document.addEventListener('DOMContentLoaded', function () {
+        fetch('https://uklad.ai/roles')
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (data) {
+            if (!data || !Array.isArray(data.roles)) return;
+            var tones = { green: 1, amber: 1, violet: 1, blue: 1 };
+            var fmt = function (n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); };
+            data.roles.forEach(function (role) {
+              var card = document.querySelector('.fcard[data-role-id="' + role.roleId + '"]');
+              if (!card) return;
+              var pill = card.querySelector('.fpill');
+              if (pill && role.statusLabel) {
+                pill.textContent = role.statusLabel;
+                pill.className = 'fpill ' + (tones[role.statusTone] ? role.statusTone : 'blue');
+                if (role.statusHint) pill.title = role.statusHint;
+              }
+              var kpi = card.querySelector('.fkpi');
+              if (!kpi) return;
+              if (role.kpiCount > 0 && role.kpiUnit) {
+                kpi.textContent = fmt(role.kpiCount) + ' ' + role.kpiUnit;
+                kpi.hidden = false;
+              } else {
+                kpi.textContent = '';
+                kpi.hidden = true;
+              }
+            });
+          })
+          .catch(function () {});
+      });
+      </script>
     </div>
   </section>
 
