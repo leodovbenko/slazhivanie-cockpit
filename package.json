@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "bake-roles": "node scripts/bake-roles.mjs",
+    "prebuild": "node scripts/bake-roles.mjs",
     "build": "vite build && node scripts/postbuild.mjs",
     "preview": "vite preview"
   },
