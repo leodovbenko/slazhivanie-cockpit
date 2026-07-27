@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Uklad//Webinar//RU
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:webinar-2026-07-30@uklad.ai
+DTSTAMP:20260727T000000Z
+DTSTART:20260730T140000Z
+DTEND:20260730T153000Z
+SUMMARY:Вебинар «Уклад»: рост и защита бизнеса — Довбенко × Ахильгов
+LOCATION:Онлайн в Zoom
+DESCRIPTION:Вебинар «Уклад» — Леонид Довбенко и Калой Ахильгов о росте и защите бизнеса на связке человек + ИИ-агенты. Ссылку на Zoom пришлём в Telegram за 30 минут до старта. Регистрация: https://t.me/Webinar_uklad_bot
+BEGIN:VALARM
+TRIGGER:-PT30M
+ACTION:DISPLAY
+DESCRIPTION:Вебинар «Уклад» через 30 минут
+END:VALARM
+END:VEVENT
+END:VCALENDAR
