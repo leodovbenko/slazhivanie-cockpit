@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Аутрич-агент · Гейт доверия — Прототип-визион (K3-угол)</title>
+<style>
+:root{
+  --bg:#0D1411;
+  --panel:#121C17;
+  --panel2:#152119;
+  --panel3:#1A2A21;
+  --line:#22362B;
+  --line2:#2B4536;
+  --text:#E9F2EC;
+  --muted:#8FA79A;
+  --faint:#63796C;
+  --accent:#3ECF8E;
+  --accent-dim:rgba(62,207,142,.12);
+  --accent-line:rgba(62,207,142,.35);
+  --amber:#E6B23A;
+  --amber-soft:#F2CD77;
+  --amber-dim:rgba(230,178,58,.10);
+  --amber-line:rgba(230,178,58,.35);
+  --red:#D96A5E;
+  --red-dim:rgba(217,106,94,.09);
+  --red-line:rgba(217,106,94,.35);
+  --blue:#5FA8E0;
+  --blue-dim:rgba(95,168,224,.12);
+  --grey:#7A8A81;
+  --radius:16px;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 480px at 50% -10%, rgba(62,207,142,.09), transparent 60%),
+    radial-gradient(700px 400px at 90% 110%, rgba(62,207,142,.05), transparent 60%);
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px;position:relative;z-index:1}
+
+/* ---------- HEADER ---------- */
+header{padding:46px 0 8px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:26px}
+.brand{font-size:.85rem;color:var(--muted);letter-spacing:.02em}
+.brand b{color:var(--accent);font-weight:600}
+.proto-badge{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--amber-soft);border:1px solid var(--amber-line);background:var(--amber-dim);
+  padding:6px 12px;border-radius:999px;
+}
+h1{font-size:clamp(1.55rem,3.6vw,2.5rem);line-height:1.18;font-weight:750;letter-spacing:-.02em;max-width:22em}
+h1 .accent{color:var(--accent)}
+.lede{margin-top:16px;color:var(--muted);font-size:clamp(.95rem,1.6vw,1.08rem);max-width:62em}
+.lede b{color:var(--text);font-weight:600}
+.lede .arrow{color:var(--accent);font-family:var(--mono)}
+
+/* ---------- COMPARE ---------- */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:30px 0 6px}
+.cmp{border-radius:var(--radius);padding:20px 22px;border:1px solid var(--line);position:relative;overflow:hidden}
+.cmp h3{font-size:1rem;letter-spacing:-.01em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.cmp ul{list-style:none}
+.cmp li{font-size:.92rem;color:var(--muted);padding:5px 0 5px 24px;position:relative}
+.cmp li::before{position:absolute;left:0;top:5px;font-family:var(--mono);font-size:.85rem}
+.cmp .cmp-foot{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-family:var(--mono);font-size:.75rem;letter-spacing:.04em}
+.cmp.bad{background:linear-gradient(160deg,rgba(217,106,94,.07),rgba(217,106,94,.02));border-color:rgba(217,106,94,.28)}
+.cmp.bad h3{color:#E8A79E}
+.cmp.bad li::before{content:"✗";color:var(--red)}
+.cmp.bad .cmp-foot{color:#C98A81}
+.cmp.good{background:linear-gradient(160deg,rgba(62,207,142,.09),rgba(62,207,142,.02));border-color:var(--accent-line)}
+.cmp.good h3{color:var(--accent)}
+.cmp.good li::before{content:"✓";color:var(--accent)}
+.cmp.good li{color:#B9CEC3}
+.cmp.good .cmp-foot{color:var(--accent)}
+
+/* ---------- STEPPER ---------- */
+.stepper{
+  position:sticky;top:0;z-index:60;margin:26px 0 0;
+  background:rgba(13,20,17,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.stepper-in{max-width:1120px;margin:0 auto;padding:0 22px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.stepper-in::-webkit-scrollbar{display:none}
+.step{
+  appearance:none;background:none;border:none;color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;gap:9px;padding:15px 14px;font-size:.88rem;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:color .2s,border-color .2s;flex-shrink:0;
+  font-family:inherit;
+}
+.step .n{
+  width:22px;height:22px;border-radius:50%;border:1px solid var(--line2);
+  display:inline-flex;align-items:center;justify-content:center;font-size:.72rem;font-family:var(--mono);color:var(--faint);flex-shrink:0;
+}
+.step.star .n{border-color:var(--amber-line);color:var(--amber);background:var(--amber-dim)}
+.step:hover{color:var(--text)}
+.step.active{color:var(--text);border-bottom-color:var(--accent)}
+.step.active .n{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.step.star.active .n{border-color:var(--amber);color:var(--amber)}
+
+/* ---------- SCREENS ---------- */
+main{padding:34px 0 10px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.eyebrow.amber{color:var(--amber)}
+.screen h2{font-size:clamp(1.25rem,2.6vw,1.7rem);font-weight:700;letter-spacing:-.015em;margin-bottom:8px}
+.screen .sub{color:var(--muted);font-size:.95rem;max-width:56em;margin-bottom:22px}
+
+.card{background:linear-gradient(170deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius)}
+
+/* buttons */
+.btn{
+  appearance:none;border:none;cursor:pointer;font-family:inherit;font-size:.92rem;font-weight:650;
+  border-radius:11px;padding:12px 20px;transition:transform .12s,box-shadow .2s,background .2s,color .2s,border-color .2s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-primary{background:var(--accent);color:#06251A;box-shadow:0 4px 24px rgba(62,207,142,.22)}
+.btn-primary:hover{background:#55DCA0;box-shadow:0 6px 30px rgba(62,207,142,.34)}
+.btn-primary:disabled{opacity:.55;cursor:default}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line2)}
+.btn-ghost:hover{color:var(--text);border-color:var(--accent-line)}
+.btn-danger{background:transparent;color:#C98A81;border:1px solid rgba(217,106,94,.3)}
+.btn-danger:hover{color:var(--red);border-color:var(--red)}
+.btn-sm{padding:9px 15px;font-size:.85rem;border-radius:9px}
+
+/* ---------- SCREEN 1 ---------- */
+.prompt-box{padding:26px;margin-bottom:16px}
+.prompt-box label{display:block;font-size:.8rem;color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;font-family:var(--mono)}
+.prompt-row{display:flex;gap:12px;align-items:stretch}
+#prompt{
+  flex:1;background:#0C1712;border:1px solid var(--line2);border-radius:12px;color:var(--text);
+  font-size:1.02rem;padding:15px 18px;font-family:inherit;resize:none;min-height:58px;line-height:1.45;caret-color:var(--accent);
+}
+#prompt:focus{outline:none;border-color:var(--accent-line);box-shadow:0 0 0 3px rgba(62,207,142,.12)}
+.icp-card{padding:26px;border-color:var(--accent-line);background:linear-gradient(170deg,rgba(62,207,142,.07),var(--panel));margin-top:16px}
+.icp-card.pop{animation:pop .5s ease}
+@keyframes pop{0%{opacity:0;transform:scale(.98) translateY(8px)}100%{opacity:1;transform:none}}
+.hidden{display:none!important}
+.icp-card h3{font-size:1.05rem;margin-bottom:16px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.chip{
+  font-size:.85rem;padding:8px 14px;border-radius:999px;background:var(--accent-dim);
+  border:1px solid var(--accent-line);color:#BFE9D4;
+}
+.chip b{color:var(--accent);font-weight:650}
+.icp-note{font-size:.9rem;color:var(--muted);border-left:2px solid var(--accent-line);padding-left:14px;margin-bottom:20px;max-width:52em}
+.icp-note b{color:var(--text)}
+
+/* ---------- SCREEN 2 ---------- */
+.lead{
+  padding:18px 20px;margin-bottom:12px;cursor:pointer;position:relative;
+  transition:border-color .2s,box-shadow .2s,transform .15s;
+}
+.lead:hover{border-color:var(--line2);transform:translateY(-1px)}
+.lead.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 34px rgba(62,207,142,.12)}
+.lead-top{display:flex;gap:14px;align-items:flex-start}
+.ava{
+  width:46px;height:46px;border-radius:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.95rem;letter-spacing:.02em;
+  background:hsl(var(--h) 38% 22%);color:hsl(var(--h) 75% 78%);border:1px solid hsl(var(--h) 40% 32%);
+}
+.lead-id{flex:1;min-width:0}
+.lead-name{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sel-badge{font-size:.68rem;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-line);padding:3px 9px;border-radius:999px;font-weight:500;display:none}
+.lead.sel .sel-badge{display:inline-flex}
+.lead-role{font-size:.86rem;color:var(--muted);margin-top:2px}
+.lead-contact{font-size:.8rem;color:var(--faint);margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--mono)}
+.ok-chip{font-size:.66rem;color:var(--accent);border:1px solid var(--accent-line);background:var(--accent-dim);border-radius:999px;padding:2px 8px;letter-spacing:.03em}
+.reach{
+  flex-shrink:0;text-align:right;font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;
+  padding:7px 12px;border-radius:10px;line-height:1.3;
+}
+.reach .r-num{display:block;font-size:1.05rem;font-weight:700}
+.reach.high{color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-line)}
+.reach.mid{color:var(--amber-soft);background:var(--amber-dim);border:1px solid var(--amber-line)}
+.signal{
+  display:flex;gap:12px;align-items:flex-start;margin-top:14px;
+  background:var(--amber-dim);border:1px solid var(--amber-line);border-radius:12px;padding:12px 15px;
+}
+.sig-ic{color:var(--amber);font-size:1rem;line-height:1.4}
+.sig-body{flex:1;font-size:.9rem;color:#CBB98B;min-width:0}
+.sig-body b{color:var(--amber-soft)}
+.sig-age{flex-shrink:0;font-family:var(--mono);font-size:.7rem;color:var(--amber-soft);border:1px solid var(--amber-line);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.lead-src{margin-top:11px;font-size:.78rem;color:var(--faint);display:flex;align-items:center;gap:8px;font-family:var(--mono)}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:pulse 1.8s infinite}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(62,207,142,.5)}
+  70%{box-shadow:0 0 0 7px rgba(62,207,142,0)}
+  100%{box-shadow:0 0 0 0 rgba(62,207,142,0)}
+}
+.row-end{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap}
+.hint{font-size:.85rem;color:var(--faint)}
+.no4k{color:var(--faint);font-size:.85rem;margin-bottom:16px;font-style:italic}
+
+/* ---------- SCREEN 3 ---------- */
+.draft-grid{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+.mini-lead{padding:18px 20px;margin-bottom:14px}
+.mini-lead .lead-top{align-items:center}
+.chan-box{padding:18px 20px}
+.chan-box label{display:block;font-size:.75rem;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:12px}
+.chan-chips{display:flex;flex-wrap:wrap;gap:8px}
+.chan{
+  appearance:none;cursor:pointer;font-family:inherit;font-size:.83rem;padding:8px 14px;border-radius:999px;
+  background:transparent;border:1px solid var(--line2);color:var(--muted);transition:all .2s;position:relative;
+}
+.chan:hover{color:var(--text)}
+.chan.active{background:var(--blue-dim);border-color:rgba(95,168,224,.5);color:var(--blue)}
+.chan .rec{position:absolute;top:-4px;right:-2px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.gate-note{margin-top:14px;font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
+.gate-note b{color:var(--accent)}
+.msg-card{padding:22px 24px}
+.msg-head{font-size:.8rem;font-family:var(--mono);color:var(--muted);padding-bottom:14px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.msg-head .mh-ch{color:var(--blue);text-transform:uppercase;letter-spacing:.08em}
+.mk-note{color:var(--amber-soft);background:rgba(230,178,58,.14);border-radius:5px;padding:1px 7px}
+.msg-body{padding:18px 0;font-size:.98rem;line-height:1.7;color:#DCE8E0;white-space:pre-line}
+mark.hl{background:rgba(230,178,58,.24);color:#F5D68A;padding:1px 5px;border-radius:5px}
+.why{display:flex;gap:10px;font-size:.85rem;color:#CBB98B;background:var(--amber-dim);border:1px dashed var(--amber-line);border-radius:11px;padding:12px 15px;margin-bottom:18px}
+.why span:first-child{color:var(--amber)}
+.msg-foot{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.no-send{font-size:.8rem;color:var(--faint);font-family:var(--mono)}
+
+/* ---------- SCREEN 4 ---------- */
+.lock-banner{
+  display:flex;gap:16px;align-items:center;padding:18px 22px;margin-bottom:16px;
+  background:linear-gradient(120deg,rgba(62,207,142,.14),rgba(62,207,142,.04));
+  border:1px solid var(--accent-line);border-radius:var(--radius);
+}
+.lock-ic{font-size:1.7rem;filter:drop-shadow(0 0 12px rgba(62,207,142,.5))}
+.lock-banner .lb-t{font-weight:750;font-size:1.08rem;color:var(--accent);letter-spacing:-.01em}
+.lock-banner .lb-s{font-size:.85rem;color:var(--muted)}
+.counters{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.counter{padding:16px 18px;text-align:left}
+.c-num{font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1.1;color:var(--amber-soft)}
+.c-num.ok{color:var(--accent)}
+.c-lab{font-size:.78rem;color:var(--muted);margin-top:4px}
+.counter.zero{border-color:var(--accent-line);background:linear-gradient(160deg,rgba(62,207,142,.1),var(--panel))}
+.counter.zero .c-num{color:var(--accent)}
+.bump{animation:bump .45s ease}
+@keyframes bump{30%{transform:scale(1.18);text-shadow:0 0 20px currentColor}}
+.bulk-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.bulk-row .hint{font-size:.82rem}
+.q-card{padding:18px 20px;margin-bottom:12px;transition:opacity .3s,border-color .3s,box-shadow .3s}
+.q-card.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,40%{box-shadow:0 0 0 2px var(--accent),0 0 40px rgba(62,207,142,.3)}100%{box-shadow:none}}
+.q-card.st-ok{border-color:var(--accent-line);background:linear-gradient(170deg,rgba(62,207,142,.06),var(--panel))}
+.q-card.st-no{opacity:.48}
+.q-top{display:flex;gap:13px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.q-top .ava{width:40px;height:40px;border-radius:11px;font-size:.82rem}
+.q-name{font-weight:700;font-size:.95rem}
+.q-role{font-size:.78rem;color:var(--muted)}
+.q-meta{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ch-badge{font-size:.68rem;font-family:var(--mono);letter-spacing:.05em;color:var(--blue);background:var(--blue-dim);border:1px solid rgba(95,168,224,.35);border-radius:999px;padding:4px 11px}
+.st-pill{font-size:.68rem;font-family:var(--mono);letter-spacing:.04em;border-radius:999px;padding:4px 11px}
+.st-pill.wait{color:var(--amber-soft);background:var(--amber-dim);border:1px solid var(--amber-line)}
+.st-pill.ok{color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-line)}
+.st-pill.no{color:#B08580;background:var(--red-dim);border:1px solid var(--red-line)}
+.q-signal{font-size:.83rem;color:#CBB98B;background:var(--amber-dim);border-left:2px solid var(--amber);border-radius:0 9px 9px 0;padding:9px 13px;margin-bottom:12px}
+.q-signal b{color:var(--amber-soft)}
+.q-msg{font-size:.92rem;line-height:1.65;color:#CFDDD4;white-space:pre-line;padding:4px 0 12px}
+.q-msg.edited-tag::after{content:"✎ отредактировано тобой — агент учтёт правку";display:block;margin-top:10px;font-size:.72rem;font-family:var(--mono);color:var(--blue)}
+.q-edit{width:100%;min-height:150px;background:#0C1712;border:1px solid var(--accent-line);border-radius:11px;color:var(--text);font-family:inherit;font-size:.92rem;line-height:1.6;padding:14px 16px;resize:vertical;margin-bottom:12px}
+.q-edit:focus{outline:none;box-shadow:0 0 0 3px rgba(62,207,142,.12)}
+.q-actions{display:flex;gap:9px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:14px}
+.ok-line{font-size:.86rem;color:var(--accent);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ok-line a,.no-line a{color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.78rem}
+.ok-line a:hover,.no-line a:hover{color:var(--text)}
+.no-line{font-size:.86rem;color:#B08580;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gate-notes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.g-note{padding:16px 18px;font-size:.86rem;color:var(--muted)}
+.g-note b{color:var(--text)}
+.g-note .gi{margin-right:8px}
+
+/* ---------- SCREEN 5 ---------- */
+.in-card{padding:18px 20px;margin-bottom:14px}
+.in-top{display:flex;gap:13px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.in-top .ava{width:40px;height:40px;border-radius:11px;font-size:.82rem}
+.in-meta{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tag{font-size:.68rem;font-family:var(--mono);letter-spacing:.04em;border-radius:999px;padding:4px 11px}
+.tag.warm{color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-line)}
+.tag.ask{color:var(--blue);background:var(--blue-dim);border:1px solid rgba(95,168,224,.35)}
+.tag.later{color:var(--grey);background:rgba(122,138,129,.1);border:1px solid rgba(122,138,129,.3)}
+.in-time{font-size:.72rem;color:var(--faint);font-family:var(--mono)}
+.in-text{font-size:.93rem;line-height:1.65;color:#DCE8E0;padding:4px 0 14px;border-bottom:1px dashed var(--line)}
+.reply-box{margin-top:14px;background:rgba(62,207,142,.05);border:1px solid var(--line2);border-radius:13px;padding:15px 17px}
+.reply-box.sent{border-color:var(--accent-line);background:rgba(62,207,142,.09)}
+.reply-h{font-size:.75rem;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.reply-t{font-size:.9rem;line-height:1.6;color:#CFDDD4;white-space:pre-line;margin-bottom:13px}
+.reply-actions{display:flex;gap:9px;flex-wrap:wrap}
+.sent-line{font-size:.88rem;color:var(--accent);font-weight:600}
+
+/* ---------- LEGEND / FOOTER ---------- */
+.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:44px 0 26px}
+.leg{padding:18px 18px 16px}
+.leg .ln{font-family:var(--mono);color:var(--accent);font-size:.78rem;letter-spacing:.1em;margin-bottom:9px}
+.leg h4{font-size:.92rem;margin-bottom:6px;letter-spacing:-.01em}
+.leg p{font-size:.8rem;color:var(--muted);line-height:1.55}
+footer{border-top:1px solid var(--line);padding:26px 0 46px;text-align:center;color:var(--faint);font-size:.8rem;line-height:1.7}
+footer b{color:var(--muted)}
+
+/* ---------- TOAST ---------- */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);z-index:100;
+  background:#13241B;border:1px solid var(--accent-line);color:var(--text);font-size:.88rem;
+  padding:13px 22px;border-radius:13px;box-shadow:0 12px 44px rgba(0,0,0,.55),0 0 24px rgba(62,207,142,.12);
+  opacity:0;transition:all .35s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;max-width:88vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .lock{color:var(--accent);margin-right:6px}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:920px){
+  .compare{grid-template-columns:1fr}
+  .draft-grid{grid-template-columns:1fr}
+  .legend{grid-template-columns:1fr 1fr}
+  .gate-notes{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  header{padding:32px 0 4px}
+  .counters{grid-template-columns:1fr 1fr}
+  .counter.zero{grid-column:1/-1}
+  .legend{grid-template-columns:1fr}
+  .lead-top{flex-wrap:wrap}
+  .reach{width:100%;text-align:left;display:flex;align-items:center;gap:8px}
+  .reach .r-num{display:inline}
+  .prompt-row{flex-direction:column}
+  .signal{flex-wrap:wrap}
+  .q-meta,.in-meta{margin-left:0;width:100%}
+  .btn{width:100%;justify-content:center}
+  .q-actions .btn,.reply-actions .btn{width:auto;flex:1}
+  .bulk-row .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand"><b>◆ Слаживание / Уклад ИИ</b> · кабинет ИИ-агента «Аутрич-агент»</div>
+      <div class="proto-badge">Прототип · до кода</div>
+    </div>
+    <h1>Аутрич-агент: находит людей, ловит повод, пишет как ты. <span class="accent">И ничего не отправляет без твоего ОК.</span></h1>
+    <p class="lede">Поток: <b>один промпт</b> <span class="arrow">→</span> выборка по одному <span class="arrow">→</span> у каждого лида <b>живой сигнал-повод</b> <span class="arrow">→</span> персональное сообщение в твоём голосе <span class="arrow">→</span> отправка только через <b>гейт одобрения</b>. Принцип продукта: меньше, но релевантнее.</p>
+
+    <div class="compare">
+      <div class="cmp bad">
+        <h3>Автоном 24/7 (как Lev8)</h3>
+        <ul>
+          <li>Шлёт сам, круглосуточно, тысячами</li>
+          <li>Растёт покрытие — и спам-репутация домена</li>
+          <li>База выжигается, имя отправителя дешевеет</li>
+        </ul>
+        <div class="cmp-foot">ПОКРЫТИЕ ↑ &nbsp;·&nbsp; ДОВЕРИЕ ↓</div>
+      </div>
+      <div class="cmp good">
+        <h3>Наш путь — гейт доверия</h3>
+        <ul>
+          <li>Каждое сообщение — по конкретному живому поводу</li>
+          <li>Ничего не уходит без нажатия человека</li>
+          <li>Репутация отправителя — актив, а не расходник</li>
+        </ul>
+        <div class="cmp-foot">ПОКРЫТИЕ ТОЧЕЧНОЕ &nbsp;·&nbsp; ДОВЕРИЕ ↑</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="stepper">
+  <div class="stepper-in" id="stepper">
+    <button class="step active" data-s="1"><span class="n">1</span>Один промпт</button>
+    <button class="step" data-s="2"><span class="n">2</span>Выборка + сигналы</button>
+    <button class="step" data-s="3"><span class="n">3</span>Черновик</button>
+    <button class="step star" data-s="4"><span class="n">★</span>⭐ Гейт одобрения</button>
+    <button class="step" data-s="5"><span class="n">5</span>Инбокс ответов</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ЭКРАН 1 -->
+  <section class="screen active" id="s1">
+    <div class="eyebrow">Шаг 1 / 5 · Один промпт</div>
+    <h2>Опиши, кто тебе нужен — как другу, а не конструктору</h2>
+    <p class="sub">Никаких фильтров из 40 полей. Одна фраза — агент сам разбирает её в критерии и идёт искать.</p>
+
+    <div class="card prompt-box">
+      <label>Твой промпт</label>
+      <div class="prompt-row">
+        <textarea id="prompt" rows="2" spellcheck="false"></textarea>
+        <button class="btn btn-primary" id="findBtn" onclick="runFind()">Найти</button>
+      </div>
+    </div>
+
+    <div class="card icp-card hidden" id="icp">
+      <h3>Понял ICP. Вот как я это прочитал:</h3>
+      <div class="chips">
+        <span class="chip"><b>Роль:</b> Head of Sales / VP Sales / CRO</span>
+        <span class="chip"><b>Сегмент:</b> SaaS</span>
+        <span class="chip"><b>Размер:</b> 20–100 человек</span>
+        <span class="chip"><b>Триггер:</b> раунд за последние 90 дней</span>
+      </div>
+      <p class="icp-note">Ищу по <b>живому вебу</b>: свежие раунды, вакансии, посты, смены ролей — а не по стухшему дампу двухлетней давности. Что-то не так — просто перепиши промпт, я перечитаю.</p>
+      <button class="btn btn-primary" onclick="showScreen(2)">Показать выборку →</button>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 2 -->
+  <section class="screen" id="s2">
+    <div class="eyebrow">Шаг 2 / 5 · Выборка + сигналы</div>
+    <h2>Выборка: 5 людей, у каждого — живой повод</h2>
+    <p class="no4k">Могу найти «ещё 4000 контактов». Не буду: релевантность важнее покрытия. Короткий список, где каждому есть что сказать — прямо сейчас.</p>
+    <div id="leadList"></div>
+    <div class="row-end">
+      <span class="hint" id="selHint"></span>
+      <button class="btn btn-primary" id="toDraft" onclick="showScreen(3)">Собрать черновик для выбранного →</button>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 3 -->
+  <section class="screen" id="s3">
+    <div class="eyebrow">Шаг 3 / 5 · Черновик</div>
+    <h2>Черновик: от повода, а не от «Здравствуйте, меня зовут…»</h2>
+    <p class="sub">Фрагменты, взятые из живого сигнала, подсвечены маркером. Тон — твой обычный: агент учился на твоих письмах.</p>
+    <div class="draft-grid">
+      <div>
+        <div class="card mini-lead" id="draftLead"></div>
+        <div class="card chan-box">
+          <label>Канал</label>
+          <div class="chan-chips" id="chanChips"></div>
+          <div class="gate-note">Все каналы — через <b>один гейт</b>. Отправки отсюда нет ни в одном.</div>
+        </div>
+      </div>
+      <div class="card msg-card">
+        <div class="msg-head" id="msgHead"></div>
+        <div class="msg-body" id="msgBody"></div>
+        <div class="why"><span>⚡</span><span id="whyLine"></span></div>
+        <div class="msg-foot">
+          <button class="btn btn-primary" onclick="enqueue()">В очередь на одобрение →</button>
+          <span class="no-send">🔒 Отправки отсюда нет — только очередь</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 4 -->
+  <section class="screen" id="s4">
+    <div class="eyebrow amber">Шаг 4 / 5 · ⭐ Гейт одобрения — ядро продукта</div>
+    <h2>Гейт доверия</h2>
+    <p class="sub">Это не «режим осторожного». Это единственный режим. Агент готовит — человек решает.</p>
+
+    <div class="lock-banner">
+      <div class="lock-ic">🔒</div>
+      <div>
+        <div class="lb-t">Без твоего нажатия ничего не уходит. Вообще ничего.</div>
+        <div class="lb-s">Ни по расписанию, ни «пока ты спал», ни «тестовой партией». Это гейт, а не пауза.</div>
+      </div>
+    </div>
+
+    <div class="counters">
+      <div class="card counter"><div class="c-num" id="cntWait">0</div><div class="c-lab">ждут твоего ОК</div></div>
+      <div class="card counter"><div class="c-num ok" id="cntOk">0</div><div class="c-lab">одобрено тобой</div></div>
+      <div class="card counter zero"><div class="c-num">0 🔒</div><div class="c-lab">ушло без ОК · константа продукта</div></div>
+    </div>
+
+    <div class="bulk-row">
+      <button class="btn btn-primary btn-sm" id="bulkBtn" onclick="approveAll()">✓ Одобрить пачкой (все ожидающие)</button>
+      <span class="hint">Пачкой — тоже только по твоему нажатию.</span>
+    </div>
+
+    <div id="queueList"></div>
+
+    <div class="gate-notes">
+      <div class="card g-note"><span class="gi">✎</span><b>Отклонённые агент разбирает и учится.</b> Каждая правка — в память тона, каждый отказ — разбор причины, а не тихая корзина.</div>
+      <div class="card g-note"><span class="gi">🔒</span><b>«Ушло без ОК: 0» — не метрика за день, а константа продукта.</b> Не настройка, которую можно выкрутить в полночь.</div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 5 -->
+  <section class="screen" id="s5">
+    <div class="eyebrow">Шаг 5 / 5 · Инбокс ответов</div>
+    <h2>Все ответы стекаются в одно место</h2>
+    <p class="sub">Email · LinkedIn · Telegram — без переключения между сервисами. И ответы агента — тоже только через гейт.</p>
+    <div id="inboxList"></div>
+  </section>
+
+</main>
+
+<div class="wrap">
+  <div class="legend">
+    <div class="card leg"><div class="ln">01</div><h4>Один промпт вместо конструктора</h4><p>Пишешь как другу — агент сам разбирает ICP в критерии и идёт в живой веб.</p></div>
+    <div class="card leg"><div class="ln">02</div><h4>Сигнал-повод, не «база на прозвон»</h4><p>У каждого лида живой триггер со сроком годности: раунд, вакансии, пост, новая роль.</p></div>
+    <div class="card leg"><div class="ln">03</div><h4>Гейт доверия — ядро продукта</h4><p>Без нажатия человека не уходит ничего. Константа, а не настройка.</p></div>
+    <div class="card leg"><div class="ln">04</div><h4>Репутация как актив</h4><p>Домен и имя дороже покрытия. Меньше, но релевантнее — и отвечают чаще.</p></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <b>Прототип-визион</b> · платформа «Слаживание / Уклад ИИ» · кабинет ИИ-агента «Аутрич-агент»<br>
+    Все люди, компании, сигналы и цифры — демонстрационные. Это не рабочий код и не реальные рассылки.
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const CH = {email:'Email', linkedin:'LinkedIn', telegram:'Telegram', whatsapp:'WhatsApp'};
+const CH_ICON = {email:'✉', linkedin:'in', telegram:'✈', whatsapp:'◍'};
+
+const LEADS = [
+{
+  id:'marat', name:'Марат Хайдаров', ini:'МХ', h:160,
+  role:'Head of Sales', company:'«Кассиопея»', seg:'SaaS для логистики', size:'64 чел.',
+  contact:{icon:'✉', label:'m.khaydarov@kassiopeya.io', note:'✓ верифицирован'},
+  reach:87, channel:'email',
+  sigB:'Подняли Series A — $6M.', sigT:'План по выручке вырастет, команда пока прежняя.',
+  age:'3 дня', src:'пресс-релиз + реестр сделок',
+  long:'Марат, привет! Поздравляю — <mark class="hl">Series A на $6M, три дня назад</mark>. Обычно в этот момент план по выручке растёт быстрее команды: цель ×2, а сейлзов прежнее число.\n\nМы помогаем Head of Sales закрывать этот разрыв аутричем, который не выжигает домен: каждое письмо — по живому поводу и только после твоего ОК. Показать на 2–3 ваших сегментах?',
+  short:'Марат, привет! С <mark class="hl">Series A $6M</mark> — свежачок, поздравляю. План обычно растёт быстрее команды, знакомо? Покажу, как закрыть разрыв аутричем без спама. 15 минут?',
+  why:'Почему так: поводу 3 дня — он ещё живой, и Марат сейчас внутри этой боли. Открываем с поздравления и называем боль из его контекста, а не из шаблона.'
+},
+{
+  id:'olga', name:'Ольга Штерн', ini:'ОШ', h:205,
+  role:'VP Sales', company:'«Формант»', seg:'HR-tech', size:'48 чел.',
+  contact:{icon:'in', label:'/in/olga-stern', note:'✓ профиль активен'},
+  reach:82, channel:'linkedin',
+  sigB:'5 вакансий SDR за месяц.', sigT:'Строят машину продаж с нуля — конвейер касаний ещё не собран.',
+  age:'неделя', src:'карьерная страница + hh.ru',
+  long:'Ольга, привет! Заметил, что «Формант» <mark class="hl">открыл 5 вакансий SDR за месяц</mark> — похоже, строите машину продаж с нуля.\n\nПока команда растёт, конвейер первых касаний можно запустить параллельно: агент находит поводы, пишет в твоём голосе, а отправляет только после твоего ОК. Показать, как это разгружает новых SDR в первые недели?',
+  short:'Ольга, привет! <mark class="hl">5 вакансий SDR за месяц</mark> — серьёзная заявка. Пока нанимаешь, агент может вести первые касания в твоём голосе, без спама. Показать?',
+  why:'Почему так: 5 вакансий SDR — публичный сигнал нагрузки. Пишем не «поздравляем с ростом», а про конкретную боль: конвейер касаний нужен до выхода команды.'
+},
+{
+  id:'denis', name:'Денис Крамской', ini:'ДК', h:262,
+  role:'CRO', company:'«Октаэдр»', seg:'SaaS-аналитика', size:'90 чел.',
+  contact:{icon:'in', label:'/in/dkramskoy', note:'✓ профиль активен'},
+  reach:78, channel:'linkedin',
+  sigB:'Пост: «холодные письма перестали работать — что дальше?»', sigT:'Тема болит прямо сейчас, и он поднял её публично.',
+  age:'2 дня', src:'пост в LinkedIn',
+  long:'Денис, привет! Прочитал твой пост — <mark class="hl">«холодные письма перестали работать, что дальше?»</mark> — и он буквально про нас.\n\nОтвечу тезисом: работают не «холодные», а безразличные. Мы пишем по живому поводу у конкретного человека — как этот ответ на твой пост. И ничего не уходит без ОК сейлза. Любопытно посмотреть на ваших лидах?',
+  short:'Денис, привет! Твой пост <mark class="hl">«холодные письма перестали работать»</mark> — прямо про нас. Спор: работают не холодные, а безразличные. Это письмо — пример. Показать механику?',
+  why:'Почему так: Денис сам поднял тему публично 2 дня назад — это приглашение к разговору. Письмо отвечает на его тезис, а не продаёт в лоб.'
+},
+{
+  id:'anna', name:'Анна Величко', ini:'АВ', h:22,
+  role:'Head of Sales', company:'«Севергрин»', seg:'B2B-маркетплейс', size:'35 чел.',
+  contact:{icon:'✉', label:'a.velichko@severgreen.ru', note:'✓ верифицирован'},
+  reach:71, channel:'email',
+  sigB:'Вышла на роль 2 недели назад.', sigT:'Окно первых 90 дней: стек ещё можно пересобрать без боли.',
+  age:'2 недели', src:'LinkedIn + пресс-служба',
+  long:'Анна, привет! Видел, что ты <mark class="hl">две недели как вышла на роль Head of Sales в «Севергрине»</mark> — с погружением!\n\nПервые 90 дней на новой роли обычно решают, каким будет стек: старые процессы ещё можно пересобрать без боли. Если аутрич в списке того, что хочется сделать «по-человечески» — покажу, как мы пишем по живым поводам, а не по базе. Одно короткое демо на ваших сегментах?',
+  short:'Анна, привет! Видел, что ты <mark class="hl">две недели на роли Head of Sales в «Севергрине»</mark>. Первые 90 дней — лучшее окно пересобрать стек без боли. Если аутрич в списке — покажу, как пишем по живым поводам. Удобно здесь?',
+  why:'Почему так: открываем с повода — свежее назначение, а не с «меня зовут». Окно первых 90 дней — честный аргумент, а не давление.'
+},
+{
+  id:'igor', name:'Игорь Плетнёв', ini:'ИП', h:120,
+  role:'Коммерческий директор', company:'«Дельта Флоу»', seg:'SaaS для стройки', size:'55 чел.',
+  contact:{icon:'✈', label:'@ipletnev', note:'✓ аккаунт активен'},
+  reach:66, channel:'telegram',
+  sigB:'Выходят на рынок Казахстана.', sigT:'Новый рынок = аутрич с нуля, без базы и прогретых контактов.',
+  age:'5 дней', src:'vc.ru + отраслевые СМИ',
+  long:'Игорь, привет! Видел новость — <mark class="hl">«Дельта Флоу» выходит на рынок Казахстана</mark>.\n\nНовый рынок — это аутрич с нуля: ни базы, ни прогретых контактов, ни права на спам-ошибку с новым доменом. Мы как раз про это: поводы вместо базы, отправка только после твоего ОК. Рассказать схему за 15 минут?',
+  short:'Игорь, привет! С <mark class="hl">выходом на Казахстан</mark>! Новый рынок — аутрич с нуля, и спамить там нельзя особенно. Мы про поводы вместо базы. Рассказать за 15 минут?',
+  why:'Почему так: выход на новый рынок — момент, когда аутрич строится с нуля и репутация домена особенно уязвима. Это и есть наш аргумент, а не «поздравляем с экспансией».'
+}
+];
+
+let queue = [
+  {leadId:'marat', status:'ok',   channel:'email',    text:LEADS[0].long, edited:false},
+  {leadId:'olga',  status:'wait', channel:'linkedin', text:LEADS[1].long, edited:false},
+  {leadId:'denis', status:'wait', channel:'linkedin', text:LEADS[2].long, edited:false}
+];
+
+let inbox = [
+  {id:'r1', leadId:'marat', tag:'warm', tagL:'тёплый', time:'сегодня, 10:42',
+   text:'Привет! Да, тема живая — после раунда план удвоили, а рук столько же. Давай созвонимся на этой неделе, могу в четверг после 15:00.',
+   reply:'Марат, отлично! Четверг, 15:30 подходит? Пришлю короткий план на 20 минут: разберём 2 ваших сегмента и покажу, как это выглядит без спам-рассылок. Если удобнее утром — скажи, подстроюсь.',
+   sent:false, editing:false},
+  {id:'r2', leadId:'denis', tag:'ask', tagL:'вопрос', time:'вчера, 18:07',
+   text:'Зацепило. А чем ваш «повод» отличается от intent-сигналов, которые продают платформы? У нас уже подписка на одну такую.',
+   reply:'Хороший вопрос. Intent-платформы говорят: «компания интересовалась темой». Мы ловим конкретный живой повод у конкретного человека — пост, раунд, смена роли — и пишем от него, а не от шаблона. Плюс ничего не уходит без вашего ОК: репутация домена не расходуется. Могу показать на 5 ваших лидах — разница видна сразу.',
+   sent:false, editing:false},
+  {id:'r3', leadId:'anna', tag:'later', tagL:'не сейчас', time:'вчера, 11:20',
+   text:'Спасибо, но сейчас первые месяцы на роли — не до нового стека, разбираюсь с тем, что есть.',
+   reply:'Анна, понимаю — первые месяцы правда не до этого. Не буду настаивать. Могу вернуться через пару месяцев одним коротким письмом? Если понадобится раньше — вот мой контакт, без рассылок.',
+   sent:false, editing:false}
+];
+
+/* ================= СОСТОЯНИЕ ================= */
+const state = { selected:'anna', draftChannel:null, flash:null, qEditing:null };
+
+const leadById = id => LEADS.find(l=>l.id===id);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const stripMarks = h => h.replace(/<\/?mark[^>]*>/g,'');
+const plural = (n,a,b,c) => (n%10===1&&n%100!==11)?a:(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?b:c;
+
+/* ================= ТОСТ ================= */
+let toastT;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML='<span class="lock">🔒</span>'+msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ================= НАВИГАЦИЯ ================= */
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  document.querySelectorAll('.step').forEach(st=>st.classList.toggle('active',+st.dataset.s===n));
+  if(n===3) renderDraft();
+  if(n===4) renderQueue();
+  if(n===5) renderInbox();
+  window.scrollTo({top:document.querySelector('.stepper').offsetTop,behavior:'smooth'});
+}
+document.getElementById('stepper').addEventListener('click',e=>{
+  const b=e.target.closest('.step'); if(b) showScreen(+b.dataset.s);
+});
+
+/* ================= ЭКРАН 1 ================= */
+const PROMPT='Head of Sales в SaaS-стартапах 20–100 человек, недавно подняли раунд';
+(function typePrompt(){
+  const el=document.getElementById('prompt'); let i=0;
+  const t=setInterval(()=>{ el.value=PROMPT.slice(0,++i); if(i>=PROMPT.length) clearInterval(t); },20);
+})();
+function runFind(){
+  const b=document.getElementById('findBtn');
+  b.disabled=true; b.innerHTML='Читаю ICP…';
+  setTimeout(()=>{
+    b.disabled=false; b.textContent='Найти';
+    const c=document.getElementById('icp');
+    c.classList.remove('hidden'); c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop');
+    c.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },900);
+}
+
+/* ================= ЭКРАН 2 ================= */
+function renderLeads(){
+  const el=document.getElementById('leadList');
+  el.innerHTML=LEADS.map(l=>`
+    <div class="card lead ${state.selected===l.id?'sel':''}" onclick="selectLead('${l.id}')">
+      <div class="lead-top">
+        <div class="ava" style="--h:${l.h}">${l.ini}</div>
+        <div class="lead-id">
+          <div class="lead-name">${l.name}<span class="sel-badge">✓ выбран</span></div>
+          <div class="lead-role">${l.role} · ${l.company} · ${l.seg} · ${l.size}</div>
+          <div class="lead-contact">${l.contact.icon} ${l.contact.label} <span class="ok-chip">${l.contact.note}</span></div>
+        </div>
+        <div class="reach ${l.reach>=75?'high':'mid'}"><span class="r-num">${l.reach}</span>reachability</div>
+      </div>
+      <div class="signal">
+        <span class="sig-ic">⚡</span>
+        <div class="sig-body"><b>${l.sigB}</b> ${l.sigT}</div>
+        <span class="sig-age">${l.age}</span>
+      </div>
+      <div class="lead-src"><span class="live-dot"></span>живой веб · источник: ${l.src}</div>
+    </div>`).join('');
+  const l=leadById(state.selected);
+  document.getElementById('selHint').textContent='Выбран: '+l.name+' · '+CH[l.channel];
+  document.getElementById('toDraft').textContent='Собрать черновик: '+l.name.split(' ')[0]+' →';
+}
+function selectLead(id){
+  state.selected=id; state.draftChannel=null;
+  renderLeads();
+}
+
+/* ================= ЭКРАН 3 ================= */
+function renderDraft(){
+  const l=leadById(state.selected);
+  if(!state.draftChannel) state.draftChannel=l.channel;
+  const ch=state.draftChannel;
+
+  document.getElementById('draftLead').innerHTML=`
+    <div class="lead-top">
+      <div class="ava" style="--h:${l.h}">${l.ini}</div>
+      <div class="lead-id">
+        <div class="lead-name" style="font-size:.95rem">${l.name}</div>
+        <div class="lead-role">${l.role} · ${l.company} · ${l.size}</div>
+      </div>
+    </div>
+    <div class="signal" style="margin-top:13px">
+      <span class="sig-ic">⚡</span>
+      <div class="sig-body"><b>${l.sigB}</b> ${l.sigT}</div>
+      <span class="sig-age">${l.age}</span>
+    </div>`;
+
+  document.getElementById('chanChips').innerHTML=Object.keys(CH).map(k=>`
+    <button class="chan ${k===ch?'active':''}" onclick="setChannel('${k}')">${CH_ICON[k]} ${CH[k]}${k===l.channel?'<span class="rec" title="рекомендованный канал"></span>':''}</button>`).join('');
+
+  document.getElementById('msgHead').innerHTML=
+    `Черновик · <span class="mh-ch">${CH[ch]}</span> · тон: как ты обычно пишешь · <span class="mk-note">подсвечено — взято из сигнала</span>`;
+
+  const txt=(ch==='telegram'||ch==='whatsapp')?l.short:l.long;
+  document.getElementById('msgBody').innerHTML=txt;
+  document.getElementById('whyLine').innerHTML='<b style="color:var(--amber-soft)">Почему так:</b>&nbsp;'+l.why.replace(/^Почему так:\s*/,'');
+}
+function setChannel(k){ state.draftChannel=k; renderDraft(); }
+
+function enqueue(){
+  const l=leadById(state.selected);
+  const ch=state.draftChannel||l.channel;
+  const txt=(ch==='telegram'||ch==='whatsapp')?l.short:l.long;
+  const ex=queue.find(q=>q.leadId===l.id);
+  if(ex){
+    toast(ex.status==='wait'?'Этот черновик уже в очереди — ждёт твоего ОК.':'Этот лид уже прошёл гейт ранее.');
+    state.flash=l.id; showScreen(4); return;
+  }
+  queue.unshift({leadId:l.id,status:'wait',channel:ch,text:txt,edited:false});
+  state.flash=l.id;
+  toast('В очереди. Уйдёт только после ОК на гейте.');
+  showScreen(4);
+}
+
+/* ================= ЭКРАН 4 ================= */
+function renderQueue(){
+  const wait=queue.filter(q=>q.status==='wait').length;
+  const ok=queue.filter(q=>q.status==='ok').length;
+  const cw=document.getElementById('cntWait'), co=document.getElementById('cntOk');
+  cw.textContent=wait; co.textContent=ok;
+  [cw,co].forEach(e=>{e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');});
+  document.getElementById('bulkBtn').textContent=`✓ Одобрить пачкой (все ожидающие${wait?' · '+wait:''})`;
+  document.getElementById('bulkBtn').style.opacity=wait?1:.45;
+
+  document.getElementById('queueList').innerHTML=queue.map(q=>{
+    const l=leadById(q.leadId);
+    const stPill = q.status==='wait'?'<span class="st-pill wait">● ждёт ОК</span>'
+                 : q.status==='ok' ?'<span class="st-pill ok">✓ одобрено</span>'
+                 : '<span class="st-pill no">✕ отклонено</span>';
+    let body, actions;
+    if(state.qEditing===q.leadId){
+      body=`<textarea class="q-edit" id="edit-${q.leadId}">${esc(stripMarks(q.text))}</textarea>`;
+      actions=`<button class="btn btn-primary btn-sm" onclick="saveQ('${q.leadId}')">Сохранить правку</button>
+               <button class="btn btn-ghost btn-sm" onclick="cancelQ()">Отмена</button>`;
+    } else {
+      body=`<div class="q-msg ${q.edited?'edited-tag':''}">${q.text}</div>`;
+      if(q.status==='wait'){
+        actions=`<button class="btn btn-primary btn-sm" onclick="approve('${q.leadId}')">✓ Одобрить</button>
+                 <button class="btn btn-ghost btn-sm" onclick="editQ('${q.leadId}')">✎ Правка</button>
+                 <button class="btn btn-danger btn-sm" onclick="rejectQ('${q.leadId}')">Отклонить</button>`;
+      } else if(q.status==='ok'){
+        actions=`<div class="ok-line">🔒 ✓ Одобрено — уйдёт сейчас. Только потому что ты нажал. <a onclick="undoQ('${q.leadId}')">передумать</a></div>`;
+      } else {
+        actions=`<div class="no-line">✕ Отклонено · агент разберёт причину и учтёт. <a onclick="restoreQ('${q.leadId}')">вернуть в очередь</a></div>`;
+      }
+    }
+    return `<div class="card q-card st-${q.status} ${state.flash===q.leadId?'flash':''}">
+      <div class="q-top">
+        <div class="ava" style="--h:${l.h}">${l.ini}</div>
+        <div>
+          <div class="q-name">${l.name}</div>
+          <div class="q-role">${l.role} · ${l.company}</div>
+        </div>
+        <div class="q-meta">
+          <span class="ch-badge">${CH_ICON[q.channel]} ${CH[q.channel]}</span>
+          ${stPill}
+        </div>
+      </div>
+      <div class="q-signal">⚡ <b>${l.sigB}</b> ${l.sigT} · поводу: ${l.age}</div>
+      ${body}
+      <div class="q-actions">${actions}</div>
+    </div>`;
+  }).join('');
+  state.flash=null;
+}
+function approve(id){ const q=queue.find(x=>x.leadId===id); q.status='ok'; renderQueue(); toast('Одобрено. Уйдёт сейчас — потому что ты нажал.'); }
+function approveAll(){
+  const n=queue.filter(q=>q.status==='wait').length;
+  if(!n){ toast('Очередь пуста — нечего одобрять.'); return; }
+  queue.forEach(q=>{ if(q.status==='wait') q.status='ok'; });
+  renderQueue();
+  toast('Одобрено: '+n+' '+plural(n,'черновик','черновика','черновиков')+'. Уйдут только теперь — потому что ты нажал.');
+}
+function rejectQ(id){ const q=queue.find(x=>x.leadId===id); q.status='no'; state.qEditing=null; renderQueue(); toast('Отклонено. Агент разберёт причину — и учтёт.'); }
+function restoreQ(id){ const q=queue.find(x=>x.leadId===id); q.status='wait'; renderQueue(); }
+function undoQ(id){ const q=queue.find(x=>x.leadId===id); q.status='wait'; renderQueue(); toast('Вернули в «ждёт ОК». Ничего не ушло.'); }
+function editQ(id){ state.qEditing=id; renderQueue(); const t=document.getElementById('edit-'+id); if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);} }
+function cancelQ(){ state.qEditing=null; renderQueue(); }
+function saveQ(id){
+  const t=document.getElementById('edit-'+id);
+  const q=queue.find(x=>x.leadId===id);
+  q.text=esc(t.value.trim())||q.text; q.edited=true; state.qEditing=null;
+  renderQueue(); toast('Правка сохранена — агент учтёт её в следующих черновиках.');
+}
+
+/* ================= ЭКРАН 5 ================= */
+function renderInbox(){
+  document.getElementById('inboxList').innerHTML=inbox.map(r=>{
+    const l=leadById(r.leadId);
+    let block;
+    if(r.sent){
+      block=`<div class="reply-box sent"><div class="sent-line">🔒 ✓ Отправлено — после твоего нажатия. Без него не ушло бы.</div></div>`;
+    } else if(r.editing){
+      block=`<div class="reply-box">
+        <div class="reply-h">Агент подготовил ответ — тоже через гейт</div>
+        <textarea class="q-edit" id="redit-${r.id}" style="min-height:120px">${esc(r.reply)}</textarea>
+        <div class="reply-actions">
+          <button class="btn btn-primary btn-sm" onclick="saveReply('${r.id}')">Сохранить правку</button>
+          <button class="btn btn-ghost btn-sm" onclick="cancelReply('${r.id}')">Отмена</button>
+        </div>
+      </div>`;
+    } else {
+      block=`<div class="reply-box">
+        <div class="reply-h">Агент подготовил ответ — тоже через гейт</div>
+        <div class="reply-t">${esc(r.reply)}</div>
+        <div class="reply-actions">
+          <button class="btn btn-primary btn-sm" onclick="sendReply('${r.id}')">✓ Одобрить и отправить</button>
+          <button class="btn btn-ghost btn-sm" onclick="editReply('${r.id}')">✎ Правка</button>
+        </div>
+      </div>`;
+    }
+    return `<div class="card in-card">
+      <div class="in-top">
+        <div class="ava" style="--h:${l.h}">${l.ini}</div>
+        <div>
+          <div class="q-name">${l.name}</div>
+          <div class="q-role">${l.role} · ${l.company}</div>
+        </div>
+        <div class="in-meta">
+          <span class="ch-badge">${CH_ICON[l.channel]} ${CH[l.channel]}</span>
+          <span class="tag ${r.tag}">${r.tagL}</span>
+          <span class="in-time">${r.time}</span>
+        </div>
+      </div>
+      <div class="in-text">${esc(r.text)}</div>
+      ${block}
+    </div>`;
+  }).join('');
+}
+function sendReply(id){ const r=inbox.find(x=>x.id===id); r.sent=true; renderInbox(); toast('Ответ отправлен — после твоего нажатия. Гейт сработал и здесь.'); }
+function editReply(id){ const r=inbox.find(x=>x.id===id); r.editing=true; renderInbox(); const t=document.getElementById('redit-'+id); if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);} }
+function cancelReply(id){ const r=inbox.find(x=>x.id===id); r.editing=false; renderInbox(); }
+function saveReply(id){ const r=inbox.find(x=>x.id===id); const t=document.getElementById('redit-'+id); r.reply=t.value.trim()||r.reply; r.editing=false; renderInbox(); toast('Правка сохранена — агент учтёт тон.'); }
+
+/* ================= INIT ================= */
+renderLeads();
+renderQueue();
+renderInbox();
+</script>
+</body>
+</html>
