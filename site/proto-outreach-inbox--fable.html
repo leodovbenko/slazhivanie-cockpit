@@ -74,6 +74,11 @@
   .intake-grid textarea::placeholder{color:var(--dim);}
   .intake-actions{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
   .intake-note{font-size:12px;color:var(--dim);}
+  .shot-drop{margin-top:12px;display:flex;align-items:center;gap:11px;background:var(--bg-soft);
+    border:1px dashed var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .15s;}
+  .shot-drop:hover{border-color:var(--green-deep);background:#12211A;}
+  .shot-drop .sd-title{font-size:13px;font-weight:700;}
+  .shot-drop .sd-note{font-size:11.5px;color:var(--dim);line-height:1.5;margin-top:2px;}
   .tg-card{background:var(--card-2);border:1px solid #2E4636;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:9px;}
   .tg-card .tg-head{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;}
   .a-dot{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3ECF8E,#188A5C);
@@ -137,6 +142,7 @@
   .src-tag.sig{color:var(--amber);background:var(--amber-bg);}
   .src-tag.voice{color:#E8B98F;background:#2A2013;}
   .src-tag.none{color:var(--dim);background:#1E2B23;}
+  .src-tag.shot{color:#7FC7C0;background:#12292A;}
   .src-row .sr-what b{color:var(--ink);font-weight:650;}
   .src-row .sr-what i{font-style:normal;color:var(--dim);}
 
@@ -320,7 +326,7 @@
 <!-- ═══ СЕКЦИЯ 1 · ПРИЁМ СИДА ═══ -->
 <section class="panel" id="sec-add">
   <h2>Добавить лидов</h2>
-  <p class="p-sub">Открыл профиль в Telegram — снял, что видишь: <b>@username, телефон или ссылку</b>. По одному в строке, хоть пачкой из 20. Разворачивать в карточку будет труба, не ты.</p>
+  <p class="p-sub">Открыл профиль в Telegram — снял, что видишь: <b>@username, телефон или ссылку</b>. По одному в строке, хоть пачкой из 20. Лень перепечатывать — <b>кинь скриншот</b>, распознаем с картинки. Разворачивать в карточку будет труба, не ты.</p>
   <div class="intake-grid">
     <div>
       <textarea id="seed-input" spellcheck="false" placeholder="Вставь список — по одному в строке:
@@ -332,11 +338,18 @@
         <button class="btn" onclick="addSeeds()">Добавить в очередь</button>
         <span class="intake-note">Дубли склеим сами — кидай не глядя.</span>
       </div>
+      <div class="shot-drop" id="shot-drop" onclick="addShot()">
+        <span class="a-dot" style="width:30px;height:30px;background:linear-gradient(135deg,#7FC7C0,#188A5C)">📸</span>
+        <div>
+          <div class="sd-title">…или скинь скриншот контакта</div>
+          <div class="sd-note">Скрин профиля из Telegram, визитки или экрана CRM — агент распознает <b>имя, телефон и @username</b> прямо с картинки. Ничего не перепечатываешь. Кликни — покажу на примере.</div>
+        </div>
+      </div>
     </div>
     <div class="tg-card">
       <div class="tg-head"><span class="a-dot">🤖</span>Второй путь — Telegram</div>
       <span class="tg-equal">Равный путь, та же труба</span>
-      <p>Перешли контакт или ссылку на профиль <b>своему агенту в Telegram</b> — тому же боту, что тебя онбордил, отдельный заводить не надо. Он сам вытащит <b>имя, телефон и @username</b> и поставит в эту же очередь. С телефона на ходу — самое то.</p>
+      <p>Перешли контакт, ссылку <b>или просто скриншот профиля</b> <b>своему агенту в Telegram</b> — тому же боту, что тебя онбордил, отдельный заводить не надо. Он сам вытащит <b>имя, телефон и @username</b> (хоть из текста, хоть с картинки) и поставит в эту же очередь. С телефона на ходу — самое то.</p>
       <p style="font-size:11.5px;color:var(--dim)">Веб и Telegram — одна рука в двух каналах: что умеет одна, умеет и вторая.</p>
     </div>
   </div>
@@ -576,6 +589,23 @@ function addSeeds(){
   $('seed-input').value = '';
   renderPace(); renderLeads();
   toast('Добавлено в очередь: '+lines.length+' — труба взяла в обогащение');
+}
+var shotUsed = false;
+function addShot(){
+  if (shotUsed){ toast('В демо один пример скрина — вживую кидай хоть пачкой'); return; }
+  shotUsed = true;
+  var sd = $('shot-drop'); if (sd){ sd.querySelector('.sd-title').textContent = 'Скрин распознан ✓'; sd.style.opacity = '.6'; }
+  LEADS.unshift({
+    id:'shot'+Date.now(),
+    name:'Дмитрий Лаврик', init:'ДЛ', color:'#4E7A8A',
+    user:'@lavrik_d', phone:'+7 921 044 18 90', place:'',
+    status:'raw', type:'mass', brought:['Леонид'], merged:false,
+    sources:[{tag:'shot', tagText:'Фото', what:'скрин профиля Telegram → <b>имя, телефон, @username</b> распознаны прямо с картинки — руками ничего не вводили'}],
+    notes:[], draft:null, gate:null, editing:false, open:false, report:false
+  });
+  todayCount++; baseCount++;
+  renderPace(); renderLeads();
+  toast('Скрин распознан: Дмитрий Лаврик — имя, телефон и @username сняты с картинки');
 }
 function renderPace(){
   $('today-num').textContent = todayCount;
