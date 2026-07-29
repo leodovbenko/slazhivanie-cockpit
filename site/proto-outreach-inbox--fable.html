@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Инбокс лидов — сырой сид → персональный заход · прототип · Слаживание / Уклад ИИ</title>
+<style>
+  :root{
+    --bg:#0D1411;
+    --bg-soft:#111A15;
+    --card:#151F19;
+    --card-2:#1A2620;
+    --line:#243228;
+    --line-soft:#1D2A22;
+    --ink:#E8EFE9;
+    --muted:#8FA396;
+    --dim:#5F7367;
+    --green:#3ECF8E;
+    --green-deep:#188A5C;
+    --green-bg:#12291E;
+    --amber:#E6B23A;
+    --amber-bg:#2A2312;
+    --red:#E06553;
+    --red-bg:#2A1713;
+    --blue:#5BA8D9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:radial-gradient(1100px 500px at 50% -140px,#14211A 0%,var(--bg) 55%);
+    color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:40px 22px 64px;}
+
+  /* ── Шапка ── */
+  .badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:#0D1411;background:var(--green);border-radius:99px;padding:4px 12px;margin-bottom:14px;}
+  h1{font-size:clamp(24px,3.6vw,33px);line-height:1.2;letter-spacing:-.02em;font-weight:750;max-width:880px;}
+  h1 em{font-style:normal;color:var(--green);}
+  .sub{margin-top:12px;font-size:15px;color:var(--muted);max-width:800px;}
+  .sub b{color:var(--ink);font-weight:650;}
+
+  /* ── Степпер-навигация (якоря по секциям) ── */
+  .stepper{display:flex;gap:6px;margin:26px 0 18px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;position:sticky;top:0;
+    background:linear-gradient(180deg,var(--bg) 78%,transparent);z-index:20;padding-top:10px;}
+  .stp{flex:none;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--dim);
+    background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:99px;padding:8px 15px 8px 9px;
+    cursor:pointer;user-select:none;transition:all .15s;white-space:nowrap;}
+  .stp:hover{color:var(--muted);border-color:var(--line);}
+  .stp .n{width:22px;height:22px;border-radius:50%;background:#1E2B23;color:var(--dim);font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .stp.on{color:var(--ink);background:var(--card-2);border-color:#2E4636;}
+  .stp.on .n{background:var(--green);color:#0D1411;}
+  .stp.star.on{border-color:var(--green);}
+  .stp .st{font-size:14px;}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;margin-bottom:22px;
+    scroll-margin-top:64px;animation:fadeUp .3s ease both;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .panel h2{font-size:18px;letter-spacing:-.01em;margin-bottom:4px;}
+  .panel .p-sub{font-size:13.5px;color:var(--muted);margin-bottom:18px;max-width:720px;}
+  .panel .p-sub b{color:var(--ink);}
+  .microlbl{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin:0 0 8px;}
+  .microlbl.warn{color:var(--amber);}
+
+  /* ── Секция 1: приём сида ── */
+  .intake-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:stretch;}
+  .intake-grid textarea{width:100%;font:inherit;font-size:14px;line-height:1.6;color:var(--ink);background:var(--bg-soft);
+    border:1px solid var(--line);border-radius:12px;padding:13px 16px;outline:none;resize:vertical;min-height:118px;
+    transition:border-color .15s;}
+  .intake-grid textarea:focus{border-color:var(--green-deep);}
+  .intake-grid textarea::placeholder{color:var(--dim);}
+  .intake-actions{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .intake-note{font-size:12px;color:var(--dim);}
+  .tg-card{background:var(--card-2);border:1px solid #2E4636;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:9px;}
+  .tg-card .tg-head{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:700;}
+  .a-dot{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#3ECF8E,#188A5C);
+    display:flex;align-items:center;justify-content:center;font-size:13px;flex:none;}
+  .tg-card p{font-size:12.5px;color:var(--muted);line-height:1.55;}
+  .tg-card p b{color:var(--ink);}
+  .tg-card .tg-equal{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--green);}
+  .tg-card code{font-family:inherit;font-size:12.5px;color:var(--blue);background:#15222B;border:1px solid #23394A;
+    border-radius:7px;padding:1px 7px;white-space:nowrap;}
+
+  .pace{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .pace-card{background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:12px;padding:13px 16px;}
+  .pace-card .pc-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  .pace-card .pc-num{font-size:21px;font-weight:800;letter-spacing:-.02em;}
+  .pace-card .pc-num b{color:var(--green);}
+  .pace-card .pc-cap{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;font-weight:700;}
+  .bar{margin-top:9px;height:6px;background:#1E2B23;border-radius:99px;overflow:hidden;}
+  .bar i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .4s ease;}
+  .bar i.amber{background:var(--amber);}
+  .pace-card .pc-note{margin-top:7px;font-size:11.5px;color:var(--dim);}
+
+  /* ── Секция 2: очередь лидов ── */
+  .queue-head{display:flex;align-items:center;gap:12px;margin:4px 0 12px;flex-wrap:wrap;}
+  .queue-head h3{font-size:15px;}
+  .queue-head .cnt{font-size:12.5px;color:var(--muted);}
+  .lead{background:var(--card-2);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:12px;
+    transition:border-color .15s;position:relative;}
+  .lead.open{border-color:var(--green-deep);box-shadow:0 0 0 1px var(--green-deep);}
+  .lead .l-top{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+  .ava{width:38px;height:38px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;color:#fff;}
+  .lead .l-who{min-width:0;flex:1;}
+  .lead .l-name{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .lead .l-contact{font-size:12px;color:var(--dim);margin-top:2px;}
+  .lead .l-contact b{color:var(--muted);font-weight:600;}
+  .lead .l-place{font-size:12.5px;color:var(--muted);margin-top:1px;}
+  .q-status{margin-left:auto;font-size:11.5px;font-weight:700;border-radius:8px;padding:3px 10px;white-space:nowrap;flex:none;}
+  .q-status.wait{color:var(--amber);background:var(--amber-bg);}
+  .q-status.ok{color:var(--green);background:var(--green-bg);}
+  .q-status.no{color:var(--red);background:var(--red-bg);}
+  .q-status.raw{color:var(--muted);background:#1E2B23;}
+  .i-tag{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:7px;padding:2px 8px;
+    cursor:pointer;user-select:none;flex:none;}
+  .i-tag.addr{color:var(--green);background:var(--green-bg);}
+  .i-tag.mass{color:var(--blue);background:#15222B;}
+  .prov{font-size:11.5px;color:var(--dim);margin-top:6px;}
+  .prov b{color:var(--muted);font-weight:650;}
+  .prov .merged{color:var(--amber);font-weight:700;}
+  .pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-right:5px;
+    box-shadow:0 0 0 3px rgba(230,178,58,.15);animation:pl 1.2s infinite;}
+  @keyframes pl{50%{opacity:.35;}}
+
+  /* прозрачность источников */
+  .src-list{margin-top:10px;display:flex;flex-direction:column;gap:5px;}
+  .src-row{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);line-height:1.45;}
+  .src-tag{flex:none;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:7px;
+    padding:2px 8px;margin-top:1px;min-width:74px;text-align:center;}
+  .src-tag.tg{color:var(--blue);background:#15222B;}
+  .src-tag.ig{color:#C79BD9;background:#241A2B;}
+  .src-tag.web{color:var(--green);background:var(--green-bg);}
+  .src-tag.sig{color:var(--amber);background:var(--amber-bg);}
+  .src-tag.voice{color:#E8B98F;background:#2A2013;}
+  .src-tag.none{color:var(--dim);background:#1E2B23;}
+  .src-row .sr-what b{color:var(--ink);font-weight:650;}
+  .src-row .sr-what i{font-style:normal;color:var(--dim);}
+
+  .enrich-steps{margin-top:10px;font-size:12px;color:var(--dim);display:flex;flex-direction:column;gap:4px;}
+  .enrich-steps .es-done{color:var(--muted);}
+  .enrich-steps .es-done b{color:var(--green);}
+  .enrich-steps .es-run b{color:var(--amber);}
+
+  .l-actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .btn{font:inherit;font-size:13.5px;font-weight:700;color:#0D1411;background:var(--green);
+    border:none;border-radius:11px;padding:11px 20px;cursor:pointer;transition:filter .15s,transform .1s;white-space:nowrap;}
+  .btn:hover{filter:brightness(1.1);}
+  .btn:active{transform:scale(.98);}
+  .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);}
+  .btn.ghost:hover{color:var(--ink);border-color:#33473A;filter:none;}
+  .btn.warn{background:transparent;color:var(--red);border:1px solid #3D241E;}
+  .btn.warn:hover{background:var(--red-bg);filter:none;}
+  .btn:disabled{opacity:.4;cursor:default;}
+  .btn:disabled:hover{filter:none;}
+  .l-actions .btn{padding:8px 16px;font-size:12.5px;}
+  .crm-wrap{display:inline-flex;align-items:center;gap:6px;}
+  .crm-soon{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--dim);
+    background:#1E2B23;border-radius:7px;padding:2px 8px;}
+
+  /* доложить о человеке */
+  .report{margin-top:12px;background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;
+    animation:fadeUp .25s ease both;}
+  .report .r-lbl{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin-bottom:7px;}
+  .report textarea{width:100%;font:inherit;font-size:13px;line-height:1.55;color:var(--ink);background:transparent;
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;outline:none;resize:vertical;min-height:64px;}
+  .report textarea:focus{border-color:var(--green-deep);}
+  .report textarea::placeholder{color:var(--dim);}
+  .report .r-actions{margin-top:9px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .report .r-actions .btn{padding:8px 15px;font-size:12.5px;}
+  .report .r-note{font-size:11.5px;color:var(--dim);}
+
+  /* заметка в досье */
+  .note{margin-top:10px;border-left:2px solid var(--green-deep);padding:2px 0 2px 13px;}
+  .note .n-lbl{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--green);margin-bottom:4px;}
+  .note .n-lbl .who{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:650;}
+  .note .n-body{font-size:13px;line-height:1.6;color:#B9C6BD;}
+
+  /* вопрос-дубль */
+  .dupq{background:var(--amber-bg);border:1px solid #3A3018;border-radius:14px;padding:14px 17px;margin-bottom:12px;
+    font-size:13px;color:#E4CE9A;}
+  .dupq b{color:var(--amber);}
+  .dupq .dq-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+  .dupq .dq-actions .btn{padding:8px 15px;font-size:12.5px;}
+  .dupq .btn.amber{background:var(--amber);color:#0D1411;}
+
+  /* сигнал-плашка */
+  .sig{margin-top:10px;display:flex;align-items:flex-start;gap:8px;background:var(--amber-bg);
+    border:1px solid #3A3018;border-radius:10px;padding:9px 12px;font-size:13px;color:#E4CE9A;}
+  .sig .bolt{flex:none;font-size:13px;}
+  .sig b{color:var(--amber);font-weight:700;}
+  .sig .age{margin-left:auto;flex:none;font-size:11px;color:#9A8654;white-space:nowrap;padding-top:1px;}
+
+  /* ── Раскрытие лида: досье + заход ── */
+  .detail{margin-top:14px;border-top:1px solid var(--line-soft);padding-top:14px;animation:fadeUp .3s ease both;}
+  .detail-grid{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:20px;align-items:start;}
+  .dossier h4{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin-bottom:8px;}
+  .dossier .d-fact{font-size:13px;color:#B9C6BD;line-height:1.6;}
+  .dossier .d-fact b{color:var(--ink);font-weight:650;}
+  .msg-card{background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:18px 20px;}
+  .msg-card .m-head{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);margin-bottom:12px;flex-wrap:wrap;}
+  .msg-card .m-head b{color:var(--muted);font-weight:650;}
+  .msg-card .m-body{font-size:14px;line-height:1.65;color:#CFDAD2;white-space:pre-line;}
+  .msg-card .m-body mark{background:rgba(230,178,58,.16);color:#EBD49E;border-radius:4px;padding:0 3px;
+    border-bottom:1px dashed rgba(230,178,58,.5);}
+  .msg-card textarea{width:100%;font:inherit;font-size:13.5px;line-height:1.6;color:var(--ink);background:transparent;
+    border:none;outline:none;resize:vertical;min-height:150px;}
+  .m-why{margin-top:14px;font-size:12px;color:var(--dim);display:flex;gap:7px;align-items:flex-start;}
+  .m-why .bolt{color:var(--amber);flex:none;}
+  .gate-actions{margin-top:14px;display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
+  .gate-actions .d-note{font-size:12px;color:var(--dim);}
+  .q-verdict{margin-top:12px;font-size:12.5px;font-weight:600;}
+  .q-verdict.ok{color:var(--green);}
+  .q-verdict.no{color:var(--red);}
+  .q-verdict.skip{color:var(--muted);}
+
+  /* ── Гейт-баннер ── */
+  .gate-banner{background:linear-gradient(135deg,#12291E,#101B15);border:1px solid var(--green-deep);
+    border-radius:16px;padding:18px 22px;margin-bottom:18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+  .gate-banner .lock{font-size:28px;flex:none;}
+  .gate-banner .g-text{flex:1;min-width:220px;}
+  .gate-banner .g-text b{display:block;font-size:16.5px;letter-spacing:-.01em;}
+  .gate-banner .g-text span{font-size:13px;color:#A9CDB9;}
+  .gate-stats{display:flex;gap:18px;flex:none;flex-wrap:wrap;}
+  .g-stat{text-align:center;}
+  .g-stat .num{font-size:22px;font-weight:800;letter-spacing:-.02em;}
+  .g-stat .num.z{color:var(--green);}
+  .g-stat .cap{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-top:1px;}
+
+  /* ── Секция 4: блокеры ── */
+  .blockers{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .blocker{background:var(--card-2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .blocker h3{font-size:14.5px;margin-bottom:3px;}
+  .blocker .b-sub{font-size:12.5px;color:var(--muted);margin-bottom:12px;}
+  .tgl-row{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-top:1px solid var(--line-soft);cursor:pointer;user-select:none;}
+  .tgl-row:first-of-type{border-top:none;}
+  .tgl{flex:none;width:34px;height:20px;border-radius:99px;background:#1E2B23;border:1px solid var(--line);position:relative;
+    transition:all .15s;margin-top:1px;}
+  .tgl::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--dim);transition:all .15s;}
+  .tgl-row.on .tgl{background:var(--green-bg);border-color:var(--green-deep);}
+  .tgl-row.on .tgl::after{left:16px;background:var(--green);}
+  .tgl-row .t-name{font-size:13px;font-weight:650;color:var(--muted);}
+  .tgl-row.on .t-name{color:var(--ink);}
+  .tgl-row .t-note{font-size:11.5px;color:var(--dim);line-height:1.45;margin-top:1px;}
+  .tgl-row .t-note b{color:var(--muted);}
+  .tgl-row .t-note .risk{color:var(--red);}
+  .tgl-row .t-note .plus{color:var(--green);}
+  .radio-row{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-top:1px solid var(--line-soft);cursor:pointer;user-select:none;}
+  .radio-row:first-of-type{border-top:none;}
+  .rad{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--line);margin-top:1px;transition:all .15s;position:relative;}
+  .radio-row.on .rad{border-color:var(--green);}
+  .radio-row.on .rad::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--green);}
+  .radio-row .t-name{font-size:13px;font-weight:650;color:var(--muted);}
+  .radio-row.on .t-name{color:var(--ink);}
+  .radio-row .t-note{font-size:11.5px;color:var(--dim);line-height:1.45;margin-top:1px;}
+  .radio-row .t-note .risk{color:var(--red);font-weight:650;}
+  .radio-row .t-note .plus{color:var(--green);}
+  .chan-warn{margin-top:12px;display:flex;gap:8px;font-size:12px;color:#E4CE9A;background:var(--amber-bg);
+    border:1px solid #3A3018;border-radius:10px;padding:9px 12px;line-height:1.5;}
+  .chan-warn b{color:var(--amber);}
+
+  /* ── Секция 5: хотелки ── */
+  .wish-row{display:flex;gap:10px;max-width:640px;margin-bottom:14px;}
+  .wish-row input{flex:1;font:inherit;font-size:14px;color:var(--ink);background:var(--bg-soft);
+    border:1px solid var(--line);border-radius:12px;padding:12px 15px;outline:none;transition:border-color .15s;}
+  .wish-row input:focus{border-color:var(--green-deep);}
+  .wish-row input::placeholder{color:var(--dim);}
+  .wish{background:var(--card-2);border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:9px;
+    display:flex;align-items:flex-start;gap:11px;flex-wrap:wrap;}
+  .wish .w-text{flex:1;min-width:200px;font-size:13.5px;color:#CFDAD2;line-height:1.5;}
+  .wish .w-text i{font-style:normal;display:block;font-size:11.5px;color:var(--dim);margin-top:2px;}
+
+  /* демо-плашка */
+  .demo-note{margin-top:16px;font-size:12px;color:var(--dim);}
+
+  /* тост */
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(16px);
+    background:#050A07;color:var(--ink);border:1px solid var(--line);font-size:13px;border-radius:12px;
+    padding:10px 18px;opacity:0;pointer-events:none;transition:all .25s ease;z-index:99;max-width:90vw;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);display:flex;gap:8px;align-items:center;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  #toast .tick{color:var(--green);font-weight:700;}
+
+  footer{margin-top:28px;text-align:center;font-size:12px;color:var(--dim);}
+
+  @media(max-width:820px){
+    .panel{padding:18px 16px;}
+    .intake-grid{grid-template-columns:1fr;}
+    .pace{grid-template-columns:1fr;}
+    .detail-grid{grid-template-columns:1fr;}
+    .blockers{grid-template-columns:1fr;}
+    .gate-banner{padding:15px 16px;}
+    .gate-stats{width:100%;justify-content:space-between;}
+    .wish-row{flex-direction:column;}
+    .q-status{margin-left:0;}
+    .src-tag{min-width:64px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="badge">Прототип · до кода</span>
+  <h1>Инбокс лидов: кидаешь сырые сиды пачками — Аутричер сам разворачивает каждый в персональный заход. <em>И ничего не уходит без твоего ОК.</em></h1>
+  <p class="sub">Оператор снимает контакт из Telegram за 10 секунд: имя, телефон, @username. Дальше — труба: обогащение из белых источников, досье, черновик захода, <b>гейт одобрения</b>. Темп — <b>50 сидов в день</b>: за месяц пройдём базу. Всё на странице живое — кликай.</p>
+</header>
+
+<nav class="stepper" id="stepper">
+  <div class="stp on" onclick="nav(this,'sec-add')"><span class="n">1</span>Добавить лидов</div>
+  <div class="stp" onclick="nav(this,'sec-queue')"><span class="n">2</span>Очередь + досье</div>
+  <div class="stp star" onclick="nav(this,'sec-queue')"><span class="n">3</span><span class="st">⭐</span>Заход и гейт</div>
+  <div class="stp" onclick="nav(this,'sec-pipe')"><span class="n">4</span>Настройки трубы</div>
+  <div class="stp" onclick="nav(this,'sec-wish')"><span class="n">5</span>Хотелки</div>
+</nav>
+
+<!-- ═══ СЕКЦИЯ 1 · ПРИЁМ СИДА ═══ -->
+<section class="panel" id="sec-add">
+  <h2>Добавить лидов</h2>
+  <p class="p-sub">Открыл профиль в Telegram — снял, что видишь: <b>@username, телефон или ссылку</b>. По одному в строке, хоть пачкой из 20. Разворачивать в карточку будет труба, не ты.</p>
+  <div class="intake-grid">
+    <div>
+      <textarea id="seed-input" spellcheck="false" placeholder="Вставь список — по одному в строке:
+@username
++7 9xx xxx xx xx
+ссылка на профиль или сайт">@petrov_coffee
++7 903 118 24 55</textarea>
+      <div class="intake-actions">
+        <button class="btn" onclick="addSeeds()">Добавить в очередь</button>
+        <span class="intake-note">Дубли склеим сами — кидай не глядя.</span>
+      </div>
+    </div>
+    <div class="tg-card">
+      <div class="tg-head"><span class="a-dot">🤖</span>Второй путь — Telegram</div>
+      <span class="tg-equal">Равный путь, та же труба</span>
+      <p>Перешли контакт или ссылку на профиль нашему боту <code>@uklad_outreach_bot</code> — он сам вытащит <b>имя, телефон и @username</b> и поставит в эту же очередь. С телефона на ходу — самое то.</p>
+      <p style="font-size:11.5px;color:var(--dim)">Веб и Telegram — одна рука в двух каналах: что умеет одна, умеет и вторая.</p>
+    </div>
+  </div>
+
+  <div class="pace">
+    <div class="pace-card">
+      <div class="pc-top"><span class="pc-num"><b id="today-num">37</b> / 50</span><span class="pc-cap">добавлено сегодня · цель в день</span></div>
+      <div class="bar"><i id="today-bar" style="width:74%"></i></div>
+      <div class="pc-note" id="today-note">Осталось 13 до дневной цели — темп нормальный.</div>
+    </div>
+    <div class="pace-card">
+      <div class="pc-top"><span class="pc-num"><b id="base-num">420</b> / ~1500</span><span class="pc-cap">пройдено базы</span></div>
+      <div class="bar"><i id="base-bar" class="amber" style="width:28%"></i></div>
+      <div class="pc-note">При 50/день оставшуюся базу пройдём примерно за <b style="color:var(--ink)">22 дня</b>.</div>
+    </div>
+  </div>
+  <p class="demo-note">Данные на странице — вымышленные, для демонстрации механики.</p>
+</section>
+
+<!-- ═══ ГЕЙТ-БАННЕР ═══ -->
+<div class="gate-banner" id="sec-gate">
+  <span class="lock">🔒</span>
+  <div class="g-text">
+    <b>Без твоего нажатия ничего не уходит. Вообще ничего.</b>
+    <span>Труба обогащает и пишет черновики сама — но каждый заход ты смотришь глазами перед отправкой. Это устройство продукта, не настройка.</span>
+  </div>
+  <div class="gate-stats">
+    <div class="g-stat"><div class="num" id="st-wait">1</div><div class="cap">ждёт твоего ОК</div></div>
+    <div class="g-stat"><div class="num" id="st-ok">0</div><div class="cap">одобрено сегодня</div></div>
+    <div class="g-stat"><div class="num z">0</div><div class="cap">ушло без ОК</div></div>
+  </div>
+</div>
+
+<!-- ═══ СЕКЦИЯ 2–3 · ОЧЕРЕДЬ ═══ -->
+<section class="panel" id="sec-queue">
+  <h2>Очередь лидов</h2>
+  <p class="p-sub">Под каждым лидом — <b>из каких источников что подтянулось</b>: труба не чёрный ящик. Где данных нет — честное «не нашли», а не выдуманные цифры. Бейдж «Адресный / Массовый» кликается — у них разный заход.</p>
+  <div class="queue-head">
+    <h3>Сегодняшняя пачка</h3>
+    <span class="cnt" id="q-cnt"></span>
+  </div>
+  <div id="dupq-slot"></div>
+  <div id="lead-list"></div>
+  <p class="demo-note">Имена, компании, подписчики — демонстрационные. «Не нашли» — тоже честный статус: труба не дорисовывает.</p>
+</section>
+
+<!-- ═══ СЕКЦИЯ 4 · БЛОКЕРЫ ═══ -->
+<section class="panel" id="sec-pipe">
+  <h2>Настройки трубы — два открытых вопроса</h2>
+  <p class="p-sub">Эти два решения ещё <b>не приняты</b> — селекторы вынесены на макет специально, чтобы принять их глядя на живую страницу, а не прятать в бэклог.</p>
+  <div class="blockers">
+
+    <div class="blocker">
+      <div class="microlbl warn">⚡ Открытый вопрос №1</div>
+      <h3>Откуда обогащаем</h3>
+      <p class="b-sub">Что труба дёргает по каждому сиду. Для РФ-SMB LinkedIn слаб — собственника тюменского кафе там нет. Telegram-сид и ФНС по ИНН — сильнее.</p>
+      <div class="tgl-row on" onclick="tgl(this,'Веб-поиск (Tavily)')">
+        <span class="tgl"></span>
+        <div><div class="t-name">Веб-поиск (Tavily)</div><div class="t-note">Сайты, СМИ, вакансии, упоминания. <span class="plus">Рабочая лошадка.</span></div></div>
+      </div>
+      <div class="tgl-row on" onclick="tgl(this,'Telegram-профиль (сид)')">
+        <span class="tgl"></span>
+        <div><div class="t-name">Telegram-профиль (сид)</div><div class="t-note"><span class="plus">Сильнейший для РФ-SMB:</span> имя, телефон, @username, bio — с него труба и стартует.</div></div>
+      </div>
+      <div class="tgl-row on" onclick="tgl(this,'Руспрофайл / ФНС по ИНН')">
+        <span class="tgl"></span>
+        <div><div class="t-name">Руспрофайл / ФНС по ИНН</div><div class="t-note"><span class="plus">Сильный для РФ:</span> юрлица, обороты, связки собственников — официально и бесплатно.</div></div>
+      </div>
+      <div class="tgl-row on" onclick="tgl(this,'Отраслевые ТГ-чаты')">
+        <span class="tgl"></span>
+        <div><div class="t-name">Отраслевые ТГ-чаты (слушаем, копим)</div><div class="t-note">Медленный, но накопительный: кто что спрашивает — сигналы зреют сами.</div></div>
+      </div>
+      <div class="tgl-row" onclick="tgl(this,'LinkedIn-роботы')">
+        <span class="tgl"></span>
+        <div><div class="t-name">LinkedIn-роботы (Запад)</div><div class="t-note"><b>Для РФ-SMB слаб</b> — большинства нашей базы там просто нет. Имеет смысл для экспортных сегментов.</div></div>
+      </div>
+      <div class="tgl-row" onclick="tgl(this,'Apollo')">
+        <span class="tgl"></span>
+        <div><div class="t-name">Apollo</div><div class="t-note">Западная база, по РФ — почти пусто. Платно.</div></div>
+      </div>
+    </div>
+
+    <div class="blocker">
+      <div class="microlbl warn">⚡ Открытый вопрос №2 — главный со встречи</div>
+      <h3>Как отправляем одобренное</h3>
+      <p class="b-sub">Гейт одинаковый в любом варианте: без ОК не уходит ничего. Вопрос — чем физически уходит одобренное.</p>
+      <div class="radio-row on" onclick="rad(this,'Ручная отправка с личного (Blink)')">
+        <span class="rad"></span>
+        <div><div class="t-name">Ручная отправка с личного аккаунта (Blink)</div><div class="t-note"><span class="plus">~20/день, безопасно.</span> Одобренные заходы падают в очередь — человек отправляет со своего Telegram. Медленно, но аккаунт живёт.</div></div>
+      </div>
+      <div class="radio-row" onclick="rad(this,'Массовый спам-сервис')">
+        <span class="rad"></span>
+        <div><div class="t-name">Массовый спам-сервис</div><div class="t-note"><span class="risk">Риск: мессенджер блокирует аккаунт после ~3 сообщений незнакомым.</span> Быстро сожжём и номера, и репутацию.</div></div>
+      </div>
+      <div class="radio-row" onclick="rad(this,'Рекламная аудитория (прогрев)')">
+        <span class="rad"></span>
+        <div><div class="t-name">Не писать в личку — залить базу как рекламную аудиторию</div><div class="t-note">Прогрев рекламой вместо личных сообщений. Без риска блокировок, но и без личного захода — конверсия другая.</div></div>
+      </div>
+      <div class="chan-warn"><span>⚡</span><span><b>Честно про риск:</b> Telegram и WhatsApp агрессивно банят рассылки с новых/массовых аккаунтов — примерно после трёх жалоб «спам» аккаунт мёртв. Поэтому дефолт в макете — ручная отправка с личного: медленнее, зато база и номера — актив, а не расходник.</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ СЕКЦИЯ 5 · ХОТЕЛКИ ═══ -->
+<section class="panel" id="sec-wish">
+  <h2>Что улучшить в Аутричере</h2>
+  <p class="p-sub">Хотелки живут прямо здесь — заметил трение, записал, не потерялось. Разбираем по очереди.</p>
+  <div class="wish-row">
+    <input type="text" id="wish-input" placeholder="Например: снимать сид фоткой визитки с конфы" spellcheck="false">
+    <button class="btn" onclick="addWish()">Предложить</button>
+  </div>
+  <div id="wish-list">
+    <div class="wish"><span class="q-status wait">в разборе</span><div class="w-text">Снимать сид фоткой визитки — сфоткал на конфе, бот распознал имя и телефон сам.<i>Катя · вчера</i></div></div>
+    <div class="wish"><span class="q-status ok">принято</span><div class="w-text">Подбирать время отправки под часовой пояс лида — тюменцам не писать в 6 утра.<i>Леонид · 3 дня назад</i></div></div>
+  </div>
+</section>
+
+<footer>Прототип · «Слаживание / Уклад ИИ» · вижен-артефакт, не рабочий код · все люди, компании и цифры на экранах — демонстрационные</footer>
+
+</div>
+
+<div id="toast"><span class="tick">✓</span><span id="toast-text"></span></div>
+
+<script>
+/* ─────────── ДЕМО-ДАННЫЕ (вымышленные) ─────────── */
+var todayCount = 37, baseCount = 420;
+var stApproved = 0;
+
+var LEADS = [
+  {
+    id:'gal', name:'Александр Галицын', init:'АГ', color:'#3B7A5E',
+    user:'@galitsyn_as', phone:'+7 916 997 2577', place:'Москва · сеть кофеен «Крафт и точка», 5 точек',
+    status:'ok', type:'addr', brought:['Леонид'], merged:false,
+    sources:[
+      {tag:'tg', tagText:'Telegram', what:'<b>имя, телефон, @galitsyn_as</b> — сид, снят руками'},
+      {tag:'ig', tagText:'Instagram', what:'<b>galitsyn.as</b> · 8 421 подписчик · кофейная ниша · активен на этой неделе'},
+      {tag:'web', tagText:'Веб-поиск', what:'основатель сети кофеен <b>«Крафт и точка»</b> — 5 точек, Москва <i>· 2 источника</i>'},
+      {tag:'sig', tagText:'⚡ Сигнал', what:'<b>открыта вакансия управляющего</b> новой точкой <i>· hh, 4 дня назад</i>'}
+    ],
+    notes:[
+      {kind:'voice', who:'Леонид', text:'Знаю его лично — виделись на Coffee Expo в апреле. Обещал позвать на дегустацию, когда откроет пятую точку. Решает сам, но деньги согласует с партнёром: заходить через пользу для операционки, не через цену.'}
+    ],
+    draft:'Александр, добрый день! [Леонид передавал привет — виделись на Coffee Expo в апреле].\n\nУвидел, что вы [ищете управляющего в новую точку] — обычно это момент, когда операционка перестаёт помещаться в основателя. Мы делаем ИИ-агентов, которые снимают часть этой рутины: сводки по точкам, поставщики, найм-воронка.\n\n[Дегустация на пятой точке в силе?] — заодно покажу на живом примере, как это выглядит у сетей из 4–6 кофеен. 15 минут, без слайдов.',
+    why:'Заход собран из двух слоёв: голосовая заметка Леонида (личное знакомство, дегустация, «заходить через операционку») + сигнал из веба (вакансия управляющего). Подсвечено — что откуда взято.',
+    gate:'wait', editing:false, open:false, report:false
+  },
+  {
+    id:'sob', name:'Марина Соболева', init:'МС', color:'#7E6B94',
+    user:'@soboleva_cafe', phone:'+7 912 404 18 62', place:'Тюмень · кафе «Черника»',
+    status:'ok', type:'mass', brought:['Леонид','Катя'], merged:true,
+    sources:[
+      {tag:'tg', tagText:'Telegram', what:'<b>имя, телефон, @soboleva_cafe</b> — сид'},
+      {tag:'web', tagText:'Веб-поиск', what:'владелица кафе <b>«Черника»</b>, Тюмень · отзывы 4,7 <i>· карты + сайт</i>'},
+      {tag:'ig', tagText:'Instagram', what:'не нашли — аккаунта нет или закрыт', none:true}
+    ],
+    notes:[],
+    draft:null, draftNote:'Заход готовится — 2-й в очереди на генерацию.',
+    gate:null, editing:false, open:false, report:false
+  },
+  {
+    id:'val', name:'Рустам Валеев', init:'РВ', color:'#4E7A8A',
+    user:'@rvaleev_dv', phone:'+7 922 583 07 41', place:'',
+    status:'run', type:'mass', brought:['Катя'], merged:false,
+    sources:[
+      {tag:'tg', tagText:'Telegram', what:'<b>имя, телефон, @rvaleev_dv</b> — сид'}
+    ],
+    notes:[], draft:null,
+    gate:null, editing:false, open:false, report:false
+  },
+  {
+    id:'kor', name:'Сергей К.', init:'СК', color:'#9A6250',
+    user:'@skor_invest', phone:null, place:'',
+    status:'none', type:'mass', brought:['Игорь'], merged:false,
+    sources:[
+      {tag:'tg', tagText:'Telegram', what:'только <b>@skor_invest</b> — ни имени полностью, ни телефона в профиле'},
+      {tag:'web', tagText:'Веб-поиск', what:'совпадений не нашли', none:true},
+      {tag:'ig', tagText:'Instagram', what:'не нашли', none:true}
+    ],
+    notes:[], draft:null,
+    gate:null, editing:false, open:false, report:false
+  },
+  {
+    id:'raw1', name:'+7 903 118 24 55', init:'?', color:'#B98F44',
+    user:null, phone:'+7 903 118 24 55', place:'',
+    status:'raw', type:'mass', brought:['Леонид'], merged:false,
+    sources:[
+      {tag:'tg', tagText:'Сид', what:'только телефон — вставлен из веб-формы минуту назад'}
+    ],
+    notes:[], draft:null,
+    gate:null, editing:false, open:false, report:false
+  }
+];
+
+var dupPending = true;   // мягкий вопрос про возможный дубль
+var valeevTimer = null;
+
+/* ─────────── HELPERS ─────────── */
+function $(id){ return document.getElementById(id); }
+function toast(t){
+  var el = $('toast'); $('toast-text').textContent = t;
+  el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(function(){ el.classList.remove('show'); }, 2600);
+}
+function lead(id){ for (var i=0;i<LEADS.length;i++) if (LEADS[i].id===id) return LEADS[i]; return null; }
+function markSignal(text){
+  return text.replace(/\[/g,'<mark>').replace(/\]/g,'</mark>').replace(/\n/g,'<br>');
+}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ─────────── НАВИГАЦИЯ ─────────── */
+function nav(el, secId){
+  var stps = document.querySelectorAll('.stepper .stp');
+  for (var i=0;i<stps.length;i++) stps[i].classList.remove('on');
+  el.classList.add('on');
+  $(secId).scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ─────────── СЕКЦИЯ 1 · ПРИЁМ СИДА ─────────── */
+function addSeeds(){
+  var raw = $('seed-input').value.split('\n');
+  var lines = [];
+  for (var i=0;i<raw.length;i++){ var t = raw[i].trim(); if (t) lines.push(t); }
+  if (!lines.length){ toast('Поле пустое — вставь @username, телефон или ссылку'); return; }
+  for (var j=lines.length-1;j>=0;j--){
+    var v = lines[j];
+    LEADS.unshift({
+      id:'new'+Date.now()+j,
+      name:v, init:'?', color:'#B98F44',
+      user:v.charAt(0)==='@'?v:null, phone:v.charAt(0)==='+'?v:null, place:'',
+      status:'raw', type:'mass', brought:['Леонид'], merged:false,
+      sources:[{tag:'tg', tagText:'Сид', what:'только «<b>'+esc(v)+'</b>» — вставлен из веб-формы только что'}],
+      notes:[], draft:null, gate:null, editing:false, open:false, report:false
+    });
+  }
+  todayCount += lines.length; baseCount += lines.length;
+  $('seed-input').value = '';
+  renderPace(); renderLeads();
+  toast('Добавлено в очередь: '+lines.length+' — труба взяла в обогащение');
+}
+function renderPace(){
+  $('today-num').textContent = todayCount;
+  $('today-bar').style.width = Math.min(100, Math.round(todayCount/50*100))+'%';
+  var left = 50 - todayCount;
+  $('today-note').textContent = left>0
+    ? 'Осталось '+left+' до дневной цели — темп нормальный.'
+    : 'Дневная цель взята — всё сверх идёт в задел на завтра.';
+  $('base-num').textContent = baseCount;
+  $('base-bar').style.width = Math.min(100, Math.round(baseCount/1500*100))+'%';
+}
+
+/* ─────────── СЕКЦИЯ 2 · ОЧЕРЕДЬ ─────────── */
+function statusChip(l){
+  if (l.status==='ok')   return '<span class="q-status ok">Обогащён</span>';
+  if (l.status==='run')  return '<span class="q-status wait"><span class="pulse"></span>Обогащаю…</span>';
+  if (l.status==='none') return '<span class="q-status no">Не нашли</span>';
+  return '<span class="q-status raw">Сырой</span>';
+}
+function typeBadge(l){
+  return l.type==='addr'
+    ? '<span class="i-tag addr" onclick="event.stopPropagation();flipType(\''+l.id+'\')" title="Кликни — сменить тип">Адресный</span>'
+    : '<span class="i-tag mass" onclick="event.stopPropagation();flipType(\''+l.id+'\')" title="Кликни — сменить тип">Массовый</span>';
+}
+function srcList(l){
+  var h = '<div class="src-list">';
+  for (var i=0;i<l.sources.length;i++){
+    var s = l.sources[i];
+    h += '<div class="src-row"><span class="src-tag '+(s.none?'none':s.tag)+'">'+s.tagText+'</span>'+
+         '<span class="sr-what"'+(s.none?' style="color:var(--dim)"':'')+'>'+s.what+'</span></div>';
+  }
+  h += '</div>';
+  return h;
+}
+function notesHtml(l){
+  var h = '';
+  for (var i=0;i<l.notes.length;i++){
+    var n = l.notes[i];
+    h += '<div class="note"><div class="n-lbl">'+
+      (n.kind==='voice' ? '🎙 Голосовая заметка · расшифрована' : '✎ Заметка из головы')+
+      ' <span class="who">· '+n.who+'</span></div>'+
+      '<div class="n-body">«'+esc(n.text)+'»</div></div>';
+  }
+  return h;
+}
+function leadCard(l){
+  var h = '<div class="lead'+(l.open?' open':'')+'" id="lead-'+l.id+'">';
+  h += '<div class="l-top">'+
+    '<span class="ava" style="background:'+l.color+'">'+l.init+'</span>'+
+    '<div class="l-who"><div class="l-name">'+esc(l.name)+' '+typeBadge(l)+'</div>'+
+    '<div class="l-contact">'+
+      (l.user?'<b>'+l.user+'</b>':'')+
+      (l.user&&l.phone?' · ':'')+
+      (l.phone?'<b>'+l.phone+'</b>':'')+
+      ((!l.user&&!l.phone)?'<b>контакт уточняется</b>':'')+
+    '</div>'+
+    (l.place?'<div class="l-place">'+l.place+'</div>':'')+
+    '</div>'+statusChip(l)+
+  '</div>';
+
+  // кто принёс + дедуп
+  h += '<div class="prov">Принесли: <b>'+l.brought.join(' + ')+'</b>'+
+    (l.merged?' · <span class="merged">объединён дубль</span> — совпал телефон, две записи склеены в одну':'')+'</div>';
+
+  // прозрачность источников
+  h += srcList(l);
+
+  // прогресс обогащения (Рустам)
+  if (l.status==='run'){
+    h += '<div class="enrich-steps">'+
+      '<div class="es-done"><b>✓</b> Telegram-профиль — имя, телефон сняты</div>'+
+      '<div class="es-run"><b>●</b> Instagram — ищу совпадения по имени и нику…</div>'+
+      '<div>○ Веб-поиск — в очереди</div>'+
+      '<div>○ Руспрофайл / ФНС — в очереди</div>'+
+    '</div>';
+  }
+  if (l.status==='none'){
+    h += '<div class="prov" style="margin-top:9px;color:var(--muted)">Труба упёрлась: по одному нику зацепиться не во что. <b>Доложи о человеке</b> — город, компания, где встречались — и обогащение перезапустится от этой зацепки.</div>';
+  }
+  if (l.status==='raw'){
+    h += '<div class="prov" style="margin-top:9px">Встанет в обогащение в ближайшую минуту — руками ничего делать не надо.</div>';
+  }
+
+  // заметки в досье (свёрнутый вид — показываем, что подшито)
+  if (l.notes.length && !l.open){
+    h += notesHtml(l);
+  }
+
+  // действия
+  h += '<div class="l-actions">';
+  if (l.status==='ok' && l.draft){
+    h += '<button class="btn" onclick="toggleOpen(\''+l.id+'\')">'+(l.open?'Свернуть заход':'Открыть заход')+'</button>';
+  } else if (l.status==='ok' && !l.draft){
+    h += '<button class="btn ghost" onclick="toast(\'Заход в генерации — покажу, как соберу. Без твоего ОК не уйдёт.\')">Заход готовится…</button>';
+  }
+  h += '<button class="btn ghost" onclick="toggleReport(\''+l.id+'\')">🎙 Доложить о человеке</button>';
+  h += '<span class="crm-wrap" onclick="toast(\'«Положить в CRM» появится позже — это задел, не рабочая кнопка\')">'+
+       '<button class="btn ghost" disabled title="Появится позже">Положить в CRM</button><span class="crm-soon">скоро</span></span>';
+  h += '</div>';
+
+  // форма «доложить»
+  if (l.report){
+    h += '<div class="report">'+
+      '<div class="r-lbl">Доложить о человеке — уйдёт в досье</div>'+
+      '<textarea id="rep-'+l.id+'" placeholder="Например: «знаю его лично», «встречались на конфе», «ЛПР по закупкам, но решает жена-совладелец»…"></textarea>'+
+      '<div class="r-actions">'+
+        '<button class="btn ghost" id="voice-'+l.id+'" onclick="recVoice(\''+l.id+'\')">🎙 Надиктовать</button>'+
+        '<button class="btn" onclick="submitReport(\''+l.id+'\')">Подшить в досье</button>'+
+        '<button class="btn ghost" onclick="toggleReport(\''+l.id+'\')">Отмена</button>'+
+        '<span class="r-note">Агент расшифрует и сведёт с найденным из веба в одну кучу.</span>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // раскрытие: досье + заход + гейт
+  if (l.open && l.draft){
+    h += '<div class="detail"><div class="detail-grid">';
+    // досье
+    h += '<div class="dossier"><h4>Досье — всё в одной куче</h4>'+
+      '<p class="d-fact"><b>'+esc(l.name)+'</b> · основатель сети кофеен «Крафт и точка» (5 точек, Москва). Instagram 8 421 подписчик, активен. Свежий повод: вакансия управляющего новой точкой.</p>'+
+      srcList(l)+ notesHtml(l)+
+      '<p class="d-fact" style="margin-top:10px;font-size:11.5px;color:var(--dim)">Досье = найденное из веба + то, что знает команда. Обе части видны — ничего не растворяется в «магии».</p>'+
+    '</div>';
+    // заход + гейт
+    h += '<div><div class="msg-card">'+
+      '<div class="m-head">Черновик захода · <b>Telegram, личка</b> · тип: <b>адресный</b> · подсвечено — откуда взято</div>';
+    if (l.editing){
+      h += '<textarea id="edit-'+l.id+'">'+esc(l.draft.replace(/[\[\]]/g,''))+'</textarea>';
+    } else {
+      h += '<div class="m-body">'+markSignal(esc2(l.draft))+'</div>';
+    }
+    h += '<div class="m-why"><span class="bolt">⚡</span><span>'+l.why+'</span></div></div>';
+
+    if (l.editing){
+      h += '<div class="gate-actions">'+
+        '<button class="btn" onclick="saveEdit(\''+l.id+'\')">Сохранить правку</button>'+
+        '<button class="btn ghost" onclick="cancelEdit(\''+l.id+'\')">Отмена</button>'+
+      '</div>';
+    } else if (l.gate==='wait'){
+      h += '<div class="gate-actions">'+
+        '<button class="btn" onclick="approveLead(\''+l.id+'\')">✓ Одобрить и в отправку</button>'+
+        '<button class="btn ghost" onclick="editLead(\''+l.id+'\')">Переписать</button>'+
+        '<button class="btn warn" onclick="skipLead(\''+l.id+'\')">Пропустить</button>'+
+        '<span class="d-note">🔒 Ты смотришь заход глазами — иначе он не уходит.</span>'+
+      '</div>';
+    } else if (l.gate==='ok'){
+      h += '<div class="q-verdict ok">✓ Одобрено тобой — уйдёт с твоего личного аккаунта в ближайшее окно отправки (Blink, ~20/день). «Ушло без ОК» по-прежнему 0.</div>';
+    } else if (l.gate==='skip'){
+      h += '<div class="q-verdict skip">— Пропущен: заход не уйдёт. Лид остаётся в базе, вернёмся с новым поводом.</div>';
+    }
+    h += '</div></div></div>';
+  }
+
+  h += '</div>';
+  return h;
+}
+function esc2(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderLeads(){
+  // вопрос-дубль
+  $('dupq-slot').innerHTML = dupPending
+    ? '<div class="dupq">Новый сид <b>@m_soboleva</b> похож на дубль <b>Марины Соболевой</b> — то же имя, но другой номер. Уверенности нет, сам не склеиваю. Склеить?'+
+      '<div class="dq-actions">'+
+        '<button class="btn amber" onclick="mergeDup(true)">Склеить в одну карточку</button>'+
+        '<button class="btn ghost" onclick="mergeDup(false)">Это другой человек</button>'+
+      '</div></div>'
+    : '';
+  var h = '';
+  for (var i=0;i<LEADS.length;i++) h += leadCard(LEADS[i]);
+  $('lead-list').innerHTML = h;
+  // счётчики
+  var ok=0, run=0, none=0, raw=0;
+  for (var j=0;j<LEADS.length;j++){
+    var s = LEADS[j].status;
+    if (s==='ok') ok++; else if (s==='run') run++; else if (s==='none') none++; else raw++;
+  }
+  $('q-cnt').textContent = ok+' обогащено · '+run+' в работе · '+raw+' сырых · '+none+' не нашли';
+  renderGate();
+}
+function renderGate(){
+  var wait=0;
+  for (var i=0;i<LEADS.length;i++) if (LEADS[i].gate==='wait') wait++;
+  $('st-wait').textContent = wait;
+  $('st-ok').textContent = stApproved;
+}
+
+function flipType(id){
+  var l = lead(id);
+  l.type = l.type==='addr' ? 'mass' : 'addr';
+  renderLeads();
+  toast(l.type==='addr'
+    ? esc(l.name)+' → Адресный: заход будет глубже и штучно'
+    : esc(l.name)+' → Массовый: заход по нише, короче');
+}
+function toggleOpen(id){
+  var l = lead(id);
+  l.open = !l.open;
+  renderLeads();
+  if (l.open){
+    var el = $('lead-'+id);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+function mergeDup(yes){
+  dupPending = false;
+  if (yes){
+    var m = lead('sob');
+    if (m.brought.indexOf('Игорь')<0) m.brought.push('Игорь');
+    toast('Склеено: @m_soboleva влит в карточку Марины Соболевой');
+  } else {
+    LEADS.push({
+      id:'msob', name:'@m_soboleva', init:'?', color:'#B98F44',
+      user:'@m_soboleva', phone:null, place:'',
+      status:'raw', type:'mass', brought:['Игорь'], merged:false,
+      sources:[{tag:'tg', tagText:'Сид', what:'только <b>@m_soboleva</b> — отмечен как другой человек, пойдёт в обогащение отдельно'}],
+      notes:[], draft:null, gate:null, editing:false, open:false, report:false
+    });
+    toast('Ок, ведём как отдельного человека — встал в обогащение');
+  }
+  renderLeads();
+}
+
+/* ─────────── ДОЛОЖИТЬ О ЧЕЛОВЕКЕ ─────────── */
+function toggleReport(id){
+  var l = lead(id);
+  l.report = !l.report;
+  renderLeads();
+}
+function recVoice(id){
+  var btn = $('voice-'+id);
+  if (!btn || btn._rec) return;
+  btn._rec = true;
+  btn.textContent = '● Слушаю…';
+  btn.style.color = 'var(--red)';
+  setTimeout(function(){
+    var ta = $('rep-'+id);
+    if (ta) ta.value = 'Встречались на РестоЭкспо прошлой осенью, обсуждали автоматизацию закупок — тема была живая. (демо-расшифровка: в проде здесь твой голос, распознанный агентом)';
+    if (btn){ btn.textContent = '✓ Расшифровал'; btn.style.color = 'var(--green)'; }
+    toast('Голос расшифрован — проверь текст и подшей');
+  }, 1800);
+}
+function submitReport(id){
+  var l = lead(id), ta = $('rep-'+id);
+  var v = ta ? ta.value.trim() : '';
+  if (!v){ toast('Пусто — надиктуй или напиши хоть строчку'); return; }
+  l.notes.push({kind: v.indexOf('демо-расшифровка')>=0 ? 'voice':'text', who:'Леонид', text:v});
+  l.report = false;
+  if (l.status==='none'){
+    l.status = 'run';
+    l.sources.push({tag:'voice', tagText:'🎙 Команда', what:'зацепка от Леонида — <b>обогащение перезапущено</b> от неё'});
+    toast('Подшито в досье — труба перезапустила обогащение от твоей зацепки');
+  } else {
+    toast('Подшито в досье — агент сведёт с найденным из веба');
+  }
+  renderLeads();
+}
+
+/* ─────────── ГЕЙТ ─────────── */
+function approveLead(id){
+  var l = lead(id);
+  l.gate = 'ok';
+  stApproved++;
+  renderLeads();
+  toast('Одобрено: '+l.name.split(' ')[0]+' — уйдёт в ближайшее окно отправки');
+}
+function skipLead(id){
+  var l = lead(id);
+  l.gate = 'skip';
+  renderLeads();
+  toast('Пропущен — заход не уйдёт, лид остаётся в базе');
+}
+function editLead(id){ lead(id).editing = true; renderLeads(); }
+function cancelEdit(id){ lead(id).editing = false; renderLeads(); }
+function saveEdit(id){
+  var l = lead(id), ta = $('edit-'+id);
+  if (ta) l.draft = ta.value;
+  l.editing = false;
+  renderLeads();
+  toast('Правка сохранена — заход снова ждёт твоего ОК');
+}
+
+/* ─────────── БЛОКЕРЫ ─────────── */
+function tgl(el, name){
+  el.classList.toggle('on');
+  toast((el.classList.contains('on')?'Включён источник: ':'Выключен источник: ')+name+' — решение зафиксируем на макете');
+}
+function rad(el, name){
+  var rows = el.parentElement.querySelectorAll('.radio-row');
+  for (var i=0;i<rows.length;i++) rows[i].classList.remove('on');
+  el.classList.add('on');
+  toast('Канал отправки: '+name+' — гейт одобрения одинаковый в любом варианте');
+}
+
+/* ─────────── ХОТЕЛКИ ─────────── */
+function addWish(){
+  var inp = $('wish-input'), v = inp.value.trim();
+  if (!v){ toast('Напиши хотелку одной строкой'); return; }
+  var w = document.createElement('div');
+  w.className = 'wish';
+  w.innerHTML = '<span class="q-status raw">новая</span><div class="w-text">'+esc(v)+'<i>ты · только что</i></div>';
+  $('wish-list').insertBefore(w, $('wish-list').firstChild);
+  inp.value = '';
+  toast('Хотелка записана — попадёт в разбор очереди улучшений');
+}
+
+/* ─────────── ЖИВОЕ ОБОГАЩЕНИЕ (демо) ─────────── */
+valeevTimer = setTimeout(function(){
+  var l = lead('val');
+  if (!l || l.status!=='run') return;
+  l.status = 'ok';
+  l.place = 'Екатеринбург · доставка «Плов №1», 2 точки';
+  l.sources.push(
+    {tag:'web', tagText:'Веб-поиск', what:'совладелец доставки <b>«Плов №1»</b>, Екатеринбург, 2 точки <i>· карты + соцсети</i>'},
+    {tag:'ig', tagText:'Instagram', what:'не нашли — по имени и нику совпадений нет', none:true}
+  );
+  l.draftNote = 'Заход готовится — встал в очередь на генерацию.';
+  renderLeads();
+  toast('Рустам Валеев обогащён: 1 источник дал компанию, Instagram — честно «не нашли»');
+}, 9000);
+
+/* ─────────── ПЕРВЫЙ РЕНДЕР ─────────── */
+renderPace();
+renderLeads();
+</script>
+</body>
+</html>

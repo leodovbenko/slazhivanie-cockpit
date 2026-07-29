@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Инбокс лидов — Аутричер · Слаживание</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0D1411;--bg-soft:#111A15;--card:#151F19;--card-2:#1A2620;
+  --line:#243228;--line-soft:#1D2A22;--ink:#E8EFE9;--muted:#8FA396;--dim:#5F7367;
+  --green:#3ECF8E;--green-deep:#188A5C;--green-bg:#12291E;
+  --amber:#E6B23A;--amber-bg:#2A2312;--red:#E06553;--red-bg:#2A1713;--blue:#5BA8D9;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:radial-gradient(1100px 500px at 50% -140px,#14211A 0%,var(--bg) 55%);
+  color:var(--ink);line-height:1.5;font-size:15px;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 22px 64px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(62,207,142,.45)}70%{box-shadow:0 0 0 9px rgba(62,207,142,0)}100%{box-shadow:0 0 0 0 rgba(62,207,142,0)}}
+@keyframes recpulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---------- header ---------- */
+.badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:var(--green-bg);border:1px solid #1E4A34;border-radius:99px;padding:5px 13px}
+h1{font-size:clamp(24px,3.6vw,33px);font-weight:750;line-height:1.2;letter-spacing:-.02em;margin:16px 0 10px}
+h1 em{font-style:normal;color:var(--green)}
+.sub{color:var(--muted);max-width:660px;font-size:14.5px}
+.demo-note{color:var(--dim);font-size:12px;margin-top:8px}
+.gate-banner{margin-top:18px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(62,207,142,.10),rgba(24,138,92,.05));border:1px solid var(--green-deep);border-radius:14px;padding:12px 16px;font-size:13.5px;color:var(--muted)}
+.gate-banner b{color:var(--green)}
+.gate-dot{width:34px;height:34px;flex:none;border-radius:50%;background:linear-gradient(135deg,#3ECF8E,#188A5C);display:flex;align-items:center;justify-content:center;font-size:16px}
+
+/* ---------- stepper ---------- */
+.stepper{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin:26px 0 20px;scrollbar-width:none}
+.stepper::-webkit-scrollbar{display:none}
+.step{white-space:nowrap;font-size:12.5px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:99px;padding:8px 14px;cursor:pointer;transition:.15s}
+.step b{color:var(--green);margin-right:6px;font-weight:800}
+.step:hover{color:var(--ink);border-color:#33473A}
+
+/* ---------- panels ---------- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;margin-bottom:18px;animation:fadeUp .3s}
+.panel h2{font-size:18px;font-weight:750;letter-spacing:-.01em;margin-bottom:4px}
+.panel .p-sub{font-size:13px;color:var(--dim);margin-bottom:16px}
+.p-lbl{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+/* ---------- buttons / inputs ---------- */
+.btn{font-size:13.5px;font-weight:700;color:#0D1411;background:var(--green);border:none;border-radius:11px;padding:11px 20px;cursor:pointer;transition:.15s;font-family:inherit}
+.btn:hover{filter:brightness(1.1)}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn.ghost:hover{color:var(--ink);border-color:#33473A;filter:none}
+.btn.warn{background:transparent;color:var(--red);border:1px solid #3D241E}
+.btn.warn:hover{background:var(--red-bg);filter:none}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn.sm{padding:8px 14px;font-size:12.5px}
+textarea.inp,input.inp{width:100%;background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:13px 16px;color:var(--ink);font:inherit;font-size:14px;line-height:1.6;resize:vertical;outline:none;transition:border-color .15s;font-family:inherit}
+textarea.inp:focus,input.inp:focus{border-color:var(--green-deep)}
+textarea.inp::placeholder,input.inp::placeholder{color:var(--dim)}
+
+/* ---------- intake ---------- */
+.intake-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+.tg-path{background:var(--card-2);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;gap:13px;align-items:flex-start;height:100%}
+.a-dot{width:38px;height:38px;flex:none;border-radius:50%;background:linear-gradient(135deg,#3ECF8E,#188A5C);display:flex;align-items:center;justify-content:center;font-size:18px}
+.tg-path b{font-size:13.5px;display:block;margin-bottom:3px}
+.tg-path p{font-size:12.5px;color:var(--muted);line-height:1.55}
+.tg-path code{color:var(--blue);background:#15222B;border:1px solid #23394A;border-radius:7px;padding:1px 7px;font-size:12px;font-family:inherit}
+.pace{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pace-box{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:13px 16px}
+.pace-box .pb-lbl{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.pace-box .pb-val{font-size:14px;font-weight:700}
+.pace-box .pb-val b{color:var(--green)}
+.pace-box .pb-sub{font-size:12px;color:var(--dim);margin-top:2px}
+.prog{height:6px;background:#0B120E;border-radius:99px;overflow:hidden;margin-top:9px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--green-deep),var(--green));border-radius:99px;transition:width .6s}
+.hint{font-size:12px;color:var(--dim);margin-top:9px}
+.hint b{color:var(--muted)}
+
+/* ---------- queue ---------- */
+.q-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.kpi{background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-size:12.5px;color:var(--dim)}
+.kpi b{color:var(--ink);font-weight:700}
+.kpi b.g{color:var(--green)} .kpi b.a{color:var(--amber)}
+.send-strip{display:flex;align-items:center;gap:11px;background:var(--green-bg);border:1px solid #1E4A34;border-radius:12px;padding:11px 15px;font-size:13px;color:var(--muted);margin-bottom:16px}
+.send-strip b{color:var(--green)}
+.live{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;animation:pulse 1.6s infinite}
+
+/* dedup question */
+.dup-q{background:linear-gradient(135deg,rgba(230,178,58,.09),rgba(230,178,58,.02));border:1px solid #3A3018;border-radius:14px;padding:14px 17px;margin-bottom:12px}
+.dup-q .dq-h{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);margin-bottom:5px}
+.dup-q p{font-size:13.5px;color:var(--muted)}
+.dup-q p b{color:var(--ink)}
+.dup-q .dq-act{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+
+/* ---------- lead card ---------- */
+.lead{background:var(--card-2);border:1px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:12px;transition:.15s;animation:fadeUp .3s}
+.lead:hover{border-color:#33473A}
+.lead.open{border-color:var(--green-deep);box-shadow:0 0 0 1px var(--green-deep)}
+.lead.approved{border-color:var(--green-deep);background:#13211A}
+.lead.rejected{opacity:.55;border-color:#3D241E}
+.lead.glow{box-shadow:0 0 0 3px rgba(62,207,142,.15)}
+.lead-head{display:flex;gap:12px;align-items:flex-start}
+.ava{width:38px;height:38px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13.5px}
+.lead-id{flex:1;min-width:0}
+.lead-name{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lead-meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+.lead-by{font-size:11.5px;color:var(--dim);margin-top:3px}
+.q-status{margin-left:auto;flex:none;border-radius:8px;padding:3px 10px;font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.q-status.ok{color:var(--green);background:var(--green-bg)}
+.q-status.wait{color:var(--amber);background:var(--amber-bg)}
+.q-status.no{color:var(--red);background:var(--red-bg)}
+.q-status.raw{color:var(--muted);background:#16201C}
+.q-status .spin{width:7px;height:7px;border-radius:50%;background:var(--amber);animation:recpulse 1s infinite}
+
+.i-tag{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:7px;padding:2px 8px}
+.i-tag.hot{color:var(--green);background:var(--green-bg)}
+.i-tag.mass{color:var(--muted);background:var(--bg-soft);border:1px solid var(--line)}
+.i-tag.merged{color:var(--blue);background:#15222B;border:1px solid #23394A}
+
+.src-list{margin-top:11px;display:flex;flex-direction:column;gap:5px}
+.src{display:flex;align-items:baseline;gap:8px;font-size:12.5px;color:var(--muted)}
+.src-chip{flex:none;font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;border-radius:7px;padding:2px 8px}
+.src-chip.tg{color:var(--blue);background:#15222B;border:1px solid #23394A}
+.src-chip.web{color:var(--green);background:var(--green-bg);border:1px solid #1E4A34}
+.src-chip.fns{color:#7FC3A8;background:#122019;border:1px solid #23402F}
+.src-chip.ig{color:#C9A0D0;background:#221A2B;border:1px solid #3A2A44}
+.src-chip.chat{color:var(--muted);background:var(--bg-soft);border:1px solid var(--line)}
+.src-chip.hand{color:var(--amber);background:var(--amber-bg);border:1px solid #3A3018}
+
+.sig{display:flex;align-items:baseline;gap:8px;background:var(--amber-bg);border:1px solid #3A3018;border-radius:10px;padding:9px 12px;font-size:12.5px;color:var(--muted);margin-top:11px}
+.sig b{color:var(--amber)}
+.sig .bolt{flex:none}
+.sig .age{margin-left:auto;flex:none;font-size:11px;color:var(--dim)}
+
+.enr{margin-top:12px}
+.enr .enr-step{font-size:12px;color:var(--amber);margin-top:7px;display:flex;align-items:center;gap:7px}
+
+.lead-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px;align-items:center}
+.mini-seg{display:inline-flex;background:var(--bg-soft);border:1px solid var(--line);border-radius:99px;padding:2px;gap:2px}
+.mini-seg button{font-size:11px;font-weight:700;border:none;background:transparent;color:var(--dim);border-radius:99px;padding:4px 11px;cursor:pointer;font-family:inherit;transition:.15s}
+.mini-seg button.on{background:var(--green-bg);color:var(--green)}
+.soon-tag{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--dim);border:1px dashed var(--line);border-radius:7px;padding:2px 7px;margin-left:6px}
+
+/* notes (доложено руками) */
+.notes{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.note-item{display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--muted);background:var(--bg-soft);border:1px solid var(--line-soft);border-radius:10px;padding:8px 12px}
+.note-item .n-who{flex:none;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--amber)}
+
+/* report box */
+.report-box{display:none;margin-top:12px;background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.report-box.on{display:block;animation:fadeUp .25s}
+.report-box .rb-act{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.rec-dot{display:none;width:9px;height:9px;border-radius:50%;background:var(--red);animation:recpulse .9s infinite}
+.recording .rec-dot{display:inline-block}
+
+/* ---------- expanded: dossier + draft ---------- */
+.lead-open{display:none;margin-top:15px;border-top:1px solid var(--line-soft);padding-top:16px}
+.lead.open .lead-open{display:block;animation:fadeUp .3s}
+.open-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:20px}
+.doss-block{border-left:2px solid var(--green-deep);padding-left:13px;margin-bottom:14px}
+.ia-lbl{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:4px}
+.ia-body{font-size:13px;color:var(--muted);line-height:1.6}
+.ia-body b{color:var(--ink);font-weight:600}
+.vnote{background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:10px}
+.vnote .vn-h{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);margin-bottom:5px}
+.vnote p{font-size:13px;color:var(--muted);line-height:1.6}
+.draft{background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.draft .d-h{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.draft .d-h .q-chan{margin-left:auto;color:var(--blue);background:#15222B;border:1px solid #23394A;border-radius:7px;padding:2px 8px;font-size:10.5px}
+.draft textarea{width:100%;background:transparent;border:none;color:var(--ink);font:inherit;font-size:14px;line-height:1.65;resize:vertical;min-height:150px;outline:none;font-family:inherit}
+mark{background:rgba(230,178,58,.16);color:#EBD49E;border-bottom:1px dashed rgba(230,178,58,.5);border-radius:3px;padding:0 2px}
+.ia-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.gate-note{font-size:11.5px;color:var(--dim);margin-top:9px}
+.sent{display:none;gap:9px;align-items:center;background:var(--green-bg);border:1px solid var(--green-deep);color:var(--green);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-top:12px}
+.sent.on{display:flex;animation:fadeUp .3s}
+
+/* ---------- blockers ---------- */
+.blk-flag{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--red);background:var(--red-bg);border:1px solid #3D241E;border-radius:99px;padding:4px 11px;margin-bottom:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:11px 2px;border-bottom:1px solid var(--line-soft);cursor:pointer}
+.opt:last-of-type{border-bottom:none}
+.opt .o-t{flex:1}
+.opt .o-t b{font-size:13.5px;display:block;font-weight:700}
+.opt .o-t span{font-size:12px;color:var(--dim);line-height:1.5;display:block;margin-top:1px}
+.opt .o-t span em{font-style:normal;color:var(--amber)}
+.sw{position:relative;width:38px;height:22px;background:var(--bg-soft);border:1px solid var(--line);border-radius:99px;cursor:pointer;flex:none;transition:.2s;margin-top:2px}
+.sw::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--dim);transition:.2s}
+.sw.on{background:var(--green-bg);border-color:var(--green-deep)}
+.sw.on::after{left:18px;background:var(--green)}
+.rd{width:18px;height:18px;flex:none;border-radius:50%;border:2px solid var(--line);margin-top:2px;position:relative;transition:.15s}
+.opt.sel .rd{border-color:var(--green)}
+.opt.sel .rd::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--green)}
+.opt.sel .o-t b{color:var(--green)}
+.note-honest{border-left:2px solid var(--red);padding-left:12px;color:var(--muted);font-size:12.5px;margin-top:14px;line-height:1.6}
+.note-honest b{color:var(--ink)}
+
+/* ---------- wishes ---------- */
+.wish-row{display:flex;gap:9px;margin-bottom:6px}
+.wish-row input{flex:1}
+.wish{background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-top:10px;display:flex;gap:10px;align-items:flex-start;animation:fadeUp .3s}
+.wish p{font-size:13px;color:var(--muted);flex:1}
+.wish p b{color:var(--ink)}
+.w-st{flex:none;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:7px;padding:2px 8px}
+.w-st.do{color:var(--green);background:var(--green-bg)}
+.w-st.talk{color:var(--amber);background:var(--amber-bg)}
+.w-st.new{color:var(--blue);background:#15222B;border:1px solid #23394A}
+
+/* ---------- footer / toast ---------- */
+footer{margin-top:34px;text-align:center;color:var(--dim);font-size:12px;line-height:1.7}
+footer .f-brand{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(18px);background:#050A07;border:1px solid var(--line);border-radius:12px;padding:11px 18px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:60;display:flex;gap:9px;align-items:center;max-width:92vw}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast .tk{color:var(--green);font-weight:800;flex:none}
+
+@media(max-width:820px){
+  .intake-grid,.pace,.grid2,.open-grid{grid-template-columns:1fr}
+  .panel{padding:18px 16px}
+  .lead-head{flex-wrap:wrap}
+  .q-status{margin-left:0}
+  .sig .age{margin-left:0}
+  .sig{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== header ===== -->
+  <header>
+    <span class="badge">Прототип · до кода</span>
+    <h1>Инбокс лидов — <em>Аутричер</em></h1>
+    <p class="sub">Сюда оператор пачками бросает сырые сиды — @username, телефон, ссылку на профиль. Труба сама разворачивает каждый сид в досье и готовит персональный заход. Ты только смотришь глазами и жмёшь «одобрить».</p>
+    <div class="demo-note">Данные вымышленные, для демонстрации механики.</div>
+    <div class="gate-banner">
+      <div class="gate-dot">🔒</div>
+      <div>Гейт доверия: <b>без твоего нажатия ничего не уходит</b>. Агент готовит — человек одобряет. Ушло без ОК: <b>0</b></div>
+    </div>
+  </header>
+
+  <!-- ===== stepper ===== -->
+  <nav class="stepper">
+    <div class="step" onclick="goTo('intake')"><b>1</b>Приём сида</div>
+    <div class="step" onclick="goTo('queue')"><b>2</b>Очередь</div>
+    <div class="step" onclick="goTo('queue')"><b>3</b>Обогащение</div>
+    <div class="step" onclick="goLead()"><b>4</b>Персональный заход</div>
+    <div class="step" onclick="goLead()"><b>5</b>⭐ Гейт одобрения</div>
+    <div class="step" onclick="goTo('queue')"><b>6</b>Отправка</div>
+    <div class="step" onclick="goTo('blockers')"><b>!</b>Два блокера</div>
+  </nav>
+
+  <!-- ===== 1. intake ===== -->
+  <section class="panel" id="intake">
+    <h2>Добавить лидов</h2>
+    <p class="p-sub">Десять секунд на человека: открыл профиль → скопировал → вставил. Дальше работает труба.</p>
+    <div class="intake-grid">
+      <div>
+        <textarea class="inp" id="seedBox" rows="5" placeholder="Вставь список: @username, телефон или ссылка — по одному в строке"></textarea>
+        <div style="display:flex;gap:9px;margin-top:11px;flex-wrap:wrap;align-items:center">
+          <button class="btn" onclick="addSeeds()">Добавить в очередь</button>
+          <span class="hint">Попробуй кинуть <b>@galitsyn_as</b> второй раз — увидишь, как склеивается дубль.</span>
+        </div>
+      </div>
+      <div class="tg-path">
+        <div class="a-dot">🤖</div>
+        <div>
+          <b>Второй канал — равноправный</b>
+          <p>Или перешли контакт/профиль нашему боту <code>@slazhivanie_inbox_bot</code> в Telegram — он сам вытащит имя, телефон и @username. Рука работает и в вебе, и в Telegram.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pace">
+      <div class="pace-box">
+        <div class="pb-lbl">Темп сегодня</div>
+        <div class="pb-val">Добавлено: <b id="todayN">37</b> / цель 50 в день</div>
+        <div class="prog"><i id="todayBar" style="width:74%"></i></div>
+      </div>
+      <div class="pace-box">
+        <div class="pb-lbl">Прогресс базы</div>
+        <div class="pb-val">Пройдено <b id="baseN">420</b> из ~1500</div>
+        <div class="pb-sub">при 50/день ≈ 22 дня — «за месяц пройдём базу»</div>
+        <div class="prog"><i id="baseBar" style="width:28%"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 2. queue ===== -->
+  <section class="panel" id="queue">
+    <h2>Очередь лидов</h2>
+    <p class="p-sub">Сид → обогащение → заход → твой ОК → отправка. Дубли склеиваются сами, в одну карточку.</p>
+
+    <div class="q-stats">
+      <span class="kpi">В очереди: <b id="stQ">5</b></span>
+      <span class="kpi">Обогащено: <b class="g" id="stE">2</b></span>
+      <span class="kpi">Ждут твоего ОК: <b class="a" id="stW">1</b></span>
+      <span class="kpi">Одобрено: <b class="g" id="stA">1</b></span>
+      <span class="kpi">Не нашли: <b id="stN">1</b></span>
+    </div>
+
+    <div class="send-strip">
+      <span class="live"></span>
+      <div>Очередь отправки: <b id="sendN">1</b> одобренный заход · уйдёт в ближайшее окно (ручная отправка с личного через Blink, ~20/день). Отправлено сегодня: <b>14</b>.</div>
+    </div>
+
+    <!-- 2a. soft dedup question -->
+    <div class="dup-q" id="dupQ">
+      <div class="dq-h">⚠ Похоже на дубль</div>
+      <p><b>@s_kruglov</b> (принёс Леонид, 09:02) и <b>+7 905 233 47 19</b> (принесла Катя, 09:31) — похоже, это один человек: Сергей Круглов, пекарня «Хлеб да». Склеить в одну карточку?</p>
+      <div class="dq-act">
+        <button class="btn sm" onclick="dupResolve(true)">✓ Склеить</button>
+        <button class="btn ghost sm" onclick="dupResolve(false)">Нет, это разные люди</button>
+      </div>
+    </div>
+
+    <div id="leadList">
+
+      <!-- lead: Галицын (обогащён, адресный, голосовая подшита) -->
+      <article class="lead" id="lead-gal">
+        <div class="lead-head">
+          <div class="ava" style="background:#3B7A5E">АГ</div>
+          <div class="lead-id">
+            <div class="lead-name">Александр Галицын <span class="i-tag hot">адресный · ЛПР</span></div>
+            <div class="lead-meta">@galitsyn_as · +7 916 997 2577 · Instagram: galitsyn.as</div>
+            <div class="lead-meta" style="color:var(--ink)">Тюмень · совладелец сети кофеен «Купец» (4 точки)</div>
+            <div class="lead-by" id="galBy">Принёс: Леонид · сегодня 09:12</div>
+          </div>
+          <span class="q-status ok">Обогащён</span>
+        </div>
+        <div class="src-list">
+          <div class="src"><span class="src-chip tg">Telegram-профиль</span><span>имя, телефон, @username</span></div>
+          <div class="src"><span class="src-chip ig">Instagram</span><span>galitsyn.as · 12,4k подписчиков, ниша: кофейни, контент для франчайзи</span></div>
+          <div class="src"><span class="src-chip web">Веб-поиск</span><span>совладелец сети из 4 кофеен «Купец», Тюмень</span></div>
+          <div class="src"><span class="src-chip fns">Руспрофайл / ФНС</span><span>ООО «Купец», выручка 84 млн ₽ за 2024, два учредителя</span></div>
+        </div>
+        <div class="sig"><span class="bolt">⚡</span><span><b>Свежий повод:</b> открыта вакансия управляющего на hh.ru — сеть растёт, ищут людей</span><span class="age">3 дня назад</span></div>
+        <div class="notes" id="notes-gal"></div>
+        <div class="lead-actions">
+          <button class="btn sm" onclick="toggleLead('gal')">Открыть заход</button>
+          <button class="btn ghost sm" onclick="reportToggle('gal')">🎙 Доложить о человеке</button>
+          <div class="mini-seg" title="Тип лида — от него зависит глубина захода">
+            <button onclick="setType(this,'gal','mass')">Массовый</button>
+            <button class="on" onclick="setType(this,'gal','addr')">Адресный</button>
+          </div>
+          <button class="btn ghost sm" disabled title="Появится позже — задел, не рабочая функция">Положить в CRM<span class="soon-tag">скоро</span></button>
+        </div>
+        <div class="report-box" id="report-gal">
+          <div class="p-lbl">Доложить о человеке — подошьётся в досье</div>
+          <textarea class="inp" id="reportText-gal" rows="2" placeholder="Текстом или голосом: «знаю его лично», «встречались на конфе», «решает не он, а жена-совладелец»…"></textarea>
+          <div class="rb-act">
+            <button class="btn ghost sm" id="recBtn-gal" onclick="recVoice('gal')"><span class="rec-dot"></span> 🎙 Надиктовать</button>
+            <button class="btn sm" onclick="submitNote('gal')">Подшить в досье</button>
+          </div>
+        </div>
+        <div class="lead-open" id="open-gal">
+          <div class="open-grid">
+            <div>
+              <div class="doss-block">
+                <div class="ia-lbl">Кто это</div>
+                <div class="ia-body"><b>Александр Галицын</b>, совладелец сети кофеен «Купец» в Тюмени. 4 точки, второй учредитель — супруга. В Instagram ведёт личный блог про кофейный бизнес, 12,4k подписчиков.</div>
+              </div>
+              <div class="doss-block">
+                <div class="ia-lbl">Чем дышит сейчас</div>
+                <div class="ia-body">Растёт: открыта вакансия управляющего, в stories — ремонт в новой точке. Боль по найму и обучению линейного персонала.</div>
+                <div class="vnote">
+                  <div class="vn-h">🎙 Голосовая от Леонида · расшифровка агента</div>
+                  <p>«Встречались на форуме HoReCa в октябре. Жаловался на текучку бариста и что некому их обучать. По деньгам советуется с женой — она совладелец».</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="draft">
+                <div class="d-h">Черновик захода · можно править <span class="q-chan">Telegram · личка</span></div>
+                <textarea id="draft-gal">Александр, здравствуйте! Видел, что «Купец» ищет управляющего — поздравляю, значит, растёте.
+
+Леонид передавал привет после форума HoReCa — вы тогда как раз говорили про текучку бариста и что некому их обучать.
+
+Мы как раз это закрываем: укладываем ИИ в обучение смены — новый бариста за неделю работает по вашим стандартам, а не за месяц, и старшие не выгорают на наставничестве.
+
+Могу за 15 минут показать на примере одной вашей точки. Удобно на этой неделе?</textarea>
+              </div>
+              <div class="ia-act" id="act-gal">
+                <button class="btn sm" onclick="approve('gal')">✓ Одобрить и в отправку</button>
+                <button class="btn ghost sm" onclick="rewrite('gal')">Переписать</button>
+                <button class="btn warn sm" onclick="skipLead('gal')">Пропустить</button>
+              </div>
+              <div class="sent" id="sent-gal">✓ Одобрено тобой · уйдёт в ближайшее окно отправки (ручная, с личного)</div>
+              <div class="gate-note">🔒 Ждёт твоего ОК — само не уйдёт. Текст виден целиком и редактируется.</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- lead: Мадина (обогащаю…) -->
+      <article class="lead" id="lead-mad">
+        <div class="lead-head">
+          <div class="ava" style="background:#7E6B94">МР</div>
+          <div class="lead-id">
+            <div class="lead-name">Мадина Рахимова</div>
+            <div class="lead-meta">@madina_r · +7 922 481 0365</div>
+            <div class="lead-meta" id="madFound" style="color:var(--ink);display:none">Екатеринбург · владелица nail-студии «Место»</div>
+            <div class="lead-by">Принесла: Катя · сегодня 09:47</div>
+          </div>
+          <span class="q-status wait" id="madStatus"><span class="spin"></span>Обогащаю…</span>
+        </div>
+        <div class="src-list" id="madSrc">
+          <div class="src"><span class="src-chip tg">Telegram-профиль</span><span>имя, телефон, @username</span></div>
+        </div>
+        <div class="sig" id="madSig" style="display:none"><span class="bolt">⚡</span><span><b>Свежий повод:</b> в stories — набор мастеров, «растём, нужны руки»</span><span class="age">вчера</span></div>
+        <div class="enr" id="madEnr">
+          <div class="prog"><i id="madBar" style="width:14%"></i></div>
+          <div class="enr-step" id="madStep">⚡ читаю Telegram-профиль…</div>
+        </div>
+        <div class="notes" id="notes-mad"></div>
+        <div class="lead-actions">
+          <button class="btn sm" id="madOpenBtn" disabled onclick="toggleLead('mad')">Заход готовится…</button>
+          <button class="btn ghost sm" onclick="reportToggle('mad')">🎙 Доложить о человеке</button>
+          <div class="mini-seg">
+            <button class="on" onclick="setType(this,'mad','mass')">Массовый</button>
+            <button onclick="setType(this,'mad','addr')">Адресный</button>
+          </div>
+          <button class="btn ghost sm" disabled title="Появится позже — задел, не рабочая функция">Положить в CRM<span class="soon-tag">скоро</span></button>
+        </div>
+        <div class="report-box" id="report-mad">
+          <div class="p-lbl">Доложить о человеке — подошьётся в досье</div>
+          <textarea class="inp" id="reportText-mad" rows="2" placeholder="Что знаешь о ней руками — текстом или голосом…"></textarea>
+          <div class="rb-act">
+            <button class="btn ghost sm" id="recBtn-mad" onclick="recVoice('mad')"><span class="rec-dot"></span> 🎙 Надиктовать</button>
+            <button class="btn sm" onclick="submitNote('mad')">Подшить в досье</button>
+          </div>
+        </div>
+        <div class="lead-open" id="open-mad">
+          <div class="open-grid">
+            <div>
+              <div class="doss-block">
+                <div class="ia-lbl">Кто это</div>
+                <div class="ia-body"><b>Мадина Рахимова</b>, владелица nail-студии «Место» в Екатеринбурге. Instagram 8,1k — работы мастеров, backstage студии.</div>
+              </div>
+              <div class="doss-block">
+                <div class="ia-lbl">Чем дышит сейчас</div>
+                <div class="ia-body">Набирает мастеров и расширяется. Типовая боль: новички долго выходят в стандарты сервиса, записи ведутся вручную.</div>
+              </div>
+            </div>
+            <div>
+              <div class="draft">
+                <div class="d-h">Черновик захода · можно править <span class="q-chan">Telegram · личка</span></div>
+                <textarea id="draft-mad">Мадина, здравствуйте! Видел stories про набор мастеров в «Место» — значит, поток клиентов есть и вопрос в том, чтобы новички быстро выходили в ваш уровень.
+
+Мы помогаем студиям укладывать ИИ в обучение и стандарты сервиса: новый мастер с первой недели работает по вашим чек-листам, а запись и ответы клиентам не висят на администраторе.
+
+Могу показать, как это устроено, за 15 минут. Интересно?</textarea>
+              </div>
+              <div class="ia-act" id="act-mad">
+                <button class="btn sm" onclick="approve('mad')">✓ Одобрить и в отправку</button>
+                <button class="btn ghost sm" onclick="rewrite('mad')">Переписать</button>
+                <button class="btn warn sm" onclick="skipLead('mad')">Пропустить</button>
+              </div>
+              <div class="sent" id="sent-mad">✓ Одобрено тобой · уйдёт в ближайшее окно отправки (ручная, с личного)</div>
+              <div class="gate-note">🔒 Ждёт твоего ОК — само не уйдёт.</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- lead: Ковалёв (объединён дубль, одобрен) -->
+      <article class="lead approved" id="lead-kov">
+        <div class="lead-head">
+          <div class="ava" style="background:#4E7A8A">ДК</div>
+          <div class="lead-id">
+            <div class="lead-name">Дмитрий Ковалёв <span class="i-tag merged">объединён дубль</span> <span class="i-tag hot">адресный</span></div>
+            <div class="lead-meta">@dm_kovalev · +7 903 552 1180</div>
+            <div class="lead-meta" style="color:var(--ink)">Казань · собственник автомойки самообслуживания «Пена», 6 постов</div>
+            <div class="lead-by" id="kovBy">Принесли: <b style="color:var(--muted)">Леонид + Катя</b> · один и тот же контакт, склеено в одну карточку</div>
+          </div>
+          <span class="q-status ok">Обогащён</span>
+        </div>
+        <div class="src-list">
+          <div class="src"><span class="src-chip tg">Telegram-профиль</span><span>имя, телефон, @username</span></div>
+          <div class="src"><span class="src-chip web">Веб-поиск</span><span>собственник мойки «Пена», 6 постов, Казань</span></div>
+          <div class="src"><span class="src-chip chat">Отраслевой ТГ-чат</span><span>«Автомойки РФ»: спрашивал про CRM для записи</span></div>
+        </div>
+        <div class="sig"><span class="bolt">⚡</span><span><b>Свежий повод:</b> вопрос в отраслевом чате — прямо сейчас наводит порядок в операционке</span><span class="age">вчера</span></div>
+        <div class="notes" id="notes-kov"></div>
+        <div class="lead-actions">
+          <button class="btn ghost sm" onclick="toggleLead('kov')">Открыть заход</button>
+          <button class="btn ghost sm" onclick="reportToggle('kov')">🎙 Доложить о человеке</button>
+          <div class="mini-seg">
+            <button onclick="setType(this,'kov','mass')">Массовый</button>
+            <button class="on" onclick="setType(this,'kov','addr')">Адресный</button>
+          </div>
+          <button class="btn ghost sm" disabled title="Появится позже — задел, не рабочая функция">Положить в CRM<span class="soon-tag">скоро</span></button>
+        </div>
+        <div class="report-box" id="report-kov">
+          <div class="p-lbl">Доложить о человеке — подошьётся в досье</div>
+          <textarea class="inp" id="reportText-kov" rows="2" placeholder="Что знаешь о нём руками…"></textarea>
+          <div class="rb-act">
+            <button class="btn ghost sm" id="recBtn-kov" onclick="recVoice('kov')"><span class="rec-dot"></span> 🎙 Надиктовать</button>
+            <button class="btn sm" onclick="submitNote('kov')">Подшить в досье</button>
+          </div>
+        </div>
+        <div class="lead-open" id="open-kov">
+          <div class="open-grid">
+            <div>
+              <div class="doss-block">
+                <div class="ia-lbl">Кто это</div>
+                <div class="ia-body"><b>Дмитрий Ковалёв</b>, собственник автомойки самообслуживания «Пена» в Казани, 6 постов. Активен в отраслевом чате.</div>
+              </div>
+              <div class="doss-block">
+                <div class="ia-lbl">Почему заход сейчас</div>
+                <div class="ia-body">Вчера спрашивал в чате про CRM для записи — болит операционка, и он сам об этом говорит публично.</div>
+              </div>
+            </div>
+            <div>
+              <div class="draft">
+                <div class="d-h">Черновик захода · можно править <span class="q-chan">Telegram · личка</span></div>
+                <textarea id="draft-kov">Дмитрий, добрый день! Видел ваш вопрос в чате «Автомойки РФ» про CRM для записи — похоже, вы сейчас как раз наводите порядок в операционке.
+
+Мы укладываем ИИ в процессы моек самообслуживания: запись, контроль постов, ответы клиентам в мессенджере — без отдельного администратора.
+
+Если актуально — покажу за 15 минут на вашем кейсе с 6 постами.</textarea>
+              </div>
+              <div class="sent on" id="sent-kov">✓ Одобрено тобой сегодня в 09:55 · уйдёт в ближайшее окно отправки</div>
+              <div class="gate-note">🔒 Ушло без ОК = 0 — этот заход ты уже посмотрел глазами.</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- lead: Савельев (не нашли) -->
+      <article class="lead" id="lead-sav">
+        <div class="lead-head">
+          <div class="ava" style="background:#9A6250">ИС</div>
+          <div class="lead-id">
+            <div class="lead-name">Игорь Савельев</div>
+            <div class="lead-meta">@isav_ural · +7 912 774 9041</div>
+            <div class="lead-by">Принёс: ты · вчера 18:03</div>
+          </div>
+          <span class="q-status no">Не нашли</span>
+        </div>
+        <div class="src-list">
+          <div class="src"><span class="src-chip tg">Telegram-профиль</span><span>телефон, @username — больше в профиле пусто</span></div>
+          <div class="src"><span class="src-chip web">Веб-поиск</span><span>ничего — ни компании, ни соцсетей</span></div>
+          <div class="src"><span class="src-chip fns">Руспрофайл / ФНС</span><span>ничего — по имени и телефону совпадений нет</span></div>
+        </div>
+        <div class="notes" id="notes-sav"></div>
+        <div class="lead-actions">
+          <button class="btn ghost sm" onclick="reportToggle('sav')">🎙 Доложить о человеке</button>
+          <div class="mini-seg">
+            <button class="on" onclick="setType(this,'sav','mass')">Массовый</button>
+            <button onclick="setType(this,'sav','addr')">Адресный</button>
+          </div>
+          <button class="btn ghost sm" disabled title="Появится позже — задел, не рабочая функция">Положить в CRM<span class="soon-tag">скоро</span></button>
+        </div>
+        <div class="report-box" id="report-sav">
+          <div class="p-lbl">Доложить о человеке — подошьётся в досье</div>
+          <textarea class="inp" id="reportText-sav" rows="2" placeholder="Честно: веб о нём молчит. Если знаешь, кто это — скажи, заход соберём из твоих слов…"></textarea>
+          <div class="rb-act">
+            <button class="btn ghost sm" id="recBtn-sav" onclick="recVoice('sav')"><span class="rec-dot"></span> 🎙 Надиктовать</button>
+            <button class="btn sm" onclick="submitNote('sav')">Подшить в досье</button>
+          </div>
+        </div>
+        <div class="gate-note" style="margin-top:10px">Честно: данных нет — заход не готовим, чтобы не выдумывать. Доложи руками или оставь сырым.</div>
+      </article>
+
+      <!-- lead: Ольга (сырой) -->
+      <article class="lead" id="lead-olg">
+        <div class="lead-head">
+          <div class="ava" style="background:#B98F44">ОД</div>
+          <div class="lead-id">
+            <div class="lead-name">Ольга Дементьева</div>
+            <div class="lead-meta">@olga_dem</div>
+            <div class="lead-by">Принесла: ты · только что</div>
+          </div>
+          <span class="q-status raw">Сырой · ждёт обогащения</span>
+        </div>
+        <div class="src-list">
+          <div class="src"><span class="src-chip hand">Ручной ввод</span><span>сид: @olga_dem — больше пока ничего</span></div>
+        </div>
+        <div class="notes" id="notes-olg"></div>
+        <div class="lead-actions">
+          <button class="btn ghost sm" onclick="reportToggle('olg')">🎙 Доложить о человеке</button>
+          <div class="mini-seg">
+            <button class="on" onclick="setType(this,'olg','mass')">Массовый</button>
+            <button onclick="setType(this,'olg','addr')">Адресный</button>
+          </div>
+          <button class="btn ghost sm" disabled title="Появится позже — задел, не рабочая функция">Положить в CRM<span class="soon-tag">скоро</span></button>
+        </div>
+        <div class="report-box" id="report-olg">
+          <div class="p-lbl">Доложить о человеке — подошьётся в досье</div>
+          <textarea class="inp" id="reportText-olg" rows="2" placeholder="Что знаешь о ней руками…"></textarea>
+          <div class="rb-act">
+            <button class="btn ghost sm" id="recBtn-olg" onclick="recVoice('olg')"><span class="rec-dot"></span> 🎙 Надиктовать</button>
+            <button class="btn sm" onclick="submitNote('olg')">Подшить в досье</button>
+          </div>
+        </div>
+        <div class="gate-note" style="margin-top:10px">В очереди на обогащение — позиция 2. Труба дойдёт сама, ничего жать не надо.</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== 4. blockers ===== -->
+  <div class="grid2" id="blockers">
+    <section class="panel">
+      <div class="blk-flag">● Нерешённый блокер 1</div>
+      <h2>Что труба дёргает для обогащения</h2>
+      <p class="p-sub">Источники не спрятаны — выбираем на этом макете.</p>
+      <div class="opt" onclick="toggleSrc(this)"><div class="sw on"></div><div class="o-t"><b>Telegram-профиль (сид)</b><span>точка входа — без него лида нет, всегда включён</span></div></div>
+      <div class="opt" onclick="toggleSrc(this)"><div class="sw on"></div><div class="o-t"><b>Веб-поиск (Tavily)</b><span>сайты, карты, отзывы, вакансии — основной слой</span></div></div>
+      <div class="opt" onclick="toggleSrc(this)"><div class="sw on"></div><div class="o-t"><b>Руспрофайл / ФНС по ИНН</b><span>директор, ООО, выручка. <em>Для РФ-SMB сильнее LinkedIn</em></span></div></div>
+      <div class="opt" onclick="toggleSrc(this)"><div class="sw on"></div><div class="o-t"><b>Отраслевые ТГ-чаты</b><span>слушаем, копим сигналы: кто что спрашивает — готовые поводы</span></div></div>
+      <div class="opt" onclick="toggleSrc(this)"><div class="sw"></div><div class="o-t"><b>LinkedIn-роботы (Запад)</b><span><em>для РФ-SMB слабо</em>: собственника тюменского кафе там нет</span></div></div>
+      <div class="opt" onclick="toggleSrc(this)"><div class="sw"></div><div class="o-t"><b>Apollo</b><span>базы по РФ тонкие, много промахов</span></div></div>
+      <div class="note-honest">Открытый вопрос: окупаются ли платные источники на адресных лидах — или хватает Telegram + ФНС + веба?</div>
+    </section>
+
+    <section class="panel">
+      <div class="blk-flag">● Нерешённый блокер 2</div>
+      <h2>Канал отправки</h2>
+      <p class="p-sub">Главный открытый вопрос со встречи — решаем здесь, не пряча.</p>
+      <div class="opt sel" onclick="pickChan(this)"><div class="rd"></div><div class="o-t"><b>Ручная отправка с личного (Blink)</b><span>~20/день, живой аккаунт, безопасно. Сейчас работаем так.</span></div></div>
+      <div class="opt" onclick="pickChan(this)"><div class="rd"></div><div class="o-t"><b>Массовый спам-сервис</b><span><em>риск: мессенджер блокирует после ~3 сообщений.</em> Можем потерять номер и репутацию.</span></div></div>
+      <div class="opt" onclick="pickChan(this)"><div class="rd"></div><div class="o-t"><b>Не писать в личку — залить как рекламную аудиторию</b><span>прогрев без банов, но медленно и без персонального захода.</span></div></div>
+      <div class="note-honest"><b>Честно:</b> идеального канала пока нет. Выбор за тобой — агент подстроит темп и формулировки под канал.</div>
+    </section>
+  </div>
+
+  <!-- ===== 5. хотелки ===== -->
+  <section class="panel" id="wishes">
+    <h2>Что улучшить в Аутричере</h2>
+    <p class="p-sub">Хотелки со встречи встроены сюда же — кидай, разберём.</p>
+    <div class="wish-row">
+      <input class="inp" id="wishInp" placeholder="Предложить улучшение…">
+      <button class="btn" onclick="addWish()">Накидать</button>
+    </div>
+    <div id="wishList">
+      <div class="wish"><p><b>Свайп-режим одобрения с телефона:</b> влево — пропустить, вправо — одобрить. Чтобы гейт проходить в очереди за кофе.</p><span class="w-st talk">обсуждаем</span></div>
+      <div class="wish"><p><b>Если очередь пустеет</b> — пусть Аутричер сам предлагает, кого добрать из старой базы, а не ждёт новых сидов.</p><span class="w-st do">в работе</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="f-brand">Слаживание · Уклад ИИ — Аутричер</div>
+    вижен-артефакт, не рабочий код · все люди, компании и цифры — демонстрационные
+  </footer>
+</div>
+
+<div id="toast"><span class="tk">✓</span><span id="toastMsg"></span></div>
+
+<script>
+let toastT;
+function toast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('on');
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>t.classList.remove('on'),2600);
+}
+function goTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
+function goLead(){
+  const l=document.getElementById('lead-gal');
+  l.classList.add('open');
+  l.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ---------- counters ---------- */
+let today=37, base=420, sendQ=1, stE=2, stW=1, stA=1, stN=1;
+function refreshStats(){
+  document.getElementById('stQ').textContent=document.querySelectorAll('#leadList .lead').length;
+  document.getElementById('stE').textContent=stE;
+  document.getElementById('stW').textContent=stW;
+  document.getElementById('stA').textContent=stA;
+  document.getElementById('stN').textContent=stN;
+  document.getElementById('sendN').textContent=sendQ;
+  document.getElementById('todayN').textContent=today;
+  document.getElementById('todayBar').style.width=Math.min(100,today/50*100)+'%';
+  document.getElementById('baseN').textContent=base;
+  document.getElementById('baseBar').style.width=Math.min(100,base/1500*100)+'%';
+}
+
+/* ---------- add seeds + dedup ---------- */
+const PALETTE=['#3B7A5E','#7E6B94','#4E7A8A','#9A6250','#B98F44'];
+let seedN=0;
+const KNOWN={ // ключи для склейки дублей
+  'gal':['galitsyn','916 997','916997','галицын'],
+  'kov':['kovalev','dm_kov','903 552','903552','ковал']
+};
+function detectDup(line){
+  const l=line.toLowerCase().replace(/[\s\-()]/g,' ');
+  for(const id in KNOWN){ if(KNOWN[id].some(k=>l.includes(k))) return id; }
+  return null;
+}
+function addSeeds(){
+  const box=document.getElementById('seedBox');
+  const lines=box.value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!lines.length){toast('Пусто — вставь хотя бы один @username, телефон или ссылку');return}
+  let added=0, merged=0;
+  lines.forEach(line=>{
+    const dup=detectDup(line);
+    if(dup){mergeDup(dup);merged++;return}
+    addRawCard(line);added++;
+  });
+  box.value='';
+  today+=lines.length; base+=added;
+  refreshStats();
+  if(merged&&!added) toast('Дубль склеен — объединил в существующую карточку, второго лида не будет');
+  else if(merged) toast(`Добавил ${added}, склеил дублей: ${merged} — каждый человек живёт в одной карточке`);
+  else toast(`Добавил в очередь: ${added} · труба уже взяла в работу`);
+}
+function mergeDup(id){
+  const card=document.getElementById('lead-'+id);
+  const by=document.getElementById(id+'By');
+  if(by&&!by.dataset.merged){
+    by.dataset.merged='1';
+    by.innerHTML='Принесли: <b style="color:var(--muted)">Леонид + ты</b> · один и тот же контакт, склеено';
+    const name=card.querySelector('.lead-name');
+    if(!name.querySelector('.i-tag.merged')){
+      const t=document.createElement('span');t.className='i-tag merged';t.textContent='объединён дубль';
+      name.appendChild(t);
+    }
+  }
+  card.classList.add('glow');
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>card.classList.remove('glow'),2200);
+}
+function addRawCard(line){
+  seedN++;
+  const id='seed'+seedN;
+  const clean=line.replace(/^@/,'').replace(/[^a-zA-Zа-яА-Я0-9_]/g,'');
+  const init=(clean.slice(0,2)||'??').toUpperCase();
+  const color=PALETTE[seedN%PALETTE.length];
+  const list=document.getElementById('leadList');
+  const el=document.createElement('article');
+  el.className='lead';el.id='lead-'+id;
+  el.innerHTML=`
+    <div class="lead-head">
+      <div class="ava" style="background:${color}">${init}</div>
+      <div class="lead-id">
+        <div class="lead-name">${line}</div>
+        <div class="lead-by">Принёс: ты · только что</div>
+      </div>
+      <span class="q-status raw">Сырой · ждёт обогащения</span>
+    </div>
+    <div class="src-list">
+      <div class="src"><span class="src-chip hand">Ручной ввод</span><span>сид: ${line} — больше пока ничего</span></div>
+    </div>
+    <div class="notes" id="notes-${id}"></div>
+    <div class="lead-actions">
+      <button class="btn ghost sm" onclick="reportToggle('${id}')">🎙 Доложить о человеке</button>
+      <div class="mini-seg">
+        <button class="on" onclick="setType(this,'${id}','mass')">Массовый</button>
+        <button onclick="setType(this,'${id}','addr')">Адресный</button>
+      </div>
+      <button class="btn ghost sm" disabled title="Появится позже — задел, не рабочая функция">Положить в CRM<span class="soon-tag">скоро</span></button>
+    </div>
+    <div class="report-box" id="report-${id}">
+      <div class="p-lbl">Доложить о человеке — подошьётся в досье</div>
+      <textarea class="inp" id="reportText-${id}" rows="2" placeholder="Что знаешь о нём руками…"></textarea>
+      <div class="rb-act">
+        <button class="btn ghost sm" id="recBtn-${id}" onclick="recVoice('${id}')"><span class="rec-dot"></span> 🎙 Надиктовать</button>
+        <button class="btn sm" onclick="submitNote('${id}')">Подшить в досье</button>
+      </div>
+    </div>
+    <div class="gate-note" style="margin-top:10px">В очереди на обогащение. Труба дойдёт сама, ничего жать не надо.</div>`;
+  list.prepend(el);
+}
+
+/* ---------- soft dedup ---------- */
+function dupResolve(yes){
+  const q=document.getElementById('dupQ');
+  if(yes){
+    q.innerHTML=`<div style="display:flex;gap:12px;align-items:flex-start">
+      <div class="ava" style="background:#3B7A5E;width:30px;height:30px;font-size:11px">СК</div>
+      <div style="flex:1">
+        <div class="lead-name" style="font-size:13.5px">Сергей Круглов <span class="i-tag merged">объединён дубль</span></div>
+        <div class="lead-meta">@s_kruglov · +7 905 233 47 19 · пекарня «Хлеб да»</div>
+        <div class="lead-by">Принесли: <b style="color:var(--muted)">Леонид + Катя</b> · склеено в одну карточку</div>
+      </div>
+      <span class="q-status raw">Сырой · ждёт обогащения</span>
+    </div>`;
+    q.style.borderColor='var(--green-deep)';
+    q.style.background='var(--card-2)';
+    toast('Склеил: один человек — одна карточка, два источника сида');
+  }else{
+    q.innerHTML=`<div style="font-size:13px;color:var(--muted)">Понял — оставил как <b style="color:var(--ink)">два разных контакта</b>. Если всё же сольются сами по телефону — покажу ещё раз.</div>`;
+    q.style.opacity='.6';
+    toast('Ок, не склеиваю — оставил оба контакта');
+  }
+}
+
+/* ---------- lead open / gate ---------- */
+function toggleLead(id){
+  document.getElementById('lead-'+id).classList.toggle('open');
+}
+function approve(id){
+  document.getElementById('act-'+id).style.display='none';
+  document.getElementById('sent-'+id).classList.add('on');
+  document.getElementById('lead-'+id).classList.add('approved');
+  sendQ++; stA++; stW=Math.max(0,stW-1);
+  refreshStats();
+  toast('Одобрено тобой — уйдёт в ближайшее окно отправки. Без ОК — ноль.');
+}
+function skipLead(id){
+  const act=document.getElementById('act-'+id);
+  if(act) act.style.display='none';
+  document.getElementById('lead-'+id).classList.add('rejected');
+  document.getElementById('lead-'+id).classList.remove('open');
+  stW=Math.max(0,stW-1);
+  refreshStats();
+  toast('Пропустил — агент учтёт, почему не подошло');
+}
+const REWRITES={
+  gal:[`Александр, привет! Подсмотрел в Instagram, что «Купец» открыл четвёртую точку — и тут же вакансия управляющего. Быстрый рост обычно упирается в обучение людей.
+
+Мы укладываем ИИ в обучение смены: новый бариста за неделю работает по вашим стандартам, а не за месяц. Леонид с форума HoReCa передавал привет.
+
+Показать на 15 минутах, как это устроено?`,
+`Александр, здравствуйте! Леонид передавал привет — пересекались с вами на HoReCa, вы тогда говорили про текучку бариста.
+
+Мы как раз закрываем это: ИИ-наставник для смены, обучение по стандартам сети. Если тема живая — созвон на 15 минут, покажу на примере одной точки «Купца».`],
+  mad:[`Мадина, привет! Видел, что «Место» набирает мастеров — отличный знак.
+
+Коротко: помогаем студиям укладывать ИИ в обучение новичков и в запись клиентов. Новичок выходит в ваши стандарты за неделю, администратор разгружается.
+
+15 минут на созвон — покажу, как это выглядит у похожей студии?`]
+};
+const rwIdx={};
+function rewrite(id){
+  const list=REWRITES[id]||REWRITES.gal;
+  rwIdx[id]=((rwIdx[id]||0)+1)%list.length;
+  document.getElementById('draft-'+id).value=list[rwIdx[id]];
+  toast('Переписал под этого человека — гляди свежий вариант');
+}
+
+/* ---------- type toggle ---------- */
+function setType(btn,id,type){
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  toast(type==='addr'?'Тип: адресный — заход будет глубже, с досье и поводом':'Тип: массовый — короткий заход по шаблону ниши');
+}
+
+/* ---------- report / voice ---------- */
+function reportToggle(id){
+  document.getElementById('report-'+id).classList.toggle('on');
+}
+function recVoice(id){
+  const btn=document.getElementById('recBtn-'+id);
+  if(btn.classList.contains('recording'))return;
+  btn.classList.add('recording');
+  btn.innerHTML='<span class="rec-dot"></span> Записываю… отпусти, чтобы закончить';
+  setTimeout(()=>{
+    btn.classList.remove('recording');
+    btn.innerHTML='<span class="rec-dot"></span> 🎙 Перезаписать';
+    document.getElementById('reportText-'+id).value='Знакомы лично, пересекались на отраслевой конфе. По деньгам решает не один — есть совладелец, его тоже стоит учесть в заходе.';
+    toast('Голосовая расшифрована — проверь текст и подшей');
+  },2300);
+}
+function submitNote(id){
+  const ta=document.getElementById('reportText-'+id);
+  const txt=ta.value.trim();
+  if(!txt){toast('Пусто — напиши или надиктуй пару слов о человеке');return}
+  const n=document.createElement('div');
+  n.className='note-item';
+  n.innerHTML=`<span class="n-who">✋ От тебя · только что</span><span>${txt.replace(/</g,'&lt;')}</span>`;
+  document.getElementById('notes-'+id).appendChild(n);
+  ta.value='';
+  document.getElementById('report-'+id).classList.remove('on');
+  toast('Подшил в досье — агент сведёт это с найденным из веба');
+}
+
+/* ---------- blockers ---------- */
+function toggleSrc(row){
+  const sw=row.querySelector('.sw');
+  sw.classList.toggle('on');
+  const name=row.querySelector('b').textContent;
+  toast(sw.classList.contains('on')?`Источник включён: ${name}`:`Источник выключен: ${name} — труба обойдётся без него`);
+}
+function pickChan(row){
+  row.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  row.classList.add('sel');
+  toast('Канал отправки выбран — агент подстроит темп и формулировки');
+}
+
+/* ---------- wishes ---------- */
+function addWish(){
+  const inp=document.getElementById('wishInp');
+  const v=inp.value.trim();
+  if(!v){toast('Напиши хотелку парой слов');return}
+  const w=document.createElement('div');
+  w.className='wish';
+  w.innerHTML=`<p><b>Новая:</b> ${v.replace(/</g,'&lt;')}</p><span class="w-st new">новая</span>`;
+  document.getElementById('wishList').prepend(w);
+  inp.value='';
+  toast('Хотелка улетела в бэклог Аутричера');
+}
+
+/* ---------- enrichment simulation (Мадина) ---------- */
+const ENR=[
+  [16,'⚡ читаю Telegram-профиль…'],
+  [42,'⚡ ищу Instagram и веб-следы…'],
+  [71,'⚡ проверяю Руспрофайл / ФНС…'],
+  [100,'⚡ собираю досье и заход…']
+];
+function runEnrichment(){
+  ENR.forEach((s,i)=>{
+    setTimeout(()=>{
+      document.getElementById('madBar').style.width=s[0]+'%';
+      document.getElementById('madStep').textContent=s[1];
+      if(s[0]===100) setTimeout(finishMad,900);
+    },1400+i*1900);
+  });
+}
+function finishMad(){
+  const st=document.getElementById('madStatus');
+  st.className='q-status ok';st.textContent='Обогащён';
+  document.getElementById('madEnr').style.display='none';
+  document.getElementById('madFound').style.display='block';
+  document.getElementById('madSrc').innerHTML=`
+    <div class="src"><span class="src-chip tg">Telegram-профиль</span><span>имя, телефон, @username</span></div>
+    <div class="src"><span class="src-chip ig">Instagram</span><span>8,1k подписчиков, ниша: nail-студия</span></div>
+    <div class="src"><span class="src-chip web">Веб-поиск</span><span>владелица студии «Место», Екатеринбург</span></div>`;
+  document.getElementById('madSig').style.display='flex';
+  const btn=document.getElementById('madOpenBtn');
+  btn.disabled=false;btn.textContent='Открыть заход';
+  stE++;stW++;
+  refreshStats();
+  const card=document.getElementById('lead-mad');
+  card.classList.add('glow');
+  setTimeout(()=>card.classList.remove('glow'),2200);
+  toast('Мадина Рахимова обогащена — заход готов и ждёт твоего ОК');
+}
+window.addEventListener('load',()=>{refreshStats();setTimeout(runEnrichment,1200)});
+</script>
+</body>
+</html>
