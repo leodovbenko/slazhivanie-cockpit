@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИИ-рекрутёр — отклик до найма</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f3f4;
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a5a6a;
+            --text-muted: #8a8a9a;
+            --border: #e1e3e6;
+            --accent: #4f46e5;
+            --accent-light: #e0e7ff;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo::before {
+            content: "◆";
+            font-size: 12px;
+        }
+
+        .vacancy-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .vacancy-selector::after {
+            content: "▼";
+            font-size: 8px;
+            color: var(--text-muted);
+        }
+
+        .header-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .header-tab {
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+
+        .header-tab:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .header-tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Main layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 61px);
+            overflow: hidden;
+        }
+
+        .board-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .board-header {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .board-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .board-subtitle {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .board-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+
+        .btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Kanban board */
+        .kanban-board {
+            flex: 1;
+            display: flex;
+            gap: 16px;
+            padding: 0 24px 24px;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .kanban-column {
+            width: 280px;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .column-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .column-title {
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .column-count {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .column-count.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .column-cards {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+            min-height: 100px;
+        }
+
+        .column-cards.drag-over {
+            background: var(--accent-light);
+            border-radius: 8px;
+        }
+
+        /* Candidate card */
+        .candidate-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .candidate-card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-1px);
+        }
+
+        .candidate-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .card-name {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        .card-position {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .traffic-light {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .traffic-light.green { background: var(--success); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+        .traffic-light.yellow { background: var(--warning); box-shadow: 0 0 6px rgba(245,158,11,0.4); }
+        .traffic-light.red { background: var(--danger); box-shadow: 0 0 6px rgba(239,68,68,0.4); }
+
+        .card-badges {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .gate-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .gate-badge::before {
+            content: "◆";
+            font-size: 8px;
+            color: var(--accent);
+        }
+
+        .card-actions {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-show-nm {
+            width: 100%;
+            padding: 6px 10px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-show-nm:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Table card specific */
+        .table-card .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .meta-row::before {
+            content: "•";
+            color: var(--text-muted);
+            font-size: 8px;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-badge.approved { background: #dcfce7; color: #166534; }
+        .status-badge.rejected { background: #fee2e2; color: #991b1b; }
+        .status-badge.conditional { background: #fef3c7; color: #92400e; }
+        .status-badge.waiting { background: #e0e7ff; color: #3730a3; }
+
+        /* Side panel */
+        .side-panel {
+            width: 420px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        .side-panel.hidden {
+            display: none;
+        }
+
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .panel-subtitle {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .panel-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .panel-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-tertiary);
+        }
+
+        .panel-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+
+        .panel-tab:hover {
+            background: var(--bg-secondary);
+        }
+
+        .panel-tab.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .panel-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .resume-block {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .resume-header {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .resume-period {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .resume-desc {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* Gates evaluation */
+        .gates-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .gate-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+
+        .gate-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .gate-status.passed {
+            background: var(--success);
+            color: white;
+        }
+
+        .gate-status.passed::after {
+            content: "✓";
+            font-size: 12px;
+        }
+
+        .gate-status.failed {
+            background: var(--danger);
+            color: white;
+        }
+
+        .gate-status.failed::after {
+            content: "×";
+            font-size: 14px;
+        }
+
+        .gate-info {
+            flex: 1;
+        }
+
+        .gate-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .gate-quote {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding-left: 12px;
+            border-left: 2px solid var(--border);
+        }
+
+        /* Interview evaluation */
+        .evaluation-block {
+            padding: 16px;
+            background: #fef3c7;
+            border-radius: 10px;
+            border-left: 3px solid var(--warning);
+        }
+
+        .evaluation-block.negative {
+            background: #fee2e2;
+            border-left-color: var(--danger);
+        }
+
+        .evaluation-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .eval-author {
+            font-weight: 600;
+        }
+
+        .eval-date {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        /* History */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 12px;
+        }
+
+        .history-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-top: 4px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .history-dot::after {
+            content: "";
+            position: absolute;
+            top: 16px;
+            left: 5px;
+            width: 2px;
+            height: calc(100% + 16px);
+            background: var(--border);
+        }
+
+        .history-item:last-child .history-dot::after {
+            display: none;
+        }
+
+        .history-content {
+            flex: 1;
+            padding-bottom: 8px;
+        }
+
+        .history-action {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .history-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* NM Response */
+        .nm-response-block {
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+
+        .nm-decision {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .nm-decision-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .nm-decision-text.approved { color: var(--success); }
+        .nm-decision-text.rejected { color: var(--danger); }
+        .nm-decision-text.conditional { color: var(--warning); }
+
+        .nm-comment {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .nm-source {
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .nm-source strong {
+            color: var(--text-primary);
+        }
+
+        /* Prompt modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            width: 720px;
+            max-height: 80vh;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 20px 24px;
+            overflow-y: auto;
+        }
+
+        .prompt-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            resize: none;
+            outline: none;
+        }
+
+        .prompt-textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 200;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            background: var(--text-primary);
+            color: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Archive toggle */
+        .archive-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .archive-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .archive-link.active {
+            color: var(--accent);
+        }
+
+        /* Empty state */
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .side-panel {
+                position: fixed;
+                right: 0;
+                top: 61px;
+                bottom: 0;
+                z-index: 50;
+                box-shadow: var(--shadow-lg);
+            }
+            
+            .side-panel.hidden {
+                transform: translateX(100%);
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kanban-board {
+                flex-direction: column;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+            
+            .kanban-column {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">Рекрутёр</div>
+            <div class="vacancy-selector">
+                <span>Senior Product Designer</span>
+                <span style="color: var(--text-muted);">• 12 кандидатов</span>
+            </div>
+            <div class="header-tabs">
+                <div class="header-tab active" data-board="notebook">Тетрадь</div>
+                <div class="header-tab" data-board="table">Стол</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn-icon" onclick="openPromptModal()" title="Промпт скоринга">⚙</button>
+            <button class="btn-icon">🔔</button>
+            <div class="user-avatar">АК</div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <div class="main-container">
+        <div class="board-area">
+            <!-- Notebook Board -->
+            <div class="board-header" id="notebook-header">
+                <div>
+                    <div class="board-title">Тетрадь — моя кухня</div>
+                    <div class="board-subtitle">Сюда приходят все отклики, здесь я решаю, кого показать нанимающему</div>
+                </div>
+                <div class="board-actions">
+                    <button class="btn btn-ghost archive-link" onclick="toggleArchive()">
+                        📁 Архив / Резерв
+                    </button>
+                    <button class="btn btn-primary">+ Добавить вручную</button>
+                </div>
+            </div>
+
+            <!-- Table Board -->
+            <div class="board-header" id="table-header" style="display: none;">
+                <div>
+                    <div class="board-title">Стол — шорт-лист для НМ</div>
+                    <div class="board-subtitle">Только те, кого я осознанно показал. Нанимающий видит эту доску.</div>
+                </div>
+                <div class="board-actions">
+                    <button class="btn btn-ghost archive-link" onclick="toggleArchive()">
+                        📁 Архив / Резерв
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kanban -->
+            <div class="kanban-board" id="kanban-board">
+                <!-- Columns will be generated by JS -->
+            </div>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="side-panel hidden" id="side-panel">
+            <div class="panel-header">
+                <div>
+                    <div class="panel-title" id="panel-name">Кандидат</div>
+                    <div class="panel-subtitle" id="panel-position">Должность</div>
+                </div>
+                <button class="panel-close" onclick="closePanel()">✕</button>
+            </div>
+            <div class="panel-tabs">
+                <div class="panel-tab active" data-tab="resume">Резюме</div>
+                <div class="panel-tab" data-tab="agent-eval">Оценка агента</div>
+                <div class="panel-tab" data-tab="interview-eval">После собеса</div>
+                <div class="panel-tab" data-tab="history">История</div>
+                <div class="panel-tab" data-tab="nm-response">Ответ НМ</div>
+            </div>
+            <div class="panel-content" id="panel-content">
+                <!-- Content generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt Modal -->
+    <div class="modal-overlay" id="prompt-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Промпт скоринга резюме</div>
+                <button class="panel-close" onclick="closePromptModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <textarea class="prompt-textarea" id="prompt-textarea"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closePromptModal()">Отмена</button>
+                <button class="btn btn-primary" onclick="savePrompt()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        // Data
+        const gates = [
+            { id: 'exp', name: 'Опыт 5+ лет в продукте', required: true },
+            { id: 'lead', name: 'Опыт управления командой', required: true },
+            { id: 'figma', name: 'Уверенное владение Figma', required: true },
+            { id: 'eng', name: 'Английский B2+', required: false },
+            { id: 'domain', name: 'Опыт в fintech/edtech', required: false }
+        ];
+
+        const candidates = [
+            {
+                id: 1,
+                name: 'Анна Волкова',
+                position: 'Senior Product Designer',
+                trafficLight: 'green',
+                gatesPassed: 5,
+                gatesTotal: 5,
+                board: 'notebook',
+                stage: 'new',
+                sentToNm: null,
+                nmResponse: null,
+                nmResponseDate: null,
+                interviewDate: null,
+                interviewStatus: null,
+                resume: {
+                    experience: [
+                        { company: 'Яндекс', period: '2021 — 2024', role: 'Senior Product Designer', desc: 'Дизайн мобильного поиска. Рост конверсии на 15% после редизайна фильтров.' },
+                        { company: 'Сбер', period: '2018 — 2021', role: 'Product Designer', desc: 'Дизайн система для корпоративного банкинга. 40+ экранов, сократили время разработки на 30%.' }
+                    ],
+                    skills: ['Figma', 'Protopie', 'User Research', 'Design Systems', 'A/B-тесты', 'CJM', 'JTBD']
+                },
+                agentEval: {
+                    trafficLight: 'green',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '4 года в Яндексе, 3 в Сбере — явно больше 5 лет в продукте' },
+                        { id: 'lead', passed: true, quote: '«Вела команду из 3 дизайнеров» — прямое подтверждение' },
+                        { id: 'figma', passed: true, quote: 'Figma, auto-layout, variables — пишет сама' },
+                        { id: 'eng', passed: true, quote: 'IELTS 7.5, работала с международной командой' },
+                        { id: 'domain', passed: true, quote: 'И Яндекс, и Сбер — оба финтех по сути' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '10 июл, 09:15', action: 'Отклик получен', author: 'Система' },
+                    { date: '10 июл, 14:32', action: 'Оценён агентом: зелёный свет', author: 'ИИ-агент' },
+                    { date: '10 июл, 16:45', action: 'Проверил вручную: всё ок', author: 'Алексей К.' }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Дмитрий Соколов',
+                position: 'Senior Product Designer',
+                trafficLight: 'yellow',
+                gatesPassed: 4,
+                gatesTotal: 5,
+                board: 'notebook',
+                stage: 'screening',
+                sentToNm: null,
+                nmResponse: null,
+                nmResponseDate: null,
+                interviewDate: null,
+                interviewStatus: null,
+                resume: {
+                    experience: [
+                        { company: 'Тинькофф', period: '2020 — 2024', role: 'Product Designer', desc: 'Мобильный банк. Переписали раздел «Инвестиции» с нуля.' },
+                        { company: 'Райффайзен', period: '2017 — 2020', role: 'UX Designer', desc: 'Корпоративный портал, дизайн-система.' }
+                    ],
+                    skills: ['Figma', 'Sketch', 'Principle', 'HTML/CSS', 'Аналитика']
+                },
+                agentEval: {
+                    trafficLight: 'yellow',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '7 лет опыта, но вопрос — весь ли в продукте' },
+                        { id: 'lead', passed: false, quote: 'Не указано прямо, только «наставничество»' },
+                        { id: 'figma', passed: true, quote: 'Figma как основной инструмент' },
+                        { id: 'eng', passed: true, quote: 'Upper-intermediate по собеседованию' },
+                        { id: 'domain', passed: true, quote: 'Чистый финтех' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '9 июл, 11:20', action: 'Отклик получен', author: 'Система' },
+                    { date: '9 июл, 15:45', action: 'Оценён агентом: жёлтый свет', author: 'ИИ-агент' }
+                ]
+            },
+            {
+                id: 3,
+                name: 'Мария Козлова',
+                position: 'Senior Product Designer',
+                trafficLight: 'red',
+                gatesPassed: 2,
+                gatesTotal: 5,
+                board: 'notebook',
+                stage: 'new',
+                sentToNm: null,
+                nmResponse: null,
+                nmResponseDate: null,
+                interviewDate: null,
+                interviewStatus: null,
+                resume: {
+                    experience: [
+                        { company: 'Агентство «Пиксель»', period: '2019 — 2024', role: 'UI/UX Designer', desc: 'Сайты и лендинги для клиентов. От e-commerce до корпоративных.' }
+                    ],
+                    skills: ['Figma', 'Photoshop', 'Illustrator', 'Tilda', 'Webflow']
+                },
+                agentEval: {
+                    trafficLight: 'red',
+                    gates: [
+                        { id: 'exp', passed: false, quote: 'Агентский опыт, не продуктовый — риск' },
+                        { id: 'lead', passed: false, quote: 'Нет упоминаний о команде' },
+                        { id: 'figma', passed: true, quote: 'Работает в Figma' },
+                        { id: 'eng', passed: false, quote: 'Не указан, не спрашивали' },
+                        { id: 'domain', passed: false, quote: 'Разные проекты, нет глубины в одной сфере' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '8 июл, 16:30', action: 'Отклик получен', author: 'Система' },
+                    { date: '8 июл, 18:10', action: 'Оценён агентом: красный свет', author: 'ИИ-агент' }
+                ]
+            },
+            {
+                id: 4,
+                name: 'Иван Петров',
+                position: 'Senior Product Designer',
+                trafficLight: 'green',
+                gatesPassed: 5,
+                gatesTotal: 5,
+                board: 'notebook',
+                stage: 'ready',
+                sentToNm: null,
+                nmResponse: null,
+                nmResponseDate: null,
+                interviewDate: null,
+                interviewStatus: null,
+                resume: {
+                    experience: [
+                        { company: 'VK', period: '2020 — 2024', role: 'Senior Product Designer', desc: 'Музыка и видео. Редизайн плеера, рост retention на 8%.' },
+                        { company: 'Skyeng', period: '2017 — 2020', role: 'Product Designer', desc: 'Образовательная платформа. Мобильное приложение.' }
+                    ],
+                    skills: ['Figma', 'After Effects', 'Python', 'SQL', 'Product Analytics']
+                },
+                agentEval: {
+                    trafficLight: 'green',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '4 года Senior, до этого 3 года — ок' },
+                        { id: 'lead', passed: true, quote: '«Руководил направлением дизайна»' },
+                        { id: 'figma', passed: true, quote: 'Пишет плагины для Figma на Python' },
+                        { id: 'eng', passed: true, quote: 'Работал с продуктом в Латвии' },
+                        { id: 'domain', passed: true, quote: 'Edtech + контент — близко к нашей сфере' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '5 июл, 10:00', action: 'Отклик получен', author: 'Система' },
+                    { date: '5 июл, 12:30', action: 'Оценён агентом: зелёный свет', author: 'ИИ-агент' },
+                    { date: '6 июл, 11:00', action: 'Проверил вручную: сильный кандидат', author: 'Алексей К.' }
+                ]
+            },
+            {
+                id: 5,
+                name: 'Елена Новикова',
+                position: 'Senior Product Designer',
+                trafficLight: 'green',
+                gatesPassed: 4,
+                gatesTotal: 5,
+                board: 'notebook',
+                stage: 'new',
+                sentToNm: null,
+                nmResponse: null,
+                nmResponseDate: null,
+                interviewDate: null,
+                interviewStatus: null,
+                resume: {
+                    experience: [
+                        { company: 'Ozon', period: '2021 — 2024', role: 'Product Designer', desc: 'Покупательский опыт. Корзина и оформление заказа.' }
+                    ],
+                    skills: ['Figma', 'Miro', 'Maze', 'Hotjar', 'Amplitude']
+                },
+                agentEval: {
+                    trafficLight: 'green',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '3 года, но очень плотный опыт' },
+                        { id: 'lead', passed: true, quote: 'Менторила стажёров, вела 2 джуна' },
+                        { id: 'figma', passed: true, quote: 'Сложные прототипы в Figma' },
+                        { id: 'eng', passed: false, quote: 'Не указан, но «читаю документацию»' },
+                        { id: 'domain', passed: true, quote: 'E-commerce — релевантно' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '11 июл, 08:45', action: 'Отклик получен', author: 'Система' },
+                    { date: '11 июл, 11:20', action: 'Оценён агентом: зелёный свет', author: 'ИИ-агент' }
+                ]
+            },
+            {
+                id: 6,
+                name: 'Алексей Морозов',
+                position: 'Senior Product Designer',
+                trafficLight: 'yellow',
+                gatesPassed: 3,
+                gatesTotal: 5,
+                board: 'notebook',
+                stage: 'screening',
+                sentToNm: null,
+                nmResponse: null,
+                nmResponseDate: null,
+                interviewDate: null,
+                interviewStatus: null,
+                resume: {
+                    experience: [
+                        { company: 'Самокат', period: '2019 — 2024', role: 'Lead Designer', desc: 'С нуля построил дизайн-отдел. Все продуктовые направления.' }
+                    ],
+                    skills: ['Figma', 'Framer', 'SwiftUI', 'Product Management']
+                },
+                agentEval: {
+                    trafficLight: 'yellow',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '5 лет, рост от дизайнера до лида' },
+                        { id: 'lead', passed: true, quote: 'Нанимал, строил процессы' },
+                        { id: 'figma', passed: true, quote: 'Переходил на Figma с Sketch' },
+                        { id: 'eng', passed: false, quote: 'Не указан' },
+                        { id: 'domain', passed: false, quote: 'Retail/delivery, не совсем наш профиль' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '7 июл, 14:00', action: 'Отклик получен', author: 'Система' },
+                    { date: '7 июл, 17:30', action: 'Оценён агентом: жёлтый свет', author: 'ИИ-агент' }
+                ]
+            },
+            // Table candidates
+            {
+                id: 7,
+                name: 'Анна Волкова',
+                position: 'Senior Product Designer',
+                trafficLight: 'green',
+                gatesPassed: 5,
+                gatesTotal: 5,
+                board: 'table',
+                stage: 'shown',
+                sentToNm: '12 июл',
+                nmResponse: 'waiting',
+                nmResponseDate: null,
+                interviewDate: null,
+                interviewStatus: null,
+                resume: {
+                    experience: [
+                        { company: 'Яндекс', period: '2021 — 2024', role: 'Senior Product Designer', desc: 'Дизайн мобильного поиска. Рост конверсии на 15% после редизайна фильтров.' },
+                        { company: 'Сбер', period: '2018 — 2021', role: 'Product Designer', desc: 'Дизайн система для корпоративного банкинга. 40+ экранов, сократили время разработки на 30%.' }
+                    ],
+                    skills: ['Figma', 'Protopie', 'User Research', 'Design Systems', 'A/B-тесты', 'CJM', 'JTBD']
+                },
+                agentEval: {
+                    trafficLight: 'green',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '4 года в Яндексе, 3 в Сбере — явно больше 5 лет в продукте' },
+                        { id: 'lead', passed: true, quote: '«Вела команду из 3 дизайнеров» — прямое подтверждение' },
+                        { id: 'figma', passed: true, quote: 'Figma, auto-layout, variables — пишет сама' },
+                        { id: 'eng', passed: true, quote: 'IELTS 7.5, работала с международной командой' },
+                        { id: 'domain', passed: true, quote: 'И Яндекс, и Сбер — оба финтех по сути' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '10 июл, 09:15', action: 'Отклик получен', author: 'Система' },
+                    { date: '10 июл, 14:32', action: 'Оценён агентом: зелёный свет', author: 'ИИ-агент' },
+                    { date: '10 июл, 16:45', action: 'Проверил вручную: всё ок', author: 'Алексей К.' },
+                    { date: '12 июл, 10:00', action: 'Показан НМ: Сергей В. (директор по продукту)', author: 'Алексей К.' }
+                ]
+            },
+            {
+                id: 8,
+                name: 'Иван Петров',
+                position: 'Senior Product Designer',
+                trafficLight: 'green',
+                gatesPassed: 5,
+                gatesTotal: 5,
+                board: 'table',
+                stage: 'nm-response',
+                sentToNm: '8 июл',
+                nmResponse: 'approved',
+                nmResponseDate: '10 июл',
+                nmResponseComment: 'Сильный кандидат. Просит зп выше бюджета на 15%, готовы обсудить. Назначать на собес.',
+                interviewDate: '15 июл, 14:00',
+                interviewStatus: 'scheduled',
+                resume: {
+                    experience: [
+                        { company: 'VK', period: '2020 — 2024', role: 'Senior Product Designer', desc: 'Музыка и видео. Редизайн плеера, рост retention на 8%.' },
+                        { company: 'Skyeng', period: '2017 — 2020', role: 'Product Designer', desc: 'Образовательная платформа. Мобильное приложение.' }
+                    ],
+                    skills: ['Figma', 'After Effects', 'Python', 'SQL', 'Product Analytics']
+                },
+                agentEval: {
+                    trafficLight: 'green',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '4 года Senior, до этого 3 года — ок' },
+                        { id: 'lead', passed: true, quote: '«Руководил направлением дизайна»' },
+                        { id: 'figma', passed: true, quote: 'Пишет плагины для Figma на Python' },
+                        { id: 'eng', passed: true, quote: 'Работал с продуктом в Латвии' },
+                        { id: 'domain', passed: true, quote: 'Edtech + контент — близко к нашей сфере' }
+                    ]
+                },
+                interviewEval: null,
+                history: [
+                    { date: '5 июл, 10:00', action: 'Отклик получен', author: 'Система' },
+                    { date: '5 июл, 12:30', action: 'Оценён агентом: зелёный свет', author: 'ИИ-агент' },
+                    { date: '6 июл, 11:00', action: 'Проверил вручную: сильный кандидат', author: 'Алексей К.' },
+                    { date: '8 июл, 14:00', action: 'Показан НМ: Сергей В.', author: 'Алексей К.' },
+                    { date: '10 июл, 09:30', action: 'Ответ НМ: Одобрен', author: 'Сергей В.' },
+                    { date: '10 июл, 16:00', action: 'Собес назначен: 15 июл', author: 'Алексей К.' }
+                ]
+            },
+            {
+                id: 9,
+                name: 'Ольга Смирнова',
+                position: 'Senior Product Designer',
+                trafficLight: 'green',
+                gatesPassed: 5,
+                gatesTotal: 5,
+                board: 'table',
+                stage: 'interview',
+                sentToNm: '5 июл',
+                nmResponse: 'approved',
+                nmResponseDate: '6 июл',
+                nmResponseComment: 'Отлично. Ждём на собеседование.',
+                interviewDate: '10 июл',
+                interviewStatus: 'completed',
+                resume: {
+                    experience: [
+                        { company: 'Netology', period: '2019 — 2024', role: 'Senior Product Designer', desc: 'Edtech. Платформа для онлайн-курсов. 2 млн+ пользователей.' }
+                    ],
+                    skills: ['Figma', 'Miro', 'User Research', 'Strategy']
+                },
+                agentEval: {
+                    trafficLight: 'green',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '5 лет в edtech' },
+                        { id: 'lead', passed: true, quote: 'Тимлид команды из 4 человек' },
+                        { id: 'figma', passed: true, quote: 'Figma на экспертном уровне' },
+                        { id: 'eng', passed: true, quote: 'Свободно, работала с западными партнёрами' },
+                        { id: 'domain', passed: true, quote: 'Edtech — прямое попадание' }
+                    ]
+                },
+                interviewEval: {
+                    trafficLight: 'green',
+                    author: 'Сергей В.',
+                    date: '10 июл',
+                    text: 'Сильный кандидат. Глубоко разбирается в edtech, привела конкретные кейсы по росту конверсии. Культурно подходит. Рекомендую в оффер.'
+                },
+                history: [
+                    { date: '3 июл, 11:00', action: 'Отклик получен', author: 'Система' },
+                    { date: '3 июл, 15:00', action: 'Оценён агентом: зелёный свет', author: 'ИИ-агент' },
+                    { date: '5 июл, 10:00', action: 'Показан НМ: Сергей В.', author: 'Алексей К.' },
+                    { date: '6 июл, 14:00', action: 'Ответ НМ: Одобрен', author: 'Сергей В.' },
+                    { date: '10 июл, 14:00', action: 'Собеседование с НМ', author: 'Сергей В.' },
+                    { date: '10 июл, 16:30', action: 'Оценка после собеса: зелёный', author: 'Сергей В.' }
+                ]
+            },
+            {
+                id: 10,
+                name: 'Павел Кузнецов',
+                position: 'Senior Product Designer',
+                trafficLight: 'yellow',
+                gatesPassed: 4,
+                gatesTotal: 5,
+                board: 'table',
+                stage: 'offer',
+                sentToNm: '1 июл',
+                nmResponse: 'conditional',
+                nmResponseDate: '2 июл',
+                nmResponseComment: 'Нормальный кандидат, но много перепрыгивал. Нужно проверить рекомендации.',
+                interviewDate: '5 июл',
+                interviewStatus: 'completed',
+                resume: {
+                    experience: [
+                        { company: 'Рамблер', period: '2022 — 2024', role: 'Product Designer', desc: 'Новостной агрегатор.' },
+                        { company: 'МТС', period: '2020 — 2022', role: 'Senior Designer', desc: 'Мобильное приложение.' },
+                        { company: 'МегаФон', period: '2018 — 2020', role: 'Designer', desc: 'Digital-продукты.' }
+                    ],
+                    skills: ['Figma', 'Principle', 'Cinema 4D']
+                },
+                agentEval: {
+                    trafficLight: 'yellow',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '6 лет, но частая смена работы' },
+                        { id: 'lead', passed: false, quote: 'Не указано явно' },
+                        { id: 'figma', passed: true, quote: 'Работает в Figma' },
+                        { id: 'eng', passed: true, quote: 'Разговорный' },
+                        { id: 'domain', passed: true, quote: 'Телеком + медиа' }
+                    ]
+                },
+                interviewEval: {
+                    trafficLight: 'yellow',
+                    author: 'Сергей В.',
+                    date: '5 июл',
+                    text: 'Условно. Технически сильный, но 3 работы за 6 лет — флаг. Готов взять, если рекомендации ок.'
+                },
+                history: [
+                    { date: '28 июн, 09:00', action: 'Отклик получен', author: 'Система' },
+                    { date: '28 июн, 12:00', action: 'Оценён агентом: жёлтый свет', author: 'ИИ-агент' },
+                    { date: '1 июл, 10:00', action: 'Показан НМ: Сергей В.', author: 'Алексей К.' },
+                    { date: '2 июл, 11:00', action: 'Ответ НМ: Условно', author: 'Сергей В.' },
+                    { date: '5 июл, 10:00', action: 'Собеседование с НМ', author: 'Сергей В.' },
+                    { date: '5 июл, 13:00', action: 'Оценка после собеса: жёлтый', author: 'Сергей В.' },
+                    { date: '8 июл, 16:00', action: 'Оффер отправлен', author: 'Алексей К.' }
+                ]
+            },
+            {
+                id: 11,
+                name: 'Сергей Лебедев',
+                position: 'Senior Product Designer',
+                trafficLight: 'green',
+                gatesPassed: 5,
+                gatesTotal: 5,
+                board: 'table',
+                stage: 'hired',
+                sentToNm: '15 июн',
+                nmResponse: 'approved',
+                nmResponseDate: '16 июн',
+                nmResponseComment: 'Идеальный кандидат. Берём.',
+                interviewDate: '20 июн',
+                interviewStatus: 'completed',
+                resume: {
+                    experience: [
+                        { company: 'Avito', period: '2019 — 2024', role: 'Principal Designer', desc: 'Дизайн-платформа, продуктовая стратегия.' }
+                    ],
+                    skills: ['Figma', 'Strategy', 'Management', 'Recruiting']
+                },
+                agentEval: {
+                    trafficLight: 'green',
+                    gates: [
+                        { id: 'exp', passed: true, quote: '5 лет, рост до Principal' },
+                        { id: 'lead', passed: true, quote: 'Управлял отделом из 15 человек' },
+                        { id: 'figma', passed: true, quote: 'Автор внутренних плагинов Avito' },
+                        { id: 'eng', passed: true, quote: 'C2, писал статьи на Medium' },
+                        { id: 'domain', passed: true, quote: 'Маркетплейс — релевантно' }
+                    ]
+                },
+                interviewEval: {
+                    trafficLight: 'green',
+                    author: 'Сергей В.',
+                    date: '20 июн',
+                    text: 'Лучший кандидат за этот год. Стратегическое мышление + execution. Выиграет конкуренцию у кого угодно.'
+                },
+                history: [
+                    { date: '10 июн, 10:00', action: 'Отклик получен', author: 'Система' },
+                    { date: '10 июн, 14:00', action: 'Оценён агентом: зелёный свет', author: 'ИИ-агент' },
+                    { date: '15 июн, 11:00', action: 'Показан НМ: Сергей В.', author: 'Алексей К.' },
+                    { date: '16 июн, 09:00', action: 'Ответ НМ: Одобрен', author: 'Сергей В.' },
+                    { date: '20 июн, 14:00', action: 'Собеседование с НМ', author: 'Сергей В.' },
+                    { date: '20 июн, 17:00', action: 'Оценка после собеса: зелёный', author: 'Сергей В.' },
+                    { date: '25 июн, 10:00', action: 'Оффер подписан', author: 'Алексей К.' },
+                    { date: '1 июл, 09:00', action: 'Выходит на работу', author: 'Система' }
+                ]
+            }
+        ];
+
+        // Archived candidates
+        const archivedCandidates = [
+            {
+                id: 101,
+                name: 'Никита Воронов',
+                position: 'Senior Product Designer',
+                trafficLight: 'red',
+                gatesPassed: 1,
+                gatesTotal: 5,
+                board: 'archive',
+                stage: 'archived',
+                archiveReason: 'Отклонён агентом',
+                sentToNm: null,
+                nmResponse: null,
+                resume: { experience: [], skills: [] },
+                agentEval: { trafficLight: 'red', gates: [] },
+                interviewEval: null,
+                history: [{ date: '5 июл', action: 'Отклонён агентом: не хватает опыта', author: 'ИИ-агент' }]
+            },
+            {
+                id: 102,
+                name: 'Катерина Мельникова',
+                position: 'Senior Product Designer',
+                trafficLight: 'red',
+                gatesPassed: 3,
+                gatesTotal: 5,
+                board: 'archive',
+                stage: 'archived',
+                archiveReason: 'Отклонён НМ',
+                sentToNm: '20 июн',
+                nmResponse: 'rejected',
+                nmResponseDate: '22 июн',
+                nmResponseComment: 'Не хватает глубины в продуктовой аналитике. Ищем более data-driven кандидата.',
+                resume: { experience: [], skills: [] },
+                agentEval: { trafficLight: 'yellow', gates: [] },
+                interviewEval: null,
+                history: [
+                    { date: '18 июн', action: 'Показан НМ', author: 'Алексей К.' },
+                    { date: '22 июн', action: 'Ответ НМ: Отклонён', author: 'Сергей В.' }
+                ]
+            }
+        ];
+
+        let currentBoard = 'notebook';
+        let showArchive = false;
+        let selectedCandidate = null;
+        let currentTab = 'resume';
+        let draggedCandidate = null;
+
+        const notebookColumns = [
+            { id: 'new', title: 'Новый отклик' },
+            { id: 'screening', title: 'Скрининг агента' },
+            { id: 'ready', title: 'Готов показать НМ' }
+        ];
+
+        const tableColumns = [
+            { id: 'shown', title: 'Показан НМ' },
+            { id: 'nm-response', title: 'Ответ НМ' },
+            { id: 'interview', title: 'Собес с НМ' },
+            { id: 'offer', title: 'Оффер' },
+            { id: 'hired', title: 'Найм' }
+        ];
+
+        const promptText = `Ты — опытный HR-аналитик с 10-летним стажем в IT-рекрутинге. Твоя задача — проскорить резюме кандидата на позицию {position}.
+
+ВАКАНСИЯ:
+- Позиция: {position}
+- Требования по воротам (оцени каждое):
+  1. Опыт 5+ лет в продуктовом дизайне — обязательно
+  2. Опыт управления командой — обязательно
+  3. Уверенное владение Figma — обязательно
+  4. Английский B2+ — желательно
+  5. Опыт в fintech/edtech — желательно
+
+ПРАВИЛА ОЦЕНКИ:
+- Зелёный свет: прошёл все обязательные ворота (1-3) и ≥1 желательное
+- Жёлтый свет: прошёл все обязательные, но вопросы по желательным
+- Красный свет: не прошёл хотя бы одно обязательное
+
+ФОРМАТ ОТВЕТА:
+1. Светофор: зелёный/жёлтый/красный
+2. Ворота: для каждого — пройдено/нет + цитата из резюме
+3. Краткое обоснование (2-3 предложения)
+
+РЕЗЮМЕ КАНДИДАТА:
+{resume_text}`;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBoard();
+            setupEventListeners();
+            document.getElementById('prompt-textarea').value = promptText;
+        });
+
+        function setupEventListeners() {
+            // Board tabs
+            document.querySelectorAll('.header-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.header-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentBoard = tab.dataset.board;
+                    showArchive = false;
+                    document.querySelector('.archive-link').classList.remove('active');
+                    renderBoard();
+                });
+            });
+
+            // Panel tabs
+            document.querySelectorAll('.panel-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentTab = tab.dataset.tab;
+                    renderPanelContent();
+                });
+            });
+        }
+
+        function renderBoard() {
+            const notebookHeader = document.getElementById('notebook-header');
+            const tableHeader = document.getElementById('table-header');
+            const board = document.getElementById('kanban-board');
+
+            if (currentBoard === 'notebook') {
+                notebookHeader.style.display = 'flex';
+                tableHeader.style.display = 'none';
+                renderNotebookBoard(board);
+            } else {
+                notebookHeader.style.display = 'none';
+                tableHeader.style.display = 'flex';
+                renderTableBoard(board);
+            }
+        }
+
+        function renderNotebookBoard(container) {
+            container.innerHTML = '';
+            
+            if (showArchive) {
+                renderArchiveView(container);
+                return;
+            }
+
+            notebookColumns.forEach(col => {
+                const column = createColumn(col, 'notebook');
+                const cards = candidates.filter(c => c.board === 'notebook' && c.stage === col.id);
+                renderNotebookCards(column.querySelector('.column-cards'), cards);
+                container.appendChild(column);
+            });
+        }
+
+        function renderTableBoard(container) {
+            container.innerHTML = '';
+            
+            if (showArchive) {
+                renderArchiveView(container);
+                return;
+            }
+
+            tableColumns.forEach(col => {
+                const column = createColumn(col, 'table');
+                const cards = candidates.filter(c => c.board === 'table' && c.stage === col.id);
+                renderTableCards(column.querySelector('.column-cards'), cards);
+                container.appendChild(column);
+            });
+        }
+
+        function createColumn(col, boardType) {
+            const column = document.createElement('div');
+            column.className = 'kanban-column';
+            column.dataset.stage = col.id;
+            
+            const cards = boardType === 'notebook' 
+                ? candidates.filter(c => c.board === 'notebook' && c.stage === col.id)
+                : candidates.filter(c => c.board === 'table' && c.stage === col.id);
+
+            column.innerHTML = `
+                <div class="column-header">
+                    <div class="column-title">
+                        ${col.title}
+                        <span class="column-count ${cards.length > 0 ? 'active' : ''}">${cards.length}</span>
+                    </div>
+                </div>
+                <div class="column-cards" data-stage="${col.id}"></div>
+            `;
+
+            // Drag and drop
+            const cardsContainer = column.querySelector('.column-cards');
+            cardsContainer.addEventListener('dragover', handleDragOver);
+            cardsContainer.addEventListener('dragleave', handleDragLeave);
+            cardsContainer.addEventListener('drop', handleDrop);
+
+            return column;
+        }
+
+        function renderNotebookCards(container, cards) {
+            cards.forEach(candidate => {
+                const card = createNotebookCard(candidate);
+                container.appendChild(card);
+            });
+        }
+
+        function renderTableCards(container, cards) {
+            cards.forEach(candidate => {
+                const card = createTableCard(candidate);
+                container.appendChild(card);
+            });
+        }
+
+        function renderArchiveView(container) {
+            container.innerHTML = '';
+            const allArchived = [...archivedCandidates];
+            
+            const column = document.createElement('div');
+            column.className = 'kanban-column';
+            column.style.width = '100%';
+            column.innerHTML = `
+                <div class="column-header">
+                    <div class="column-title">
+                        Архив / Резерв
+                        <span class="column-count active">${allArchived.length}</span>
+                    </div>
+                </div>
+                <div class="column-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+                    ${allArchived.map(c => createArchiveCard(c).outerHTML).join('')}
+                </div>
+            `;
+            container.appendChild(column);
+        }
+
+        function createNotebookCard(candidate) {
+            const card = document.createElement('div');
+            card.className = 'candidate-card';
+            card.draggable = true;
+            card.dataset.id = candidate.id;
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="card-name">${candidate.name}</div>
+                        <div class="card-position">${candidate.position}</div>
+                    </div>
+                    <div class="traffic-light ${candidate.trafficLight}"></div>
+                </div>
+                <div class="card-badges">
+                    <div class="gate-badge">${candidate.gatesPassed}/${candidate.gatesTotal}</div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-show-nm" onclick="showToNM(${candidate.id}, event)">Показать нанимающему</button>
+                </div>
+            `;
+
+            card.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('btn-show-nm')) {
+                    openPanel(candidate);
+                }
+            });
+
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+
+            return card;
+        }
+
+        function createTableCard(candidate) {
+            const card = document.createElement('div');
+            card.className = 'candidate-card table-card';
+            card.draggable = true;
+            card.dataset.id = candidate.id;
+
+            const nmStatus = candidate.nmResponse ? {
+                approved: { text: 'Одобрен', class: 'approved' },
+                rejected: { text: 'Отклонён', class: 'rejected' },
+                conditional: { text: 'Условно', class: 'conditional' },
+                waiting: { text: 'Ждём ответа', class: 'waiting' }
+            }[candidate.nmResponse] : { text: '—', class: 'waiting' };
+
+            const interviewText = candidate.interviewStatus === 'completed' 
+                ? `Прошёл: ${candidate.interviewDate}` 
+                : candidate.interviewStatus === 'scheduled'
+                ? `Назначен: ${candidate.interviewDate}`
+                : candidate.nmResponse === 'approved' ? 'Пора звонить' : 'Ждём НМ';
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="card-name">${candidate.name}</div>
+                        <div class="card-position">${candidate.position}</div>
+                    </div>
+                    <div class="traffic-light ${candidate.trafficLight}"></div>
+                </div>
+                <div class="card-meta">
+                    <div class="meta-row">Отправлен НМ: ${candidate.sentToNm}</div>
+                    <div class="meta-row">
+                        Ответ НМ: <span class="status-badge ${nmStatus.class}">${nmStatus.text}${candidate.nmResponseDate ? ', ' + candidate.nmResponseDate : ''}</span>
+                    </div>
+                    <div class="meta-row">${interviewText}</div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => openPanel(candidate));
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+
+            return card;
+        }
+
+        function createArchiveCard(candidate) {
+            const div = document.createElement('div');
+            div.className = 'candidate-card';
+            div.style.opacity = '0.7';
+            
+            div.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="card-name">${candidate.name}</div>
+                        <div class="card-position">${candidate.position}</div>
+                    </div>
+                    <div class="traffic-light ${candidate.trafficLight}"></div>
+                </div>
+                <div class="card-badges">
+                    <span class="status-badge rejected">${candidate.archiveReason}</span>
+                </div>
+            `;
+            
+            div.addEventListener('click', () => openPanel(candidate));
+            return div;
+        }
+
+        // Drag and Drop
+        function handleDragStart(e) {
+            draggedCandidate = candidates.find(c => c.id === parseInt(e.target.dataset.id));
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedCandidate = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            if (!draggedCandidate) return;
+            
+            const newStage = e.currentTarget.dataset.stage;
+            if (draggedCandidate.stage === newStage) return;
+
+            // Validate moves
+            if (currentBoard === 'notebook') {
+                const validMoves = {
+                    'new': ['screening', 'ready'],
+                    'screening': ['new', 'ready'],
+                    'ready': ['screening', 'new']
+                };
+                if (!validMoves[draggedCandidate.stage]?.includes(newStage)) return;
+            } else {
+                const validMoves = {
+                    'shown': ['nm-response'],
+                    'nm-response': ['shown', 'interview'],
+                    'interview': ['nm-response', 'offer'],
+                    'offer': ['interview', 'hired'],
+                    'hired': ['offer']
+                };
+                if (!validMoves[draggedCandidate.stage]?.includes(newStage)) return;
+            }
+
+            draggedCandidate.stage = newStage;
+            
+            // Add history entry
+            const stageNames = {
+                'new': 'Новый отклик',
+                'screening': 'Скрининг агента',
+                'ready': 'Готов показать НМ',
+                'shown': 'Показан НМ',
+                'nm-response': 'Ответ НМ',
+                'interview': 'Собес с НМ',
+                'offer': 'Оффер',
+                'hired': 'Найм'
+            };
+            
+            draggedCandidate.history.push({
+                date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+                action: `Перемещён в «${stageNames[newStage]}»`,
+                author: 'Алексей К.'
+            });
+
+            renderBoard();
+            showToast(`Перемещено в «${stageNames[newStage]}»`);
+        }
+
+        // Actions
+        function showToNM(id, e) {
+            e.stopPropagation();
+            const candidate = candidates.find(c => c.id === id);
+            if (!candidate) return;
+
+            // Move to table
+            candidate.board = 'table';
+            candidate.stage = 'shown';
+            candidate.sentToNm = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+            
+            candidate.history.push({
+                date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }),
+                action: 'Показан НМ: Сергей В. (директор по продукту)',
+                author: 'Алексей К.'
+            });
+
+            renderBoard();
+            showToast('Карточка на столе');
+        }
+
+        function toggleArchive() {
+            showArchive = !showArchive;
+            document.querySelector('.archive-link').classList.toggle('active', showArchive);
+            renderBoard();
+        }
+
+        // Side Panel
+        function openPanel(candidate) {
+            selectedCandidate = candidate;
+            currentTab = 'resume';
+            
+            document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.panel-tab[data-tab="resume"]').classList.add('active');
+            
+            document.getElementById('panel-name').textContent = candidate.name;
+            document.getElementById('panel-position').textContent = candidate.position;
+            
+            document.getElementById('side-panel').classList.remove('hidden');
+            renderPanelContent();
+        }
+
+        function closePanel() {
+            document.getElementById('side-panel').classList.add('hidden');
+            selectedCandidate = null;
+        }
+
+        function renderPanelContent() {
+            const container = document.getElementById('panel-content');
+            if (!selectedCandidate) return;
+
+            switch (currentTab) {
+                case 'resume':
+                    renderResumeTab(container);
+                    break;
+                case 'agent-eval':
+                    renderAgentEvalTab(container);
+                    break;
+                case 'interview-eval':
+                    renderInterviewEvalTab(container);
+                    break;
+                case 'history':
+                    renderHistoryTab(container);
+                    break;
+                case 'nm-response':
+                    renderNmResponseTab(container);
+                    break;
+            }
+        }
+
+        function renderResumeTab(container) {
+            const exp = selectedCandidate.resume.experience.map(e => `
+                <div class="resume-block">
+                    <div class="resume-header">${e.company}</div>
+                    <div class="resume-period">${e.period} · ${e.role}</div>
+                    <div class="resume-desc">${e.desc}</div>
+                </div>
+            `).join('');
+
+            const skills = selectedCandidate.resume.skills.map(s => 
+                `<span class="skill-tag">${s}</span>`
+            ).join('');
+
+            container.innerHTML = `
+                <div class="panel-section">
+                    <div class="section-title">Опыт работы</div>
+                    ${exp || '<p style="color: var(--text-muted);">Нет данных</p>'}
+                </div>
+                <div class="panel-section">
+                    <div class="section-title">Ключевые навыки</div>
+                    <div class="skills-list">${skills || '<p style="color: var(--text-muted);">Нет данных</p>'}</div>
+                </div>
+            `;
+        }
+
+        function renderAgentEvalTab(container) {
+            if (!selectedCandidate.agentEval) {
+                container.innerHTML = '<p style="color: var(--text-muted);">Оценка агента не проведена</p>';
+                return;
+            }
+
+            const gates = selectedCandidate.agentEval.gates.map(g => {
+                const gateInfo = gates.find(gg => gg.id === g.id);
+                return `
+                    <div class="gate-item">
+                        <div class="gate-status ${g.passed ? 'passed' : 'failed'}"></div>
+                        <div class="gate-info">
+                            <div class="gate-name">${gateInfo?.name || g.id} ${gateInfo?.required ? '<span style="color: var(--danger); font-size: 11px;">●</span>' : ''}</div>
+                            <div class="gate-quote">«${g.quote}»</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="panel-section">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <div class="traffic-light ${selectedCandidate.agentEval.trafficLight}" style="width: 16px; height: 16px;"></div>
+                        <span style="font-weight: 600;">Оценка по резюме: ${selectedCandidate.agentEval.trafficLight === 'green' ? 'зелёный' : selectedCandidate.agentEval.trafficLight === 'yellow' ? 'жёлтый' : 'красный'} свет</span>
+                    </div>
+                </div>
+                <div class="panel-section">
+                    <div class="section-title">Проверка по воротам</div>
+                    <div class="gates-list">${gates}</div>
+                </div>
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 12px; color: var(--text-secondary);">
+                    <strong>Слой оценки:</strong> только по резюме, без собеседования. Не смешивается с оценкой после интервью.
+                </div>
+            `;
+        }
+
+        function renderInterviewEvalTab(container) {
+            if (!selectedCandidate.interviewEval) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div>Собеседование ещё не проведено</div>
+                        <div style="font-size: 12px; margin-top: 8px;">Оценка появится после встречи с нанимающим менеджером</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const evalClass = selectedCandidate.interviewEval.trafficLight === 'red' ? 'negative' : '';
+
+            container.innerHTML = `
+                <div class="panel-section">
+                    <div class="section-title">Оценка после собеседования</div>
+                    <div class="evaluation-block ${evalClass}">
+                        <div class="evaluation-header">
+                            <div class="traffic-light ${selectedCandidate.interviewEval.trafficLight}"></div>
+                            <span class="eval-author">${selectedCandidate.interviewEval.author}</span>
+                            <span class="eval-date">${selectedCandidate.interviewEval.date}</span>
+                        </div>
+                        <div>${selectedCandidate.interviewEval.text}</div>
+                    </div>
+                </div>
+                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 12px; color: var(--text-secondary);">
+                    <strong>Слой оценки:</strong> после личной встречи. Отделяется от оценки агента по резюме.
+                </div>
+            `;
+        }
+
+        function renderHistoryTab(container) {
+            const history = selectedCandidate.history.map(h => `
+                <div class="history-item">
+                    <div class="history-dot"></div>
+                    <div class="history-content">
+                        <div class="history-action">${h.action}</div>
+                        <div class="history-meta">${h.date} · ${h.author}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="panel-section">
+                    <div class="section-title">Лента событий</div>
+                    <div class="history-list">${history}</div>
+                </div>
+            `;
+        }
+
+        function renderNmResponseTab(container) {
+            if (!selectedCandidate.nmResponse) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏳</div>
+                        <div>Кандидат ещё не показан нанимающему</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const decisionClass = {
+                'approved': 'approved',
+                'rejected': 'rejected',
+                'conditional': 'conditional',
+                'waiting': 'waiting'
+            }[selectedCandidate.nmResponse];
+
+            const decisionText = {
+                'approved': 'Одобрен',
+                'rejected': 'Отклонён',
+                'conditional': 'Условно',
+                'waiting': 'Ждём ответа'
+            }[selectedCandidate.nmResponse];
+
+            const comment = selectedCandidate.nmResponseComment || 'Комментарий не добавлен';
+
+            container.innerHTML = `
+                <div class="panel-section">
+                    <div class="nm-response-block">
+                        <div class="nm-decision">
+                            <div class="traffic-light ${selectedCandidate.nmResponse === 'approved' ? 'green' : selectedCandidate.nmResponse === 'rejected' ? 'red' : selectedCandidate.nmResponse === 'conditional' ? 'yellow' : 'yellow'}"></div>
+                            <div class="nm-decision-text ${decisionClass}">${decisionText}</div>
+                        </div>
+                        <div class="nm-comment">${comment}</div>
+                        <div class="nm-source">
+                            <strong>Ответ получен:</strong> ${selectedCandidate.nmResponseDate || '—'}<br>
+                            <strong>От кого:</strong> Сергей В. (директор по продукту)
+                        </div>
+                    </div>
+                </div>
+                ${selectedCandidate.nmResponse === 'waiting' ? `
+                <div class="panel-section">
+                    <button class="btn btn-primary" style="width: 100%;">
+                        Занести ответ руками (со слов)
+                    </button>
+                    <div style="margin-top: 8px; font-size: 12px; color: var(--text-muted); text-align: center;">
+                        Используйте, если НМ ответил устно или в личной переписке
+                    </div>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        // Prompt Modal
+        function openPromptModal() {
+            document.getElementById('prompt-modal').classList.add('active');
+        }
+
+        function closePromptModal() {
+            document.getElementById('prompt-modal').classList.remove('active');
+        }
+
+        function savePrompt() {
+            showToast('Промпт сохранён');
+            closePromptModal();
+        }
+
+        // Toast
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

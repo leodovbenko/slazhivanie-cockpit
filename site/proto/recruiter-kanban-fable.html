@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ИИ-рекрутёр: от отклика до найма — прототип</title>
+<style>
+  :root{
+    --accent:#3a6df0;
+    --accent-soft:#e8eefd;
+    --accent-dark:#2b55c4;
+    --bg:#f4f6fa;
+    --col-bg:#eceff5;
+    --card:#ffffff;
+    --ink:#1c2333;
+    --ink-2:#5a6478;
+    --ink-3:#8b93a7;
+    --line:#e3e7ef;
+    --green:#22a06b;
+    --green-soft:#e5f5ee;
+    --yellow:#e2a300;
+    --yellow-soft:#fdf3da;
+    --red:#d64545;
+    --red-soft:#fbe9e9;
+    --grey:#b8bfcd;
+    --radius:12px;
+    --shadow:0 1px 3px rgba(28,35,51,.08), 0 4px 14px rgba(28,35,51,.05);
+    --shadow-lift:0 6px 24px rgba(28,35,51,.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); font-size:14px; line-height:1.45;
+    overflow:hidden;
+  }
+  button{font-family:inherit; cursor:pointer;}
+
+  /* ── Шапка ─────────────────────────────── */
+  header{
+    background:#fff; border-bottom:1px solid var(--line);
+    padding:0 24px; height:64px;
+    display:flex; align-items:center; gap:20px;
+  }
+  .logo{display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; white-space:nowrap;}
+  .logo .dot{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;}
+  .vacancy{color:var(--ink-2); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .vacancy b{color:var(--ink);}
+  .tabs{display:flex; background:var(--col-bg); border-radius:10px; padding:3px; margin-left:auto;}
+  .tabs button{
+    border:0; background:transparent; padding:7px 18px; border-radius:8px;
+    font-size:13.5px; font-weight:600; color:var(--ink-2); transition:.15s;
+    display:flex; align-items:center; gap:7px;
+  }
+  .tabs button .cnt{
+    background:rgba(28,35,51,.1); border-radius:20px; font-size:11px; padding:1px 7px; font-weight:700;
+  }
+  .tabs button.active{background:#fff; color:var(--ink); box-shadow:var(--shadow);}
+  .tabs button.active .cnt{background:var(--accent-soft); color:var(--accent-dark);}
+  .btn-prompt{
+    border:1px solid var(--line); background:#fff; border-radius:9px;
+    padding:8px 14px; font-size:13px; font-weight:600; color:var(--ink-2);
+    display:flex; align-items:center; gap:7px; transition:.15s; white-space:nowrap;
+  }
+  .btn-prompt:hover{border-color:var(--accent); color:var(--accent-dark);}
+
+  /* ── Подшапка ──────────────────────────── */
+  .subbar{
+    padding:14px 24px 4px; display:flex; align-items:baseline; gap:14px;
+  }
+  .subbar h1{font-size:18px; font-weight:700;}
+  .subbar .hint{color:var(--ink-3); font-size:13px;}
+  .archive-link{
+    margin-left:auto; background:none; border:0; color:var(--ink-3); font-size:13px;
+    text-decoration:underline dotted; text-underline-offset:3px; padding:4px 2px;
+  }
+  .archive-link:hover{color:var(--ink-2);}
+  .archive-link.active{color:var(--accent-dark); text-decoration-style:solid; font-weight:600;}
+
+  /* ── Доска ─────────────────────────────── */
+  .board-wrap{height:calc(100vh - 64px - 48px); overflow:auto; padding:10px 24px 24px;}
+  .board{display:flex; gap:14px; align-items:flex-start; min-height:100%;}
+  .col{
+    background:var(--col-bg); border-radius:14px; padding:10px;
+    min-width:262px; width:262px; flex-shrink:0;
+    display:flex; flex-direction:column; max-height:calc(100vh - 170px);
+  }
+  .col-head{
+    display:flex; align-items:center; gap:8px; padding:4px 6px 10px; font-weight:700; font-size:13px;
+  }
+  .col-head .cnt{
+    background:#fff; color:var(--ink-2); border-radius:20px; font-size:11px; padding:1px 8px; font-weight:700;
+  }
+  .col-body{display:flex; flex-direction:column; gap:8px; overflow-y:auto; min-height:60px; border-radius:10px; padding:2px; flex:1;}
+  .col-body.dragover{outline:2px dashed var(--accent); outline-offset:-2px; background:var(--accent-soft);}
+  .col-empty{
+    border:1.5px dashed #cdd4e0; border-radius:10px; padding:18px 10px; text-align:center;
+    color:var(--ink-3); font-size:12.5px;
+  }
+
+  /* ── Карточка ──────────────────────────── */
+  .card{
+    background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:12px 13px; cursor:grab; border:1.5px solid transparent; transition:box-shadow .15s, border-color .15s;
+    position:relative;
+  }
+  .card:hover{box-shadow:var(--shadow-lift);}
+  .card.selected{border-color:var(--accent);}
+  .card.dragging{opacity:.45; cursor:grabbing;}
+  .card-top{display:flex; align-items:flex-start; gap:9px;}
+  .light{width:11px; height:11px; border-radius:50%; flex-shrink:0; margin-top:4px;}
+  .light.green{background:var(--green);}
+  .light.yellow{background:var(--yellow);}
+  .light.red{background:var(--red);}
+  .light.grey{background:var(--grey);}
+  .light.pending{background:var(--accent); animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);}50%{opacity:.35; transform:scale(.8);}}
+  .card-name{font-weight:700; font-size:13.5px;}
+  .card-role{color:var(--ink-2); font-size:12px; margin-top:1px;}
+  .card-meta{display:flex; flex-wrap:wrap; gap:5px; margin-top:9px;}
+  .chip{
+    display:inline-flex; align-items:center; gap:4px;
+    background:var(--bg); border:1px solid var(--line); border-radius:7px;
+    font-size:11px; padding:2.5px 7px; color:var(--ink-2); font-weight:600;
+  }
+  .chip svg{flex-shrink:0;}
+  .chip.gates.full{background:var(--green-soft); border-color:#cdeadd; color:#177a50;}
+  .chip.gates.part{background:var(--yellow-soft); border-color:#f1e2b3; color:#a97b00;}
+  .chip.gates.low{background:var(--red-soft); border-color:#f2cdcd; color:#b23636;}
+  .badge{
+    display:inline-flex; align-items:center; gap:4px; border-radius:7px;
+    font-size:11px; padding:2.5px 8px; font-weight:700;
+  }
+  .badge.ok{background:var(--green-soft); color:#177a50;}
+  .badge.no{background:var(--red-soft); color:#b23636;}
+  .badge.cond{background:var(--yellow-soft); color:#a97b00;}
+  .badge.wait{background:var(--bg); color:var(--ink-3); border:1px solid var(--line); font-weight:600;}
+  .card-note{color:var(--ink-3); font-size:11.5px; margin-top:7px;}
+  .btn-show{
+    margin-top:10px; width:100%; border:0; border-radius:8px;
+    background:var(--accent); color:#fff; padding:7.5px 10px; font-size:12.5px; font-weight:700;
+    transition:.15s;
+  }
+  .btn-show:hover{background:var(--accent-dark);}
+
+  /* ── Архив ─────────────────────────────── */
+  .archive-list{display:flex; flex-direction:column; gap:10px; max-width:640px;}
+  .arch-card{
+    background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:13px 16px;
+    display:flex; align-items:center; gap:12px; cursor:pointer; border:1.5px solid transparent;
+  }
+  .arch-card:hover{box-shadow:var(--shadow-lift);}
+  .arch-card.selected{border-color:var(--accent);}
+  .arch-info{flex:1; min-width:0;}
+  .arch-reason{color:var(--ink-2); font-size:12.5px; margin-top:2px;}
+  .btn-return{
+    border:1px solid var(--line); background:#fff; border-radius:8px; padding:6px 12px;
+    font-size:12px; font-weight:600; color:var(--ink-2); white-space:nowrap;
+  }
+  .btn-return:hover{border-color:var(--accent); color:var(--accent-dark);}
+  .archive-note{color:var(--ink-3); font-size:12.5px; margin:4px 0 14px; max-width:640px;}
+
+  /* ── Боковая панель ────────────────────── */
+  .panel{
+    position:fixed; top:0; right:0; width:440px; max-width:94vw; height:100vh;
+    background:#fff; box-shadow:-8px 0 40px rgba(28,35,51,.16);
+    transform:translateX(105%); transition:transform .22s ease; z-index:60;
+    display:flex; flex-direction:column;
+  }
+  .panel.open{transform:translateX(0);}
+  .panel-head{padding:18px 20px 0; border-bottom:1px solid var(--line);}
+  .panel-title-row{display:flex; align-items:flex-start; gap:10px;}
+  .panel-close{
+    margin-left:auto; border:0; background:var(--bg); border-radius:8px; width:30px; height:30px;
+    font-size:15px; color:var(--ink-2); flex-shrink:0;
+  }
+  .panel-close:hover{background:var(--col-bg);}
+  .panel-name{font-size:17px; font-weight:800;}
+  .panel-role{color:var(--ink-2); font-size:13px; margin-top:2px;}
+  .panel-stage{margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;}
+  .panel-tabs{display:flex; gap:2px; margin-top:14px; overflow-x:auto;}
+  .panel-tabs button{
+    border:0; background:none; padding:9px 11px; font-size:12.5px; font-weight:600; color:var(--ink-3);
+    border-bottom:2.5px solid transparent; white-space:nowrap;
+  }
+  .panel-tabs button.active{color:var(--accent-dark); border-bottom-color:var(--accent);}
+  .panel-body{flex:1; overflow-y:auto; padding:18px 20px 30px;}
+  .sec-title{font-size:12px; font-weight:700; color:var(--ink-3); text-transform:uppercase; letter-spacing:.4px; margin:18px 0 8px;}
+  .sec-title:first-child{margin-top:0;}
+  .exp-item{padding:9px 0; border-bottom:1px solid var(--line);}
+  .exp-item:last-child{border-bottom:0;}
+  .exp-role{font-weight:700; font-size:13px;}
+  .exp-org{color:var(--ink-2); font-size:12.5px;}
+  .exp-years{color:var(--ink-3); font-size:11.5px; margin-top:1px;}
+  .skills{display:flex; flex-wrap:wrap; gap:6px;}
+  .skill{background:var(--bg); border:1px solid var(--line); border-radius:7px; font-size:12px; padding:3px 9px; color:var(--ink-2);}
+  .summary-box{background:var(--bg); border-radius:10px; padding:11px 13px; font-size:13px; color:var(--ink-2);}
+
+  .verdict{
+    display:flex; align-items:center; gap:10px; background:var(--bg); border-radius:10px; padding:12px 14px; margin-bottom:14px;
+  }
+  .verdict .light{margin-top:0; width:14px; height:14px;}
+  .verdict b{font-size:14px;}
+  .verdict span{color:var(--ink-2); font-size:12.5px;}
+  .gate{padding:10px 0; border-bottom:1px solid var(--line);}
+  .gate:last-child{border-bottom:0;}
+  .gate-row{display:flex; align-items:center; gap:8px; font-weight:600; font-size:13px;}
+  .gate-ic{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;font-weight:800;}
+  .gate-ic.ok{background:var(--green-soft); color:var(--green);}
+  .gate-ic.no{background:var(--red-soft); color:var(--red);}
+  .gate-quote{color:var(--ink-3); font-size:12px; margin:4px 0 0 26px; font-style:italic;}
+  .layer-note{
+    background:var(--accent-soft); border-radius:10px; padding:10px 13px; font-size:12.5px; color:var(--accent-dark); margin-bottom:14px;
+  }
+
+  .hist-item{display:flex; gap:12px; padding:9px 0;}
+  .hist-line{display:flex; flex-direction:column; align-items:center; flex-shrink:0;}
+  .hist-dot{width:9px; height:9px; border-radius:50%; background:var(--accent); margin-top:5px;}
+  .hist-rule{width:2px; flex:1; background:var(--line); margin-top:3px;}
+  .hist-item:last-child .hist-rule{display:none;}
+  .hist-text{font-size:13px;}
+  .hist-who{color:var(--ink-3); font-size:11.5px; margin-top:2px;}
+
+  .nm-block{background:var(--bg); border-radius:10px; padding:13px 15px; margin-bottom:14px;}
+  .nm-block .badge{font-size:12px;}
+  .nm-note{color:var(--ink-2); font-size:13px; margin-top:8px;}
+  .nm-manual-mark{color:var(--ink-3); font-size:11.5px; margin-top:6px; font-style:italic;}
+  .btn-secondary{
+    border:1px solid var(--line); background:#fff; border-radius:9px; padding:8px 14px;
+    font-size:13px; font-weight:600; color:var(--ink-2); transition:.15s;
+  }
+  .btn-secondary:hover{border-color:var(--accent); color:var(--accent-dark);}
+  .btn-primary{
+    border:0; background:var(--accent); color:#fff; border-radius:9px; padding:8px 16px;
+    font-size:13px; font-weight:700; transition:.15s;
+  }
+  .btn-primary:hover{background:var(--accent-dark);}
+  .form-box{border:1px solid var(--line); border-radius:10px; padding:13px; margin-top:12px;}
+  .form-box label{font-size:12px; font-weight:700; color:var(--ink-2); display:block; margin-bottom:6px;}
+  .radio-row{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:11px;}
+  .radio-row button{
+    border:1.5px solid var(--line); background:#fff; border-radius:8px; padding:6px 12px; font-size:12.5px; font-weight:600; color:var(--ink-2);
+  }
+  .radio-row button.sel-ok{border-color:var(--green); background:var(--green-soft); color:#177a50;}
+  .radio-row button.sel-no{border-color:var(--red); background:var(--red-soft); color:#b23636;}
+  .radio-row button.sel-cond{border-color:var(--yellow); background:var(--yellow-soft); color:#a97b00;}
+  textarea.inp{
+    width:100%; border:1px solid var(--line); border-radius:9px; padding:9px 11px; font-family:inherit;
+    font-size:13px; resize:vertical; min-height:60px; color:var(--ink);
+  }
+  textarea.inp:focus{outline:2px solid var(--accent-soft); border-color:var(--accent);}
+  .eval-box{border-radius:10px; padding:13px 15px; margin-bottom:14px; display:flex; gap:10px; align-items:flex-start;}
+  .eval-box.green{background:var(--green-soft);}
+  .eval-box.yellow{background:var(--yellow-soft);}
+  .eval-box.red{background:var(--red-soft);}
+  .eval-box .light{margin-top:4px;}
+  .eval-meta{color:var(--ink-3); font-size:11.5px; margin-top:5px;}
+  .empty-tab{color:var(--ink-3); font-size:13px; padding:8px 0;}
+
+  /* ── Промпт-панель ─────────────────────── */
+  .overlay{
+    position:fixed; inset:0; background:rgba(28,35,51,.4); z-index:80;
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:#fff; border-radius:16px; width:640px; max-width:100%; max-height:88vh;
+    display:flex; flex-direction:column; box-shadow:var(--shadow-lift);
+  }
+  .modal-head{padding:18px 22px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px;}
+  .modal-head h2{font-size:16px; font-weight:800;}
+  .modal-head .hint{color:var(--ink-3); font-size:12.5px;}
+  .modal-body{padding:16px 22px; overflow-y:auto;}
+  .modal-body textarea{
+    width:100%; min-height:340px; border:1px solid var(--line); border-radius:10px;
+    padding:13px 15px; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:12.5px; line-height:1.55; resize:vertical; color:var(--ink);
+  }
+  .modal-body textarea:focus{outline:2px solid var(--accent-soft); border-color:var(--accent);}
+  .modal-foot{padding:12px 22px 18px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid var(--line);}
+
+  /* ── Тост ──────────────────────────────── */
+  .toast-wrap{position:fixed; bottom:26px; left:50%; transform:translateX(-50%); z-index:100; display:flex; flex-direction:column; gap:8px; align-items:center;}
+  .toast{
+    background:#1c2333; color:#fff; border-radius:11px; padding:10px 18px; font-size:13.5px; font-weight:600;
+    box-shadow:var(--shadow-lift); animation:toastIn .25s ease; display:flex; gap:8px; align-items:center;
+  }
+  .toast.out{animation:toastOut .3s ease forwards;}
+  @keyframes toastIn{from{opacity:0; transform:translateY(14px);}to{opacity:1; transform:translateY(0);}}
+  @keyframes toastOut{to{opacity:0; transform:translateY(10px);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="dot">Р</span>ИИ-рекрутёр</div>
+  <div class="vacancy">Вакансия: <b>Менеджер по продажам B2B</b> · ворота скрининга: 6</div>
+  <div class="tabs" id="tabs">
+    <button id="tabNotebook" onclick="switchTab('notebook')">Тетрадь <span class="cnt" id="cntNotebook">0</span></button>
+    <button id="tabDesk" onclick="switchTab('desk')">Стол <span class="cnt" id="cntDesk">0</span></button>
+  </div>
+  <button class="btn-prompt" onclick="openPrompt()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+    Промпт скоринга
+  </button>
+</header>
+
+<div class="subbar">
+  <h1 id="boardTitle">Тетрадь</h1>
+  <span class="hint" id="boardHint"></span>
+  <button class="archive-link" id="archiveLink" onclick="toggleArchive()"></button>
+</div>
+
+<div class="board-wrap">
+  <div id="boardArea"></div>
+</div>
+
+<!-- Боковая панель кандидата -->
+<aside class="panel" id="panel">
+  <div class="panel-head" id="panelHead"></div>
+  <div class="panel-body" id="panelBody"></div>
+</aside>
+
+<!-- Промпт скоринга -->
+<div class="overlay" id="promptOverlay" onclick="if(event.target===this) closePrompt()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Промпт скоринга резюме</h2>
+      <span class="hint">этим текстом агент оценивает каждый отклик</span>
+    </div>
+    <div class="modal-body">
+      <textarea id="promptText"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closePrompt()">Закрыть</button>
+      <button class="btn-primary" onclick="savePrompt()">Сохранить промпт</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ═══════════════ Данные (демо, вымышленные) ═══════════════ */
+
+const GATE_NAMES = [
+  'Опыт B2B-продаж от 2 лет',
+  'Работа с CRM (amoCRM / Битрикс24)',
+  'Опыт холодных звонков',
+  'Сделки со средним чеком от 500 тыс ₽',
+  'Готовность работать из офиса',
+  'Грамотная деловая переписка'
+];
+const GATES_TOTAL = 6;
+
+function g(ok, quote){ return {ok, quote}; }
+
+const state = {
+  tab: 'notebook',
+  archiveOpen: false,
+  selectedId: null,
+  panelTab: 'resume',
+  nmFormOpen: false,
+  nmFormStatus: null,
+  evalFormLight: null,
+  prompt:
+`Ты — ассистент рекрутёра. Оцени резюме кандидата на вакансию
+«Менеджер по продажам B2B» по шести воротам. По каждым воротам
+дай ответ «проходит / не проходит» и одну короткую цитату из
+резюме, которая это подтверждает.
+
+Ворота:
+1. Опыт B2B-продаж от 2 лет.
+2. Работа с CRM (amoCRM или Битрикс24).
+3. Опыт холодных звонков.
+4. Сделки со средним чеком от 500 тыс рублей.
+5. Готовность работать из офиса.
+6. Грамотная деловая переписка (по сопроводительному письму).
+
+Итоговый светофор:
+— зелёный: пройдено 5–6 ворот;
+— жёлтый: пройдено 3–4 ворот;
+— красный: пройдено 0–2 ворот.
+
+Не выдумывай факты. Если в резюме нет данных по воротам —
+считай «не проходит» и напиши «в резюме не указано».`
+};
+
+const candidates = [
+  /* ── Тетрадь: новый отклик ── */
+  { id:'c1', name:'Дмитрий Соколов', role:'Менеджер по продажам B2B', board:'notebook', stage:'new',
+    light:'grey', gates:null, source:'отклик с hh.ru · сегодня',
+    resume:{ summary:'4 года в продажах промышленного оборудования, последние 2 года — руководитель направления. Ищет команду с сильным продуктом.',
+      exp:[{role:'Руководитель направления продаж',org:'ПромТехСнаб',years:'2024 — сейчас'},{role:'Менеджер по продажам',org:'СтанкоТрейд',years:'2022 — 2024'}],
+      skills:['B2B-продажи','Переговоры','amoCRM','Тендеры'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'1 авг',who:'Система',text:'Отклик получен с hh.ru, карточка создана'}] },
+
+  { id:'c2', name:'Алина Ерёмина', role:'Менеджер по продажам B2B', board:'notebook', stage:'new',
+    light:'grey', gates:null, source:'отклик с hh.ru · сегодня',
+    resume:{ summary:'3 года в продажах ИТ-услуг, опыт работы с крупными заказчиками. Хочет расти в сторону сложных сделок.',
+      exp:[{role:'Менеджер по продажам',org:'Диджитал Крафт',years:'2023 — сейчас'},{role:'Специалист отдела продаж',org:'СофтЛайн Регион',years:'2021 — 2023'}],
+      skills:['ИТ-услуги','Битрикс24','Презентации','Холодные звонки'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'1 авг',who:'Система',text:'Отклик получен с hh.ru, карточка создана'}] },
+
+  { id:'c3', name:'Павел Кузнецов', role:'Менеджер по продажам B2B', board:'notebook', stage:'new',
+    light:'grey', gates:null, source:'рекомендация · вчера',
+    resume:{ summary:'Продавал логистические услуги, 5 лет опыта. Пришёл по рекомендации Виктора Ланского.',
+      exp:[{role:'Старший менеджер по продажам',org:'ТрансКарго',years:'2021 — сейчас'}],
+      skills:['Логистика','B2B-продажи','Длинные сделки'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'31 июл',who:'Система',text:'Карточка создана по рекомендации'}] },
+
+  /* ── Тетрадь: скрининг агента ── */
+  { id:'c4', name:'Марина Лебедева', role:'Менеджер по продажам B2B', board:'notebook', stage:'screening',
+    light:'pending', gates:null, source:'отклик с hh.ru · вчера',
+    resume:{ summary:'6 лет в продажах строительных материалов оптом. Средний чек сделок — 800 тыс ₽.',
+      exp:[{role:'Ведущий менеджер по продажам',org:'СтройОптТорг',years:'2020 — сейчас'}],
+      skills:['Оптовые продажи','amoCRM','Работа с дебиторкой'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'31 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'1 авг',who:'Агент-рекрутёр',text:'Взял резюме в скрининг'}] },
+
+  { id:'c5', name:'Игорь Савельев', role:'Менеджер по продажам B2B', board:'notebook', stage:'screening',
+    light:'pending', gates:null, source:'отклик с hh.ru · вчера',
+    resume:{ summary:'Продажи телеком-услуг для бизнеса, 3 года. Уверенный опыт холодного поиска.',
+      exp:[{role:'Менеджер по продажам',org:'БизнесТелеком',years:'2022 — сейчас'}],
+      skills:['Телеком','Холодные звонки','CRM'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'31 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'1 авг',who:'Агент-рекрутёр',text:'Взял резюме в скрининг'}] },
+
+  /* ── Тетрадь: готов показать НМ ── */
+  { id:'c6', name:'Екатерина Волкова', role:'Менеджер по продажам B2B', board:'notebook', stage:'ready',
+    light:'green', source:'отклик с hh.ru · 28 июл',
+    gates:[ g(true,'«5 лет продаю сложные ИТ-решения для среднего бизнеса»'),
+            g(true,'«вела воронку в amoCRM, настраивала этапы сама»'),
+            g(true,'«первый год — только холодный поиск, до 40 звонков в день»'),
+            g(true,'«средний чек сделки — 1,2 млн ₽»'),
+            g(true,'«живу в 20 минутах от офиса, формат офиса устраивает»'),
+            g(true,'сопроводительное письмо без ошибок, структурное') ],
+    resume:{ summary:'5 лет в продажах ИТ-решений, стабильно выполняет план. Сильная сторона — сложные многоэтапные сделки.',
+      exp:[{role:'Ведущий менеджер по продажам',org:'ИнфоСистемы Плюс',years:'2023 — сейчас'},{role:'Менеджер по продажам',org:'КлаудТех',years:'2021 — 2023'}],
+      skills:['ИТ-решения','amoCRM','Сложные сделки','Презентации','Переговоры с ЛПР'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'28 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'29 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 6 из 6'}] },
+
+  { id:'c7', name:'Артём Никитин', role:'Менеджер по продажам B2B', board:'notebook', stage:'ready',
+    light:'green', source:'отклик с hh.ru · 27 июл',
+    gates:[ g(true,'«4 года в корпоративных продажах SaaS»'),
+            g(true,'«работал в Битрикс24, вёл отчётность по сделкам»'),
+            g(true,'«холодные звонки и письма — основной канал первые 2 года»'),
+            g(false,'в резюме не указано — средний чек не назван'),
+            g(true,'«рассматриваю офисный формат»'),
+            g(true,'письмо аккуратное, по делу') ],
+    resume:{ summary:'4 года в корпоративных продажах SaaS-продуктов. Хорошо держит длинный цикл сделки.',
+      exp:[{role:'Менеджер по продажам',org:'СейлзДрайв',years:'2022 — сейчас'},{role:'Менеджер по работе с клиентами',org:'ОблакоПро',years:'2021 — 2022'}],
+      skills:['SaaS','Битрикс24','Длинный цикл','Демо-презентации'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'27 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'28 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 5 из 6'}] },
+
+  { id:'c8', name:'Светлана Морозова', role:'Менеджер по продажам B2B', board:'notebook', stage:'ready',
+    light:'yellow', source:'отклик с hh.ru · 26 июл',
+    gates:[ g(true,'«3 года в продажах рекламных услуг компаниям»'),
+            g(true,'«вносила сделки в amoCRM»'),
+            g(false,'в резюме не указано — работала только с входящими'),
+            g(false,'«средний чек — 150–200 тыс ₽» — ниже порога'),
+            g(true,'«готова к офису, район любой»'),
+            g(true,'письмо живое и без ошибок') ],
+    resume:{ summary:'3 года в продажах рекламных услуг. Сильна во входящих заявках и удержании клиентов.',
+      exp:[{role:'Менеджер по продажам',org:'МедиаГрад',years:'2022 — сейчас'}],
+      skills:['Реклама','amoCRM','Входящие заявки','Апсейл'] },
+    postInterview:null, nmAnswer:null, sent:null, interview:null,
+    history:[{d:'26 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'27 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: жёлтый, ворота 4 из 6'}] },
+
+  /* ── Стол: показан НМ ── */
+  { id:'c9', name:'Олег Гришин', role:'Менеджер по продажам B2B', board:'desk', stage:'shown',
+    light:'green', source:'отклик с hh.ru · 10 июл', sent:'12 июл',
+    gates:[ g(true,'«6 лет в продажах оборудования для пищёвки»'),
+            g(true,'«amoCRM — ежедневный инструмент»'),
+            g(true,'«строил холодную базу с нуля в двух компаниях»'),
+            g(true,'«сделки от 700 тыс до 3 млн ₽»'),
+            g(true,'«офис — ок, привык к командной работе»'),
+            g(true,'письмо грамотное, с цифрами по результатам') ],
+    resume:{ summary:'6 лет в продажах промышленного оборудования. Дважды строил холодную базу с нуля.',
+      exp:[{role:'Старший менеджер по продажам',org:'ПищТехМаш',years:'2021 — сейчас'},{role:'Менеджер по продажам',org:'АгроЛиния',years:'2019 — 2021'}],
+      skills:['Промоборудование','amoCRM','Холодная база','Выставки'] },
+    postInterview:null, nmAnswer:null, interview:null,
+    history:[{d:'10 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'11 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 6 из 6'},{d:'12 июл',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'}] },
+
+  /* ── Стол: ответ НМ ── */
+  { id:'c10', name:'Наталья Демидова', role:'Менеджер по продажам B2B', board:'desk', stage:'answer',
+    light:'green', source:'отклик с hh.ru · 7 июл', sent:'9 июл',
+    nmAnswer:{status:'Одобрен', date:'14 июл', note:'Хороший профиль, зовите на встречу на этой неделе.'},
+    gates:[ g(true,'«7 лет в B2B, из них 4 — в продажах консалтинга»'),
+            g(true,'«amoCRM и Битрикс24 — работала в обеих»'),
+            g(true,'«не боюсь холодных: с них начинала карьеру»'),
+            g(true,'«средний чек проектов — 900 тыс ₽»'),
+            g(true,'«офис предпочитаю удалёнке»'),
+            g(true,'письмо сильное, с примерами сделок') ],
+    resume:{ summary:'7 лет в B2B-продажах, последние годы — консалтинговые проекты. Умеет продавать дорогое и нематериальное.',
+      exp:[{role:'Менеджер по продажам проектов',org:'Прайм Консалт',years:'2022 — сейчас'},{role:'Менеджер по продажам',org:'БизнесРешения',years:'2019 — 2022'}],
+      skills:['Консалтинг','amoCRM','Битрикс24','Продажа услуг','Нетворкинг'] },
+    postInterview:null, interview:{stateName:'due'},
+    history:[{d:'7 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'8 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 6 из 6'},{d:'9 июл',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'},{d:'14 июл',who:'Система',text:'Ответ НМ: Одобрен'}] },
+
+  { id:'c11', name:'Тимур Гаджиев', role:'Менеджер по продажам B2B', board:'desk', stage:'answer',
+    light:'yellow', source:'отклик с hh.ru · 8 июл', sent:'10 июл',
+    nmAnswer:{status:'Условно', date:'15 июл', note:'Интересный, но хочу сначала посмотреть ещё двух кандидатов.'},
+    gates:[ g(true,'«3 года в продажах упаковки для производств»'),
+            g(true,'«вёл сделки в Битрикс24»'),
+            g(true,'«холодный обзвон — до 30 контактов в день»'),
+            g(false,'«чек 300–400 тыс ₽» — ниже порога'),
+            g(true,'«офис устраивает»'),
+            g(true,'письмо нормальное, без ошибок') ],
+    resume:{ summary:'3 года в продажах упаковки. Настойчивый, хорошо работает в холодную.',
+      exp:[{role:'Менеджер по продажам',org:'ПакСервис',years:'2022 — сейчас'}],
+      skills:['Упаковка','Битрикс24','Холодные звонки'] },
+    postInterview:null, interview:null,
+    history:[{d:'8 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'9 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: жёлтый, ворота 5 из 6'},{d:'10 июл',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'},{d:'15 июл',who:'Система',text:'Ответ НМ: Условно'}] },
+
+  /* ── Стол: собес с НМ ── */
+  { id:'c12', name:'Виктор Ланской', role:'Менеджер по продажам B2B', board:'desk', stage:'interview',
+    light:'green', source:'отклик с hh.ru · 1 июл', sent:'3 июл',
+    nmAnswer:{status:'Одобрен', date:'7 июл', note:'Сильное резюме, давайте встретимся.'},
+    interview:{stateName:'done', date:'29 июл'},
+    postInterview:{light:'green', text:'Спокойный, уверенный, привёл живые примеры сделок. Хорошо слушает.', by:'Анна (рекрутёр)', date:'29 июл'},
+    gates:[ g(true,'«8 лет в продажах логистических услуг»'),
+            g(true,'«amoCRM с 2019 года»'),
+            g(true,'«холодный поиск — базовый навык, делаю до сих пор»'),
+            g(true,'«контракты от 1 млн ₽ в год»'),
+            g(true,'«офис — да, важна живая команда»'),
+            g(true,'письмо очень аккуратное') ],
+    resume:{ summary:'8 лет в продажах логистики, ведёт крупные годовые контракты. Пришёл за продуктом посильнее.',
+      exp:[{role:'Руководитель группы продаж',org:'ЛогистикЛайн',years:'2023 — сейчас'},{role:'Старший менеджер',org:'КаргоПоинт',years:'2018 — 2023'}],
+      skills:['Логистика','amoCRM','Годовые контракты','Управление группой'] },
+    history:[{d:'1 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'2 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 6 из 6'},{d:'3 июл',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'},{d:'7 июл',who:'Система',text:'Ответ НМ: Одобрен'},{d:'22 июл',who:'Система',text:'Собес с НМ назначен на 29 июл'},{d:'29 июл',who:'Система',text:'Собес с НМ прошёл'},{d:'29 июл',who:'Анна (рекрутёр)',text:'Оценка после собеса: зелёный'}] },
+
+  /* ── Стол: оффер ── */
+  { id:'c13', name:'Юлия Панкратова', role:'Менеджер по продажам B2B', board:'desk', stage:'offer',
+    light:'green', source:'рекомендация · 24 июн', sent:'26 июн',
+    nmAnswer:{status:'Одобрен', date:'27 июн', note:'Знаю её по рынку, зовите.'},
+    interview:{stateName:'done', date:'8 июл'},
+    postInterview:{light:'green', text:'Отличный контакт с НМ, совпадение по ценностям. Вопрос только в сроке выхода.', by:'Анна (рекрутёр)', date:'8 июл'},
+    gates:[ g(true,'«9 лет в B2B-продажах медиа и ИТ»'),
+            g(true,'«amoCRM — админила отдел»'),
+            g(true,'«холодные — да, и звонки, и письма»'),
+            g(true,'«средний чек — 1,5 млн ₽»'),
+            g(true,'«офис — предпочтительно»'),
+            g(true,'письмо образцовое') ],
+    resume:{ summary:'9 лет в B2B. Вела ключевых клиентов и админила CRM отдела. Сильный переговорщик.',
+      exp:[{role:'Руководитель отдела продаж',org:'МедиаСфера',years:'2022 — сейчас'},{role:'Ведущий менеджер',org:'ТехноВижн',years:'2017 — 2022'}],
+      skills:['Ключевые клиенты','amoCRM','Переговоры','Наставничество'] },
+    history:[{d:'24 июн',who:'Система',text:'Карточка создана по рекомендации'},{d:'25 июн',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 6 из 6'},{d:'26 июн',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'},{d:'27 июн',who:'Система',text:'Ответ НМ: Одобрен'},{d:'8 июл',who:'Система',text:'Собес с НМ прошёл'},{d:'8 июл',who:'Анна (рекрутёр)',text:'Оценка после собеса: зелёный'},{d:'25 июл',who:'Система',text:'Оффер отправлен'}] },
+
+  /* ── Стол: найм ── */
+  { id:'c14', name:'Роман Ахметов', role:'Менеджер по продажам B2B', board:'desk', stage:'hire',
+    light:'green', source:'отклик с hh.ru · 10 июн', sent:'12 июн',
+    nmAnswer:{status:'Одобрен', date:'13 июн', note:'Берём в работу.'},
+    interview:{stateName:'done', date:'20 июн'},
+    postInterview:{light:'green', text:'Точное попадание в профиль. Быстро соображает, честно говорит о провалах.', by:'Анна (рекрутёр)', date:'20 июн'},
+    gates:[ g(true,'«5 лет в продажах ИТ-интеграции»'),
+            g(true,'«amoCRM ежедневно»'),
+            g(true,'«холодные звонки — основа первых лет»'),
+            g(true,'«проекты от 2 млн ₽»'),
+            g(true,'«офис — да»'),
+            g(true,'письмо чёткое') ],
+    resume:{ summary:'5 лет в продажах ИТ-интеграции. Вышел на работу 28 июля.',
+      exp:[{role:'Менеджер по продажам проектов',org:'ИнтеграПро',years:'2021 — 2026'}],
+      skills:['ИТ-интеграция','amoCRM','Проектные продажи'] },
+    history:[{d:'10 июн',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'11 июн',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 6 из 6'},{d:'12 июн',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'},{d:'13 июн',who:'Система',text:'Ответ НМ: Одобрен'},{d:'20 июн',who:'Система',text:'Собес с НМ прошёл'},{d:'14 июл',who:'Система',text:'Оффер принят'},{d:'28 июл',who:'Система',text:'Вышел на работу — найм закрыт'}] },
+
+  /* ── Архив / Резерв ── */
+  { id:'c15', name:'Сергей Бортников', role:'Менеджер по продажам B2B', board:'archive', stage:'archive',
+    light:'red', source:'отклик с hh.ru · 30 июн', sent:'2 июл',
+    archiveReason:'Красный после собеса — снят со стола',
+    nmAnswer:{status:'Одобрен', date:'4 июл', note:'По резюме — ок, посмотрим вживую.'},
+    interview:{stateName:'done', date:'11 июл'},
+    postInterview:{light:'red', text:'Хамил, перебивал, прервал разговор на середине. Не наш человек.', by:'Анна (рекрутёр)', date:'11 июл'},
+    gates:[ g(true,'«6 лет в продажах стройматериалов»'),
+            g(true,'«Битрикс24»'),
+            g(true,'«холодная база — да»'),
+            g(true,'«чек до 2 млн ₽»'),
+            g(true,'«офис — норм»'),
+            g(false,'письмо небрежное, с ошибками') ],
+    resume:{ summary:'6 лет в продажах стройматериалов. По резюме — сильный, по встрече — нет.',
+      exp:[{role:'Менеджер по продажам',org:'СтройБаза Юг',years:'2020 — сейчас'}],
+      skills:['Стройматериалы','Битрикс24','Холодная база'] },
+    history:[{d:'30 июн',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'1 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: зелёный, ворота 5 из 6'},{d:'2 июл',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'},{d:'4 июл',who:'Система',text:'Ответ НМ: Одобрен'},{d:'11 июл',who:'Система',text:'Собес с НМ прошёл'},{d:'11 июл',who:'Анна (рекрутёр)',text:'Оценка после собеса: красный'},{d:'11 июл',who:'Система',text:'Карточка ушла в Архив / Резерв'}] },
+
+  { id:'c16', name:'Ксения Ротова', role:'Менеджер по продажам B2B', board:'archive', stage:'archive',
+    light:'yellow', source:'отклик с hh.ru · 5 июл', sent:'8 июл',
+    archiveReason:'Отклонён НМ 10 июл — в резерве',
+    nmAnswer:{status:'Отклонён', date:'10 июл', note:'Мало опыта именно в нашей нише, сейчас не возьму.'},
+    interview:null, postInterview:null,
+    gates:[ g(true,'«2,5 года в B2B-продажах»'),
+            g(true,'«amoCRM»'),
+            g(false,'в резюме не указано'),
+            g(false,'«чек до 250 тыс ₽»'),
+            g(true,'«офис — да»'),
+            g(true,'письмо хорошее') ],
+    resume:{ summary:'2,5 года в B2B-продажах. Перспективная, но пока не хватает опыта на крупных чеках.',
+      exp:[{role:'Менеджер по продажам',org:'ВекторПлюс',years:'2024 — сейчас'}],
+      skills:['B2B','amoCRM','Работа с возражениями'] },
+    history:[{d:'5 июл',who:'Система',text:'Отклик получен с hh.ru, карточка создана'},{d:'6 июл',who:'Агент-рекрутёр',text:'Оценка по резюме: жёлтый, ворота 4 из 6'},{d:'8 июл',who:'Анна (рекрутёр)',text:'Показан нанимающему — карточка на столе'},{d:'10 июл',who:'Система',text:'Ответ НМ: Отклонён'},{d:'10 июл',who:'Система',text:'Карточка ушла в Архив / Резерв'}] }
+];
+
+const NOTEBOOK_COLS = [
+  {id:'new', title:'Новый отклик'},
+  {id:'screening', title:'Скрининг агента'},
+  {id:'ready', title:'Готов показать НМ'}
+];
+const DESK_COLS = [
+  {id:'shown', title:'Показан НМ'},
+  {id:'answer', title:'Ответ НМ'},
+  {id:'interview', title:'Собес с НМ'},
+  {id:'offer', title:'Оффер'},
+  {id:'hire', title:'Найм'}
+];
+
+const ME = 'Анна (рекрутёр)';
+const MONTHS = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+function today(){ const d = new Date(); return d.getDate() + ' ' + MONTHS[d.getMonth()]; }
+function byId(id){ return candidates.find(c => c.id === id); }
+function stageTitle(board, stage){
+  const cols = board === 'desk' ? DESK_COLS : NOTEBOOK_COLS;
+  const col = cols.find(c => c.id === stage);
+  return col ? col.title : stage;
+}
+function gatesPassed(c){ return c.gates ? c.gates.filter(x => x.ok).length : 0; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ═══════════════ Тосты ═══════════════ */
+function toast(msg){
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, 2600);
+}
+
+/* ═══════════════ Рендер доски ═══════════════ */
+function switchTab(tab){
+  state.tab = tab;
+  state.archiveOpen = false;
+  render();
+}
+function toggleArchive(){
+  state.archiveOpen = !state.archiveOpen;
+  render();
+}
+
+function lightTitle(l){
+  return {green:'зелёный', yellow:'жёлтый', red:'красный', grey:'ещё не оценён', pending:'агент читает резюме'}[l] || l;
+}
+
+function gateChip(c){
+  if(!c.gates) return '';
+  const p = gatesPassed(c);
+  const cls = p >= 5 ? 'full' : (p >= 3 ? 'part' : 'low');
+  return `<span class="chip gates ${cls}" title="ворота скрининга">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 21V5m16 16V5M4 5c2.5-2 5.5-2 8 0s5.5 2 8 0M9 21v-7m6 7v-7"/></svg>
+    ${p} из ${GATES_TOTAL}</span>`;
+}
+
+function answerBadge(c){
+  if(!c.nmAnswer) return `<span class="badge wait">жду ответа НМ</span>`;
+  const a = c.nmAnswer;
+  const cls = a.status === 'Одобрен' ? 'ok' : (a.status === 'Отклонён' ? 'no' : 'cond');
+  return `<span class="badge ${cls}">${a.status} · ${a.date}</span>`;
+}
+
+function interviewLine(c){
+  if(!c.interview) return '';
+  const iv = c.interview;
+  if(iv.stateName === 'done') return `<div class="card-note">собес: прошёл ${iv.date}</div>`;
+  if(iv.stateName === 'scheduled') return `<div class="card-note">собес: назначен на ${iv.date}</div>`;
+  return `<div class="card-note">собес: пора звать</div>`;
+}
+
+function cardHtml(c){
+  const sel = state.selectedId === c.id ? ' selected' : '';
+  let meta = '', note = '', btn = '';
+  if(c.board === 'notebook'){
+    meta = gateChip(c);
+    note = `<div class="card-note">${esc(c.source)}</div>`;
+    if(c.stage === 'screening') note = `<div class="card-note">агент читает резюме…</div>`;
+    if(c.gates) btn = `<button class="btn-show" onclick="event.stopPropagation(); showToNM('${c.id}')">Показать нанимающему</button>`;
+  } else {
+    meta = gateChip(c) + ' ' + answerBadge(c);
+    note = `<div class="card-note">отправлен НМ: ${c.sent}</div>` + interviewLine(c);
+  }
+  return `<div class="card${sel}" draggable="true" data-id="${c.id}"
+      onclick="openCard('${c.id}')"
+      ondragstart="dragStart(event,'${c.id}')" ondragend="dragEnd(event)">
+    <div class="card-top">
+      <span class="light ${c.light}" title="${lightTitle(c.light)}"></span>
+      <div>
+        <div class="card-name">${esc(c.name)}</div>
+        <div class="card-role">${esc(c.role)}</div>
+      </div>
+    </div>
+    <div class="card-meta">${meta}</div>
+    ${note}
+    ${btn}
+  </div>`;
+}
+
+function render(){
+  const nb = candidates.filter(c => c.board === 'notebook').length;
+  const dk = candidates.filter(c => c.board === 'desk').length;
+  const ar = candidates.filter(c => c.board === 'archive').length;
+  document.getElementById('cntNotebook').textContent = nb;
+  document.getElementById('cntDesk').textContent = dk;
+  document.getElementById('tabNotebook').classList.toggle('active', state.tab === 'notebook' && !state.archiveOpen);
+  document.getElementById('tabDesk').classList.toggle('active', state.tab === 'desk' && !state.archiveOpen);
+
+  const link = document.getElementById('archiveLink');
+  link.textContent = state.archiveOpen ? '← назад к доске' : `Архив / Резерв (${ar})`;
+  link.classList.toggle('active', state.archiveOpen);
+
+  const title = document.getElementById('boardTitle');
+  const hint = document.getElementById('boardHint');
+  const area = document.getElementById('boardArea');
+
+  if(state.archiveOpen){
+    title.textContent = 'Архив / Резерв';
+    hint.textContent = 'сюда уходят отклонённые НМ и красные — на столе они не висят';
+    const list = candidates.filter(c => c.board === 'archive');
+    area.innerHTML = `
+      <div class="archive-note">Это не колонка, а тихая полка: кандидаты не удаляются — при новой вакансии их можно вернуть.</div>
+      <div class="archive-list">` +
+      (list.length ? list.map(c => `
+        <div class="arch-card${state.selectedId===c.id?' selected':''}" onclick="openCard('${c.id}')">
+          <span class="light ${c.light}"></span>
+          <div class="arch-info">
+            <div class="card-name">${esc(c.name)}</div>
+            <div class="arch-reason">${esc(c.archiveReason || 'в резерве')}</div>
+          </div>
+          <button class="btn-return" onclick="event.stopPropagation(); returnFromArchive('${c.id}')">Вернуть в Тетрадь</button>
+        </div>`).join('')
+      : `<div class="col-empty">архив пуст</div>`) +
+      `</div>`;
+    return;
+  }
+
+  const isDesk = state.tab === 'desk';
+  title.textContent = isDesk ? 'Стол' : 'Тетрадь';
+  hint.textContent = isDesk
+    ? 'шорт-лист для нанимающего — только те, кого я осознанно показала'
+    : 'моя кухня: все кандидаты вакансии, нанимающий сюда не ходит';
+
+  const cols = isDesk ? DESK_COLS : NOTEBOOK_COLS;
+  const board = isDesk ? 'desk' : 'notebook';
+  area.innerHTML = `<div class="board">` + cols.map(col => {
+    const cards = candidates.filter(c => c.board === board && c.stage === col.id);
+    return `<div class="col">
+      <div class="col-head">${col.title} <span class="cnt">${cards.length}</span></div>
+      <div class="col-body" data-stage="${col.id}" data-board="${board}"
+        ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event)">
+        ${cards.length ? cards.map(cardHtml).join('') : `<div class="col-empty">перетащите карточку сюда</div>`}
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+/* ═══════════════ Drag & drop ═══════════════ */
+let dragId = null;
+function dragStart(e, id){
+  dragId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+  setTimeout(() => { const el = document.querySelector(`.card[data-id="${id}"]`); if(el) el.classList.add('dragging'); }, 0);
+}
+function dragEnd(){
+  dragId = null;
+  document.querySelectorAll('.card.dragging').forEach(el => el.classList.remove('dragging'));
+  document.querySelectorAll('.col-body.dragover').forEach(el => el.classList.remove('dragover'));
+}
+function dragOver(e){
+  const c = dragId && byId(dragId);
+  if(!c) return;
+  if(e.currentTarget.dataset.board !== c.board) return; // между досками — только через «Показать нанимающему»
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('dragover');
+}
+function dragLeave(e){ e.currentTarget.classList.remove('dragover'); }
+function drop(e){
+  e.preventDefault();
+  const id = e.dataTransfer.getData('text/plain') || dragId;
+  const c = byId(id);
+  const stage = e.currentTarget.dataset.stage;
+  const board = e.currentTarget.dataset.board;
+  e.currentTarget.classList.remove('dragover');
+  if(!c || c.board !== board || c.stage === stage) return;
+  c.stage = stage;
+  if(board === 'notebook' && stage === 'screening' && !c.gates) c.light = 'pending';
+  if(board === 'desk' && stage === 'interview' && !c.interview) c.interview = {stateName:'due'};
+  c.history.push({d: today(), who:'Система', text:`Этап изменён: «${stageTitle(board, stage)}»`});
+  toast(`${c.name} — этап «${stageTitle(board, stage)}»`);
+  render(); renderPanel();
+}
+
+/* ═══════════════ Действия ═══════════════ */
+function showToNM(id){
+  const c = byId(id);
+  if(!c) return;
+  c.board = 'desk';
+  c.stage = 'shown';
+  c.sent = today();
+  c.history.push({d: today(), who: ME, text:'Показан нанимающему — карточка на столе'});
+  toast('Карточка на столе');
+  render(); renderPanel();
+}
+
+function toArchive(c, reason){
+  c.board = 'archive';
+  c.stage = 'archive';
+  c.archiveReason = reason;
+  c.history.push({d: today(), who:'Система', text:'Карточка ушла в Архив / Резерв'});
+}
+
+function returnFromArchive(id){
+  const c = byId(id);
+  if(!c) return;
+  c.board = 'notebook';
+  c.stage = 'ready';
+  c.archiveReason = null;
+  c.history.push({d: today(), who: ME, text:'Возвращён из архива в Тетрадь'});
+  toast(`${c.name} снова в Тетради`);
+  render(); renderPanel();
+}
+
+/* ═══════════════ Боковая панель ═══════════════ */
+function openCard(id){
+  state.selectedId = id;
+  state.panelTab = 'resume';
+  state.nmFormOpen = false; state.nmFormStatus = null; state.evalFormLight = null;
+  renderPanel();
+  document.getElementById('panel').classList.add('open');
+  render();
+}
+function closePanel(){
+  document.getElementById('panel').classList.remove('open');
+  state.selectedId = null;
+  render();
+}
+function setPanelTab(tab){
+  state.panelTab = tab;
+  renderPanel();
+}
+
+function whereBadge(c){
+  if(c.board === 'archive') return `<span class="badge no">Архив / Резерв</span>`;
+  const boardName = c.board === 'desk' ? 'Стол' : 'Тетрадь';
+  return `<span class="badge wait">${boardName} · ${stageTitle(c.board, c.stage)}</span>`;
+}
+
+function renderPanel(){
+  const c = state.selectedId && byId(state.selectedId);
+  if(!c) return;
+  const head = document.getElementById('panelHead');
+  const tabs = [
+    ['resume','Резюме'],
+    ['agent','Оценка агента'],
+    ['posteval','После собеса'],
+    ['history','История'],
+    ['nm','Ответ НМ']
+  ];
+  head.innerHTML = `
+    <div class="panel-title-row">
+      <span class="light ${c.light}" style="width:13px;height:13px;margin-top:7px" title="${lightTitle(c.light)}"></span>
+      <div>
+        <div class="panel-name">${esc(c.name)}</div>
+        <div class="panel-role">${esc(c.role)}</div>
+      </div>
+      <button class="panel-close" onclick="closePanel()" title="Закрыть">✕</button>
+    </div>
+    <div class="panel-stage">${whereBadge(c)} ${c.gates ? gateChip(c) : ''}</div>
+    <div class="panel-tabs">` +
+      tabs.map(([id, label]) => `<button class="${state.panelTab===id?'active':''}" onclick="setPanelTab('${id}')">${label}</button>`).join('') +
+    `</div>`;
+
+  const body = document.getElementById('panelBody');
+  body.innerHTML = ({
+    resume: renderResume, agent: renderAgentEval, posteval: renderPostEval,
+    history: renderHistory, nm: renderNM
+  })[state.panelTab](c);
+}
+
+function renderResume(c){
+  return `
+    <div class="sec-title">Коротко</div>
+    <div class="summary-box">${esc(c.resume.summary)}</div>
+    <div class="sec-title">Опыт</div>
+    ${c.resume.exp.map(e => `
+      <div class="exp-item">
+        <div class="exp-role">${esc(e.role)}</div>
+        <div class="exp-org">${esc(e.org)}</div>
+        <div class="exp-years">${esc(e.years)}</div>
+      </div>`).join('')}
+    <div class="sec-title">Навыки</div>
+    <div class="skills">${c.resume.skills.map(s => `<span class="skill">${esc(s)}</span>`).join('')}</div>`;
+}
+
+function renderAgentEval(c){
+  if(c.light === 'pending') return `<div class="empty-tab">Агент сейчас читает резюме — оценка появится через пару минут.</div>`;
+  if(!c.gates) return `<div class="empty-tab">Агент ещё не оценивал это резюме. Оценка запустится на этапе «Скрининг агента».</div>`;
+  const p = gatesPassed(c);
+  return `
+    <div class="layer-note">Это оценка <b>по резюме</b> — её ставит агент по промпту скоринга. Впечатление от живой встречи живёт отдельно, во вкладке «После собеса».</div>
+    <div class="verdict">
+      <span class="light ${c.light}"></span>
+      <div><b>${lightTitle(c.light)[0].toUpperCase() + lightTitle(c.light).slice(1)}</b><br><span>ворота: пройдено ${p} из ${GATES_TOTAL}</span></div>
+    </div>
+    ${c.gates.map((gt, i) => `
+      <div class="gate">
+        <div class="gate-row"><span class="gate-ic ${gt.ok?'ok':'no'}">${gt.ok?'✓':'✕'}</span>${GATE_NAMES[i]}</div>
+        <div class="gate-quote">${esc(gt.quote)}</div>
+      </div>`).join('')}`;
+}
+
+function renderPostEval(c){
+  let block = '';
+  if(c.postInterview){
+    const pe = c.postInterview;
+    block = `
+      <div class="eval-box ${pe.light}">
+        <span class="light ${pe.light}"></span>
+        <div>
+          <b>${lightTitle(pe.light)[0].toUpperCase() + lightTitle(pe.light).slice(1)}</b>: ${esc(pe.text)}
+          <div class="eval-meta">поставила ${esc(pe.by)} · ${pe.date}</div>
+        </div>
+      </div>`;
+  } else {
+    block = `<div class="empty-tab">Собес ещё не оценён. Эта оценка — впечатление живого человека от встречи, она не смешивается с оценкой агента по резюме.</div>`;
+  }
+  const lights = [['green','зелёный','sel-ok'],['yellow','жёлтый','sel-cond'],['red','красный','sel-no']];
+  return `
+    <div class="layer-note">Отдельный слой: здесь оценивает <b>человек после встречи</b>, а не агент по тексту резюме.</div>
+    ${block}
+    <div class="form-box">
+      <label>${c.postInterview ? 'Обновить оценку после собеса' : 'Поставить оценку после собеса'}</label>
+      <div class="radio-row">
+        ${lights.map(([v, label, selCls]) => `<button class="${state.evalFormLight===v?selCls:''}" onclick="state.evalFormLight='${v}'; renderPanel()">● ${label}</button>`).join('')}
+      </div>
+      <textarea class="inp" id="evalText" placeholder="Как прошла встреча — своими словами">${state._evalDraft || ''}</textarea>
+      <div style="margin-top:10px; text-align:right">
+        <button class="btn-primary" onclick="savePostEval('${c.id}')">Сохранить оценку</button>
+      </div>
+    </div>`;
+}
+
+function savePostEval(id){
+  const c = byId(id);
+  const text = document.getElementById('evalText').value.trim();
+  if(!state.evalFormLight){ toast('Выберите цвет светофора'); state._evalDraft = text; return; }
+  if(!text){ toast('Напишите пару слов о встрече'); return; }
+  c.postInterview = {light: state.evalFormLight, text, by: ME, date: today()};
+  c.history.push({d: today(), who: ME, text:`Оценка после собеса: ${lightTitle(state.evalFormLight)}`});
+  const wasRed = state.evalFormLight === 'red';
+  if(wasRed) c.light = 'red';
+  state.evalFormLight = null; state._evalDraft = '';
+  if(wasRed && c.board === 'desk'){
+    toArchive(c, 'Красный после собеса — снят со стола');
+    toast('Красный после собеса — карточка ушла в Архив / Резерв');
+  } else {
+    toast('Оценка сохранена');
+  }
+  render(); renderPanel();
+}
+
+function renderHistory(c){
+  return `
+    <div class="sec-title">Кто — что — когда</div>
+    ${c.history.map(h => `
+      <div class="hist-item">
+        <div class="hist-line"><span class="hist-dot"></span><span class="hist-rule"></span></div>
+        <div>
+          <div class="hist-text">${esc(h.text)}</div>
+          <div class="hist-who">${h.d} · ${esc(h.who)} <span title="автор события подставлен системой">· авто</span></div>
+        </div>
+      </div>`).join('')}`;
+}
+
+function renderNM(c){
+  if(c.board === 'notebook'){
+    return `<div class="empty-tab">Кандидат ещё не показан нанимающему — он в Тетради. Когда решите показать, нажмите «Показать нанимающему» на карточке.</div>`;
+  }
+  let answer = '';
+  if(c.nmAnswer){
+    const a = c.nmAnswer;
+    const cls = a.status === 'Одобрен' ? 'ok' : (a.status === 'Отклонён' ? 'no' : 'cond');
+    answer = `
+      <div class="nm-block">
+        <span class="badge ${cls}">${a.status} · ${a.date}</span>
+        ${a.note ? `<div class="nm-note">«${esc(a.note)}»</div>` : ''}
+        ${a.manual ? `<div class="nm-manual-mark">занесено со слов · ${a.date} · ${esc(a.by)}</div>` : `<div class="nm-manual-mark">получено системой</div>`}
+      </div>`;
+  } else {
+    answer = `<div class="nm-block"><span class="badge wait">жду ответа НМ</span>
+      <div class="nm-note">Карточка отправлена нанимающему ${c.sent}. Ответа пока нет — это нормально, мягко напомню через пару дней.</div></div>`;
+  }
+  let form = '';
+  if(state.nmFormOpen){
+    const opts = [['Одобрен','sel-ok'],['Условно','sel-cond'],['Отклонён','sel-no']];
+    form = `
+      <div class="form-box">
+        <label>Ответ нанимающего — со слов</label>
+        <div class="radio-row">
+          ${opts.map(([v, selCls]) => `<button class="${state.nmFormStatus===v?selCls:''}" onclick="state.nmFormStatus='${v}'; renderPanel()">${v}</button>`).join('')}
+        </div>
+        <textarea class="inp" id="nmNote" placeholder="Что именно сказал нанимающий">${state._nmDraft || ''}</textarea>
+        <div style="margin-top:10px; display:flex; gap:8px; justify-content:flex-end">
+          <button class="btn-secondary" onclick="state.nmFormOpen=false; state.nmFormStatus=null; renderPanel()">Отмена</button>
+          <button class="btn-primary" onclick="saveNMAnswer('${c.id}')">Сохранить</button>
+        </div>
+        <div class="nm-manual-mark" style="margin-top:8px">будет помечено: со слов · ${today()} · ${ME}</div>
+      </div>`;
+  } else {
+    form = `<button class="btn-secondary" onclick="state.nmFormOpen=true; renderPanel()">Занести ответ руками (со слов)</button>`;
+  }
+  return `
+    <div class="sec-title">Ответ нанимающего</div>
+    ${answer}
+    ${form}`;
+}
+
+function saveNMAnswer(id){
+  const c = byId(id);
+  const note = document.getElementById('nmNote').value.trim();
+  if(!state.nmFormStatus){ toast('Выберите ответ: Одобрен / Условно / Отклонён'); state._nmDraft = note; return; }
+  const status = state.nmFormStatus;
+  c.nmAnswer = {status, date: today(), note, manual: true, by: ME};
+  c.history.push({d: today(), who: ME, text:`Ответ НМ занесён со слов: ${status}`});
+  state.nmFormOpen = false; state.nmFormStatus = null; state._nmDraft = '';
+  if(status === 'Отклонён' && c.board === 'desk'){
+    toArchive(c, `Отклонён НМ ${today()} — в резерве`);
+    toast('Отклонён НМ — карточка ушла в Архив / Резерв');
+  } else {
+    if(c.stage === 'shown') c.stage = 'answer';
+    toast('Ответ НМ сохранён');
+  }
+  render(); renderPanel();
+}
+
+/* ═══════════════ Промпт скоринга ═══════════════ */
+function openPrompt(){
+  document.getElementById('promptText').value = state.prompt;
+  document.getElementById('promptOverlay').classList.add('open');
+}
+function closePrompt(){
+  document.getElementById('promptOverlay').classList.remove('open');
+}
+function savePrompt(){
+  state.prompt = document.getElementById('promptText').value;
+  closePrompt();
+  toast('Промпт сохранён — новые резюме агент оценит по нему');
+}
+
+/* ═══════════════ Прочее ═══════════════ */
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    if(document.getElementById('promptOverlay').classList.contains('open')) closePrompt();
+    else if(document.getElementById('panel').classList.contains('open')) closePanel();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
