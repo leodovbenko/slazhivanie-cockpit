@@ -158,7 +158,14 @@ DECL_SIGNALS = [
     r"upsertAgentTemplate\s*\(",
     r"setCapabilityBindings\s*\(",
     r"AGENT_TIER_BREAKDOWN",
-    r"\{\s*id:\s*['\"][\w.]+['\"]\s*,\s*title:",  # новая запись capability
+    # Новая запись capability. Дефис в классе символов обязателен: id вида read.tenant-resources /
+    # read.pyrus-clients / read.resto-metrics — наша живая конвенция, а [\w.] их не ловил, и гейт
+    # блокировал коммит с ЧЕСТНО заявленной способностью (ложное срабатывание на дефисе).
+    r"\{\s*id:\s*['\"][\w.-]+['\"]\s*,\s*title:",
+    # Биндинг может заводиться прямым INSERT в capability_bindings (эталон ensureFirstAgent*Binding в
+    # db-agents.ts) — это тоже декларация осуществления, не только setCapabilityBindings().
+    r"capability_bindings\s*\(",
+    r"capabilityId:",
 ]
 
 
