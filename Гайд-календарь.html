@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Календарь, с которым разговаривают — гайд Уклад</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A4238;
+    --green:#3D7A3E; --green-d:#2F5F30;
+    --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --card:#FBF8F2;
+  }
+  *{box-sizing:border-box}
+  @page{size:A4;margin:0}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--ink); background:var(--cream);
+    font-size:11.2px; line-height:1.58;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; background:var(--cream); z-index:-1;
+  }
+  .page{
+    width:210mm; min-height:297mm; padding:18mm 17mm 16mm;
+    position:relative; page-break-after:always; overflow:hidden;
+  }
+  .page:last-child{page-break-after:auto}
+  h1,h2,h3,.eyebrow{font-family:'Fraunces',serif; letter-spacing:-.01em}
+  .eyebrow{
+    font-family:'IBM Plex Sans',sans-serif; font-weight:600;
+    font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--clay-d);
+  }
+  h1{font-size:34px; font-weight:600; line-height:1.08; margin:6px 0 0}
+  h2{font-size:19px; font-weight:600; margin:0 0 3px; color:var(--ink)}
+  h3{font-size:13.5px; font-weight:600; margin:0 0 2px; color:var(--green-d)}
+  p{margin:0 0 8px}
+  .muted{color:var(--ink-soft)}
+  .lead{font-size:13px; line-height:1.55; color:var(--ink-soft); max-width:150mm}
+  .sec-head{display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--line); padding-bottom:7px; margin:0 0 12px}
+  .sec-num{font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--clay); line-height:1}
+  .block{margin:0 0 15px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin:0 0 10px;
+  }
+  .card.dark{background:var(--ink); color:#F1EADD; border-color:var(--ink)}
+  .card.dark h3{color:#E8B58E}
+  .card.dark .muted{color:#C6BBA9}
+  .pill{
+    display:inline-block; font-size:9px; font-weight:600; letter-spacing:.05em;
+    padding:2px 8px; border-radius:999px; text-transform:uppercase;
+    background:#EAE0CF; color:var(--ink-soft); margin-right:5px;
+  }
+  .pill.web{background:#DCE9DC; color:var(--green-d)}
+  .pill.tg{background:#E9DBD2; color:var(--clay-d)}
+  table{width:100%; border-collapse:collapse; margin:4px 0 10px; font-size:10.3px}
+  th{
+    text-align:left; font-weight:600; font-size:9px; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--clay-d);
+    border-bottom:1.5px solid var(--line); padding:6px 8px 5px; vertical-align:bottom;
+  }
+  td{border-bottom:1px solid var(--line); padding:6px 8px; vertical-align:top}
+  td strong{font-weight:600}
+  tr:last-child td{border-bottom:none}
+  ul{margin:2px 0 8px; padding-left:17px}
+  li{margin:0 0 3px}
+  .kicker{font-weight:600; color:var(--green-d)}
+  .footer{
+    position:absolute; bottom:9mm; left:17mm; right:17mm;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:8.5px; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:5px;
+  }
+  .footer .brand{font-family:'Fraunces',serif; font-weight:600; color:var(--ink)}
+  .cols{display:flex; gap:12px}
+  .cols>div{flex:1}
+  .callout{
+    border-left:3px solid var(--clay); background:#FBF3EC;
+    padding:8px 12px; border-radius:0 8px 8px 0; margin:0 0 10px; font-size:10.3px;
+  }
+  .callout .kicker{color:var(--clay-d)}
+  .note{font-size:9.6px; color:var(--ink-soft); font-style:italic}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .icn{font-size:15px; line-height:1; margin-right:4px}
+  .steps{counter-reset:st; list-style:none; padding:0; margin:4px 0 10px}
+  .steps li{position:relative; padding:0 0 8px 30px; margin:0}
+  .steps li::before{
+    counter-increment:st; content:counter(st);
+    position:absolute; left:0; top:-1px; width:20px; height:20px;
+    background:var(--green); color:#F1EADD; border-radius:50%;
+    font-family:'Fraunces',serif; font-weight:600; font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .say{
+    font-family:'Fraunces',serif; font-style:italic; color:var(--green-d);
+    background:#EEF4EC; border-radius:8px; padding:2px 8px; display:inline-block; margin:2px 4px 2px 0;
+    font-size:11px;
+  }
+
+  /* ── Cover ── */
+  .cover{background:var(--ink); color:#F1EADD}
+  .cover::after{content:none}
+  .cover .eyebrow{color:#E8B58E}
+  .cover h1{color:#FBF8F2; font-size:42px; margin-top:14px}
+  .cover .lead{color:#CFC4B2}
+  .cover .rule{height:2px; width:64px; background:var(--clay); margin:20px 0 22px}
+  .cover .metarow{display:flex; gap:26px; margin-top:28px; font-size:10px; color:#B9AE9C}
+  .cover .metarow b{color:#F1EADD; font-weight:600; display:block; font-size:12px; margin-bottom:1px}
+  .cover .tocbox{margin-top:34px; border-top:1px solid #3A342B; padding-top:16px}
+  .cover .tocbox .eyebrow{color:#9C9284}
+  .toc{display:grid; grid-template-columns:1fr 1fr; gap:6px 26px; margin-top:10px; font-size:10.5px; color:#D9CFBD}
+  .toc span{color:var(--clay); font-family:'Fraunces',serif; font-weight:600; margin-right:8px}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ COVER ══════════════ -->
+<section class="page cover">
+  <div class="eyebrow">Уклад · Платформа «Слаживание»</div>
+  <h1>Календарь, с которым разговаривают</h1>
+  <div class="rule"></div>
+  <p class="lead">Это не ещё один календарь. Ему не нужны ни сайт, ни имейл, ни отдельное приложение — он живёт прямо в вашем Telegram и в рабочем чате. С ним разговаривают, а не кликают: он сам сводит расписания команды, а гостю хватает одной ссылки. Полный гайд — как этим пользоваться.</p>
+
+  <div class="metarow">
+    <div><b>Разговором</b>Пишете словами — делает</div>
+    <div><b>Внутри Telegram</b>Без сайта, почты, приложения</div>
+    <div><b>Гостю — одна ссылка</b>Без аккаунта и почты</div>
+  </div>
+
+  <div class="tocbox">
+    <div class="eyebrow" style="color:#9C9284">Содержание</div>
+    <div class="toc">
+      <div><span>1</span>Что это и как с ним говорить</div>
+      <div><span>2</span>Подключить свой календарь</div>
+      <div><span>3</span>Часовые пояса: компания и вы</div>
+      <div><span>4</span>Спросить расписание и назначить встречу</div>
+      <div><span>5</span>Одна ссылка вместо переписки</div>
+      <div><span>6</span>Календарь команды</div>
+      <div><span>7</span>Созвон, часы, напоминания</div>
+      <div><span>8</span>Что он делает сам + шпаргалка</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 1. WHAT ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">01</span><div><div class="eyebrow">Фундамент</div><h2>Что это и как с ним говорить</h2></div></div>
+
+  <p class="lead" style="margin-bottom:14px">С календарём разговаривают, а не кликают. Вы пишете задачу словами — в личке с агентом или в рабочем чате — он понимает и делает. Каждая фраза ниже — не имитация, а реальное действие: агент лезет в календарь и ставит/показывает/напоминает.</p>
+
+  <div class="block">
+    <h3>Скажите словами — он сделает</h3>
+    <p style="margin:0 0 8px">
+      <span class="say">«что у меня сегодня»</span>
+      <span class="say">«предложи время для встречи про бюджет»</span>
+      <span class="say">«давай созвон на 30 минут»</span>
+      <span class="say">«напомни в 15:00 позвонить поставщику»</span>
+      <span class="say">«дай мою ссылку на встречу»</span>
+      <span class="say">«когда свободна команда на неделе»</span>
+    </p>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Сам сводит расписания</h3>
+      <p class="muted" style="margin:0">Не вы сводите пять расписаний вручную — он показывает общее окно, когда свободны все сразу.</p>
+    </div>
+    <div class="card">
+      <h3>Гостю ничего не нужно</h3>
+      <p class="muted" style="margin:0">Кидаете одну ссылку — человек тапает удобное время, и встреча уже стоит у вас в календаре. Без аккаунта и почты.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Часовые пояса — не ваша забота.</span> Вы в Москве, коллега в Новосибирске, гость в Дубае — каждый видит время в своём, никто ничего не пересчитывает в голове. Как именно это устроено — в разделе 3.
+  </div>
+
+  <div class="card dark">
+    <h3>Всё внутри Telegram</h3>
+    <p class="muted" style="margin:0">Никаких «зайдите на сайт», «установите приложение», «дайте почту». Календарь живёт в мессенджере, который у вас и так открыт. Веб-кабинет — для настроек и командного вида; сам разговор идёт в Telegram.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>1 / 8 · Фундамент</span></div>
+</section>
+
+<!-- ══════════════ 2. CONNECT ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">02</span><div><div class="eyebrow"><span class="pill web">Кабинет</span></div><h2>Подключить свой календарь</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Кабинет → Профиль → раздел <b>«Мои календари»</b>. С момента подключения агент видит, когда вы заняты, и умеет предлагать и ставить встречи.</p>
+
+  <div class="block">
+    <table>
+      <tr><th style="width:30%">Провайдер</th><th style="width:34%">Как подключить</th><th>Что умеет</th></tr>
+      <tr><td><strong>Google Календарь (OAuth)</strong></td><td>Вход по кнопке, согласие Google — пара кликов.</td><td><b>Двусторонний:</b> читает занятость, ставит и переносит встречи.</td></tr>
+      <tr><td><strong>Яндекс.Календарь</strong></td><td>Логин + <b>пароль приложения</b> (Yandex ID → Пароли приложений → «Календарь»; обычный пароль от почты не подойдёт).</td><td>Читает занятость, ставит и удаляет встречи. Перенос существующей — пока только у Google.</td></tr>
+      <tr><td><strong>CalDAV</strong></td><td>Логин + пароль приложения.</td><td>Читает и ставит встречи.</td></tr>
+      <tr><td><strong>Ссылка iCal</strong><br><span class="muted">Google · Apple · Outlook</span></td><td>Секретный адрес в формате iCal из вашего календаря.</td><td><b>Только чтение</b> занятости. Ставить встречи не может.</td></tr>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Как выбрать.</span> Нужно, чтобы агент сам ставил встречи → <b>Google</b> (или Яндекс/CalDAV по паролю приложения). Нужно только показать вашу занятость, чтобы не назначали внахлёст → <b>iCal-ссылка</b>. Apple и Outlook подключаются именно через iCal-ссылку (чтение занятости).
+  </div>
+
+  <div class="card">
+    <h3>Что значит «двусторонний»</h3>
+    <p class="muted" style="margin:0">Двусторонний календарь (Google, Яндекс, CalDAV) агент не только читает, но и <b>пишет</b> в него: подтверждённый слот сам становится событием. iCal — «зеркало наоборот»: агент видит, что вы заняты, но новые встречи кладёт не туда.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>2 / 8 · Подключение</span></div>
+</section>
+
+<!-- ══════════════ 3. TIMEZONES ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">03</span><div><div class="eyebrow">Часовые пояса</div><h2>Пояс компании и ваш личный</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Пояс задаётся на двух уровнях, и всё считается в правильном времени само. Разбираться в этом не обязательно — но полезно знать логику.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>🏢 Пояс компании</h3>
+      <p class="muted" style="margin:0">Кабинет → Компания → поле <b>«Часовой пояс»</b> → город команды → Сохранить. Правит владелец/админ. Общий ориентир для всех.</p>
+    </div>
+    <div class="card">
+      <h3>👤 Ваш личный пояс</h3>
+      <p class="muted" style="margin:0">Кабинет → Профиль → <b>«Часовой пояс»</b>. <b>Сильнее общего.</b> В другом городе, чем команда? Поставьте свой. Не хотите отдельно — оставьте «Как в компании».</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Где какой пояс применяется</h3>
+    <table>
+      <tr><th style="width:55%">Что показываем / ставим</th><th>В каком поясе</th></tr>
+      <tr><td>«Что у меня сегодня / завтра / на неделе»</td><td><b>Ваш личный</b></td></tr>
+      <tr><td>Напоминания (когда прилетит пинг)</td><td><b>Ваш личный</b></td></tr>
+      <tr><td>Слоты при подборе времени встречи</td><td>Пояс компании</td></tr>
+      <tr><td>Календарь команды и «когда свободны все»</td><td>Пояс компании</td></tr>
+      <tr><td>Утренний бриф и пинг за 5 минут</td><td>Пояс компании</td></tr>
+      <tr><td>Страница брони для гостя</td><td>Пояс гостя (сам определяется)</td></tr>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Пример.</span> Команда в Москве, вы в Новосибирске. Ставите себе Новосибирск — и <span class="say" style="margin:0">«напомни в 15:00»</span> приходит в <b>ваши</b> 15:00, а «что у меня сегодня» показано в вашем времени. Общие вещи (командный календарь, бриф) остаются в поясе команды — это одно на всех.
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>3 / 8 · Пояса</span></div>
+</section>
+
+<!-- ══════════════ 4. ASK + ARRANGE ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">04</span><div><div class="eyebrow"><span class="pill tg">Telegram</span></div><h2>Спросить расписание и назначить встречу</h2></div></div>
+
+  <div class="block">
+    <h3>«Что у меня сегодня» — просто спросите</h3>
+    <p class="muted" style="margin:0">В личном чате с агентом: <span class="say" style="margin:0">«что у меня сегодня»</span>, <span class="say" style="margin:0">«что завтра»</span>, <span class="say" style="margin:0">«какие встречи на неделе»</span>. Он перескажет по-человечески. <b>В общем чате команды расписание не покажет</b> — это только ваше, чтобы чужие встречи не всплыли в общей переписке.</p>
+  </div>
+
+  <div class="block">
+    <h3>Договориться о встрече прямо в переписке</h3>
+    <p class="muted" style="margin:0 0 6px">Напишите <span class="say" style="margin:0">«предложи время для встречи про бюджет»</span> или <span class="say" style="margin:0">«давай созвон на 30 минут»</span>. Агент посмотрит календарь и предложит 2–3 слота кнопками. Дальше зависит от того, где вы это делаете:</p>
+    <table>
+      <tr><th style="width:22%">Где</th><th>Что происходит по тапу</th></tr>
+      <tr>
+        <td><span class="pill tg">Личка</span></td>
+        <td>Тап по слоту <b>сразу ставит встречу</b>. Участнику с почтой уходит приглашение в календарь.</td>
+      </tr>
+      <tr>
+        <td><span class="pill tg">Командный чат</span></td>
+        <td>Слоты приходят <b>голосованием</b>: каждый отмечает удобное, координатор жмёт <b>«📌 Готово — поставить встречу»</b>, встреча встаёт на слот-победитель (больше голосов; при равенстве — ранний).</td>
+      </tr>
+    </table>
+    <p class="muted" style="margin:0">Никаких «когда тебе удобно?» на двадцать сообщений.</p>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Про приглашения.</span> Приглашение в календарь уходит участнику, только если известна его почта — внешний e-mail или коллега, чью почту система знает. Если вы назвали просто имя без совпадения — встреча встанет у вас, но без автоприглашения.
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>4 / 8 · Договориться</span></div>
+</section>
+
+<!-- ══════════════ 5. LINK ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">05</span><div><div class="eyebrow">Как Calendly, только наоборот</div><h2>Одна ссылка вместо переписки о времени</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Скажите <span class="say" style="margin:0">«дай мою ссылку на встречу»</span> — агент выдаст постоянную ссылку вида <b>uklad.ai/m/…</b> (свой адрес настраивается в Профиле). Кидаете её кому угодно — даже человеку не из Уклада, даже без почты. Он открывает, выбирает время из ваших свободных окон — и встреча сама встаёт вам в календарь, а вам приходит «кто и о чём».</p>
+
+  <div class="block">
+    <h3>Гость выбирает, как ему напомнить — три пути</h3>
+    <table>
+      <tr><th style="width:26%">Путь</th><th>Что получит гость</th></tr>
+      <tr><td><span class="icn">✈️</span><strong>В Telegram</strong></td><td>Кнопка «Напомнить в Telegram за 5 минут» — прилетит пинг перед встречей. Путь по умолчанию, если у команды есть бот.</td></tr>
+      <tr><td><span class="icn">✉️</span><strong>На почту</strong></td><td>Приглашение в календарь (если указал e-mail).</td></tr>
+      <tr><td><span class="icn">📅</span><strong>Добавлю сам</strong></td><td>Кнопки «＋ Google Календарь» / «＋ Apple / .ics» — добавит к себе руками.</td></tr>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Гость видит слоты в своём поясе.</span> Страница сама подстраивается под город гостя — ему ничего не нужно настраивать; если хост в другом поясе, гость увидит об этом пометку. Гость даже может дозвать к встрече дополнительных участников по e-mail.
+  </div>
+
+  <div class="card dark">
+    <h3>Чем это отличается от Calendly</h3>
+    <p class="muted" style="margin:0">Тем, что время выбирает тот, кого вы зовёте, из ваших реальных свободных окон, и ему не нужен ни аккаунт, ни установка. Ссылка постоянная — раздали один раз и пользуетесь.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>5 / 8 · Ссылка</span></div>
+</section>
+
+<!-- ══════════════ 6. TEAM ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">06</span><div><div class="eyebrow"><span class="pill web">Кабинет</span></div><h2>Календарь команды</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Календарь сам ищет, когда свободна команда — не вы сводите расписания вручную. Экран <b>«Команда» → «Календарь команды»</b>.</p>
+
+  <div class="block">
+    <ul>
+      <li><span class="kicker">Сверху зелёным</span> — окна, когда свободны <b>все сразу</b>.</li>
+      <li><span class="kicker">Ниже</span> — у каждого своя лента занятости. Кто не подключил календарь — отдельной строкой «без данных».</li>
+      <li><span class="kicker">Горизонт</span> — 3 / 7 / 14 дней, переключается сверху.</li>
+      <li><span class="kicker">Длительность встречи</span> — 15 / 30 / 60 минут; окна пересчитываются под неё.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Или просто спросите</h3>
+    <p class="muted" style="margin:0"><span class="say" style="margin:0">«когда свободна команда на этой неделе»</span> — агент ответит словами прямо в чате, в том числе в командном.</p>
+  </div>
+
+  <div class="callout" style="border-color:var(--green); background:#EEF4EC">
+    <span class="kicker" style="color:var(--green-d)">Приватность встреч.</span> Команде видно только <b>«занят / свободен»</b> — без названий встреч. Что именно за встреча — остаётся вашим. (Индикаторы различаются и цветом, и формой — читаются при дальтонизме.)
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>6 / 8 · Команда</span></div>
+</section>
+
+<!-- ══════════════ 7. CALL + HOURS + REMINDERS ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">07</span><div><div class="eyebrow">Настройки и напоминания</div><h2>Созвон, часы для встреч, напоминания</h2></div></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Ссылка на созвон</h3>
+      <p class="muted" style="margin:0">Скажите <span class="say" style="margin:0">«моя ссылка на зум …»</span> (Meet, любая) — агент будет автоматически класть её во встречи, чтобы все сразу видели, куда подключаться. Если своей ссылки нет и встреча в Google с участниками — сгенерит Google Meet сам.</p>
+    </div>
+    <div class="card">
+      <h3>Часы для встреч</h3>
+      <p class="muted" style="margin:0">Профиль → <b>«Часы для встреч»</b> (по умолчанию 10:00–19:00). Слоты предлагаются только внутри этого окна — при желании сузьте.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Напоминания — голосом или текстом</h3>
+    <p class="muted" style="margin:0 0 6px">
+      <span class="say" style="margin:2px 4px 2px 0">«напомни завтра в 10 позвонить поставщику»</span>
+      <span class="say" style="margin:2px 4px 2px 0">«через 2 часа проверить оплату»</span>
+      <span class="say" style="margin:2px 4px 2px 0">«каждый понедельник в 9 — планёрка»</span>
+    </p>
+    <ul style="margin-bottom:0">
+      <li>Разовые и повторяющиеся (ежедневно / еженедельно). В нужный момент придёт пинг в Telegram — <b>в вашем личном поясе</b>.</li>
+      <li><span class="say" style="margin:0">«покажи мои напоминания»</span> — список, у каждого кнопка <b>«✖️ Отменить»</b>. Кнопка отмены есть и сразу после создания.</li>
+    </ul>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>7 / 8 · Настройки</span></div>
+</section>
+
+<!-- ══════════════ 8. AUTOPILOT + CHEAT ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">08</span><div><div class="eyebrow">Автопилот</div><h2>Что он делает сам — и коротко всё</h2></div></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>☀️ Утренний бриф</h3>
+      <p class="muted" style="margin:0">С утра присылает встречи дня с коротким контекстом по участникам — из того, что помнит команда. В пустой день молчит (не шлёт пустой брифинг).</p>
+    </div>
+    <div class="card">
+      <h3>🔔 За 5 минут до встречи</h3>
+      <p class="muted" style="margin:0">Пинг с кнопкой <b>«Подключиться»</b> — и вам, и гостю. Встречу удалили из календаря — пустого пинга не будет. (Если ссылки на созвон нет — пинг придёт, но без кнопки.)</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Шпаргалка команд</h3>
+    <table>
+      <tr><th style="width:48%">Скажите</th><th>Получите</th></tr>
+      <tr><td>«что у меня сегодня / завтра / на неделе»</td><td>Ваше расписание словами (в личке)</td></tr>
+      <tr><td>«предложи время для встречи про …»</td><td>Слоты кнопками (личка — тап ставит; группа — голосование)</td></tr>
+      <tr><td>«дай мою ссылку на встречу»</td><td>Постоянная ссылка uklad.ai/m/…</td></tr>
+      <tr><td>«когда свободна команда на неделе»</td><td>Общие свободные окна</td></tr>
+      <tr><td>«напомни …» / «каждый понедельник в 9 …»</td><td>Разовое или повторяющееся напоминание</td></tr>
+      <tr><td>«покажи мои напоминания»</td><td>Список с кнопкой «Отменить»</td></tr>
+      <tr><td>«моя ссылка на зум …»</td><td>Созвон авто-подставляется во встречи</td></tr>
+    </table>
+  </div>
+
+  <div class="card dark">
+    <h3>Коротко</h3>
+    <p class="muted" style="margin:0">Календарь, которому не нужны сайт, имейл и приложение. Вы с ним разговариваете, он сам сводит расписания команды, а гостю хватает одной ссылки. Всё — в Telegram, который у вас и так открыт.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Календарь</span><span>8 / 8 · Автопилот</span></div>
+</section>
+
+</body>
+</html>

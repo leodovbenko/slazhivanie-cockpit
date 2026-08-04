@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A443B;
+    --green:#3D7A3E; --green-d:#2F5F30; --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --paper:#FBF8F2; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @page{size:A4;margin:0} html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:'IBM Plex Sans',sans-serif;color:var(--ink);background:var(--cream);font-size:11px;line-height:1.55}
+  body::before{content:'';position:fixed;inset:0;background:var(--cream);z-index:-1}
+  .page{width:210mm;min-height:297mm;padding:18mm;page-break-after:always;position:relative;overflow:hidden}
+  .page:last-child{page-break-after:auto}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:38px;line-height:1.04;letter-spacing:-.5px}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.2px;margin-bottom:9px}
+  h3{font-weight:600;font-size:12px;color:var(--green-d);margin-bottom:4px}
+  p{margin-bottom:8px}
+  .kicker{font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--clay)}
+  .lead{font-size:13.5px;line-height:1.6;color:var(--ink-soft)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+  .dark{background:var(--ink);color:#EDE6D8;border-radius:13px;padding:17px 20px}
+  .dark h3{color:#C9B79C}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .note{background:#F3ECDD;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .warn{background:#F6E8DF;border-left:3px solid var(--clay);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .foot{position:absolute;bottom:9mm;left:18mm;right:18mm;display:flex;justify-content:space-between;font-size:9px;color:#9C8F79;border-top:1px solid var(--line);padding-top:6px}
+  ul{margin:0 0 8px 18px} li{margin-bottom:4px}
+  .tag{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:20px;background:#E8EFE4;color:var(--green-d)}
+  .tag.soon{background:#EDE4D2;color:#8C7A55}
+  .step{display:flex;gap:11px;margin-bottom:10px}
+  .num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center;font-size:12px}
+  .flow{display:flex;align-items:stretch;gap:8px;margin-top:6px}
+  .flow .box{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:10px}
+  .flow .box b{font-size:11px}
+  .arr{flex:none;align-self:center;color:var(--clay);font-size:18px;font-weight:700}
+</style></head><body>
+
+<div class="page">
+  <div class="kicker">Платформа «Уклад» · гайд</div>
+  <h1 style="margin-top:14px">СЕО-бот —<br>статьи для блога,<br>которые находит поиск</h1>
+  <p class="lead" style="margin-top:16px">Чтобы вас находили в поиске, у сайта должен быть живой блог с толковыми статьями под запросы клиентов. Писать их руками каждую неделю — долго. СЕО-бот берёт эту работу на себя: готовит статьи, а платформа проверяет их и публикует в ваш блог.</p>
+
+  <div class="dark" style="margin-top:18px">
+    <h3>Коротко</h3>
+    <p style="margin-bottom:0;color:#EDE6D8">СЕО-бот — это внешний сервис-писатель, который мы подключаем к платформе как помощника вашего SMM-агента Гермеса. Он сам сочиняет статьи под поисковые запросы и присылает их к нам. Гермес проверяет каждую на бренд и на «не навреди», публикует в блог, сообщает вам и оставляет кнопку «Снять», если что-то не так.</p>
+  </div>
+
+  <h2 style="margin-top:22px">Как это устроено — по-простому</h2>
+  <div class="flow">
+    <div class="box"><b>🤖 СЕО-бот</b><br><span style="color:#8C7F6B">внешний сервис пишет статью под поисковый запрос</span></div>
+    <div class="arr">→</div>
+    <div class="box"><b>⚡ Платформа</b><br><span style="color:#8C7F6B">принимает черновик, проверяет бренд и безопасность</span></div>
+    <div class="arr">→</div>
+    <div class="box"><b>🌐 Ваш блог</b><br><span style="color:#8C7F6B">статья выходит на сайте, вы получаете уведомление</span></div>
+  </div>
+
+  <div class="note" style="margin-top:16px">
+    <b>Честно про роли.</b> Саму статью пишет внешний сервис — это его ремесло, не наша выдумка. Наша сторона делает другое: принимает готовый текст, прогоняет через проверку и красиво публикует в блог. Мы ничего не отправляем наружу — только принимаем и размещаем у вас.
+  </div>
+
+  <h2 style="margin-top:20px">Что берёт на себя платформа при публикации</h2>
+  <div class="grid3">
+    <div class="card"><h3>Проверка</h3><p style="margin-bottom:0">Гермес смотрит статью на соответствие вашему бренду и на «не навреди», прежде чем она выйдет.</p></div>
+    <div class="card"><h3>Оформление под поиск</h3><p style="margin-bottom:0">Заголовки, описание, разметка для поисковиков, карта сайта — платформа делает это сама, без отдельной системы.</p></div>
+    <div class="card"><h3>Откат</h3><p style="margin-bottom:0">Что-то не то — кнопка «Снять» убирает статью. Вам приходит уведомление о каждой публикации.</p></div>
+  </div>
+
+  <div class="foot"><span>СЕО-бот · гайд</span><span>1</span></div>
+</div>
+
+<div class="page">
+  <div class="kicker">Как подключить</div>
+  <h2 style="margin-top:10px">Порядок действий</h2>
+  <div style="margin-top:12px">
+    <div class="step"><div class="num">1</div><div><b>Нанять Гермеса.</b> СЕО-бот — помощник вашего SMM-агента Гермеса, поэтому сначала берёте Гермеса на странице «Флот».</div></div>
+    <div class="step"><div class="num">2</div><div><b>Завести проект на стороне сервиса.</b> Внешний сервис-писатель вы регистрируете сами — там задаёте тематику и запросы, под которые он будет писать.</div></div>
+    <div class="step"><div class="num">3</div><div><b>Соединить его с блогом.</b> В «Коннекторах» кабинета включаете канал СЕО-бота на свой блог, копируете выданный адрес и вставляете его в свой проект у сервиса. Всё — статьи потекут к вам.</div></div>
+  </div>
+
+  <h2 style="margin-top:18px">Несколько блогов — не проблема</h2>
+  <p>Если у вас сайт на двух языках или несколько площадок, каждый блог получает свой отдельный адрес подключения. Например, русский блог и английский блог живут раздельно, каждый — со своим потоком статей.</p>
+  <div class="grid2" style="margin-top:4px">
+    <div class="card"><h3>Русский блог</h3><p style="margin-bottom:0">Свой проект у сервиса, свой адрес подключения, статьи на русском.</p></div>
+    <div class="card"><h3>Английский блог</h3><p style="margin-bottom:0">Отдельный проект и адрес, статьи на английском — не перемешиваются.</p></div>
+  </div>
+
+  <div class="note" style="margin-top:14px">
+    В кабинете видно, сколько статей в месяц пришло на каждый блог, и адрес подключения для каждого сайта. Подключение показывается, только когда сервис реально привязан — пустых обещаний в витрине нет.
+  </div>
+
+  <h2 style="margin-top:18px">Кто что делает</h2>
+  <div class="grid2">
+    <div class="card"><h3>Вы</h3><p style="margin-bottom:0">Регистрируете проект у внешнего сервиса, задаёте темы, вставляете адрес подключения в кабинете.</p></div>
+    <div class="card"><h3>Платформа</h3><p style="margin-bottom:0">Принимает статьи, проверяет, оформляет под поиск и публикует в блог. Считает расход и уведомляет вас.</p></div>
+  </div>
+
+  <div class="foot"><span>СЕО-бот · гайд</span><span>2</span></div>
+</div>
+
+<div class="page">
+  <div class="kicker">Честно о границах</div>
+  <h2 style="margin-top:10px">Что это, а что — нет</h2>
+
+  <div class="card" style="margin-top:12px;border-color:#CFE0C6">
+    <div style="margin-bottom:8px"><span class="tag">так это работает</span></div>
+    <ul style="margin-bottom:0">
+      <li>СЕО-бот — это <b>внешний сервис-писатель</b>, подключённый к платформе как помощник Гермеса.</li>
+      <li>Статьи <b>пишет он</b>, а платформа принимает, проверяет и публикует в ваш блог с полным оформлением под поиск.</li>
+      <li>Работает на <b>несколько блогов и языков</b> сразу, каждый — отдельным потоком.</li>
+    </ul>
+  </div>
+
+  <div class="warn" style="margin-top:12px">
+    <b>Чтобы не путать.</b> «СЕО-бот» здесь — про статьи для поиска (поисковую оптимизацию), а не про «гендиректора». Отдельного агента-директора у платформы нет. Блог и статьи ведёт Гермес вместе с этим помощником.
+  </div>
+
+  <div class="card" style="margin-top:12px;border-color:#E0CDBE">
+    <div style="margin-bottom:8px"><span class="tag soon">в планах</span></div>
+    <p style="margin-bottom:0">Со временем поисковая работа станет полноценным направлением под руководством маркетингового тим-лида — он будет ставить задачи и Гермесу, и СЕО-направлению, и собирать это в единую стратегию продвижения. Пока тим-лид работает как советник: раскладывает план на стол, но команды исполнителям ещё не раздаёт.</p>
+  </div>
+
+  <div class="dark" style="margin-top:16px">
+    <h3>Зачем это вам</h3>
+    <p style="margin-bottom:0;color:#EDE6D8">Регулярный блог под поисковые запросы — это поток людей, которые сами вас находят, без платы за рекламу. Обычно он умирает, потому что «некому писать». Здесь писать не нужно — статьи приходят сами, проверяются на ваш бренд и выходят на сайте оформленными так, как любят поисковики.</p>
+  </div>
+
+  <div class="foot"><span>СЕО-бот · гайд</span><span>3</span></div>
+</div>
+
+</body></html>

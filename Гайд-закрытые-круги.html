@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Закрытые пространства (Круги) — гайд Уклад</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A4238;
+    --green:#3D7A3E; --green-d:#2F5F30;
+    --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --card:#FBF8F2;
+  }
+  *{box-sizing:border-box}
+  @page{size:A4;margin:0}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--ink); background:var(--cream);
+    font-size:11.2px; line-height:1.58;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; background:var(--cream); z-index:-1;
+  }
+  .page{
+    width:210mm; min-height:297mm; padding:18mm 17mm 16mm;
+    position:relative; page-break-after:always; overflow:hidden;
+  }
+  .page:last-child{page-break-after:auto}
+  h1,h2,h3,.eyebrow{font-family:'Fraunces',serif; letter-spacing:-.01em}
+  .eyebrow{
+    font-family:'IBM Plex Sans',sans-serif; font-weight:600;
+    font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--clay-d);
+  }
+  h1{font-size:34px; font-weight:600; line-height:1.08; margin:6px 0 0}
+  h2{font-size:19px; font-weight:600; margin:0 0 3px; color:var(--ink)}
+  h3{font-size:13.5px; font-weight:600; margin:0 0 2px; color:var(--green-d)}
+  p{margin:0 0 8px}
+  .muted{color:var(--ink-soft)}
+  .lead{font-size:13px; line-height:1.55; color:var(--ink-soft); max-width:150mm}
+  .sec-head{display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--line); padding-bottom:7px; margin:0 0 12px}
+  .sec-num{font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--clay); line-height:1}
+  .block{margin:0 0 15px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin:0 0 10px;
+  }
+  .card.dark{background:var(--ink); color:#F1EADD; border-color:var(--ink)}
+  .card.dark h3{color:#E8B58E}
+  .card.dark .muted{color:#C6BBA9}
+  .pill{
+    display:inline-block; font-size:9px; font-weight:600; letter-spacing:.05em;
+    padding:2px 8px; border-radius:999px; text-transform:uppercase;
+    background:#EAE0CF; color:var(--ink-soft); margin-right:5px;
+  }
+  .pill.web{background:#DCE9DC; color:var(--green-d)}
+  .pill.tg{background:#E9DBD2; color:var(--clay-d)}
+  table{width:100%; border-collapse:collapse; margin:4px 0 10px; font-size:10.3px}
+  th{
+    text-align:left; font-weight:600; font-size:9px; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--clay-d);
+    border-bottom:1.5px solid var(--line); padding:6px 8px 5px; vertical-align:bottom;
+  }
+  td{border-bottom:1px solid var(--line); padding:6px 8px; vertical-align:top}
+  td strong{font-weight:600}
+  tr:last-child td{border-bottom:none}
+  ul{margin:2px 0 8px; padding-left:17px}
+  li{margin:0 0 3px}
+  .kicker{font-weight:600; color:var(--green-d)}
+  .footer{
+    position:absolute; bottom:9mm; left:17mm; right:17mm;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:8.5px; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:5px;
+  }
+  .footer .brand{font-family:'Fraunces',serif; font-weight:600; color:var(--ink)}
+  .cols{display:flex; gap:12px}
+  .cols>div{flex:1}
+  .callout{
+    border-left:3px solid var(--clay); background:#FBF3EC;
+    padding:8px 12px; border-radius:0 8px 8px 0; margin:0 0 10px; font-size:10.3px;
+  }
+  .callout .kicker{color:var(--clay-d)}
+  .note{font-size:9.6px; color:var(--ink-soft); font-style:italic}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .icn{font-size:15px; line-height:1; margin-right:4px}
+  .steps{counter-reset:st; list-style:none; padding:0; margin:4px 0 10px}
+  .steps li{position:relative; padding:0 0 8px 30px; margin:0}
+  .steps li::before{
+    counter-increment:st; content:counter(st);
+    position:absolute; left:0; top:-1px; width:20px; height:20px;
+    background:var(--green); color:#F1EADD; border-radius:50%;
+    font-family:'Fraunces',serif; font-weight:600; font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ── Cover ── */
+  .cover{background:var(--ink); color:#F1EADD}
+  .cover::after{content:none}
+  .cover .eyebrow{color:#E8B58E}
+  .cover h1{color:#FBF8F2; font-size:42px; margin-top:14px}
+  .cover .lead{color:#CFC4B2}
+  .cover .rule{height:2px; width:64px; background:var(--clay); margin:20px 0 22px}
+  .cover .metarow{display:flex; gap:26px; margin-top:28px; font-size:10px; color:#B9AE9C}
+  .cover .metarow b{color:#F1EADD; font-weight:600; display:block; font-size:12px; margin-bottom:1px}
+  .cover .tocbox{margin-top:34px; border-top:1px solid #3A342B; padding-top:16px}
+  .cover .tocbox .eyebrow{color:#9C9284}
+  .toc{display:grid; grid-template-columns:1fr 1fr; gap:6px 26px; margin-top:10px; font-size:10.5px; color:#D9CFBD}
+  .toc span{color:var(--clay); font-family:'Fraunces',serif; font-weight:600; margin-right:8px}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ COVER ══════════════ -->
+<section class="page cover">
+  <div class="eyebrow">Уклад · Платформа «Слаживание»</div>
+  <h1>Закрытые пространства</h1>
+  <div class="rule"></div>
+  <p class="lead">Круг — закрытая комната для узкой группы внутри компании: свои люди, свой Первый агент, своё обсуждение и файлы. Наружу — в общую память команды — уходит только готовый итог, и только по решению круга. Полный гайд: как это устроено и как этим пользоваться.</p>
+
+  <div class="metarow">
+    <div><b>Узкая группа</b>2–5 человек + Первый агент</div>
+    <div><b>Два канала</b>Кабинет · Telegram-группа</div>
+    <div><b>Наружу — только итог</b>По решению админа</div>
+  </div>
+
+  <div class="tocbox">
+    <div class="eyebrow" style="color:#9C9284">Содержание</div>
+    <div class="toc">
+      <div><span>1</span>Зачем это и три вида пространств</div>
+      <div><span>2</span>Роли в круге и защиты</div>
+      <div><span>3</span>Что внутри: обсуждение, файлы, итог</div>
+      <div><span>4</span>Приватность: круг невидим чужому</div>
+      <div><span>5</span>Как итог выносится в команду</div>
+      <div><span>6</span>Круг в кабинете и в Telegram</div>
+      <div><span>7</span>Как начать: шаги</div>
+      <div><span>8</span>Шпаргалка и что уже работает</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 1. WHY + THREE SPACES ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">01</span><div><div class="eyebrow">Фундамент</div><h2>Зачем это и три вида пространств</h2></div></div>
+
+  <p class="lead" style="margin-bottom:14px">Раньше в кабинете было два вида пространств — командное (видит вся компания) и личное (только я и мой Первый агент). Между ними дыра: часто нужно проработать что-то узкой группой (2–5 человек + агент), не вываливая сырое обсуждение на всю команду и не пряча его в голову одного. Круг закрывает эту дыру.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3><span class="icn">🏢</span>Командное</h3>
+      <p class="muted" style="margin:0">Видит вся компания. Общая работа и общая память.</p>
+    </div>
+    <div class="card">
+      <h3><span class="icn">🔒</span>Личное</h3>
+      <p class="muted" style="margin:0">Только я + мой Первый агент. Моя голова, черновики и заметки.</p>
+    </div>
+  </div>
+  <div class="card" style="border-color:var(--green)">
+    <h3><span class="icn">👥</span>Закрытый круг <span class="pill web">новое</span></h3>
+    <p class="muted" style="margin:0">Видят только участники круга. Кто не в круге — не видит его вообще, даже что он существует. Своё обсуждение, свои файлы, свой Первый агент.</p>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Круг — не «папка с настройкой приватности».</span> Это отдельный вид пространства с собственным списком участников. Технически он живёт как самостоятельный тип рядом с командным и личным, а видимость решается членством, а не галочкой «приватно».
+  </div>
+
+  <div class="card dark">
+    <h3>Одной фразой</h3>
+    <p class="muted" style="margin:0">Круг — это закрытая комната для узкой группы с собственным Первым агентом, где наружу по решению круга уходит только готовый итог. «Кухня» группы, а команда видит «блюдо», когда оно готово.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>1 / 8 · Фундамент</span></div>
+</section>
+
+<!-- ══════════════ 2. ROLES ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">02</span><div><div class="eyebrow">Кто есть кто</div><h2>Роли в круге и защиты</h2></div></div>
+
+  <div class="block">
+    <table>
+      <tr><th style="width:26%">Роль</th><th>Что может</th></tr>
+      <tr>
+        <td><strong>Админ</strong><br><span class="muted">тот, кто создал круг</span></td>
+        <td>Добавляет и убирает людей, назначает и передаёт админство, переименовывает и распускает круг, и только он выносит итог в команду. Админов может быть несколько.</td>
+      </tr>
+      <tr>
+        <td><strong>Участник</strong></td>
+        <td>Полноправно участвует: пишет в обсуждение, кладёт файлы, собирает и правит итог. Не управляет составом и не публикует наружу. Может сам выйти из круга.</td>
+      </tr>
+      <tr>
+        <td><strong>Первый агент</strong></td>
+        <td>Внутри круга по умолчанию — добавлять не нужно. Участвует в обсуждении и собирает итог. Важное: сказанное в круге <b>не утекает</b> в общую память команды через агента.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="callout" style="border-color:var(--green); background:#EEF4EC">
+    <span class="kicker" style="color:var(--green-d)">Защиты от «обезглавливания».</span> Систему нельзя загнать в состояние без управляющего: <b>нельзя убрать последнего админа</b> («сначала назначьте другого») и <b>нельзя понизить последнего админа</b>. Передача админства самому себе — пустая операция, круг не остаётся без владельца.
+  </div>
+
+  <div class="block">
+    <h3>Действия админа над составом</h3>
+    <ul>
+      <li><span class="kicker">Добавить / убрать</span> участника.</li>
+      <li><span class="kicker">Назначить админом</span> — сделать второго админа.</li>
+      <li><span class="kicker">Снять админство</span> — вернуть человека в участники (кроме последнего админа).</li>
+      <li><span class="kicker">Передать</span> — отдать админство другому.</li>
+    </ul>
+    <p class="note">Обычный участник в любой момент может выйти сам — это не требует админа.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>2 / 8 · Роли</span></div>
+</section>
+
+<!-- ══════════════ 3. INSIDE ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">03</span><div><div class="eyebrow">Содержимое</div><h2>Что внутри круга — три вещи</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Внутри круга — три панели: обсуждение, итог и файлы. Плюс список участников с ролями. Первый агент присутствует во всех трёх.</p>
+
+  <div class="block">
+    <h3><span class="icn">💬</span>Обсуждение <span class="muted" style="font-weight:400">· Первый агент участвует</span></h3>
+    <p class="muted" style="margin:0">Общий тред круга. Все участники и Первый агент в одной ветке, видно, кто что сказал. Рабочая кухня группы. Этот тред помечен «без памяти» — он не течёт в общую память компании.</p>
+  </div>
+
+  <div class="block">
+    <h3><span class="icn">📎</span>Файлы круга</h3>
+    <p class="muted" style="margin:0">Вложения, видимые только кругу (выгрузки, схемы, документы). Класть может любой участник, до 30 МБ на файл. Пустое состояние честно говорит: «Общие только кругу — команда их не видит».</p>
+  </div>
+
+  <div class="block">
+    <h3><span class="icn">📋</span>Итог круга <span class="muted" style="font-weight:400">· Первый агент собирает</span></h3>
+    <p class="muted" style="margin:0 0 6px">Черновик «к чему пришли», который собирает Первый агент по обсуждению. Кнопка <b>«⟳ Обновить итог»</b> — агент перечитывает свежий хвост треда и пересобирает выжимку в формате:</p>
+    <table>
+      <tr><td style="width:34%"><strong>Вопрос:</strong></td><td>что именно прорабатывали</td></tr>
+      <tr><td><strong>Что проработали:</strong></td><td>2–5 маркеров по сути</td></tr>
+      <tr><td><strong>Следующий шаг:</strong></td><td>1–3 маркера, что дальше</td></tr>
+    </table>
+    <p class="muted" style="margin:0">Итог можно править руками. Собрать его можно и голосом прямо в переписке — «собери итог», «подытожь, к чему пришли», «подведи черту». Это единственное, что потом может уйти наружу.</p>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Собирать и править итог может любой участник.</span> Это рабочая функция группы, а не привилегия. Админской остаётся только одна операция — <b>вынести итог в команду</b> (раздел 5).
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>3 / 8 · Содержимое</span></div>
+</section>
+
+<!-- ══════════════ 4. PRIVACY ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">04</span><div><div class="eyebrow">Приватность</div><h2>Круг невидим не-члену целиком</h2></div></div>
+
+  <p class="lead" style="margin-bottom:14px">Главный принцип: если ты не в круге — для тебя его просто нет. Не «нет доступа», а «не найдено» — чтобы даже название не всплыло. Попроситься со стороны нельзя: чужой запрос по кругу возвращает «пространство не найдено», как будто такого объекта не существует.</p>
+
+  <div class="block">
+    <table>
+      <tr><th style="width:46%">Действие</th><th>Кто может</th></tr>
+      <tr><td>Видит круг (что он вообще есть)</td><td>Только участник</td></tr>
+      <tr><td>Пишет в обсуждение, кладёт файлы</td><td>Любой участник</td></tr>
+      <tr><td>Собирает и правит итог</td><td>Любой участник</td></tr>
+      <tr><td>Правит настройки, название, состав</td><td>Только админ</td></tr>
+      <tr><td>Выносит итог наружу</td><td>Только админ</td></tr>
+      <tr><td>Распускает круг</td><td>Только админ</td></tr>
+    </table>
+  </div>
+
+  <div class="callout" style="border-color:var(--green); background:#EEF4EC">
+    <span class="kicker" style="color:var(--green-d)">Что остаётся внутри навсегда.</span> Наружу уходит только тело итога — и только когда админ сам решит. Обсуждение и файлы круга не покидают его никогда. Отдельной «памяти круга» сверх треда намеренно нет: обсуждение не течёт в общую память, только итог.
+  </div>
+
+  <div class="note">Уточнение про уровни. «Не найдено» — это про конкретный круг для не-члена. Если человек вообще не в команде (не в этой компании), закрытые пространства ему недоступны как раздел целиком — это про членство в компании, а не про отдельный круг.</div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>4 / 8 · Приватность</span></div>
+</section>
+
+<!-- ══════════════ 5. PROMOTE ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">05</span><div><div class="eyebrow">Наружу</div><h2>Как итог выносится в команду</h2></div></div>
+
+  <p class="lead" style="margin-bottom:14px">Когда круг что-то доработал, админ жмёт <b>«Вынести в команду»</b>. Итог ложится заметкой в общую память компании — под именем того, кто вынес, с пометкой, из какого круга. С этого момента команда видит «блюдо», а «кухня» остаётся закрытой.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Что уходит</h3>
+      <p class="muted" style="margin:0">Только тело итога. Заметка в командной базе знаний с подписью вида «— вынесено в команду из закрытого круга «Название» · Имя». Обсуждение и файлы остаются внутри круга.</p>
+    </div>
+    <div class="card">
+      <h3>Повторный вынос</h3>
+      <p class="muted" style="margin:0">Обновляет ту же заметку, а не плодит дубли — кнопка становится <b>«Вынести обновление»</b>. Удалили заметку в команде — следующий вынос создаст её заново.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Подтверждение перед выносом.</span> Система переспросит: «Он ляжет в командную базу знаний под вашим именем; обсуждение останется приватным». В кабинете круга после этого видна отметка «✅ Вынесено в команду · вынес … · когда» — дата «когда» показывается именно здесь, в круге.
+  </div>
+
+  <div class="card dark">
+    <h3>Круг = кухня, команда = блюдо</h3>
+    <p class="muted" style="margin:0">Группа спокойно спорит и черкает черновики у себя. Наружу выходит только то, что группа сама решила показать, и только когда оно готово.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>5 / 8 · Вынос</span></div>
+</section>
+
+<!-- ══════════════ 6. CHANNELS ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">06</span><div><div class="eyebrow">Каналы</div><h2>Круг в кабинете и в Telegram</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Круг можно вести в двух местах, и они синхронны: веб-кабинет и привязанная Telegram-группа. Начинаете в кабинете, а живое обсуждение при желании переносите в бота — всё стекается в одну базу.</p>
+
+  <div class="block">
+    <h3><span class="icn">🖥</span><span class="pill web">Веб-кабинет</span> дом круга</h3>
+    <p class="muted" style="margin:0 0 4px">Пункт меню <b>«🔒 Закрытые пространства»</b>: список кругов → внутри три панели (Обсуждение / Итог / Файлы) + список участников с ролями и управлением составом. Здесь круг создаётся, ведётся и распускается.</p>
+  </div>
+
+  <div class="block">
+    <h3><span class="icn">✈️</span><span class="pill tg">Telegram</span> живая группа круга</h3>
+    <p class="muted" style="margin:0 0 4px">У круга может быть своя Telegram-группа с ботом. В кабинете жмёте <b>«✈️ Собрать в Телеграме»</b> — получаете код, добавляете бота в группу и пишете там <code>/круг&nbsp;&lt;код&gt;</code>. После привязки:</p>
+    <ul style="margin-bottom:0">
+      <li>обсуждение идёт прямо в группе; голосовые и файлы синхронизируются с кабинетом <b>в обе стороны</b>;</li>
+      <li>Первый агент отвечает при @упоминании или ответе на его сообщение;</li>
+      <li>итог можно собрать командой прямо в группе.</li>
+    </ul>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Единственное, что пока «дремлет».</span> Вызвать сборку итога из <b>обычной личной переписки</b> с ботом (без привязанной группы круга) нельзя — круги живут в кабинете и в своей группе. Это осознанный хвост, а не поломка: путь симметричен обоим каналам и включается по мере надобности.
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>6 / 8 · Каналы</span></div>
+</section>
+
+<!-- ══════════════ 7. HOW TO START ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">07</span><div><div class="eyebrow">Практика</div><h2>Как начать: по шагам</h2></div></div>
+
+  <div class="grid2">
+    <div class="block">
+      <h3>Завести и вести круг</h3>
+      <ol class="steps">
+        <li>Кабинет → меню <b>«🔒 Закрытые пространства»</b> → создать круг, дать имя.</li>
+        <li>Добавить 2–5 своих людей. Первый агент уже внутри.</li>
+        <li>Обсуждать в панели <b>«Обсуждение»</b>, класть материалы в <b>«Файлы круга»</b>.</li>
+        <li>Когда есть о чём — <b>«⟳ Обновить итог»</b>, при необходимости поправить руками.</li>
+        <li>Готово к команде → админ жмёт <b>«Вынести в команду»</b>.</li>
+      </ol>
+    </div>
+    <div class="block">
+      <h3>Перенести в Telegram</h3>
+      <ol class="steps">
+        <li>В кабинете круга — <b>«✈️ Собрать в Телеграме»</b>, скопировать код.</li>
+        <li>Создать группу в Telegram, добавить туда бота компании.</li>
+        <li>Написать в группе <code>/круг&nbsp;&lt;код&gt;</code> — круг привязан.</li>
+        <li>Дальше пишете в группе как обычно; голос/файлы видны и в кабинете.</li>
+        <li>Первый агент откликнется на @упоминание или ответ ему.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Когда круг уже не нужен.</span> Админ может переименовать или распустить круг. Роспуск необратим и удаляет для всех обсуждение, файлы, черновик итога и привязку к Telegram — система переспросит перед этим. Уже вынесенный в команду итог при роспуске остаётся у команды.
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>7 / 8 · Практика</span></div>
+</section>
+
+<!-- ══════════════ 8. CHEAT SHEET ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">08</span><div><div class="eyebrow">Шпаргалка</div><h2>Что уже работает — и коротко всё</h2></div></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3 style="color:var(--green-d)">✓ В проде</h3>
+      <ul style="margin-bottom:0">
+        <li>Круг + роли + гейт видимости</li>
+        <li>Обсуждение и файлы круга</li>
+        <li>Черновик «Итог круга» (сборка агентом + правка руками)</li>
+        <li>«Вынести в команду» (и «Вынести обновление»)</li>
+        <li>Живая Telegram-группа круга (голос/файлы в обе стороны)</li>
+        <li>Переименование и роспуск круга</li>
+        <li>Фича заведена в ответы Первого агента и в недельный дайджест</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--clay-d)">◔ Хвосты на будущее</h3>
+      <ul style="margin-bottom:0">
+        <li>Сборка итога из обычной личной переписки с ботом (без группы круга)</li>
+        <li>Слить «Закрытые пространства» в единый переключатель пространств кабинета (сейчас — отдельная страница ради обратной совместимости)</li>
+        <li>Отдельной «памяти круга» сверх треда нет намеренно — обсуждение не течёт в общую память, только итог</li>
+      </ul>
+    </div>
+  </div>
+
+  <table>
+    <tr><th style="width:30%">Вопрос</th><th>Ответ</th></tr>
+    <tr><td>Кто видит круг</td><td>Только участники. Чужому его «не существует».</td></tr>
+    <tr><td>Кто пишет и кладёт файлы</td><td>Любой участник.</td></tr>
+    <tr><td>Кто собирает и правит итог</td><td>Любой участник (можно голосом).</td></tr>
+    <tr><td>Кто выносит наружу</td><td>Только админ, по кнопке, с подтверждением.</td></tr>
+    <tr><td>Что уходит в команду</td><td>Только тело итога. Обсуждение и файлы — никогда.</td></tr>
+    <tr><td>Где живёт</td><td>Кабинет + привязанная Telegram-группа, синхронно.</td></tr>
+  </table>
+
+  <div class="card dark">
+    <h3>Итог гайда</h3>
+    <p class="muted" style="margin:0">Круг — закрытая комната для узкой группы с собственным Первым агентом. Внутри — обсуждение, файлы и черновик итога. Наружу, в общую память команды, по решению админа уходит только готовый итог. Всё остальное остаётся на кухне.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Закрытые пространства</span><span>8 / 8 · Шпаргалка</span></div>
+</section>
+
+</body>
+</html>

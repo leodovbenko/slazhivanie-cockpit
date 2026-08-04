@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A443B;
+    --green:#3D7A3E; --green-d:#2F5F30; --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --paper:#FBF8F2; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @page{size:A4;margin:0} html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:'IBM Plex Sans',sans-serif;color:var(--ink);background:var(--cream);font-size:11px;line-height:1.55}
+  body::before{content:'';position:fixed;inset:0;background:var(--cream);z-index:-1}
+  .page{width:210mm;min-height:297mm;padding:18mm;page-break-after:always;position:relative;overflow:hidden}
+  .page:last-child{page-break-after:auto}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:38px;line-height:1.04;letter-spacing:-.5px}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.2px;margin-bottom:9px}
+  h3{font-weight:600;font-size:12px;color:var(--green-d);margin-bottom:4px}
+  p{margin-bottom:8px}
+  .kicker{font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--clay)}
+  .lead{font-size:13.5px;line-height:1.6;color:var(--ink-soft)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+  .dark{background:var(--ink);color:#EDE6D8;border-radius:13px;padding:17px 20px}
+  .dark h3{color:#C9B79C}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .note{background:#F3ECDD;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .warn{background:#F6E8DF;border-left:3px solid var(--clay);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .foot{position:absolute;bottom:9mm;left:18mm;right:18mm;display:flex;justify-content:space-between;font-size:9px;color:#9C8F79;border-top:1px solid var(--line);padding-top:6px}
+  ul{margin:0 0 8px 18px} li{margin-bottom:4px}
+  .tag{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:20px;background:#E8EFE4;color:var(--green-d);margin-right:5px}
+  .tag.you{background:#F6E8DF;color:var(--clay-d)}
+  .big{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:var(--green-d);line-height:1}
+  .muted{color:#8C7F6B}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  .step{display:flex;gap:11px;margin-bottom:11px}
+  .num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center;font-size:12px}
+</style></head><body>
+
+<div class="page">
+  <div class="kicker">Платформа «Уклад» · гайд</div>
+  <h1 style="margin-top:14px">Справочник компании из&nbsp;Пайруса или&nbsp;СБИС</h1>
+  <p class="lead" style="margin-top:14px">Чтобы ИИ-агенты отвечали адресно — «сходи к Марине из бухгалтерии», а не «обратитесь к ответственному лицу», — им нужно знать, кто есть кто в вашей компании. Этот справочник и есть их карта: кто в каком отделе, кто чем занимается, кто кому подчиняется.</p>
+
+  <div class="dark" style="margin-top:16px">
+    <h3>Коротко</h3>
+    <p style="margin-bottom:0;color:#EDE6D8">Мы берём список ваших сотрудников из системы, где вы его уже ведёте — Пайрус или СБИС (Saby), — и раскладываем в справочник платформы. Он обновляется сам раз в сутки. Агенты смотрят в него, чтобы понимать, к кому идти по задаче, кому можно показывать данные и кто за что отвечает.</p>
+  </div>
+
+  <h2 style="margin-top:20px">Зачем это агентам</h2>
+  <div class="grid3">
+    <div class="card">
+      <h3>Кто есть кто</h3>
+      <p style="margin-bottom:0">Сотрудник пишет боту — агент по нику узнаёт его: имя, отдел, должность, кто его руководитель. И отвечает уже с учётом этого, а не всем одинаково.</p>
+    </div>
+    <div class="card">
+      <h3>Кому что показывать</h3>
+      <p style="margin-bottom:0">По списку видно, кто свой сотрудник, а кто человек со стороны. От этого зависит, какие данные агент раскроет, а какие придержит.</p>
+    </div>
+    <div class="card">
+      <h3>К кому по задаче</h3>
+      <p style="margin-bottom:0">Раз известно, кто кому подчиняется и кто за что отвечает, задачи и согласования уходят нужному человеку, а не сваливаются на одного.</p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:14px">
+    Справочник хранит только «кто есть кто»: имя, отдел, роль, кто руководитель. Это не память компании — цели, договорённости и наработки лежат отдельно. Здесь только карта людей.
+  </div>
+
+  <div class="foot"><span>Справочник компании · гайд</span><span>1</span></div>
+</div>
+
+<div class="page">
+  <div class="kicker">Главное</div>
+  <h2 style="margin-top:10px;font-size:26px">Почему именно формальный список, а не собранный из переписки</h2>
+  <p class="lead">Справочник можно наполнить двумя путями. Мы попробовали оба — и осознанно оставили только один. Вот почему.</p>
+
+  <div class="vs" style="margin-top:14px">
+    <div class="card" style="border-color:#E0CDBE">
+      <span class="tag you">собрано из чатов</span>
+      <h3 style="color:var(--clay-d);margin-top:8px">Догадка по переписке</h3>
+      <p>Если вычислять людей из чатов и сделок, справочник быстро зарастает мусором: обрывки фраз вместо имён, случайные гости, один и тот же человек в трёх видах, даже названия блюд и номера столов попадают как «контакты».</p>
+      <p style="margin-bottom:0">На такой каше нельзя строить права и маршрутизацию: непонятно, где живой сотрудник, а где случайная строка из чата.</p>
+    </div>
+    <div class="card" style="border-color:#CFE0C6">
+      <span class="tag">из вашей системы</span>
+      <h3 style="margin-top:8px">Формальный источник</h3>
+      <p>Пайрус или СБИС — это система, где отдел кадров уже ведёт настоящий штат: должности, отделы, кто уволился, кто кому подчиняется. Данные выверенные и живые.</p>
+      <p style="margin-bottom:0">На такой список уже можно опереться: и показать оргструктуру, и решать, кому какие данные доступны, и правильно направлять задачи.</p>
+    </div>
+  </div>
+
+  <h2 style="margin-top:20px">Что это дало на живом клиенте</h2>
+  <p>У одной компании было два экрана с людьми. Старый, собранный из переписки, показывал 578 «контактов» — вперемешку с обрывками фраз и даже самим руководителем, записанным как посторонний. Новый, из формального источника, — 383 живых сотрудника, чистым деревом: 11 отделов, понятно, кто где и кто над кем.</p>
+  <div class="grid2" style="margin-top:6px">
+    <div class="card" style="text-align:center">
+      <div class="big" style="color:var(--clay-d)">578</div>
+      <p class="muted" style="margin:6px 0 0">из переписки — вперемешку с мусором</p>
+    </div>
+    <div class="card" style="text-align:center">
+      <div class="big">383</div>
+      <p class="muted" style="margin:6px 0 0">из Пайруса — чистый штат, деревом</p>
+    </div>
+  </div>
+
+  <div class="warn" style="margin-top:16px">
+    Мы полностью выключили сбор людей из переписки и убрали накопленный мусор в архив. Теперь справочник строится только из вашего формального источника. Так данные остаются точными, и агентам можно доверять решения о том, кому что показывать.
+  </div>
+
+  <div class="foot"><span>Справочник компании · гайд</span><span>2</span></div>
+</div>
+
+<div class="page">
+  <div class="kicker">Как подключить</div>
+  <h2 style="margin-top:10px">Два источника на выбор</h2>
+  <p class="lead">Подключается там же, где остальные подключения кабинета — раздел «Коннекторы». Ключи доступа хранятся только на вашем контуре.</p>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="card">
+      <h3>🗇 Пайрус</h3>
+      <p>Отдаёт список сотрудников, должности и отделы. А если у вас в Пайрусе ведётся каталог «Структура организации» — ещё и кто кому подчиняется.</p>
+      <p style="margin-bottom:0"><b>Что нужно ввести:</b> логин служебной учётки, ключ доступа (Пайрус → Профиль → Настройки → API) и, по желанию, каталог со структурой.</p>
+    </div>
+    <div class="card">
+      <h3>🗂 СБИС (Saby)</h3>
+      <p>Отдаёт сотрудников, должности и дерево отделов. Если под одной учёткой несколько юрлиц — вы указываете, какую компанию берём, чтобы чужие сотрудники не подмешались.</p>
+      <p style="margin-bottom:0"><b>Что нужно ввести:</b> идентификатор подключения и защищённый ключ приложения (СБИС → Настройки → Наши приложения), при нескольких компаниях — название нужной.</p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:12px">
+    Оба источника обновляются сами раз в сутки — ничего вручную загружать не нужно. Уволившиеся тихо уходят из активных, новые появляются. Если выгрузка вдруг пустая, справочник не трогается — люди не пропадут.
+  </div>
+
+  <h2 style="margin-top:18px">Что вы увидите на экране «Контакты»</h2>
+  <p>Пока источник не подключён — приглашение собрать справочник. Как подключите, появятся три способа смотреть на компанию:</p>
+  <div class="grid3" style="margin-top:6px">
+    <div class="card"><h3>По департаментам</h3><p style="margin-bottom:0">Плитки отделов: сколько людей, кто глава, лица сотрудников. Клик — раскрывается состав.</p></div>
+    <div class="card"><h3>По отделам</h3><p style="margin-bottom:0">Списком, сгруппировано по отделам и подразделениям.</p></div>
+    <div class="card"><h3>По подчинению</h3><p style="margin-bottom:0">Дерево: кто над кем, сколько человек в ветке. Клик по человеку — его место в структуре.</p></div>
+  </div>
+
+  <h2 style="margin-top:18px">Кто что делает при подключении</h2>
+  <div class="step"><div class="num">1</div><div><b>Вы</b> <span class="tag you">делаете сами</span><br>Заходите в «Коннекторы», выбираете Пайрус или СБИС, вводите доступы из своей системы. Пара минут.</div></div>
+  <div class="step"><div class="num">2</div><div><b>Платформа</b> <span class="tag">делаем мы</span><br>Забираем список, раскладываем в справочник, каждую ночь обновляем. Дальше всё само.</div></div>
+
+  <div class="foot"><span>Справочник компании · гайд</span><span>3</span></div>
+</div>
+
+</body></html>

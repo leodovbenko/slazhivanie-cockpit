@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A443B;
+    --green:#3D7A3E; --green-d:#2F5F30; --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --paper:#FBF8F2; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @page{size:A4;margin:0} html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:'IBM Plex Sans',sans-serif;color:var(--ink);background:var(--cream);font-size:11px;line-height:1.55}
+  body::before{content:'';position:fixed;inset:0;background:var(--cream);z-index:-1}
+  .page{width:210mm;min-height:297mm;padding:18mm;page-break-after:always;position:relative;overflow:hidden}
+  .page:last-child{page-break-after:auto}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:38px;line-height:1.04;letter-spacing:-.5px}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.2px;margin-bottom:9px}
+  h3{font-weight:600;font-size:12px;color:var(--green-d);margin-bottom:4px}
+  p{margin-bottom:8px}
+  .kicker{font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--clay)}
+  .lead{font-size:13.5px;line-height:1.6;color:var(--ink-soft)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+  .dark{background:var(--ink);color:#EDE6D8;border-radius:13px;padding:17px 20px}
+  .dark h3{color:#C9B79C}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .note{background:#F3ECDD;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .warn{background:#F6E8DF;border-left:3px solid var(--clay);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .foot{position:absolute;bottom:9mm;left:18mm;right:18mm;display:flex;justify-content:space-between;font-size:9px;color:#9C8F79;border-top:1px solid var(--line);padding-top:6px}
+  ul{margin:0 0 8px 18px} li{margin-bottom:4px}
+  .tag{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.04em;padding:2px 8px;border-radius:20px;background:#E8EFE4;color:var(--green-d);margin-right:5px}
+  .tag.soon{background:#EDE4D2;color:#8C7A55}
+  .step{display:flex;gap:11px;margin-bottom:10px}
+  .num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center;font-size:12px}
+  .light{display:flex;gap:9px;align-items:flex-start;margin-bottom:8px}
+  .dot{flex:none;width:12px;height:12px;border-radius:50%;margin-top:3px}
+  .r{background:var(--clay)} .y{background:#C79A3C} .g{background:var(--green)}
+</style></head><body>
+
+<div class="page">
+  <div class="kicker">Платформа «Уклад» · гайд</div>
+  <h1 style="margin-top:14px">Легал — ваш<br>ИИ-юрист по договорам<br>и защите данных</h1>
+  <p class="lead" style="margin-top:16px">Легал читает правки контрагента к договору, показывает, где вам вредят, помогает выстроить позицию на переговорах и следит за законом о персональных данных. Отвечает по-деловому, с ссылками на нормы — но всегда как черновик под проверку живого юриста.</p>
+
+  <div class="dark" style="margin-top:18px">
+    <h3>Коротко</h3>
+    <p style="margin-bottom:0;color:#EDE6D8">Пришлите ему текст договора или правки другой стороны — он разложит их на «красные линии» (так нельзя), «допустимые уступки» (можно уступить) и «спорные места» (надо уточнить). По каждому пункту объяснит почему и сошлётся на закон. Работает и в чате бота, и в кабинете. За контрагента никому ничего не отправит без вашего «ок».</p>
+  </div>
+
+  <h2 style="margin-top:22px">Что он умеет уже сейчас</h2>
+  <div class="grid2">
+    <div class="card"><h3>Разбор договора</h3><p style="margin-bottom:0">Сверяет присланный текст, помечает опасные правки, тянет цитаты прямо из документа. Показывает, что уступить не жалко, а где стоять насмерть.</p></div>
+    <div class="card"><h3>Позиция на переговорах</h3><p style="margin-bottom:0">Подсказывает, с чего заходить и чем аргументировать, и готовит письмо контрагенту вашими словами — с опорой на Гражданский кодекс.</p></div>
+    <div class="card"><h3>Персональные данные (152-ФЗ)</h3><p style="margin-bottom:0">Проверяет согласия, реестры, локализацию, стыкует политику с реальностью и предупреждает о рисках штрафа.</p></div>
+    <div class="card"><h3>Разовые вопросы</h3><p style="margin-bottom:0">Партнёрские и агентские схемы, оферты, счета, невозвраты, лимиты — короткий разбор с обоснованием по закону.</p></div>
+  </div>
+
+  <div class="foot"><span>Легал · гайд</span><span>1</span></div>
+</div>
+
+<div class="page">
+  <div class="kicker">Как он думает</div>
+  <h2 style="margin-top:10px">Четыре шага каждого ответа</h2>
+  <p class="lead">Легал не «фантазирует по памяти». Он идёт по одному и тому же честному маршруту.</p>
+
+  <div style="margin-top:14px">
+    <div class="step"><div class="num">1</div><div><b>Понимает вопрос.</b> Ловит юридический вопрос по смыслу или по прямой команде «действуй как юрист». Если чего-то не хватает — переспросит.</div></div>
+    <div class="step"><div class="num">2</div><div><b>Опирается на вашу базу и на закон.</b> Поднимает нужное из вашей приватной базы знаний и из права РФ (Гражданский кодекс, 152-ФЗ) — а не «на глаз».</div></div>
+    <div class="step"><div class="num">3</div><div><b>Раскладывает с обоснованием.</b> Красные линии, уступки, спорные места — по каждому пункту ссылка на норму и цитата из текста.</div></div>
+    <div class="step"><div class="num">4</div><div><b>Отдаёт честный черновик.</b> Где не уверен — помечает. Наружу к контрагенту без вашего «ок» — ничего.</div></div>
+  </div>
+
+  <h2 style="margin-top:20px">Три цвета в разборе договора</h2>
+  <div class="card" style="margin-top:4px">
+    <div class="light"><div class="dot r"></div><div><b>Красная линия.</b> Правка, которая переносит на вас риск или лишает защиты. Соглашаться нельзя — Легал объяснит, чем грозит.</div></div>
+    <div class="light"><div class="dot y"></div><div><b>Спорное место.</b> Формулировка мутная или технически проблемная. Надо уточнить или переписать.</div></div>
+    <div class="light" style="margin-bottom:0"><div class="dot g"></div><div><b>Допустимая уступка.</b> Можно отдать без большого вреда — полезно на переговорах как разменная монета.</div></div>
+  </div>
+
+  <div class="note" style="margin-top:16px">
+    <b>Приватность — в основе.</b> Условия ваших договоров, детали инцидентов с данными и переговорные ходы не утекают в общую «Память компании». База знаний Легала лежит на его отдельной закрытой полке.
+  </div>
+
+  <div class="foot"><span>Легал · гайд</span><span>2</span></div>
+</div>
+
+<div class="page">
+  <div class="kicker">Как пользоваться</div>
+  <h2 style="margin-top:10px">От найма до разбора</h2>
+  <div style="margin-top:12px">
+    <div class="step"><div class="num">1</div><div><b>Нанять на странице «Флот».</b> Легал не заводится сам — вы берёте его кнопкой, как сотрудника в штат.</div></div>
+    <div class="step"><div class="num">2</div><div><b>Наполнить его базу (по желанию, но советуем).</b> Перетащите на страницу «База знаний Легала» ваши шаблоны, регламенты, прошлые заключения — любым файлом. Или продиктуйте правило прямо в чат. Чем больше он знает про вашу практику, тем точнее ответ.</div></div>
+    <div class="step"><div class="num">3</div><div><b>Задать вопрос или прислать правки.</b> В кабинете или в Телеграме боту. Он сам распознает юридический вопрос — либо скомандуйте «действуй как юрист».</div></div>
+    <div class="step"><div class="num">4</div><div><b>Получить разбор.</b> Красные линии, уступки, спорные места с обоснованием; по запросу — позицию и письмо. Всё черновиком. Наружу — только после вашего «ок».</div></div>
+    <div class="step"><div class="num">5</div><div><b>Смотреть «Результат».</b> Вкладка с итогами за период: сколько договоров разобрал, сколько рисков вскрыл. Только счётчики — содержание договоров нигде не хранится.</div></div>
+  </div>
+
+  <h2 style="margin-top:18px">Где он живёт</h2>
+  <div class="grid2">
+    <div class="card"><h3>В Телеграме</h3><p style="margin-bottom:0">Своего отдельного бота у Легала нет — он режим внутри вашего «Первого агента». Пишете юридический вопрос или командуете «будь юристом» — и он включается.</p></div>
+    <div class="card"><h3>В кабинете</h3><p style="margin-bottom:0">Страница «База знаний Легала» — его дом: положить документ, задать вопрос, посмотреть результат. Пополнять базу можно и из чата, и из кабинета.</p></div>
+  </div>
+
+  <div class="warn" style="margin-top:16px">
+    <b>Честные границы.</b> Легал даёт черновик и совет, а не итоговое заключение с гарантией — последнее слово за живым юристом. Пока он не правит файлы Word напрямую (работает с текстом, который вы прислали) и не имеет своей базы свежей судебной практики. Это в планах: в следующей версии юридическую суть под капотом усилит специализированный юридический движок от ПравоТех.
+  </div>
+
+  <div class="foot"><span>Легал · гайд</span><span>3</span></div>
+</div>
+
+</body></html>

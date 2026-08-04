@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Голос автора · Гермес — как устроена настройка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --light:#F4EFE6; --paper-2:#EDE6D8; --white:#ffffff;
+    --dark:#201C17; --darker:#191510;
+    --line-light:#E5DCCD; --line-dark:#3A332A;
+    --t1:#201C17; --t2:#6B6258; --t3:#8E877E;
+    --green:#3D7A3E; --green-d:#2F5F30; --green-soft:#E2EEDB; --green-lite:#9CC791;
+    --clay:#B85C3C; --clay-d:#A24E32; --clay-soft:#F2E3DB;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--light)}
+  body::before{content:"";position:fixed;inset:0;background:var(--light);z-index:-1;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--t1);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{size:A4;margin:0}
+  .page{width:210mm;min-height:297mm;padding:18mm 17mm 15mm;margin:0 auto;display:flex;flex-direction:column}
+
+  /* header */
+  .eyebrow{font-family:'Fraunces',serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--clay-d)}
+  h1{font-family:'Fraunces',serif;font-size:38px;font-weight:700;line-height:1.05;letter-spacing:-.01em;color:var(--t1);margin:9px 0 0}
+  .lead{font-size:14px;color:var(--t2);line-height:1.5;max-width:150mm;margin-top:12px}
+  .lead b{color:var(--t1);font-weight:600}
+  .rule{height:1px;background:var(--line-light);margin:20px 0 6px}
+
+  /* diagram */
+  .diagram{margin-top:14px;display:flex;flex-direction:column;gap:0}
+  .lyr-tag{display:inline-flex;align-items:center;gap:8px;font-family:'Fraunces',serif;font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:var(--t3);margin:16px 0 9px}
+  .lyr-tag .n{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--white);background:var(--t2);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  /* base card — Голос автора */
+  .base{background:var(--clay-soft);border:1px solid #E7C9B9;border-radius:16px;padding:20px 22px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .base .cap{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--clay-d)}
+  .base h2{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--t1);margin:3px 0 4px}
+  .base .desc{font-size:13px;color:var(--t2);line-height:1.45;max-width:150mm}
+  .base .desc b{color:var(--clay-d);font-weight:600}
+  .noslop{margin-top:12px;display:inline-flex;align-items:baseline;gap:9px;background:rgba(255,255,255,.6);border:1px dashed #D9B9A8;border-radius:10px;padding:8px 13px}
+  .noslop .lab{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--clay-d);white-space:nowrap}
+  .noslop .txt{font-size:12px;color:var(--t2);line-height:1.4}
+
+  /* connector */
+  .conn{display:flex;flex-direction:column;align-items:center;color:var(--t3)}
+  .conn .stem{width:2px;height:16px;background:var(--line-light)}
+  .conn .lbl{font-size:11.5px;color:var(--t2);font-style:italic;margin:3px 0}
+
+  /* per-platform row */
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .plat{background:var(--green-soft);border:1px solid #C7DEB9;border-radius:16px;padding:16px 17px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .plat .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+  .plat .pname{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--green-d)}
+  .plat .lang{font-size:10.5px;font-weight:700;letter-spacing:.04em;background:var(--white);border:1px solid #C7DEB9;border-radius:999px;padding:3px 9px;color:var(--green-d)}
+  .block{margin-bottom:11px}
+  .block:last-child{margin-bottom:0}
+  .block .bt{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--green-d);margin-bottom:5px}
+  .chips{display:flex;flex-wrap:wrap;gap:5px}
+  .chip{font-size:11.5px;color:var(--t1);background:var(--white);border:1px solid #CFE3C4;border-radius:7px;padding:3px 9px}
+  .ex{display:flex;gap:7px;font-size:11.5px;line-height:1.35;color:var(--t2);margin-top:4px}
+  .ex .mk{font-weight:700;flex-shrink:0}
+  .ex.ok .mk{color:var(--green)}
+  .ex.no .mk{color:var(--clay)}
+
+  /* hidden code layer */
+  .hidden{margin-top:14px;background:var(--dark);border:1.5px dashed var(--line-dark);border-radius:16px;padding:16px 20px;color:var(--light);-webkit-print-color-adjust:exact;print-color-adjust:exact;display:flex;align-items:center;gap:16px}
+  .hidden .lock{font-size:22px;line-height:1;flex-shrink:0;opacity:.85}
+  .hidden .cap{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green-lite)}
+  .hidden h3{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--light);margin:2px 0 3px}
+  .hidden p{font-size:12px;color:#C9BEAE;line-height:1.4;max-width:130mm}
+  .hidden .only{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;background:var(--green-d);color:var(--white);border-radius:999px;padding:2px 10px;margin-left:2px}
+
+  /* footer key */
+  .key{margin-top:auto;padding-top:18px;border-top:1px solid var(--line-light);display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+  .key .legend{display:flex;flex-direction:column;gap:6px}
+  .kv{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--t2)}
+  .kv .sw{width:13px;height:13px;border-radius:4px;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sw.a{background:var(--clay-soft);border:1px solid #E7C9B9}
+  .sw.b{background:var(--green-soft);border:1px solid #C7DEB9}
+  .sw.c{background:var(--dark)}
+  .brand{text-align:right}
+  .brand .logo{font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--t1)}
+  .brand .sub{font-size:10.5px;color:var(--t3);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="eyebrow">Гермес · СММ-агент</div>
+  <h1>Голос автора</h1>
+  <p class="lead">Одна настройка задаёт, как ты пишешь, — и работает на <b>всех</b> соцсетях. Поверх неё у каждой площадки своё: язык, длина, формат и примеры. А продающую механику под LinkedIn агент добавляет сам, в коде.</p>
+
+  <div class="rule"></div>
+
+  <div class="diagram">
+
+    <div class="lyr-tag"><span class="n">1</span> Общее — одно на весь поток</div>
+    <div class="base">
+      <div class="cap">Голос автора</div>
+      <h2>Как ты пишешь — одним описанием</h2>
+      <p class="desc">Один большой текст-описание твоей манеры. Применяется <b>ко всем соцсетям сразу</b> — настроил один раз, звучит везде одинаково «по-твоему». Можно собрать черновик из твоих прошлых постов и потом править.</p>
+      <div class="noslop">
+        <span class="lab">Стоп-лист «так&nbsp;не&nbsp;пишем»</span>
+        <span class="txt">канцелярит, штампы, пустые обороты — живёт частью этого же текста голоса (можно вести по-английски)</span>
+      </div>
+    </div>
+
+    <div class="conn"><div class="stem"></div><div class="lbl">поверх, своё на каждой соцсети</div><div class="stem"></div></div>
+
+    <div class="lyr-tag"><span class="n">2</span> Под площадку — своё у каждой соцсети</div>
+    <div class="row">
+      <div class="plat">
+        <div class="head"><span class="pname">LinkedIn</span><span class="lang">Язык: EN</span></div>
+        <div class="block">
+          <div class="bt">Тон и правила под площадку</div>
+          <div class="chips"><span class="chip">Длина</span><span class="chip">Формат подачи</span><span class="chip">Тон-правила · свободный текст</span></div>
+        </div>
+        <div class="block">
+          <div class="bt">Примеры под эту соцсеть</div>
+          <div class="ex ok"><span class="mk">✓ так&nbsp;— хорошо</span></div>
+          <div class="ex no"><span class="mk">✕ так&nbsp;— не&nbsp;надо</span></div>
+        </div>
+      </div>
+      <div class="plat">
+        <div class="head"><span class="pname">Telegram</span><span class="lang">Язык: RU</span></div>
+        <div class="block">
+          <div class="bt">Тон и правила под площадку</div>
+          <div class="chips"><span class="chip">Коротко, одна мысль</span><span class="chip">Без длинных абзацев</span><span class="chip">Ссылка в конце</span></div>
+        </div>
+        <div class="block">
+          <div class="bt">Примеры под эту соцсеть</div>
+          <div class="ex ok"><span class="mk">✓ так&nbsp;— хорошо</span></div>
+          <div class="ex no"><span class="mk">✕ так&nbsp;— не&nbsp;надо</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hidden">
+      <div class="lock">🔒</div>
+      <div>
+        <div class="cap">Скрытое · в коде, не в кабинете</div>
+        <h3>Стратегия поста + библиотека hook-формул <span class="only">только для LinkedIn</span></h3>
+        <p>Как вести от зацепки к разговору и чем открыть первое предложение. Другим площадкам эта продающая механика не подмешивается — там агент ближе к твоим фактам и голосу.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="key">
+    <div class="legend">
+      <div class="kv"><span class="sw a"></span> Голос автора — общий, один на весь поток</div>
+      <div class="kv"><span class="sw b"></span> Тон, язык, длина, формат, примеры — своё у каждой соцсети</div>
+      <div class="kv"><span class="sw c"></span> Стратегия и hook-формулы — в коде, только для LinkedIn</div>
+    </div>
+    <div class="brand">
+      <div class="logo">Слаживание</div>
+      <div class="sub">Уклад ИИ · uklad.ai</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

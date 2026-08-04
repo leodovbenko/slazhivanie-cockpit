@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Гермес — как он ведёт ваши соцсети</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A443B;
+    --green:#3D7A3E; --green-d:#2F5F30; --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --paper:#FBF8F2;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  @page{ size:A4; margin:0 }
+  html{ -webkit-print-color-adjust:exact; print-color-adjust:exact }
+  body{ font-family:'IBM Plex Sans',sans-serif; color:var(--ink); background:var(--cream); font-size:11px; line-height:1.55 }
+  body::before{ content:''; position:fixed; inset:0; background:var(--cream); z-index:-1 }
+  .page{ width:210mm; min-height:297mm; padding:18mm 18mm 15mm; page-break-after:always; position:relative; overflow:hidden }
+  .page:last-child{ page-break-after:auto }
+  h1{ font-family:'Fraunces',serif; font-weight:600; font-size:38px; line-height:1.03; letter-spacing:-.5px }
+  h2{ font-family:'Fraunces',serif; font-weight:600; font-size:21px; margin:0 0 8px; letter-spacing:-.2px }
+  h3{ font-family:'IBM Plex Sans'; font-weight:600; font-size:12px; color:var(--green-d); margin-bottom:4px }
+  p{ margin:0 0 8px }
+  b,strong{ font-weight:600 }
+  .kicker{ font-family:'IBM Plex Sans'; font-weight:600; font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--clay); margin-bottom:14px }
+  .lead{ font-size:14px; line-height:1.6; color:var(--ink-soft); max-width:150mm }
+  .sec{ margin-top:20px }
+  .sec-head{ display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--ink); padding-bottom:6px; margin-bottom:12px }
+  .sec-num{ font-family:'Fraunces',serif; font-weight:700; font-size:17px; color:var(--clay) }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:11px }
+  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px }
+  .card{ background:var(--paper); border:1px solid var(--line); border-radius:11px; padding:13px 15px }
+  .card p{ margin-bottom:0; color:var(--ink-soft) }
+  .card .ic{ font-size:19px; margin-bottom:6px; display:block }
+  .dark{ background:var(--ink); color:#EDE6D8; border-radius:13px; padding:17px 20px }
+  .dark h2{ color:#fff } .dark p{ color:#D8CFBF }
+  .flow{ display:flex; gap:8px; margin-top:6px }
+  .flow-step{ flex:1; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:11px 12px; position:relative }
+  .flow-step .n{ font-family:'Fraunces',serif; font-weight:700; color:var(--clay); font-size:15px }
+  .flow-step b{ display:block; margin:2px 0 3px }
+  .flow-step span{ color:var(--ink-soft); font-size:10px; line-height:1.45 }
+  .flow-arrow{ align-self:center; color:var(--clay); font-size:16px; font-weight:600 }
+  .step{ display:flex; gap:12px; margin-bottom:11px }
+  .step-n{ flex:0 0 26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-weight:600; font-size:13px; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif }
+  .step-b{ flex:1 } .step-b b{ display:block; margin-bottom:2px }
+  .step-b span{ color:var(--ink-soft) }
+  .who{ display:inline-block; font-size:9px; font-weight:600; letter-spacing:.03em; padding:2px 8px; border-radius:20px; margin-left:5px; vertical-align:middle }
+  .who.you{ background:#E3EEDD; color:var(--green-d) }
+  .who.us{ background:#F0DDD3; color:var(--clay-d) }
+  ul{ margin:2px 0 8px 0; padding-left:17px } li{ margin-bottom:4px; color:var(--ink-soft) }
+  .note{ background:#F3ECDD; border-left:3px solid var(--green); border-radius:0 8px 8px 0; padding:11px 14px; color:var(--ink-soft); margin-top:12px }
+  .note.clay{ border-color:var(--clay) }
+  .foot{ position:absolute; bottom:9mm; left:18mm; right:18mm; display:flex; justify-content:space-between; font-size:9px; color:#9C8F79; letter-spacing:.05em; border-top:1px solid var(--line); padding-top:6px }
+</style>
+</head>
+<body>
+
+<!-- ===== СТР. 1 — ОБЛОЖКА ===== -->
+<div class="page">
+  <div class="kicker">Платформа «Уклад · Слаживание»</div>
+  <h1>Гермес</h1>
+  <h1 style="font-size:26px; color:var(--clay); margin-top:4px">ведёт ваши соцсети</h1>
+
+  <p class="lead" style="margin-top:16px">
+    Гермес — это сотрудник, который берёт на себя соцсети компании. Он замечает поводы в вашей
+    работе, пишет посты вашим голосом, готовит картинки и видео и публикует — в Телеграм-канал,
+    LinkedIn, Instagram и другие площадки. Вы остаётесь главным: каждый пост он показывает вам,
+    и в свет выходит только то, что вы одобрили.
+  </p>
+
+  <div class="dark" style="margin-top:18px">
+    <h2>Как он работает — четыре шага</h2>
+    <div class="flow" style="margin-top:10px">
+      <div class="flow-step"><span class="n">1</span><b>Повод</b><span>Находит, о чём написать: победа, разговор с клиентом, вывод недели</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="n">2</span><b>Черновик</b><span>Пишет пост вашим голосом, добавляет картинку или видео</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="n">3</span><b>Вы смотрите</b><span>Читаете, правите словом или кнопкой «переписать»</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="n">4</span><b>Публикация</b><span>По вашей кнопке уходит в выбранные соцсети</span></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><span class="sec-num">·</span><h2>Где вы с ним общаетесь</h2></div>
+    <div class="grid2">
+      <div class="card">
+        <span class="ic">💬</span>
+        <h3>В Телеграме</h3>
+        <p>У Гермеса свой бот. Пишете ему словом или голосом: «сделай пост про…», «обнови идеи»,
+        «покажи, сколько потратили». Он отвечает и показывает черновики прямо в чате, с кнопками.</p>
+      </div>
+      <div class="card">
+        <span class="ic">🖥️</span>
+        <h3>В личном кабинете</h3>
+        <p>На сайте — доска идей, черновики, очередь публикаций, настройки каждого канала и голоса.
+        Всё то же, что в боте, только на большом экране. Работайте там, где удобнее.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>ГЕРМЕС · ГАЙД ДЛЯ ПОЛЬЗОВАТЕЛЯ</span><span>1</span></div>
+</div>
+
+<!-- ===== СТР. 2 — ЧТО УМЕЕТ ===== -->
+<div class="page">
+  <div class="sec" style="margin-top:0">
+    <div class="sec-head"><span class="sec-num">1</span><h2>Что он умеет</h2></div>
+    <div class="grid3">
+      <div class="card"><span class="ic">✍️</span><h3>Пишет посты</h3><p>Текст вашим голосом — под каждую площадку своя длина и тон.</p></div>
+      <div class="card"><span class="ic">💡</span><h3>Собирает идеи</h3><p>6–8 тем из дел команды: победа, вывод, отказ клиента, живой момент. Любую разворачивает в пост.</p></div>
+      <div class="card"><span class="ic">🖼️</span><h3>Делает картинку</h3><p>Подбирает кадр к посту в стиле, который вы отметили как «нравится».</p></div>
+      <div class="card"><span class="ic">🎠</span><h3>Собирает карусель</h3><p>Несколько слайдов подряд — для разбора или мини-истории.</p></div>
+      <div class="card"><span class="ic">🎬</span><h3>Снимает рилс</h3><p>Короткое видео: говорящее лицо и голос. Пока запускаем вместе с нашим оператором.</p></div>
+      <div class="card"><span class="ic">🚀</span><h3>Публикует</h3><p>В ваш Телеграм-канал, LinkedIn, Instagram и другие площадки — по одной кнопке.</p></div>
+      <div class="card"><span class="ic">🤝</span><h3>Растит сеть</h3><p>В LinkedIn подсказывает, кого добавить, и пишет короткую записку к заявке. Отправляете вы.</p></div>
+      <div class="card"><span class="ic">₽</span><h3>Считает деньги</h3><p>Под каждым постом видно, сколько он стоил. Никаких сюрпризов в конце месяца.</p></div>
+      <div class="card"><span class="ic">🔔</span><h3>Напоминает</h3><p>Подсказывает, когда пора публиковать, и подбадривает: серия недели, набранный темп.</p></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Главное правило:</b> Гермес ничего не публикует сам. Любой пост он готовит и показывает,
+    а в свет отправляете его вы. Если аккаунт соцсети ещё не подключён — он отдаст готовый текст,
+    и вы выложите вручную. Ничего не уходит мимо вас.
+  </div>
+
+  <div class="foot"><span>ГЕРМЕС · ГАЙД ДЛЯ ПОЛЬЗОВАТЕЛЯ</span><span>2</span></div>
+</div>
+
+<!-- ===== СТР. 3 — ГОЛОС + ИДЕИ ===== -->
+<div class="page">
+  <div class="sec" style="margin-top:0">
+    <div class="sec-head"><span class="sec-num">2</span><h2>Ваш голос</h2></div>
+    <p class="lead" style="font-size:12.5px; margin-bottom:12px">
+      Гермес пишет не «нейросетевым» языком, а вашим. Голос настраивается отдельно для каждого канала:
+      для русского Телеграма — один тон, для английского LinkedIn — другой. Один человек может вести
+      сразу несколько каналов, и у каждого своё лицо.
+    </p>
+    <div class="grid3">
+      <div class="card"><h3>По прошлым постам</h3><p>Гермес читает то, что вы уже публиковали, и подхватывает манеру.</p></div>
+      <div class="card"><h3>По образцам</h3><p>Даёте пару текстов, которые звучат «как вы» — он берёт их за эталон.</p></div>
+      <div class="card"><h3>Своими словами</h3><p>Просто описываете: «коротко, по делу, без пафоса, с примером из жизни».</p></div>
+    </div>
+    <div class="note">
+      Голос можно поправить в любой момент — кнопкой «собрать голос» в кабинете или командой боту.
+      Там же задаёте, чего избегать (например, «без канцелярита и хэштегов») и какие площадки ведёте.
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><span class="sec-num">3</span><h2>Откуда он берёт идеи</h2></div>
+    <div class="grid2">
+      <div class="card">
+        <span class="ic">🏢</span>
+        <h3>Из дел вашей команды — по умолчанию</h3>
+        <p>Гермес видит итоги дня, встречи и заметки и вылавливает живые поводы: чего добились,
+        что поняли, где спорили. Ничего настраивать не нужно — это работает сразу.</p>
+      </div>
+      <div class="card">
+        <span class="ic">✅</span>
+        <h3>Из группы компаний — по галочкам</h3>
+        <p>Если у вас несколько своих компаний, вы отмечаете галочками, из каких брать поводы.
+        Гермес подмешает их темы и подпишет, из какой компании идея. Чужие данные не тронет.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>ГЕРМЕС · ГАЙД ДЛЯ ПОЛЬЗОВАТЕЛЯ</span><span>3</span></div>
+</div>
+
+<!-- ===== СТР. 4 — ПУБЛИКАЦИЯ + ДЕНЬГИ ===== -->
+<div class="page">
+  <div class="sec" style="margin-top:0">
+    <div class="sec-head"><span class="sec-num">4</span><h2>Куда публикует</h2></div>
+    <p class="lead" style="font-size:12.5px; margin-bottom:12px">
+      Подключаете свои аккаунты один раз — дальше Гермес постит по кнопке. Один черновик можно
+      разложить сразу на несколько площадок, и под каждую он подгонит длину и формат.
+    </p>
+    <div class="grid3">
+      <div class="card"><span class="ic">📣</span><h3>Ваш Телеграм-канал</h3><p>Пост, карусель или «Статья» — прямо из бота Гермеса.</p></div>
+      <div class="card"><span class="ic">in</span><h3>LinkedIn</h3><p>Пост, плюс подсказки по росту деловой сети.</p></div>
+      <div class="card"><span class="ic">📸</span><h3>Instagram</h3><p>Пост и карусель.</p></div>
+      <div class="card"><span class="ic">▶️</span><h3>YouTube Shorts</h3><p>Короткие вертикальные видео.</p></div>
+      <div class="card"><span class="ic">📝</span><h3>VC.ru и Дзен</h3><p>Статьи на внешних площадках.</p></div>
+      <div class="card"><span class="ic">🌐</span><h3>Блог сайта</h3><p>Публикация прямо на ваш сайт.</p></div>
+    </div>
+    <div class="note clay">
+      Каждую публикацию вы подтверждаете сами — это не автопостинг вслепую. Если какая-то соцсеть
+      ещё не подключена, Гермес просто отдаст готовый текст, а вы выложите руками.
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><span class="sec-num">5</span><h2>Сколько это стоит</h2></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Под каждым постом — цена в рублях</h3>
+        <p>Гермес считает, во сколько обошёлся текст, и пишет «стоил ~X ₽» прямо под черновиком.
+        Видно сразу, а не в конце месяца.</p>
+      </div>
+      <div class="card">
+        <h3>По видео — отдельная оценка</h3>
+        <p>У рилса стоимость складывается из видео и озвучки, помечается значком «≈» как прикидка.
+        Вечером приходит короткий итог: что вышло и почём.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>ГЕРМЕС · ГАЙД ДЛЯ ПОЛЬЗОВАТЕЛЯ</span><span>4</span></div>
+</div>
+
+<!-- ===== СТР. 5 — ПОДКЛЮЧЕНИЕ ===== -->
+<div class="page">
+  <div class="sec" style="margin-top:0">
+    <div class="sec-head"><span class="sec-num">6</span><h2>Как подключить — по шагам</h2></div>
+    <p style="color:var(--ink-soft); margin-bottom:14px">
+      Метки: <span class="who you">делаете сами</span> — прямо в кабинете, за пару минут.
+      <span class="who us">делаем мы</span> — настраиваем на своей стороне.
+    </p>
+
+    <div class="step"><div class="step-n">1</div><div class="step-b"><b>Подключить бота в Телеграме <span class="who you">делаете сами</span></b>
+      <span>Заводите бота (получаете токен у @BotFather) и подключаете в кабинете. Хотите постить в канал — добавьте бота админом этого канала.</span></div></div>
+
+    <div class="step"><div class="step-n">2</div><div class="step-b"><b>Подключить соцсети <span class="who you">делаете сами</span></b>
+      <span>Привязываете аккаунты — LinkedIn, Instagram, YouTube, Дзен. После этого публикация идёт по кнопке.</span></div></div>
+
+    <div class="step"><div class="step-n">3</div><div class="step-b"><b>Собрать голос <span class="who you">делаете сами</span></b>
+      <span>Нажимаете «собрать голос» или говорите боту. По вашим постам, образцам или описанию словами. Отдельно для каждого канала.</span></div></div>
+
+    <div class="step"><div class="step-n">4</div><div class="step-b"><b>Выбрать, откуда идеи <span class="who you">делаете сами</span></b>
+      <span>По умолчанию — из дел команды, ничего делать не нужно. Есть группа компаний — отмечаете галочками нужные.</span></div></div>
+
+    <div class="step"><div class="step-n">5</div><div class="step-b"><b>Настроить площадки и частоту <span class="who you">делаете сами</span></b>
+      <span>Для каждого канала — язык, длину, стиль. И как часто присылать идеи (или не присылать вовсе — по вашему выбору).</span></div></div>
+
+    <div class="step"><div class="step-n">6</div><div class="step-b"><b>Включить видео-ведущего <span class="who us">делаем мы</span></b>
+      <span>Для рилсов настраиваем лицо и голос ведущего вместе с вами — это пока делается через нашего оператора.</span></div></div>
+
+    <div class="step" style="margin-bottom:0"><div class="step-n">7</div><div class="step-b"><b>Добавить со-авторов <span class="who us">делаем мы</span></b>
+      <span>Если постить в канал должны несколько человек из команды — выдаём им доступ поимённо.</span></div></div>
+  </div>
+
+  <div class="dark" style="margin-top:18px">
+    <h2 style="font-size:17px">Коротко</h2>
+    <p style="margin-bottom:0">
+      Гермес снимает с вас рутину соцсетей, но не забирает контроль. Он ищет поводы, пишет вашим
+      голосом, готовит картинки и видео, считает деньги и напоминает про темп. Вы — смотрите и
+      одобряете. Начать можно с одного канала в Телеграме и подключать остальное по мере надобности.
+    </p>
+  </div>
+
+  <div class="foot"><span>ГЕРМЕС · ГАЙД ДЛЯ ПОЛЬЗОВАТЕЛЯ · платформа «Уклад · Слаживание»</span><span>5</span></div>
+</div>
+
+</body>
+</html>

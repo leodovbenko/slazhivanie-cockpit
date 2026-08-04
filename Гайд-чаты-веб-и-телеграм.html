@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Гайд по чатам Уклад — веб и Telegram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A4238;
+    --green:#3D7A3E; --green-d:#2F5F30;
+    --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --card:#FBF8F2;
+  }
+  *{box-sizing:border-box}
+  @page{size:A4;margin:0}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--ink); background:var(--cream);
+    font-size:11.2px; line-height:1.58;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; background:var(--cream); z-index:-1;
+  }
+  .page{
+    width:210mm; min-height:297mm; padding:18mm 17mm 16mm;
+    position:relative; page-break-after:always; overflow:hidden;
+  }
+  .page:last-child{page-break-after:auto}
+  h1,h2,h3,.eyebrow{font-family:'Fraunces',serif; letter-spacing:-.01em}
+  .eyebrow{
+    font-family:'IBM Plex Sans',sans-serif; font-weight:600;
+    font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--clay-d);
+  }
+  h1{font-size:34px; font-weight:600; line-height:1.08; margin:6px 0 0}
+  h2{font-size:19px; font-weight:600; margin:0 0 3px; color:var(--ink)}
+  h3{font-size:13.5px; font-weight:600; margin:0 0 2px; color:var(--green-d)}
+  p{margin:0 0 8px}
+  .muted{color:var(--ink-soft)}
+  .lead{font-size:13px; line-height:1.55; color:var(--ink-soft); max-width:150mm}
+  .sec-head{display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--line); padding-bottom:7px; margin:0 0 12px}
+  .sec-num{font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--clay); line-height:1}
+  .block{margin:0 0 15px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin:0 0 10px;
+  }
+  .card.dark{background:var(--ink); color:#F1EADD; border-color:var(--ink)}
+  .card.dark h3{color:#E8B58E}
+  .card.dark .muted{color:#C6BBA9}
+  .pill{
+    display:inline-block; font-size:9px; font-weight:600; letter-spacing:.05em;
+    padding:2px 8px; border-radius:999px; text-transform:uppercase;
+    background:#EAE0CF; color:var(--ink-soft); margin-right:5px;
+  }
+  .pill.web{background:#DCE9DC; color:var(--green-d)}
+  .pill.tg{background:#E9DBD2; color:var(--clay-d)}
+  table{width:100%; border-collapse:collapse; margin:4px 0 10px; font-size:10.3px}
+  th{
+    text-align:left; font-weight:600; font-size:9px; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--clay-d);
+    border-bottom:1.5px solid var(--line); padding:6px 8px 5px; vertical-align:bottom;
+  }
+  td{border-bottom:1px solid var(--line); padding:6px 8px; vertical-align:top}
+  td strong{font-weight:600}
+  tr:last-child td{border-bottom:none}
+  ul{margin:2px 0 8px; padding-left:17px}
+  li{margin:0 0 3px}
+  .kicker{font-weight:600; color:var(--green-d)}
+  .footer{
+    position:absolute; bottom:9mm; left:17mm; right:17mm;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:8.5px; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:5px;
+  }
+  .footer .brand{font-family:'Fraunces',serif; font-weight:600; color:var(--ink)}
+  .cols{display:flex; gap:12px}
+  .cols>div{flex:1}
+  .callout{
+    border-left:3px solid var(--clay); background:#FBF3EC;
+    padding:8px 12px; border-radius:0 8px 8px 0; margin:0 0 10px; font-size:10.3px;
+  }
+  .callout .kicker{color:var(--clay-d)}
+  .note{font-size:9.6px; color:var(--ink-soft); font-style:italic}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .icn{font-size:15px; line-height:1; margin-right:4px}
+
+  /* ── Cover ── */
+  .cover{background:var(--ink); color:#F1EADD}
+  .cover::after{content:none}
+  .cover .eyebrow{color:#E8B58E}
+  .cover h1{color:#FBF8F2; font-size:42px; margin-top:14px}
+  .cover .lead{color:#CFC4B2}
+  .cover .rule{height:2px; width:64px; background:var(--clay); margin:20px 0 22px}
+  .cover .metarow{display:flex; gap:26px; margin-top:28px; font-size:10px; color:#B9AE9C}
+  .cover .metarow b{color:#F1EADD; font-weight:600; display:block; font-size:12px; margin-bottom:1px}
+  .cover .tocbox{margin-top:34px; border-top:1px solid #3A342B; padding-top:16px}
+  .cover .tocbox .eyebrow{color:#9C9284}
+  .toc{display:grid; grid-template-columns:1fr 1fr; gap:6px 26px; margin-top:10px; font-size:10.5px; color:#D9CFBD}
+  .toc span{color:var(--clay); font-family:'Fraunces',serif; font-weight:600; margin-right:8px}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ COVER ══════════════ -->
+<section class="page cover">
+  <div class="eyebrow">Уклад · Платформа «Слаживание»</div>
+  <h1>Как устроены чаты</h1>
+  <div class="rule"></div>
+  <p class="lead">Полный гайд по всем сценариям общения с агентами — в веб-кабинете и в Telegram. Кто что видит, в каком контексте отвечает агент и что оседает в память компании.</p>
+
+  <div class="metarow">
+    <div><b>Два канала</b>Веб-кабинет · Telegram</div>
+    <div><b>Одна память</b>Общая на компанию</div>
+    <div><b>Много ролей</b>Первый агент + флот специалистов</div>
+  </div>
+
+  <div class="tocbox">
+    <div class="eyebrow" style="color:#9C9284">Содержание</div>
+    <div class="toc">
+      <div><span>1</span>Три оси, которые нельзя путать</div>
+      <div><span>2</span>Веб: «Личные с агентом»</div>
+      <div><span>3</span>Веб: «Групповые» и «Встречи»</div>
+      <div><span>4</span>Telegram: все сценарии</div>
+      <div><span>5</span>Что кормит память компании</div>
+      <div><span>6</span>Синхронизация веб ↔ Telegram</div>
+      <div><span>7</span>Сводная таблица сценариев</div>
+      <div><span>8</span>Кормушка Коммерсанта и Легала</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 1. THREE AXES ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">01</span><div><div class="eyebrow">Фундамент</div><h2>Три оси, которые нельзя путать</h2></div></div>
+
+  <p class="lead" style="margin-bottom:14px">Любой чат в системе описывается тремя независимыми вопросами. Если держать их отдельно, вся дальнейшая механика становится очевидной. Их путаница — источник почти всех «а почему агент это увидел / не увидел».</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>① Кто видит чат</h3>
+      <p class="muted" style="margin:0">Приватный (только вы) или общий (вся команда). Решается тем, привязан ли чат к конкретному человеку или он «ничей, командный».</p>
+    </div>
+    <div class="card">
+      <h3>② В каком контексте отвечает агент</h3>
+      <p class="muted" style="margin:0">Что агент читает под ваш вопрос: всю компанию, изолированную «личную комнату», запись встречи или свой корпус знаний.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>③ Что уходит в память компании</h3>
+    <p class="muted" style="margin:0">Отдельная логика — и она <b>намеренно не совпадает</b> с видимостью. Приватный чат может кормить общую память (разговор с агентом-работником = работа), а «видимый замысел компании» может не кормить (личка Первого приватна). Это ключевой нюанс всего гайда.</p>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Главная идея одной фразой.</span> Память — общая, компании. Агент — это не отдельная память, а <b>специалист с своими руками и ролью</b>. Выбирая агента, вы выбираете <i>кто и чем сделает</i>, а не <i>что он помнит</i>. Помнят все из общего котла компании.
+  </div>
+
+  <div class="block">
+    <h3 style="margin-bottom:5px">Кто есть кто</h3>
+    <table>
+      <tr><th style="width:34%">Роль</th><th>Что это</th></tr>
+      <tr><td><strong>Первый агент</strong></td><td>Универсальный вход. «Поговорить обо всём», разобраться, спросить про компанию. Ваше доверенное лицо — личка с ним приватна.</td></tr>
+      <tr><td><strong>Флот специалистов</strong><br><span class="muted">Гермес, Коммерсант, Рекрутер, Легал, Маркетинговый тим-лид, Аутрич…</span></td><td>Каждый со своей ролью, руками (умеет постить, звонить, собирать документ), коннекторами (amoCRM, hh) и — у некоторых — приватным сейфом знаний.</td></tr>
+      <tr><td><strong>Вся компания</strong></td><td>Не агент, а <b>контекст</b>: Первый агент, видящий фирму целиком.</td></tr>
+      <tr><td><strong>Личное</strong></td><td>Не агент, а <b>изолированная комната</b>: заметки и черновики только для вас, память компании отрезана.</td></tr>
+    </table>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>1 / 8 · Фундамент</span></div>
+</section>
+
+<!-- ══════════════ 2. WEB PERSONAL ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">02</span><div><div class="eyebrow"><span class="pill web">Веб-кабинет</span></div><h2>Вкладка «Личные с агентом»</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Диалоги один-на-один с ИИ. Слева список сгруппирован по собеседникам: ведро «Первый агент» плюс отдельная группа под каждого специалиста флота. При новом разговоре появляется модалка <b>«Куда направить разговор»</b> — это выбор контекста, а не адреса доставки.</p>
+
+  <div class="block">
+    <h3 style="margin-bottom:5px">Три варианта в модалке «Куда направить»</h3>
+    <table>
+      <tr><th style="width:20%">Вариант</th><th style="width:44%">Что читает агент</th><th>Кто видит чат</th></tr>
+      <tr>
+        <td><span class="icn">🏢</span><strong>Вся компания</strong></td>
+        <td>Мастер-инструкция + база знаний + <b>память компании</b>. Плюс приватно подмешивается ваша личная память (эффект накопленного контекста).</td>
+        <td>Чат остаётся <b>вашим личным</b>. «Компания» здесь — это широта контекста, а не публикация в команду.</td>
+      </tr>
+      <tr>
+        <td><span class="icn">🔒</span><strong>Личное</strong></td>
+        <td><b>Только</b> память этой личной комнаты. Память компании намеренно отрезана — «чистая комната» для заметок, черновиков, личных вопросов.</td>
+        <td>Только вы.</td>
+      </tr>
+      <tr>
+        <td><span class="icn">🤖</span><strong>Конкретный агент</strong></td>
+        <td>Тот же контекст компании, но говорите со специалистом — с его руками, ролью, коннекторами. У Коммерсанта и Легала дополнительно подключается их сейф знаний.</td>
+        <td>Только вы.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Тонкость про «Вся компания».</span> Сам чат приватный — ваш. Командным, видимым всей команде, разговор становится не здесь, а во вкладке <b>«Групповые»</b> (канал) или в реальной группе Telegram. Держите в голове: «Вся компания» = <i>Первый агент в контексте всей фирмы</i>, а не «мой чат теперь читают все».
+  </div>
+
+  <div class="block">
+    <h3>Когда что выбирать</h3>
+    <ul>
+      <li><span class="kicker">Первый агент / Вся компания</span> — по умолчанию. Разобраться, спросить про компанию, обсудить что угодно.</li>
+      <li><span class="kicker">Конкретный агент</span> — когда нужна его <b>работа руками</b>: «Гермес, собери пост», «Коммерсант, пробей компанию и положи в amoCRM», «Легал, проверь договор». Вы сразу у спеца с инструментами, а не просите универсала.</li>
+      <li><span class="kicker">Личное</span> — черновики, личные заметки, «подумать вслух» без следа в памяти компании.</li>
+    </ul>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>2 / 8 · Веб · Личные</span></div>
+</section>
+
+<!-- ══════════════ 3. WEB GROUPS + MEETINGS ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">03</span><div><div class="eyebrow"><span class="pill web">Веб-кабинет</span></div><h2>Вкладки «Групповые» и «Встречи»</h2></div></div>
+
+  <div class="block">
+    <h3><span class="icn">#</span>Групповые</h3>
+    <p class="muted" style="margin-bottom:7px">Групповой чат в кабинете — это <b>зеркало реальной группы Telegram</b>. Не отдельная веб-сущность, а окно в командную переписку.</p>
+    <ul>
+      <li><span class="kicker">Кто видит:</span> только участники этого чата (плюс владелец/админ). Чужим его как будто не существует — даже факт наличия не палится.</li>
+      <li><span class="kicker">Как заводится:</span> сам собой при первом сообщении в привязанной группе Telegram, либо кнопкой «＋» в секции «Каналы».</li>
+      <li><span class="kicker">Реплика из кабинета — это сообщение В КОМАНДУ, а не вопрос ИИ.</span> Текст уходит в реальную группу Telegram от бота с подписью «Имя (из кабинета): …». Ответы бота в группе зеркалятся обратно в веб-ленту.</li>
+      <li><span class="kicker">Классификация чатов:</span> здесь же настраивается тип чата (внутренний / клиентский), кормит ли он память, тихий режим.</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3><span class="icn">🎙</span>Встречи</h3>
+    <p class="muted" style="margin-bottom:7px">Отдельная поверхность. Слева — список записанных встреч, справа — страница встречи с её содержимым и полноценным чатом по записи.</p>
+    <ul>
+      <li><span class="kicker">Как встреча становится чатом:</span> при заливке записи (аудио/видео). Личная встреча приватна владельцу, рабочая — командная.</li>
+      <li><span class="kicker">Что можно:</span> обсудить встречу с Первым агентом — он отвечает <b>строго по записи</b> (память компании и цитаты в этот чат не подмешиваются), получить разбор, суть, задачи.</li>
+      <li><span class="kicker">Приватность (152-ФЗ):</span> в меню есть «🧹 Забыть запись (ПДн)» — удалить транскрипт, при этом итоги и извлечённые факты остаются.</li>
+    </ul>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">«Групповые» ≠ «Вся компания».</span> «Вся компания» из модалки — это контекст вашего личного чата с Первым. «Групповые» — реальные командные каналы Telegram. Разные вещи, легко перепутать по названию.
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>3 / 8 · Веб · Группы и встречи</span></div>
+</section>
+
+<!-- ══════════════ 4. TELEGRAM ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">04</span><div><div class="eyebrow"><span class="pill tg">Telegram</span></div><h2>Все сценарии в Telegram</h2></div></div>
+
+  <div class="block">
+    <h3>Личка с Первым агентом (1:1)</h3>
+    <p class="muted" style="margin:0 0 6px">Приватна. Идёт через командный бот компании, который в личке = Первый агент. Понимает текст, голос, фото, документы. Ваши сессии видны в кабинете во вкладке «Личные с агентом» как ветки (пауза больше 6 часов = новая ветка). В память <b>компании</b> личка Первого не идёт — факты копятся приватно в ваше личное пространство.</p>
+  </div>
+
+  <div class="block">
+    <h3>Специалисты (Гермес, Коммерсант…) в Telegram</h3>
+    <p class="muted" style="margin:0 0 4px">У специалистов флота <b>нет отдельного бота под каждого</b> — они переиспользуют командный бот. Практика:</p>
+    <ul>
+      <li>В личке Telegram вы по умолчанию пишете <b>Первому агенту</b> (командный бот).</li>
+      <li>До конкретного спеца дотягиваетесь <b>@упоминанием в групповом чате</b> — там отвечает именно он.</li>
+      <li>Выделенный 1:1 с конкретным специалистом удобнее вести <b>в вебе</b> (вкладка «Личные с агентом» → выбрать агента).</li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <h3>Групповой чат с ботом: @упоминания</h3>
+    <ul>
+      <li><span class="kicker">Бот отвечает только когда к нему обратились</span> — есть @упоминание или это ответ на его сообщение. На обычную болтовню молчит.</li>
+      <li><span class="kicker">В клиентском чате</span> агент отвечает в клиентском режиме — без внутренних данных, памяти и ростера (защита от утечки между клиентами). В неклассифицированном чате молчит.</li>
+      <li><span class="kicker">Приватность:</span> ваша личная память в группу <b>не подмешивается</b> — иначе личное спросившего утекло бы всей команде. Спец. гейт это гарантирует.</li>
+    </ul>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Голос и кружочки</h3>
+      <p class="muted" style="margin:0">Голосовые и видео-кружочки распознаются в текст и работают как <b>команда</b>. (Голосовое ≠ запись встречи — запись это загруженный файл.)</p>
+    </div>
+    <div class="card">
+      <h3>Файл следующим сообщением</h3>
+      <p class="muted" style="margin:0">Когда рука ждёт файл («приложи к задаче», «загрузи в базу юриста»), следующее сообщение с файлом <b>цепляется</b> к нужной сущности. Окно короткое.</p>
+    </div>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>4 / 8 · Telegram</span></div>
+</section>
+
+<!-- ══════════════ 5. MEMORY FEED ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">05</span><div><div class="eyebrow">Память</div><h2>Что кормит память компании</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Не каждый разговор оседает в общей памяти. Правило простое: <b>разговор с агентом-работником = работа → в память компании</b>; <b>личка Первого = доверенное → приватно вам</b>. Управляется это ролью агента, а не типом чата.</p>
+
+  <table>
+    <tr><th style="width:38%">Сценарий</th><th>Куда идут факты</th></tr>
+    <tr><td><strong>Командный / групповой чат</strong> (канал)</td><td>Всегда в память <b>компании</b> (кроме клиентских и community-чатов; технические реплики бота исключаются).</td></tr>
+    <tr><td><strong>Личка агента-работника</strong><br><span class="muted">Коммерсант, Гермес, Рекрутер, Аргус</span></td><td>В память <b>компании</b> — их разговор это работа, команда не должна терять результат.</td></tr>
+    <tr><td><strong>Личка Первого агента</strong></td><td><b>Не</b> в память компании. Копится приватно в ваше личное пространство — контекст растёт, но не утекает.</td></tr>
+    <tr><td><strong>«Личное» пространство</strong></td><td>В это личное пространство. Чистая комната, компания не видит.</td></tr>
+    <tr><td><strong>Встреча</strong></td><td>Факты из записи → в память (если не стоит «Забыть запись» / «не в общее знание»).</td></tr>
+    <tr><td><strong>Клиентский (пилотный) чат</strong></td><td>Не в память компании. Отдельно ловятся хотелки и отзывы.</td></tr>
+  </table>
+
+  <div class="callout">
+    <span class="kicker">Почему приватность решается ролью агента.</span> Первый — ваше доверенное лицо, поэтому личка с ним приватна. Коммерсант, Рекрутер, Гермес — работники, поэтому их личка = рабочий результат и идёт в общий котёл. Разное поведение задано осознанно, на уровне роли агента, а не «какой это чат».
+  </div>
+
+  <div class="callout" style="border-color:var(--green); background:#EEF4EC">
+    <span class="kicker" style="color:var(--green-d)">Изоляция.</span> Между компаниями — «бетонная стена»: память жёстко ограничена вашей фирмой. Внутри фирмы приватные пространства не «протекают» вверх в общую память. Одно место в коде гарантирует, что личное не попадёт в общее.
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>5 / 8 · Память</span></div>
+</section>
+
+<!-- ══════════════ 6. SYNC ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">06</span><div><div class="eyebrow">Каналы</div><h2>Синхронизация веб ↔ Telegram</h2></div></div>
+
+  <p class="lead" style="margin-bottom:14px">Веб-кабинет и Telegram пишут в <b>одну базу</b>. Поэтому «синхронизация» — это общий журнал чатов и общая память, а не отдельный механизм зеркалирования. Важно понимать, что именно связано, а что нет.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3 style="color:var(--green-d)">✓ Синхронизируется</h3>
+      <ul style="margin-bottom:0">
+        <li>Список чатов: личка и группы Telegram видны в кабинете как ветки и каналы</li>
+        <li>Содержимое переписки</li>
+        <li>Общая память компании</li>
+        <li>Набор рук и навыков агентов (одна рука работает и там, и там)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--clay-d)">✕ Не синхронизируется</h3>
+      <ul style="margin-bottom:0">
+        <li>Веб-чат, начатый в кабинете, отдельной веткой в Telegram <b>не</b> появляется (видимость Telegram → веб односторонняя)</li>
+        <li>Ответы бота в группе зеркалятся в веб только для показа — в память не идут</li>
+        <li>Реплика из кабинета в групповой чат уходит в реальную группу Telegram (это релей, а не локальная запись)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card dark">
+    <h3>Мультиканальность как правило</h3>
+    <p class="muted" style="margin:0">Любая рука агента обязана работать и в Telegram, и в вебе — это заложено в платформу как принцип. Собрать документ, поискать в сети, прочитать страницу, предложить встречу по тапу слота — доступно в обоих каналах. Односторонняя выкатка считается недоделкой, а не фичей.</p>
+  </div>
+
+  <div class="card">
+    <h3>Часовые пояса</h3>
+    <p class="muted" style="margin:0">Личные поверхности (личка, залогиненный кабинет) — по <b>вашему</b> поясу. Общие (групповой чат — одно сообщение на всех) — по поясу <b>компании</b>.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>6 / 8 · Синхронизация</span></div>
+</section>
+
+<!-- ══════════════ 7. MASTER TABLE ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">07</span><div><div class="eyebrow">Шпаргалка</div><h2>Сводная таблица сценариев</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">Одна страница, к которой можно возвращаться. Каждый сценарий — по трём осям: где живёт, кто видит, что уходит в память.</p>
+
+  <table>
+    <tr>
+      <th style="width:27%">Сценарий</th>
+      <th style="width:20%">Канал</th>
+      <th style="width:20%">Кто видит</th>
+      <th>Что в память</th>
+    </tr>
+    <tr>
+      <td><strong>«Вся компания» / личка Первого</strong></td>
+      <td><span class="pill web">Веб</span><span class="pill tg">TG</span> одна нить</td>
+      <td>Только вы</td>
+      <td>Приватно в ваше личное пространство. В компанию — нет.</td>
+    </tr>
+    <tr>
+      <td><strong>«Личное» пространство</strong></td>
+      <td><span class="pill web">Веб</span></td>
+      <td>Только вы</td>
+      <td>В это личное пространство (чистая комната).</td>
+    </tr>
+    <tr>
+      <td><strong>Агент-работник 1:1</strong><br><span class="muted">Коммерсант, Гермес, Рекрутер</span></td>
+      <td><span class="pill web">Веб</span> · в TG через @ в группе</td>
+      <td>Только вы</td>
+      <td>В память <b>компании</b>.</td>
+    </tr>
+    <tr>
+      <td><strong>Групповой / командный чат</strong></td>
+      <td><span class="pill web">Веб</span><span class="pill tg">TG</span></td>
+      <td>Участники чата</td>
+      <td>В память компании (кроме клиентских и community; реплики бота исключены).</td>
+    </tr>
+    <tr>
+      <td><strong>@упоминание агента в группе</strong></td>
+      <td><span class="pill tg">TG</span></td>
+      <td>Участники</td>
+      <td>Реплика человека → в память. Личная память спросившего не подмешивается.</td>
+    </tr>
+    <tr>
+      <td><strong>Клиентский (пилотный) чат</strong></td>
+      <td><span class="pill tg">TG</span> + веб-зеркало</td>
+      <td>Участники (клиент)</td>
+      <td>Не в память компании. Хотелки и отзывы ловятся отдельно.</td>
+    </tr>
+    <tr>
+      <td><strong>Чат-встреча</strong></td>
+      <td><span class="pill web">Веб</span> «Встречи»</td>
+      <td>Владелец (личная) / команда (рабочая)</td>
+      <td>Факты из записи (если не «Забыть» / не «в общее знание»).</td>
+    </tr>
+  </table>
+
+  <div class="callout">
+    <span class="kicker">Как читать таблицу.</span> «Кто видит» и «что в память» — разные колонки не случайно. Приватный чат с работником виден только вам, но кормит общую память. В этом вся суть: команда не теряет рабочий результат, а личное остаётся личным.
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>7 / 8 · Шпаргалка</span></div>
+</section>
+
+<!-- ══════════════ 8. KORMUSHKA ══════════════ -->
+<section class="page">
+  <div class="sec-head"><span class="sec-num">08</span><div><div class="eyebrow">Отдельный слой</div><h2>Кормушка Коммерсанта и Легала</h2></div></div>
+
+  <p class="lead" style="margin-bottom:12px">У Коммерсанта и Легала есть свой, отдельный от общей памяти слой знаний — <b>кормушка</b> (сейф знаний агента). Это и есть то «своё», что бывает у конкретного специалиста и чего нет у других.</p>
+
+  <div class="block">
+    <table>
+      <tr><th style="width:34%"></th><th>Память компании</th><th>Кормушка агента</th></tr>
+      <tr><td><strong>Чья</strong></td><td>Общая, всех агентов</td><td>Приватная, <b>только этого агента</b></td></tr>
+      <tr><td><strong>Видна на экране «Документы»?</strong></td><td>Да</td><td><b>Нет</b> — специально скрыта</td></tr>
+      <tr><td><strong>Как попадает в работу</strong></td><td>Подмешивается фоном</td><td>Агент <b>точечно достаёт</b> релевантные куски под конкретный вопрос</td></tr>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Коммерсант</h3>
+      <p class="muted" style="margin:0 0 5px">Две отдельные кормушки: <b>прямые продажи</b> (Комдир) и <b>телеколлеры</b> (Трунов). В них — кейсы, возражения, образцы КП.</p>
+      <p class="muted" style="margin:0"><span class="kicker">Автозаливка:</span> когда сделка в amoCRM переходит в «Успешно реализовано», из неё сам собирается компактный кейс (потенциал / боли / как двигали к сделке) и падает в кормушку телеколлеров. Агент учится на реальных выигранных сделках.</p>
+    </div>
+    <div class="card">
+      <h3>Легал</h3>
+      <p class="muted" style="margin:0 0 5px">Кормят вручную: методичка практикующего юриста, разобранные дела, чек-листы, эталоны договоров. Любым файлом — есть даже распознавание PDF-сканов.</p>
+      <p class="muted" style="margin:0">Автозаливки нет — только ручная загрузка. Судебная практика от ПравоТех — это <b>другой</b> источник, не кормушка.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="kicker">Зачем отдельным слоем.</span> Во-первых, чувствительность: условия договоров и корпус кейсов не должны растекаться по всей компании — кормушка намеренно не течёт в общую память. Во-вторых, экономия: в запрос уходит не весь корпус, а несколько релевантных кусков — «1120 кейсов стоят как 20».
+  </div>
+
+  <div class="card dark">
+    <h3>Итог всего гайда</h3>
+    <p class="muted" style="margin:0">Память — общая, компании. Агент — дверь в неё со своими руками, а не отдельная память. Приватным делается только личный чат с Первым. Что оседает в память — решает роль агента, а не тип чата. А кормушка — приватный корпус спеца, из которого он достаёт нужное под вопрос.</p>
+  </div>
+
+  <div class="footer"><span class="brand">Уклад · Гайд по чатам</span><span>8 / 8 · Кормушка</span></div>
+</section>
+
+</body>
+</html>

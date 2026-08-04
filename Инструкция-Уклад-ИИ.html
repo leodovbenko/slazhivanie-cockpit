@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Уклад ИИ — полное руководство для клиента</title>
+<style>
+  :root{
+    --bg:#F4EFE6; --panel:#FFFFFF; --ink:#201C17; --dim:#6B6258; --line:#E4DBCB;
+    --clay:#9A6250;        /* приглушённая терракота — заливки/подписи */
+    --terra:#B85C3C;       /* насыщенная терракота — заголовки/метки */
+    --green:#3D7A3E; --amber:#B8863C; --red:#B24A32; --cyan:#4C7A6B; --blue:#5E7E86;
+  }
+  @page{ size:A4; margin:0; }
+  *{ box-sizing:border-box; }
+  html{ background:var(--bg); }
+  body{
+    margin:0; padding:0 15mm; color:var(--ink); background:var(--bg);
+    font-family:-apple-system,"Helvetica Neue","PT Sans",Arial,sans-serif;
+    font-size:10.5pt; line-height:1.5; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  body::before{ content:""; position:fixed; inset:0; background:var(--bg); z-index:-1;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  h1,h2,h3,h4{ font-family:Georgia,"PT Serif","Times New Roman",serif; font-weight:700; color:var(--terra); line-height:1.18; }
+  p{ margin:0 0 8px; }
+  a{ color:var(--clay); text-decoration:none; }
+  strong{ color:var(--ink); }
+  .muted{ color:var(--dim); }
+
+  /* ——— Обложка ——— */
+  .cover{ min-height:100vh; padding:16mm 0; display:flex; flex-direction:column; justify-content:center; page-break-after:always; }
+  .brandmark{ display:flex; align-items:center; gap:10px; margin-bottom:26px; }
+  .brandmark .dots{ display:flex; gap:6px; }
+  .brandmark .dots span{ width:16px; height:16px; border-radius:50%; display:inline-block; }
+  .brandmark .name{ font-family:Georgia,serif; font-weight:700; font-size:15pt; letter-spacing:.02em; color:var(--ink); }
+  .cover h1{ font-size:34pt; margin:0 0 14px; color:var(--terra); letter-spacing:-.01em; }
+  .cover .sub{ font-size:14pt; color:var(--ink); max-width:15cm; line-height:1.45; }
+  .cover .meta{ margin-top:30px; font-size:10pt; color:var(--dim); border-top:2px solid var(--terra); padding-top:12px; width:8cm; }
+  .cover .kick{ font-size:10.5pt; color:var(--clay); text-transform:uppercase; letter-spacing:.16em; margin-bottom:18px; font-weight:700; }
+
+  /* ——— Секции ——— */
+  section{ page-break-inside:auto; }
+  .sec{ page-break-before:always; padding:16mm 0 14mm; }
+  h2{ font-size:19pt; margin:0 0 4px; padding-bottom:8px; border-bottom:2px solid var(--terra); }
+  .sec-no{ font-family:Georgia,serif; color:var(--clay); font-size:11pt; letter-spacing:.14em; text-transform:uppercase; margin-bottom:2px; display:block; }
+  .lead{ font-size:11.5pt; color:var(--ink); margin:10px 0 16px; max-width:16cm; }
+  h3{ font-size:13pt; margin:18px 0 6px; color:var(--terra); }
+  h4{ font-size:11pt; margin:12px 0 4px; color:var(--clay); }
+
+  /* ——— Карточка возможности (гибрид: что / выгода / как) ——— */
+  .cap{ background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--clay); border-radius:9px;
+        padding:12px 15px; margin:11px 0; page-break-inside:avoid; }
+  .cap h3{ margin:0 0 6px; font-size:12.5pt; color:var(--terra); }
+  .cap .role{ font-size:9.5pt; color:var(--green); font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+  .grid3{ display:grid; grid-template-columns:1fr; gap:2px; }
+  .kv{ display:grid; grid-template-columns:2.6cm 1fr; gap:8px; padding:4px 0; border-top:1px dashed var(--line); }
+  .kv:first-child{ border-top:none; }
+  .kv .k{ font-size:9pt; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--clay); padding-top:1px; }
+  .kv.what .k{ color:var(--ink); }
+  .kv.benefit .k{ color:var(--green); }
+  .kv.how .k{ color:var(--terra); }
+  .kv .v{ font-size:10pt; }
+
+  ul{ margin:4px 0 8px; padding-left:18px; }
+  li{ margin:2px 0; }
+  .tight li{ margin:1px 0; }
+
+  /* ——— Таблица коннекторов ——— */
+  table{ width:100%; border-collapse:collapse; margin:8px 0 14px; font-size:9.7pt; }
+  th{ text-align:left; background:var(--terra); color:#fff; padding:6px 9px; font-family:Georgia,serif; font-size:9.5pt; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  td{ padding:6px 9px; border-bottom:1px solid var(--line); vertical-align:top; }
+  tr:nth-child(even) td{ background:#FBF8F2; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  td.sys{ font-weight:700; color:var(--clay); white-space:nowrap; }
+
+  /* ——— Заметки/врезки ——— */
+  .note{ background:#FBF7EF; border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin:12px 0; font-size:10pt; page-break-inside:avoid; }
+  .note.green{ border-left:4px solid var(--green); }
+  .note.terra{ border-left:4px solid var(--terra); }
+  .note .nt{ font-weight:700; color:var(--terra); font-family:Georgia,serif; }
+  .note.green .nt{ color:var(--green); }
+
+  .steps{ counter-reset:step; list-style:none; padding:0; margin:10px 0; }
+  .steps li{ counter-increment:step; position:relative; padding:8px 0 8px 44px; border-top:1px solid var(--line); page-break-inside:avoid; }
+  .steps li:first-child{ border-top:none; }
+  .steps li::before{ content:counter(step); position:absolute; left:0; top:8px; width:28px; height:28px; background:var(--green); color:#fff;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-weight:700; font-size:12pt;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .steps li b{ color:var(--terra); }
+
+  /* ——— Оглавление ——— */
+  .toc{ page-break-after:always; padding:16mm 0 14mm; }
+  .toc ol{ list-style:none; counter-reset:t; padding:0; margin:14px 0 0; }
+  .toc li{ counter-increment:t; padding:8px 0; border-bottom:1px solid var(--line); font-size:11.5pt; display:flex; gap:14px; align-items:baseline; }
+  .toc li::before{ content:counter(t,decimal-leading-zero); font-family:Georgia,serif; color:var(--clay); font-weight:700; width:1.4cm; }
+  .toc li b{ color:var(--ink); font-family:Georgia,serif; }
+  .toc li .d{ color:var(--dim); font-size:10pt; }
+
+  .foot{ margin-top:26px; padding-top:12px; border-top:2px solid var(--terra); color:var(--dim); font-size:9pt; }
+  .pill{ display:inline-block; background:#EFE7D8; color:var(--clay); border-radius:20px; padding:2px 10px; font-size:8.5pt; font-weight:700; margin:0 4px 4px 0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+</style>
+</head>
+<body>
+
+<!-- ===================== ОБЛОЖКА ===================== -->
+<div class="cover">
+  <div class="brandmark">
+    <span class="dots"><span style="background:#B85C3C"></span><span style="background:#3D7A3E"></span></span>
+    <span class="name">Уклад&nbsp;ИИ · Слаживание</span>
+  </div>
+  <div class="kick">Полное руководство для клиента</div>
+  <h1>Что умеет платформа</h1>
+  <div class="sub">Среда, в которой люди и ИИ-агенты делают больше работы вместе. Команда пишет в Telegram или в веб-кабинет — флот ИИ-агентов работает над общей памятью компании.</div>
+  <div class="meta">
+    По каждой возможности: <b>что это</b> · <b>какая выгода</b> · <b>как включить и дать команду</b>.<br>
+    Редакция от 31.07.2026
+  </div>
+</div>
+
+<!-- ===================== ОГЛАВЛЕНИЕ ===================== -->
+<section class="toc">
+  <span class="sec-no">Содержание</span>
+  <h2>О чём это руководство</h2>
+  <ol>
+    <li><b>Продукт в двух словах</b> <span class="d">— как устроено, два режима работы</span></li>
+    <li><b>Живая память компании</b> <span class="d">— главное отличие от чат-ИИ</span></li>
+    <li><b>Приём данных</b> <span class="d">— документы, голос, встречи</span></li>
+    <li><b>Работа в двух каналах</b> <span class="d">— Telegram и веб-кабинет</span></li>
+    <li><b>Флот агентов</b> <span class="d">— роли, грейд доверия, наём</span></li>
+    <li><b>Агенты по ролям</b> <span class="d">— Первый, Коммерсант, Гермес, Рекрутёр, Аутрич, Легал, Комьюнити-менеджер и другие</span></li>
+    <li><b>Кабинет — мозг компании</b> <span class="d">— инструкция, знания, согласование, команда, пространства</span></li>
+    <li><b>Коннекторы — «руки» агентов</b> <span class="d">— CRM, календари, рекордеры, соцсети, реестры</span></li>
+    <li><b>Генерация документов</b> <span class="d">— готовый .docx / PDF / презентация прямо в чат</span></li>
+    <li><b>Управление: контракты, техспеки, заказ агента</b></li>
+    <li><b>Приватность и тариф</b> <span class="d">— что видит оператор, 152-ФЗ, токены</span></li>
+    <li><b>С чего начать</b> <span class="d">— 5 шагов первого дня</span></li>
+  </ol>
+</section>
+
+<!-- ===================== 1. ПРОДУКТ В ДВУХ СЛОВАХ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 01</span>
+  <h2>Продукт в двух словах</h2>
+  <p class="lead">Уклад ИИ — это рабочая среда, где рядом с вашей командой встаёт флот ИИ-агентов с общей памятью компании. Люди пишут туда же, куда всегда — в Telegram или в веб-кабинет. Учиться промптить и открывать новые приложения не нужно.</p>
+
+  <h3>Простая метафора</h3>
+  <ul>
+    <li><b>Агент</b> — это машина, которая делает работу.</li>
+    <li><b>Платформа</b> — двигатель под капотом.</li>
+    <li><b>Модель ИИ</b> — коробка передач, её можно менять (сильные модели без VPN).</li>
+    <li><b>Коннекторы</b> — навесное оборудование: календарь, CRM, соцсети, рекордеры встреч.</li>
+    <li><b>Контракт агента</b> — приборная панель: что агент знает, как себя ведёт, что ему разрешено.</li>
+  </ul>
+
+  <h3>Два режима работы</h3>
+  <div class="cap">
+    <h3>Чат — собеседник</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Один вопрос — один ответ. Можно приложить файл или документ и сразу получить разбор.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Быстрый ответ по вашему бизнесу вместо часа расспросов у коллег.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Напишите агенту в Telegram или откройте чат в веб-кабинете.</div></div>
+    </div>
+  </div>
+  <div class="cap">
+    <h3>Агенты / Флот — исполнители</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Многошаговые работники: у них есть руки (коннекторы), память и расписание. Работают в фоне.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Рутина идёт сама: досье собираются, брифы приходят, посты готовятся — без вашего участия.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Наймите агента под роль и включите нужные способности тумблером в контракте.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 2. ЖИВАЯ ПАМЯТЬ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 02</span>
+  <h2>Живая память компании</h2>
+  <p class="lead">Главное отличие Уклада от обычного чат-ИИ: базу знаний не нужно наполнять руками. Чаты и встречи сами превращаются в живую, скользящую память, по которой отвечают все агенты.</p>
+
+  <div class="cap">
+    <div class="role">Ядро платформы</div>
+    <h3>Самонаполняющаяся память</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Поток: чаты и встречи → дистилляция → память компании → агенты отвечают по ней. Помнит людей, контрагентов, цели, договорённости.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Один ответ вместо часа расспросов. Контекст обновляется каждый день, пока вы просто работаете.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Ничего включать не нужно — работает с первого чата. Достаточно писать в командные каналы как обычно.</div></div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <h3>Еженедельная «уборка» в памяти</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Раз в неделю агент помечает протухшее и находит расхождения между памятью и документами.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">База не устаревает и не копит мусор — в отличие от «проекта в чат-ИИ», который вы поддерживаете вручную.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Работает автоматически. Результаты сверки приходят в кабинет и в чат.</div></div>
+    </div>
+  </div>
+
+  <div class="note terra">
+    <span class="nt">Живая память против статичного dump.</span> В «проекте в чат-ИИ» вы сами несёте транскрипт и summary, идёте в браузер, а стоит перестать — контекст отстаёт. В Укладе чаты и встречи <b>сами</b> дописываются, агент <b>сам</b> убирает протухшее и <b>сам</b> приходит в Telegram с брифом. Не вы к нему — а он к вам.
+  </div>
+
+  <div class="note green">
+    <span class="nt">Приватность — это правило, а не галочка.</span> В общую память компании попадают только командные каналы. Личка и разговоры 1:1 с агентом в общую память не идут.
+  </div>
+</section>
+
+<!-- ===================== 3. ПРИЁМ ДАННЫХ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 03</span>
+  <h2>Приём данных</h2>
+  <p class="lead">Агенты принимают информацию в том виде, в каком вам удобно её дать: текстом, документом, голосом, записью встречи.</p>
+
+  <div class="cap">
+    <h3>Документы</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Приложите PDF, скан, фото — агент прочитает даже нераспознанный документ (vision) и ответит по нему.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Не нужно перепечатывать или искать текстовую версию — киньте как есть.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Прикрепите файл к сообщению в Telegram или в чате кабинета.</div></div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <h3>Голос</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Голосовые сообщения и видео-кружочки принимаются как команды: надиктуйте задачу, идею, правку.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Из 15-минутной надиктовки рождаются, например, 5 постов под площадки или готовое досье.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Запишите голосовое или кружочек прямо в чат — расшифровка и действие произойдут сами.</div></div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <h3>Встречи и расшифровки</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Мы подтягиваем готовые облачные записи из tl;dv, Read.ai, Контур.Толк, Zoom (сами встречу не записываем). Крупные файлы догружаются кусками.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Утренний бриф по встречам, разбор 1:1, протоколы, задачи из встречи — без ручной расшифровки.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Подключите свой рекордер в разделе «Коннекторы» — дальше расшифровки приходят сами.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 4. ДВА КАНАЛА ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 04</span>
+  <h2>Работа в двух каналах</h2>
+  <p class="lead">Одни и те же агенты, одна и та же память — и в Telegram, и в веб-кабинете. Любая способность работает в обоих каналах.</p>
+
+  <div class="cap">
+    <h3>Telegram-бот</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Тот же «мозг» агента, что и в кабинете: читает присланные документы, возвращает сгенерированные файлы, отвечает по памяти.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Команда пишет туда, где уже сидит — не нужно осваивать новое приложение.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Напишите боту компании. Вход в веб-кабинет — по кнопке из Telegram, без пароля.</div></div>
+    </div>
+  </div>
+  <div class="cap">
+    <h3>Веб-кабинет</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Полный пульт: чаты, флот агентов, память, контракты, техспеки, коннекторы, тариф.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Всё видно и настраивается в одном месте, экранами и кнопками — без команд и кода.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Команда <b>/вход</b> в Telegram открывает браузерный кабинет.</div></div>
+    </div>
+  </div>
+  <div class="note green"><span class="nt">Мессенджер не только Telegram.</span> Если команда сидит не в Telegram, а в «Пачке» — платформа принимает сообщения оттуда в командную память.</div>
+</section>
+
+<!-- ===================== 5. ФЛОТ АГЕНТОВ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 05</span>
+  <h2>Флот агентов</h2>
+  <p class="lead">Флот — это реестр ролей. У каждой компании есть Первый агент по умолчанию, а под конкретные задачи можно нанять специализированных агентов. Статус агента вычисляется из реальных сигналов, а не выставляется вручную.</p>
+
+  <div class="note terra">
+    <span class="nt">Грейд доверия — «стажёр» по умолчанию.</span> Все рабочие агенты имеют грейд стажёра: наружу к клиенту или контрагенту <b>ничего не уходит без вашего «ОК»</b>. Агент готовит черновик, письмо, задачу или разбор — а вы одобряете. Это ключевой принцип безопасности платформы.
+  </div>
+
+  <h3>База, которая есть у каждого разговорного агента</h3>
+  <ul class="tight">
+    <li><b>Сборка документа</b> — соберёт готовый .docx / .md / презентацию / брендовый PDF прямо в чат.</li>
+    <li><b>Ответ по пространствам</b> — отвечает по выданным ему пространствам и честно говорит «нет доступа», если его нет.</li>
+  </ul>
+</section>
+
+<!-- ===================== 6. АГЕНТЫ ПО РОЛЯМ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 06</span>
+  <h2>Агенты по ролям</h2>
+  <p class="lead">Ниже — что умеет каждый агент, какую выгоду даёт и как его подключить. Список растёт: если нужной роли нет, её можно заказать (см. раздел 10).</p>
+
+  <!-- Первый -->
+  <div class="cap">
+    <div class="role">Есть у каждой компании по умолчанию</div>
+    <h3>Первый агент</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Ежедневный ассистент команды. Календарь (чтение, запись голосом, перенос, участники, ссылка на созвон), предложение слотов кнопками и публичная ссылка бронирования для внешних; встречи и расшифровки, утренний бриф, разбор 1:1, протоколы; командная память и еженедельный аудит знаний; трекер задач (создать/закрыть/назначить людям, задачи из встреч и из «зависших» обсуждений); «мой день по часам»; дайджесты в личку (инсайт недели, сводка дня, честные вечерние итоги); справочник команды «кто есть кто» + оргсправочник; напоминания; онбординг «Первая неделя» и тёплый хендофф коллеге. Оркестрирует других агентов.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Один агент закрывает ежедневную рутину координации: расписание, задачи, память, брифы — команда пишет как всегда.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Уже подключён. Пишите ему в Telegram или в кабинете; способности включаются тумблерами в контракте.</div></div>
+    </div>
+  </div>
+
+  <div class="note green"><span class="nt">Здоровье (fitness.coach) — способность Первого, а не отдельный агент.</span> При подключённом WHOOP или Oura Первый добавляет разбор восстановления/сна/HRV/нагрузки и сам присылает в личку совет о тренировке или отдыхе.</div>
+
+  <!-- Коммерсант -->
+  <div class="cap">
+    <div class="role">Стажёр-продавец · наём</div>
+    <h3>Коммерсант</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Читает звонки и встречи, ведёт досье сделок. Дневная очередь и подсказки в чат; файл-доказательство в сделку и сдвиг стадии с цитатой; анализ здоровья воронки, «следующее лучшее действие», сила сделки по 5 осям, чек-лист стадии против плейбука, вероятность выигрыша; преколл-брифы и КП из досье; веб-обогащение; приём тёплых лидов; работа с amoCRM (суть звонка с редакцией ПДн по 152-ФЗ, примечание + задача-перезвон, хендофф между воронками); отчёты руководителю («клиент горит», утренние/недельные, эффективность телеколлеров, коучинг). Две линейки: «Телеколлеры» и «Прямые продажи».</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Досье и разбор звонка собираются сами и ложатся в карточку CRM; руководитель видит, где горит, без ручного сведения.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">«Нанять Коммерсанта» во флоте. Подключите amoCRM или ведите стадии вручную (кабинет подстраивается под наличие CRM). Клиентам сам не пишет — грейд стажёра.</div></div>
+    </div>
+  </div>
+
+  <!-- Гермес -->
+  <div class="cap">
+    <div class="role">ИИ-SMM-менеджер · наём</div>
+    <h3>Гермес</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Контент на все соцсети. Собирает и переписывает «голос» автора; приносит идею в готовый черновик, находит угол в памяти бизнеса (победы, инсайты, сделки) с указанием источника; публикует в LinkedIn и подключённые каналы, Telegram-канал, «Статью», карусель; со-постинг командой по грантам; аналитика постов и мотивация (стрик недели). SEO/блог — здесь: приём статей от внешнего SEObot и публикация в блог после проверки. Приватность-гейт (находит имена клиентов в черновике — кнопка обезличить). Медиа: карусель по бренд-шаблону, генерация картинок, видео-ведущий — вертикальные рилсы 9:16 с лицом и голосом бренда (аватар HeyGen + голос ElevenLabs, вшитые субтитры).</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Один повод → веером во все площадки; видео без съёмки; посты обучаются на ваших правках и выигрышных постах.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Нанять во флоте, подключить каналы (Telegram-канал через бота компании, LinkedIn/Instagram — в кабинете). Публикация — только после вашего «ОК».</div></div>
+    </div>
+  </div>
+
+  <!-- Рекрутёр -->
+  <div class="cap">
+    <div class="role">Стажёр-рекрутёр · наём</div>
+    <h3>Рекрутёр</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Читает каждое резюме и сортирует кандидатов по вашему сценарию найма (светофор-шортлист с цитатами). Приём кандидатов пачкой / zip / с hh.ru, PDF→текст; сценарий найма из брифа с версиями; оценка после собеседования (заметки, транскрипт, запись встречи); приглашения и отказы черновиком под одобрение; нудж зелёного шортлиста в Telegram, показ кандидата нанимающему и двусторонний ответный цикл; калибровка против решений человека → метрика доверия; консоль настройки воронки для HRD и аналитика по вакансии.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Разбор входящего потока резюме идёт сам; на стол попадает обоснованный шортлист, а не стопка PDF.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Нанять во флоте, дать бриф-сценарий найма, при желании подключить hh.ru. Приглашения/отказы уходят только после подтверждения.</div></div>
+    </div>
+  </div>
+
+  <!-- Аутрич -->
+  <div class="cap">
+    <div class="role">Стажёр холодных касаний · наём</div>
+    <h3>Аутричер</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Находит холодных, но релевантных, и пишет персональные касания голосом сейлза. Пул лидов двумя путями: по портрету клиента (веб-поиск / Apollo) и «Инбокс лидов» (оператор кидает сырьё — текст, форвард, скрин — идут нормализация и дедуп). Обогащение-водопад с причиной-сигналом (публичный Telegram-канал, якорный веб-поиск с защитой от тёзок, реестр DaData: имя → ИНН, директор, ОКВЭД, размер компании). Черновик касания строго голосом сейлза; приватность-гейт; отправка с аккаунта самого сейлза под гейтом (email, Telegram, LinkedIn в один клик), дневной лимит против бана; инбокс ответов с черновиком ответа; тёплый лид уходит хендоффом в воронку Коммерсанта.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Холодная воронка наполняется персональными касаниями, а не спамом — и ничего не улетает без вашего «ОК».</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Нанять во флоте, задать портрет клиента или кидать сырьё в «Инбокс лидов». Отправка — с вашего аккаунта после одобрения.</div></div>
+    </div>
+  </div>
+
+  <!-- Легал -->
+  <div class="cap">
+    <div class="role">Юрист по договорам · наём</div>
+    <h3>Легал</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Ревью правок контрагента (сравнение с вашим шаблоном, классификация: красные линии / допустимые уступки / технически проблемные — с цитатой); переговорная позиция и готовые письма со стратегией; комплаенс по 152-ФЗ (статус процессора, реестры РКН, согласия, локализация) и разбор ПДн-инцидентов; разовые корпоративные и договорные вопросы; собственная база знаний юриста с поиском по тексту.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Договор контрагента разобран по критичности за минуты; видно, где красная линия, а где можно уступить.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Нанять во флоте, загрузить свой шаблон и базу. Сторона по умолчанию — вендор/лицензиар.</div></div>
+    </div>
+  </div>
+
+  <!-- Комьюнити-менеджер -->
+  <div class="cap">
+    <div class="role">Ведущий чат-сообщества · наём</div>
+    <h3>ИИ Комьюнити-менеджер</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Ведёт закрытое чат-сообщество (напр. сотни участников). Слушает чат, вечерний дайджест тем обратно в чат со ссылкой на тред; Q&amp;A по чату по тегу; модерация мата и оскорблений; карма благодарностей (топ недели) и рейтинг активности (топ месяца); продукт-инсайты и сиды контента в бэклог и углы постов для Гермеса. Знания сообщества держит на отдельной полке — в память компании не смешивает.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Живое сообщество не тонет: вопросы получают ответы, темы дня подсвечиваются, активные — на виду.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Нанять во флоте и выдать доступ в чат сообщества.</div></div>
+    </div>
+  </div>
+
+  <!-- Маркетинг-тимлид -->
+  <div class="cap">
+    <div class="role">Координатор маркетинга · советник</div>
+    <h3>Маркетинговый тим-лид</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">«Агент агентов» над Гермесом, Аутричем и SEO. Сводит маркетинг в один P&amp;L (охват → лиды → сделки → затраты); принимает метрики из любого источника (Яндекс.Метрика / GA4 / файл / вручную) в один контракт; читает воронку из CRM; готовит план «что делать дальше»; дистиллирует инсайты звонков на доску. Пока — только советник (read-only).</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Разрозненные метрики каналов сведены в одну картину с рекомендацией следующего шага.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Нанять во флоте, подключить источники метрик и CRM.</div></div>
+    </div>
+  </div>
+
+  <!-- Аргус -->
+  <div class="cap">
+    <div class="role">Chief of Staff основателя</div>
+    <h3>Аргус</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что умеет</div><div class="v">Личный бэк-офис-агент основателя: чтение сообщений и календаря, расшифровка встреч, картотека / задачи / база знаний (Notion, 4 раздела), публикация сводок в штабной чат.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">У первого лица — персональный ассистент, который держит всё в одном месте.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Настраивается индивидуально под основателя.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 7. КАБИНЕТ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 07</span>
+  <h2>Кабинет — мозг компании</h2>
+  <p class="lead">Кабинет вращается вокруг трёх вопросов: что агенты знают, как себя ведут и что им разрешено. Настраивается экранами и кнопками — без кода.</p>
+
+  <h3>Три блока кабинета</h3>
+  <ul>
+    <li><b>Мастер-инструкция</b> — как агенты должны себя вести и о чём помнить.</li>
+    <li><b>База знаний</b> — документы и факты компании (плюс самонаполняемая живая память).</li>
+    <li><b>«На согласование»</b> — очередь, где вы одобряете то, что агент подготовил.</li>
+  </ul>
+
+  <h3>Команда и пространства</h3>
+  <div class="cap">
+    <h3>Команда</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Ростер пространства и роли (Сотрудник / Админ). Приглашение по одноразовой ссылке (действует 7 дней), вход через Telegram, кабинет — по <b>/вход</b>.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Люди подключаются за пару минут; приглашённый гость — тихий в командных чатах, пока не понадобится.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Раздел «Команда» → пригласить по ссылке.</div></div>
+    </div>
+  </div>
+  <div class="cap">
+    <h3>Пространства: общее и личное</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Общее пространство компании и личное приватное пространство у каждого — со своей мастер-инструкцией и базой знаний.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Личное не смешивается с общим; можно вести свои проекты, не засоряя память компании.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Переключение пространства в кабинете.</div></div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <h3>Контакты — кто есть кто</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Одна карточка на компанию или человека, автоматически заполняется из памяти и сделок, с дедупликацией. Ручные правки не затираются.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Единый справочник контактов собирается сам из переписки и сделок.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Раздел «Контакты» — заполняется автоматически, правится вручную.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 8. КОННЕКТОРЫ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 08</span>
+  <h2>Коннекторы — «руки» агентов</h2>
+  <p class="lead">Коннекторы дают агентам возможность действовать во внешних системах. Часть подключается на всю компанию, часть выдаётся конкретному агенту. Расход по коннекторам виден в тарифе.</p>
+
+  <table>
+    <thead><tr><th>Система</th><th>Что даёт агентам</th></tr></thead>
+    <tbody>
+      <tr><td class="sys">amoCRM</td><td>Продажи: подтягивает сделки, звонки, примечания; синхронизирует стадии воронки; пишет разбор и задачи в карточку (под гейтом).</td></tr>
+      <tr><td class="sys">HubSpot</td><td>Маркетинговая и продажная воронка: восстановление потока стадий, разбор воронки.</td></tr>
+      <tr><td class="sys">Apollo.io</td><td>Источник холодных и тёплых лидов; тёплый лид уходит хендоффом в Коммерсанта.</td></tr>
+      <tr><td class="sys">Pyrus</td><td>Оргсправочник сотрудников + фермерство базы («кому звонить сегодня»).</td></tr>
+      <tr><td class="sys">Saby / СБИС</td><td>Второй источник оргструктуры и сотрудников (мультиюрлицо).</td></tr>
+      <tr><td class="sys">Google&nbsp;Calendar, Яндекс.Календарь, CalDAV</td><td>Расписание для утреннего брифа; создание событий голосом.</td></tr>
+      <tr><td class="sys">tl;dv, Read.ai, Контур.Толк, Zoom</td><td>Рекордеры встреч: подтягиваем готовые облачные записи и расшифровки в досье, командный чат, память.</td></tr>
+      <tr><td class="sys">WHOOP, Oura</td><td>Носимые устройства: восстановление, сон, HRV, нагрузка для здоровья (fitness.coach у Первого).</td></tr>
+      <tr><td class="sys">DaData</td><td>Реестр ЕГРЮЛ: компания → ИНН, директор, ОКВЭД, статус, адрес, размер (выручка/ССЧ на платном тарифе).</td></tr>
+      <tr><td class="sys">hh.ru</td><td>Рекрутинг: отклики и кандидаты, отправка приглашений и отказов.</td></tr>
+      <tr><td class="sys">Telegram</td><td>Основной канал команды и клиентов; публикация в каналы; чтение публичных каналов для обогащения.</td></tr>
+      <tr><td class="sys">«Пачка»</td><td>Альтернатива Telegram для команд, которые сидят не в нём.</td></tr>
+      <tr><td class="sys">LinkedIn</td><td>Публикация и рост сети (через Гермеса).</td></tr>
+      <tr><td class="sys">Instagram</td><td>Посты, карусели, рилсы (публикация через контент-рельс).</td></tr>
+      <tr><td class="sys">HeyGen</td><td>Видео-ведущий: аватар / говорящее фото для вертикальных рилсов.</td></tr>
+      <tr><td class="sys">ElevenLabs</td><td>Озвучка рилсов (голос бренда) → аудио + субтитры.</td></tr>
+      <tr><td class="sys">Publora</td><td>Кросс-постинг и планирование публикаций по площадкам.</td></tr>
+      <tr><td class="sys">vc.ru</td><td>Авто-публикация статей из аккаунта.</td></tr>
+      <tr><td class="sys">SEObot</td><td>Внешний генератор SEO-статей → публикация в блог после проверки.</td></tr>
+      <tr><td class="sys">Google&nbsp;Search&nbsp;Console, Яндекс.Метрика</td><td>Аналитика сайта: визиты по источникам трафика в единый слой метрик.</td></tr>
+      <tr><td class="sys">Tavily, Яндекс.Поиск, DeepSeek</td><td>Веб-поиск и обогащение лидов (в т.ч. РФ-приоритетный поиск).</td></tr>
+      <tr><td class="sys">Notion</td><td>Структурированная картотека (для Аргуса).</td></tr>
+      <tr><td class="sys">Deepgram</td><td>Точное разделение говорящих в сложных многоголосых встречах.</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Все обращения к ИИ-моделям (Claude, Gemini, DeepSeek) идут через единый шлюз — сильные модели доступны без VPN.</p>
+</section>
+
+<!-- ===================== 9. ГЕНЕРАЦИЯ ДОКУМЕНТОВ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 09</span>
+  <h2>Генерация документов</h2>
+  <div class="cap">
+    <div class="role">Есть у каждого разговорного агента</div>
+    <h3>Готовый документ прямо в чат</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Агент соберёт .docx, .md, презентацию или брендовый PDF по вашему запросу и вернёт файлом — в фирменном оформлении компании.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">КП, протокол, отчёт, презентация — из данных, которые агент уже знает, без ручной вёрстки.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Попросите в чате: «собери КП по этой сделке в PDF», «сделай презентацию по …». Работает и в Telegram, и в кабинете.</div></div>
+    </div>
+  </div>
+  <p class="muted">Именно этим механизмом собрано и это руководство: HTML в фирменной палитре → печать через системный браузер в PDF.</p>
+</section>
+
+<!-- ===================== 10. УПРАВЛЕНИЕ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 10</span>
+  <h2>Управление: контракты, техспеки, заказ агента</h2>
+
+  <div class="cap">
+    <h3>Контракты агентов</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Приборная панель тумблеров и расписаний. Тумблер маршрутизирует уже построенную способность — не пишет код. Расписания — по московскому времени.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Поведение агента меняется мгновенно, руками, без разработчика.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Раздел «Контракты» — включить/выключить способность или задать расписание.</div></div>
+    </div>
+  </div>
+  <div class="cap">
+    <h3>Техспеки агентов</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Техническая карточка каждого агента: модель, коннекторы, способности.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Прозрачно видно, чем агент оснащён и на что способен.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Раздел «Техспеки».</div></div>
+    </div>
+  </div>
+  <div class="cap">
+    <h3>Заказать агента или расширить функционал</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Заявка на новую способность или роль (статусы: новая → принята → в работе → готово). Встроенная способность включается тумблером сразу; новая — строится один раз.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Продукт растёт под вашу задачу; повторно уже не строим — включаем.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Раздел «Заказать агента» — опишите, что нужно.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 11. ПРИВАТНОСТЬ И ТАРИФ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 11</span>
+  <h2>Приватность и тариф</h2>
+
+  <div class="cap">
+    <h3>Прокси приватности</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">По умолчанию оператор платформы видит только метаданные — не содержимое чатов и не базу знаний.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Данные компании остаются вашими; приватность — правило платформы, а не настройка, которую можно забыть.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Работает по умолчанию. Вопросы 152-ФЗ и локализации ПДн обсуждаются на демо.</div></div>
+    </div>
+  </div>
+  <div class="cap">
+    <h3>Тариф и токены</h3>
+    <div class="grid3">
+      <div class="kv what"><div class="k">Что это</div><div class="v">Токены — «топливо». Квота и расход видны на дашборде; тяжёлые операции стоят больше рутинных; при подходе к лимиту приходит предупреждение.</div></div>
+      <div class="kv benefit"><div class="k">Выгода</div><div class="v">Расход прозрачен и предсказуем — видно, на что уходит топливо.</div></div>
+      <div class="kv how"><div class="k">Как</div><div class="v">Раздел «Тариф» в кабинете. Есть лимит на человека.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 12. С ЧЕГО НАЧАТЬ ===================== -->
+<section class="sec">
+  <span class="sec-no">Раздел 12</span>
+  <h2>С чего начать</h2>
+  <p class="lead">Пять шагов первого дня — от пустого кабинета до первого результата.</p>
+  <ol class="steps">
+    <li><b>Мастер-инструкция.</b> Опишите в двух абзацах, как агенты должны себя вести и о чём помнить.</li>
+    <li><b>База знаний.</b> Загрузите ключевые документы компании (остальное память соберёт сама из чатов и встреч).</li>
+    <li><b>Коннектор.</b> Подключите хотя бы один: календарь, CRM, рекордер встреч или Telegram-канал.</li>
+    <li><b>Первый чат.</b> Напишите Первому агенту в Telegram или в кабинете — задайте вопрос по своему бизнесу.</li>
+    <li><b>Контракт.</b> Включите нужную способность тумблером или наймите специализированного агента под роль.</li>
+  </ol>
+
+  <div class="note green"><span class="nt">Приглашённому гостю — 2 минуты.</span> Достаточно войти по ссылке. В командных чатах агент молчит, пока его не позовут; кабинет открывается командой <b>/вход</b>.</div>
+
+  <div class="foot">
+    <span class="pill">Люди + ИИ вместе</span>
+    <span class="pill">Живая память</span>
+    <span class="pill">Telegram + веб</span>
+    <span class="pill">Всё под вашим «ОК»</span>
+    <br><br>
+    <b>Уклад ИИ · Слаживание.</b> Среда, в которой люди и ИИ-агенты делают больше работы вместе.<br>
+    Список возможностей растёт — нужной роли нет? Закажите её в кабинете. Редакция от 31.07.2026.
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{ --cream:#F4EFE6; --ink:#201C17; --ink-soft:#4A443B;
+    --green:#3D7A3E; --green-d:#2F5F30; --clay:#B85C3C; --clay-d:#A24E32;
+    --line:#E5DCCD; --paper:#FBF8F2; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @page{size:A4;margin:0} html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:'IBM Plex Sans',sans-serif;color:var(--ink);background:var(--cream);font-size:11px;line-height:1.55}
+  body::before{content:'';position:fixed;inset:0;background:var(--cream);z-index:-1}
+  .page{width:210mm;min-height:297mm;padding:18mm;page-break-after:always;position:relative;overflow:hidden}
+  .page:last-child{page-break-after:auto}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:37px;line-height:1.04;letter-spacing:-.5px}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:21px;letter-spacing:-.2px;margin-bottom:3px}
+  h3{font-weight:600;font-size:12px;color:var(--green-d);margin-bottom:2px}
+  .kicker{font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--clay)}
+  .lede{font-size:13px;color:var(--ink-soft);line-height:1.6}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:12px 15px}
+  .dark{background:var(--ink);color:#EDE6D8;border-radius:13px;padding:16px 20px}
+  .dark h3{color:#E7B79E}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .note{background:#F3ECDD;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .warn{background:#F7EAE3;border-left:3px solid var(--clay);border-radius:0 8px 8px 0;padding:11px 14px;color:var(--ink-soft)}
+  .flow{font-size:10.5px;color:var(--ink-soft);margin-top:4px}
+  .flow b{color:var(--ink);font-weight:600}
+  .arw{color:var(--clay);font-weight:600;padding:0 3px}
+  .tag{display:inline-block;font-size:8.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:20px;background:#E9EFE4;color:var(--green-d);vertical-align:middle}
+  .tag.amo{background:#F1E4DC;color:var(--clay-d)}
+  .num{font-family:'Fraunces',serif;font-weight:600;color:var(--clay);font-size:15px}
+  ul{list-style:none} li{position:relative;padding-left:15px;margin:3px 0}
+  li::before{content:'—';position:absolute;left:0;color:var(--clay)}
+  .foot{position:absolute;bottom:9mm;left:18mm;right:18mm;display:flex;justify-content:space-between;font-size:9px;color:#9C8F79;border-top:1px solid var(--line);padding-top:6px}
+  .stack>*+*{margin-top:10px}
+  .mini{font-size:10px;color:var(--ink-soft);line-height:1.5}
+</style></head><body>
+
+<!-- 1. ОБЛОЖКА -->
+<div class="page">
+  <div class="kicker">Гайд для команды продаж</div>
+  <div style="margin-top:26mm">
+    <h1>Что умеют ваши агенты<br>продаж, когда подключена<br>ваша amoCRM</h1>
+  </div>
+  <p class="lede" style="margin-top:14px;max-width:150mm">Два помощника работают внутри вашей CRM, не заставляя менеджеров учить новый экран. Один слушает звонки телеколлеров, другой разбирает работу прямых продаж и встреч. Ниже — каждый сценарий человеческим языком и честно про границы: что агент делает сам, а что оставляет за человеком.</p>
+
+  <div class="grid2" style="margin-top:20mm">
+    <div class="card">
+      <div class="kicker" style="font-size:10px">Коммерсант</div>
+      <h2 style="font-size:19px">Телеколлеры</h2>
+      <p class="mini">Холодный и тёплый обзвон. Разбирает каждый звонок, кладёт суть в карточку, ставит перезвон, подсказывает перед звонком.</p>
+    </div>
+    <div class="card">
+      <div class="kicker" style="font-size:10px">ИИ Комдир</div>
+      <h2 style="font-size:19px">Прямые продажи</h2>
+      <p class="mini">Менеджеры и встречи. Сам разбирает звонок и встречу, оценивает крепость сделки, ведёт панель руководителя.</p>
+    </div>
+  </div>
+
+  <div class="dark" style="margin-top:16px">
+    <p style="font-size:12.5px;line-height:1.6">Главное в одну строку: <b style="color:#fff">агент слушает разговор, кладёт короткий разбор прямо в карточку сделки amoCRM и ставит задачу-перезвон.</b> Менеджер видит всё там, где привык работать, — руками ничего переносить не нужно.</p>
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир</span><span>1</span></div>
+</div>
+
+<!-- 2. КАК УСТРОЕНО + ПОДКЛЮЧЕНИЕ -->
+<div class="page">
+  <div class="kicker">С чего всё начинается</div>
+  <h2 style="font-size:24px;margin-top:4px">Два агента — один контур внутри вашей CRM</h2>
+  <p class="mini" style="margin-top:6px;max-width:160mm">Это не два разных продукта, а один помощник с двумя лицами. Для телеколлеров он показывает своё «телеколлерское» лицо (Коммерсант), для прямых продаж — лицо коммерческого директора (ИИ Комдир). Что именно включится, зависит от того, как устроены ваши воронки в amoCRM.</p>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="card">
+      <h3>Коммерсант появляется, когда…</h3>
+      <p class="mini">…к CRM подключена телефония и записи звонков. Тогда агент слышит разговоры телеколлеров и начинает раскладывать их по карточкам.</p>
+    </div>
+    <div class="card">
+      <h3>ИИ Комдир появляется, когда…</h3>
+      <p class="mini">…в amoCRM настроена воронка прямых продаж. Тогда открывается раздел «Прямые продажи» и панель руководителя. Нет такой воронки — раздел просто не показывается.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px;font-size:13px">Что нужно, чтобы всё заработало</h3>
+  <div class="grid2" style="margin-top:8px">
+    <div class="card">
+      <div class="kicker" style="color:var(--green-d);font-size:10px">Делаете вы</div>
+      <ul class="mini">
+        <li>Даёте доступ к вашей amoCRM (подключение — пара минут).</li>
+        <li>Подключаете телефонию с записями звонков (Билайн, Calltouch и подобные).</li>
+        <li>Один раз показываете, где у вас воронка телеколлеров, а где — прямых продаж.</li>
+        <li>Наполняете «копилку продаж»: ваши кейсы, продукты, частые возражения (можно позже).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="kicker" style="color:var(--clay-d);font-size:10px">Делаем мы</div>
+      <ul class="mini">
+        <li>Настраиваем связь с CRM и телефонией, ставим разумные значения по умолчанию.</li>
+        <li>Учим агента слышать звонки и писать разбор в нужную карточку.</li>
+        <li>Открываем панель руководителя и подключаем отчёты.</li>
+        <li>Остаёмся на связи и докручиваем под ваш процесс.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:16px">
+    <b>Обратной дороги ломать не будем.</b> Всё, что менеджеры делали в amoCRM до агента, продолжает работать так же. Агент добавляет сверху — разборы, задачи, подсказки, — но не отбирает привычный путь и ничего не переставляет за вашей спиной.
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир</span><span>2</span></div>
+</div>
+
+<!-- 3. КОММЕРСАНТ — сценарии часть 1 -->
+<div class="page">
+  <div class="kicker">Коммерсант · телеколлеры</div>
+  <h2 style="font-size:24px;margin-top:4px">Что помощник делает вокруг звонка</h2>
+
+  <div class="stack" style="margin-top:12px">
+    <div class="card">
+      <span class="num">1</span> <b>Разбирает каждый звонок и кладёт суть в карточку</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow"><b>Телеколлер поговорил</b> <span class="arw">→</span> агент берёт запись из CRM, слушает, убирает лишнее (телефоны, почту, паспорт — по закону о персональных данных) <span class="arw">→</span> <b>пишет в карточку короткую суть:</b> кто и какая роль, что болит и что мешает, о чём договорились, следующий шаг.</p>
+      <p class="mini" style="margin-top:5px">Читается за три секунды. Если в разговоре сути нет — честно ничего не выдумывает и не пишет пустышку.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">2</span> <b>Ставит задачу-перезвон на нужного человека</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">После вашего «ок» агент ставит в amoCRM <b>задачу перезвонить</b> — и вешает её на ответственного за сделку, а не на кого попало.</p>
+      <p class="mini" style="margin-top:5px">Перед этим смотрит, нет ли уже открытой задачи по этому клиенту, — чтобы не задваивать перезвоны.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">3</span> <b>Обогащает компанию перед первым звонком — по кнопке</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">Телеколлер жмёт «узнать о компании» <span class="arw">→</span> агент ищет её в открытых источниках и в реестре: ИНН, руководитель, вид деятельности, повод зайти <span class="arw">→</span> кладёт короткую справку <b>в карточку сделки.</b></p>
+      <p class="mini" style="margin-top:5px">Это платный поиск, поэтому только по нажатию человека, а не на каждую сделку подряд. Справка честно помечена «сверьте ИНН» — вдруг нашлась похожая, но не та компания.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">4</span> <b>Даёт шпаргалку прямо перед звонком</b> <span class="tag">без CRM тоже частично</span>
+      <p class="flow">Смотрит, что уже известно о клиенте, подсказывает <b>фразу-заход</b> и список «что у такого клиента скорее всего болит» — из вашей копилки продаж.</p>
+      <p class="mini" style="margin-top:5px">Никуда не отправляется — это подсказка телеколлеру на экране, не сообщение клиенту.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир</span><span>3</span></div>
+</div>
+
+<!-- 4. КОММЕРСАНТ — сценарии часть 2 -->
+<div class="page">
+  <div class="kicker">Коммерсант · телеколлеры</div>
+  <h2 style="font-size:22px;margin-top:4px">Помощь руководителю и передача сделки</h2>
+
+  <div class="stack" style="margin-top:12px">
+    <div class="card">
+      <span class="num">5</span> <b>Оценивает, как отработали возражения</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">По каждому возражению клиента — <b>светофор:</b> 🟢 отработал · 🟡 частично · 🔴 слил, и совет «как было лучше» — из ваших же удачных кейсов.</p>
+      <p class="mini" style="margin-top:5px">Ложится отдельным блоком «Возражения» в ту же карточку сделки, рядом с сутью. Включается по вашему желанию.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">6</span> <b>Сигналит руководителю, если клиент горит</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">Услышал в свежем звонке риск потерять клиента <span class="arw">→</span> шлёт руководителю в личный чат сигнал <b>со ссылкой прямо на карточку сделки.</b></p>
+      <p class="mini" style="margin-top:5px">Один клиент — один сигнал в день, чтобы не заваливать. Кому слать — вы указываете сами; не указали — молчит.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">7</span> <b>Передаёт тёплую сделку в прямые продажи</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">Менеджер переводит сделку на нужный этап <span class="arw">→</span> агент <b>заводит её в воронке прямых продаж</b> с ответственным и комментарием (суть, боль, следующий шаг), чтобы её подхватили без потери контекста.</p>
+      <p class="mini" style="margin-top:5px">Запускается самим переводом этапа — человек решает, что сделка созрела. Клиенту при этом ничего не отправляется.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">8</span> <b>Раскачивает телеколлеров по слабому месту</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">Видит, что у конкретного телеколлера одно и то же возражение проваливается снова и снова <span class="arw">→</span> подсказывает руководителю, что стоит с ним отработать.</p>
+      <p class="mini" style="margin-top:5px">Формулировку возражения обезличивает. Дословную цитату клиента показывает только после того, как запись звонков у вас официально легализована.</p>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:14px">
+    Телеколлер живёт внутри amoCRM: все выходы агента он видит примечанием и задачей в карточке — отдельный экран учить не нужно.
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир</span><span>4</span></div>
+</div>
+
+<!-- 5. КОМДИР — разбор -->
+<div class="page">
+  <div class="kicker">ИИ Комдир · прямые продажи</div>
+  <h2 style="font-size:23px;margin-top:4px">Сам разбирает работу менеджеров</h2>
+  <p class="mini" style="margin-top:5px;max-width:160mm">Здесь помощник берёт на себя роль коммерческого директора: заглядывает в каждую сделку, оценивает, насколько она крепкая, и подсказывает следующий шаг. Всё ложится в карточку без единой кнопки.</p>
+
+  <div class="stack" style="margin-top:12px">
+    <div class="card">
+      <span class="num">1</span> <b>Кладёт разбор «ИИ-Комдир» прямо в карточку</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">Как только по сделке что-то произошло — <b>прошёл звонок, состоялась встреча или менеджер сдвинул этап</b> — агент сам пишет в карточку понятный блок: суть разговора, следующий шаг с датой, пометка «🔥 клиент горит» и оценка крепости сделки.</p>
+      <p class="mini" style="margin-top:5px">Никаких кнопок — появилось событие, появился разбор. Каждый этап разбирается один раз, повторов не плодит.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">2</span> <b>Оценивает крепость сделки по пяти признакам</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">Смотрит на сделку по пяти вещам, от которых зависит успех: <b>есть ли реальная боль · вышли ли на того, кто решает · видит ли клиент картину · понимает ли ценность · держим ли мы ход сделки.</b> Каждый признак — цветом, плюс «что сделали хорошо, что слабо» и «как выиграть».</p>
+      <p class="mini" style="margin-top:5px">Аргументы и кейсы берёт только из вашей копилки продаж — не сочиняет продукты и истории, которых у вас нет.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">3</span> <b>Оценивает встречу по вашему чек-листу</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="flow">Разбирает видеовстречу по вашему чек-листу идеальной встречи <span class="arw">→</span> ставит балл по каждому пункту и общий процент <span class="arw">→</span> <b>полная оценка уходит руководителю, короткий итог — в карточку сделки.</b></p>
+      <p class="mini" style="margin-top:5px">Пункты и их вес — только те, что вы сами задали; ничего от себя не добавляет.</p>
+    </div>
+
+    <div class="card">
+      <span class="num">4</span> <b>Подсказывает следующий шаг и шансы</b> <span class="tag amo">нужна amoCRM</span>
+      <p class="mini" style="margin-top:2px">По запросу называет одно лучшее следующее действие с обоснованием и оценивает вероятность успеха — высокая, средняя или низкая, и почему. Только подсказка: клиенту ничего не пишет и сам сделку не двигает.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир</span><span>5</span></div>
+</div>
+
+<!-- 6. КОМДИР — панель руководителя -->
+<div class="page">
+  <div class="kicker">ИИ Комдир · панель руководителя</div>
+  <h2 style="font-size:22px;margin-top:4px">Что руководитель видит одним взглядом</h2>
+  <p class="mini" style="margin-top:5px;max-width:160mm">Это витрины: агент их только показывает и считает по фактам из CRM — наружу ничего не пишет. Пусто за период — так и напишет «пусто», а не нарисует красивый ноль.</p>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="card"><h3>Что стоит</h3><p class="mini">Открытые сделки под риском, где что-то буксует: тишина, мяч у нас, не заполнен тот, кто решает. Сверху — самые дорогие и рисковые, у каждой ссылка в карточку amoCRM.</p></div>
+    <div class="card"><h3>Воронка барами</h3><p class="mini">Каждый этап — полоска: сколько сделок дошло и какая конверсия к прошлому этапу. Где проваливается — видно с одного взгляда.</p></div>
+    <div class="card"><h3>База даты</h3><p class="mini">Переключатель, по какой дате считать — создания, закрытия или последнего касания. Нужен, чтобы цифры на разных вкладках сходились между собой.</p></div>
+    <div class="card"><h3>Настройка этапов</h3><p class="mini">На каждый этап задаёте две вещи: сколько дней сделка может стоять, прежде чем считается «застряла», и какой силы сделка ожидается. Мы проставим разумные значения сами.</p></div>
+    <div class="card"><h3>Слабые сделки на сильных этапах</h3><p class="mini">Показывает сделки, которые дошли далеко по воронке, но по сути слабые. Это те, что выглядят надёжно, а на деле могут сорваться.</p></div>
+    <div class="card"><h3>Польза и стоимость</h3><p class="mini">Во сколько обходится контур за месяц. Влияние на прибыль и окупаемость честно помечены «не рассчитано», пока не наберётся хотя бы 30 сделок для сравнения.</p></div>
+  </div>
+
+  <div class="dark" style="margin-top:14px">
+    <h3 style="margin-bottom:5px">Отчёты руководителю сами приходят в чат</h3>
+    <p class="mini" style="color:#D8CFBF">
+      <b style="color:#fff">При подключении</b> — разовый сигнал «агент на связи». &nbsp;·&nbsp;
+      <b style="color:#fff">Каждое утро</b> — короткий пульс за вчера: сколько звонков разобрал, кто загорелся, кто буксует, топ-3 присмотреться. &nbsp;·&nbsp;
+      <b style="color:#fff">По понедельникам</b> — недельный срез: воронка, конверсия этап-в-этап, где застряли. Всё по фактам CRM, без выдумок.
+    </p>
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир</span><span>6</span></div>
+</div>
+
+<!-- 7. НАСТРОЙКА ПОД СЕБЯ -->
+<div class="page">
+  <div class="kicker">Под ваш процесс</div>
+  <h2 style="font-size:23px;margin-top:4px">Что вы настраиваете сами</h2>
+  <p class="mini" style="margin-top:5px;max-width:160mm">Агент не приходит с чужим уставом. Ключевые вещи вы правите прямо в кабинете, без нашего участия, — а разумные значения по умолчанию уже стоят, с пустым полем никто не остаётся.</p>
+
+  <div class="stack" style="margin-top:12px">
+    <div class="card">
+      <h3>Копилка продаж</h3>
+      <p class="mini">Ваши кейсы, продукты, частые возражения и как их снимать, открывашки, чек-лист идеальной встречи. Из неё агент берёт аргументы — и только из неё, чтобы ничего не выдумывал. Правите сами, наружу и в общую память компании не утекает.</p>
+    </div>
+    <div class="card">
+      <h3>Задание агенту и манера</h3>
+      <p class="mini">Можно поправить само задание агента и его манеру — под ваш стиль. Важно: манера накладывается поверх честности, а не вместо неё. Просить «приукрашивать» бесполезно — правду агент не подменяет.</p>
+    </div>
+    <div class="card">
+      <h3>Пороги «застряла» и сила сделки</h3>
+      <p class="mini">Под свой цикл сделки задаёте, когда считать сделку зависшей и какой силы ждать на каждом этапе. Пока не тронете — работают наши разумные значения.</p>
+    </div>
+  </div>
+
+  <div class="warn" style="margin-top:16px">
+    <b>Одно исключение.</b> Глубокий характер агента настраиваем мы, не вы, — это защита от случайной поломки поведения. Вам доступна кнопка «сгенерить характер», если хочется освежить тон.
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир</span><span>7</span></div>
+</div>
+
+<!-- 8. ЧЕСТНЫЕ ГРАНИЦЫ -->
+<div class="page">
+  <div class="kicker">Честно про границы</div>
+  <h2 style="font-size:23px;margin-top:4px">Где проходит черта</h2>
+  <p class="mini" style="margin-top:5px;max-width:160mm">Чтобы не было завышенных ожиданий — прямо говорим, что агент делает, а что оставляет человеку.</p>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="card">
+      <h3 style="color:var(--clay-d)">Чего агент не делает</h3>
+      <ul class="mini">
+        <li>Не пишет и не звонит клиенту сам — всё наружу решает человек.</li>
+        <li>Не двигает сделки по воронке за менеджера.</li>
+        <li>Не выдумывает суть, кейсы, ИНН и цифры: нет данных — честно молчит.</li>
+        <li>Справку из сети помечает «сверьте ИНН» — вдруг нашлась не та компания.</li>
+        <li>Прибыль и маржу не показывает, пока источник этих денег не согласован с вами.</li>
+        <li>Дословную цитату из звонка покажет только после легальной записи разговоров.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--clay-d)">Что не заработает без amoCRM</h3>
+      <ul class="mini">
+        <li>Разбор звонков в карточку — некуда писать без CRM.</li>
+        <li>Задачи-перезвоны и передача сделки между воронками.</li>
+        <li>Раздел «Прямые продажи» и панель руководителя — им нужна воронка в amoCRM.</li>
+        <li>Суммы под риском («что стоит») — берутся из бюджета сделки в CRM.</li>
+        <li>Утренние и недельные отчёты — считаются из звонков и сделок CRM.</li>
+        <li>Справка из сети без CRM остаётся только в кабинете, в карточку не ляжет.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:14px">
+    <b>Приватность по умолчанию.</b> Из разговоров агент вырезает персональные данные — телефоны, почту, паспорт, карты — прежде чем что-то разбирать. Наружу, к клиенту, он не отправляет ничего сам. Личные встречи в командные досье не раскрываются.
+  </div>
+
+  <div class="dark" style="margin-top:14px">
+    <p style="font-size:12px;line-height:1.6">Смысл обоих агентов один: <b style="color:#fff">снять с менеджера рутину вокруг разговора</b> — расшифровать, разложить по полочкам, поставить перезвон, подсказать слабое место — и <b style="color:#fff">дать руководителю честную картину воронки</b>. Решения и общение с клиентом остаются за людьми.</p>
+  </div>
+
+  <div class="foot"><span>Продажи · Коммерсант и ИИ Комдир · Слаживание</span><span>8</span></div>
+</div>
+
+</body></html>

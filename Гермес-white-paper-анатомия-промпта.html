@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Гермес · Анатомия промпта поста — white paper</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --light:#F4EFE6; --paper-2:#EDE6D8; --white:#ffffff;
+    --dark:#201C17; --darker:#191510; --line:#E5DCCD; --line-2:#D8CDBA;
+    --t1:#201C17; --t2:#6B6258; --t3:#8E877E;
+    --t1d:#F4EFE6; --t2d:#C9BEAE; --t3d:#9E9384;
+    --green:#3D7A3E; --green-d:#2F5F30; --green-soft:#E2EEDB;
+    --clay:#B85C3C; --clay-d:#A24E32; --clay-soft:#F2E3DB;
+  }
+  @page{size:A4;margin:0}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'IBM Plex Sans',-apple-system,sans-serif;
+    color:var(--t1); background:var(--light); font-size:11px; line-height:1.5;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  body::before{content:"";position:fixed;inset:0;background:var(--light);z-index:-1}
+  .page{width:210mm;min-height:297mm;padding:15mm 16mm 12mm;page-break-after:always;position:relative;display:flex;flex-direction:column}
+  .page:last-child{page-break-after:auto}
+  h1,h2,h3,h4,.logo{font-family:'Fraunces','IBM Plex Sans',serif}
+  b,strong{font-weight:600;color:var(--t1)}
+  code,.mono{font-family:'IBM Plex Mono',monospace}
+
+  /* running header */
+  .rh{display:flex;align-items:center;justify-content:space-between;padding-bottom:9px;border-bottom:1px solid var(--line);margin-bottom:16px}
+  .logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--t1)}
+  .logo .green{color:var(--green)}
+  .logo .mark{width:24px;height:24px}
+  .rh .tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
+
+  /* cover hero */
+  .kicker{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--clay-d);margin-bottom:14px}
+  h1{font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1.06;margin-bottom:12px;max-width:170mm}
+  h1 .accent{color:var(--green-d)}
+  .lede{font-size:13px;line-height:1.55;color:var(--t2);max-width:165mm;margin-bottom:8px}
+  .lede b{color:var(--t1)}
+  .meta-row{display:flex;gap:22px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:10px;color:var(--t3)}
+  .meta-row b{display:block;font-size:11px;color:var(--t1);font-weight:600;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+
+  /* section */
+  h2{font-size:16px;font-weight:600;letter-spacing:-.01em;margin:22px 0 4px;display:flex;align-items:baseline;gap:10px}
+  h2 .no{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--clay-d);font-weight:600}
+  h2:first-of-type{margin-top:6px}
+  .sec-sub{font-size:11px;color:var(--t2);margin-bottom:12px;max-width:168mm}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:10px}
+  th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);font-weight:600;padding:0 10px 6px;border-bottom:1.5px solid var(--line-2);vertical-align:bottom}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.42;color:var(--t2)}
+  td:first-child{color:var(--t1);font-weight:600;white-space:nowrap}
+  td b{color:var(--t1)}
+  tr:last-child td{border-bottom:none}
+  .src{font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:var(--green-d)}
+
+  /* code / prompt skeleton */
+  .code{background:var(--dark);color:var(--t2d);border-radius:12px;padding:15px 17px;font-family:'IBM Plex Mono',monospace;font-size:9.5px;line-height:1.62;margin:10px 0;white-space:pre-wrap;overflow-wrap:break-word}
+  .code .lbl{color:var(--green-lite,#9CC791);font-weight:600}
+  .code .ph{color:#E8B79C}
+  .code .cm{color:var(--t3d)}
+  .code .only{color:var(--clay);font-style:normal}
+
+  /* callout */
+  .rules{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}
+  .rule{background:var(--white);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:11px 13px}
+  .rule .n{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--clay-d);font-weight:600;margin-bottom:4px}
+  .rule h4{font-size:12px;font-weight:600;margin-bottom:3px}
+  .rule p{font-size:10px;color:var(--t2);line-height:1.42}
+
+  .note{background:var(--green-soft);border-radius:10px;padding:12px 15px;font-size:10.5px;line-height:1.5;color:var(--ink-dark,#2A241C);margin:12px 0}
+  .note b{color:var(--green-d)}
+  .warn{background:var(--clay-soft);border-radius:10px;padding:12px 15px;font-size:10.5px;line-height:1.5;margin:12px 0}
+  .warn b{color:var(--clay-d)}
+
+  ul.tight{margin:6px 0 6px 2px;list-style:none}
+  ul.tight li{position:relative;padding-left:16px;margin-bottom:5px;font-size:10.5px;color:var(--t2);line-height:1.45}
+  ul.tight li::before{content:"";position:absolute;left:2px;top:7px;width:5px;height:5px;border-radius:1px;background:var(--clay)}
+  ul.tight li b{color:var(--t1)}
+
+  .foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:8.5px;color:var(--t3);letter-spacing:.04em}
+
+  .lane{display:flex;gap:9px;margin:10px 0 2px;flex-wrap:wrap}
+  .chip{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:7px 11px;font-size:9.5px;color:var(--t2);display:flex;align-items:center;gap:7px}
+  .chip .k{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--clay-d);font-size:9px}
+  .arrow{color:var(--t3);align-self:center;font-size:12px}
+
+  .formulas{columns:2;column-gap:20px;font-size:9.6px;line-height:1.44;margin:8px 0}
+  .formulas div{break-inside:avoid;margin-bottom:5px;color:var(--t2)}
+  .formulas .fc{font-family:'IBM Plex Mono',monospace;color:var(--green-d);font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 — COVER + INPUT FIELDS ============ -->
+<div class="page">
+  <div class="rh">
+    <div class="logo">
+      <span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>
+      слаживание<span class="green">.</span>
+    </div>
+    <div class="tag">White paper · внутренняя механика</div>
+  </div>
+
+  <div class="kicker">Гермес · СММ-агент</div>
+  <h1>Как поля настройки голоса <span class="accent">собираются в один пост</span></h1>
+  <p class="lede">Технический разбор для копирайтера: Гермес не пишет «из головы» — он <b>склеивает пост из полей, которые вы заполняете в кабинете</b>, плюс внутренних рамок честности и (для LinkedIn) слоя hook-стратегии. Всё это уходит в модель <b>одним промптом</b> в строго фиксированном порядке. Понимая порядок и приоритеты, вы управляете результатом полями, а не подсказками в чате.</p>
+
+  <div class="meta-row">
+    <div>Агент<b>Гермес</b></div>
+    <div>Точка сборки<b>draftForChannel()</b></div>
+    <div>Модель поста<b>Claude Sonnet 4.6</b></div>
+    <div>Выход<b>1 пост под 1 площадку</b></div>
+  </div>
+
+  <h2><span class="no">01</span> Поля, которыми вы управляете постом</h2>
+  <p class="sec-sub">Это весь «вход». Каждое поле попадает в промпт в свой блок (правая колонка). <b>Голос — один на весь поток</b> (общий для всех соцсетей); <b>тон, длина, язык и примеры — свои на каждой площадке</b>.</p>
+  <table>
+    <thead><tr><th style="width:24%">Поле в кабинете</th><th style="width:12%">Область</th><th style="width:34%">Что вы туда пишете</th><th style="width:30%">Куда попадает в промпте</th></tr></thead>
+    <tbody>
+      <tr><td>Голос автора</td><td>весь поток<br><span class="src">streams.voice_profile</span></td><td>Как вы пишете: тон и характер, фирменные приёмы (хук/абзацы/концовка), частые темы, чего избегаете, характерные слова. <b>Стоп-лист «так не пишем»</b> — сюда же, отдельного поля нет.</td><td>Блок <code>ГОЛОС:</code> — <b>приоритет над формулой</b> (формула лишь каркас). Можно собрать черновик голоса из прошлых постов кнопкой.</td></tr>
+      <tr><td>Тон и правила<br>под площадку</td><td>на соцсеть<br><span class="src">channel_overlays.rules</span></td><td>Свободный текст: «коротко, одна мысль», «без длинных абзацев, ссылка в конце», «разговорно».</td><td>Блок <code>ПРАВИЛА ПЛОЩАДКИ</code>.</td></tr>
+      <tr><td>Язык · Длина ·<br>Формат подачи</td><td>на соцсеть<br><span class="src">channel_overlays</span></td><td>Напр. LinkedIn — English, Telegram — русский; длина; формат подачи.</td><td><code>ПРАВИЛА ПЛОЩАДКИ</code> + <b>жёсткая строка языка последней</b> — она доминирует над всем.</td></tr>
+      <tr><td>Примеры<br>«хорошо / плохо»</td><td>на соцсеть<br><span class="src">content_examples</span></td><td>До 4 удачных постов (образец духа) и до 3 анти-примеров (так не писать).</td><td>Блоки <code>ПРИМЕРЫ УДАЧНЫХ</code> и <code>АНТИ-ПРИМЕРЫ</code> (few-shot).</td></tr>
+      <tr><td>Избегать</td><td>поток<br><span class="src">prefs.avoid</span></td><td>Стоп-темы, о чём не писать.</td><td>Строка <code>Избегай: …</code> в самом зачине.</td></tr>
+      <tr><td>Идея</td><td>на пост</td><td>Тема + факты (даты, ссылки, числа). Своя — или подсказка с доски идей (6–8 «моментов» из вашей памяти, встреч, ленты дня).</td><td>Блок <code>ИДЕЯ:</code> — её факты переносятся <b>дословно</b>.</td></tr>
+      <tr><td>Выводы из<br>прошлых постов</td><td>авто</td><td>Копится само: что заходило, что провалилось.</td><td>Блок <code>ВЫВОДЫ…</code> — анти-повтор (последние 1500 симв.).</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><b>Ключевая идея.</b> Голос автора — общий на все площадки, поэтому один и тот же характер речи узнаётся везде. А тон, длина, язык и примеры задаются <b>отдельно под каждую соцсеть</b> — так один голос звучит уместно и в LinkedIn, и в Telegram, и в вертикальном видео.</div>
+
+  <div class="foot"><span>слаживание · уклад ИИ</span><span>Анатомия промпта Гермеса — 1 / 3</span></div>
+</div>
+
+<!-- ============ PAGE 2 — PROMPT ASSEMBLY ORDER ============ -->
+<div class="page">
+  <div class="rh">
+    <div class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm2)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm2" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></div>
+    <div class="tag">02 · Сборка промпта</div>
+  </div>
+
+  <h2><span class="no">02</span> Порядок сборки: скелет промпта</h2>
+  <p class="sec-sub">Ровно в этом порядке блоки конкатенируются в один текст и уходят в модель. Пустые поля просто выпадают — блока не будет. <span class="src">жёлтым — ваши поля · оранжевым — только LinkedIn</span>.</p>
+
+  <div class="code"><span class="cm"># системный промпт, собирается сверху вниз</span>
+Ты пишешь пост для <span class="ph">{площадка}</span> строго в авторском голосе ниже, по идее
+пользователя. Один цельный готовый пост: сильный заход в первой строке,
+живой язык, без хэштег-мусора и канцелярита. <span class="ph">Избегай: {стоп-темы}.</span>
+
+<span class="lbl">{СТРАТЕГИЯ}</span>          <span class="cm">← LinkedIn: «Курс поста» + «Факты дословно»; иначе только «Факты дословно»</span>
+<span class="only">{БИБЛИОТЕКА HOOK-ФОРМУЛ + инструкция выбора}   ← только LinkedIn</span>
+
+ИДЕЯ: <span class="ph">{идея и факты}</span>
+<span class="lbl">ВЫВОДЫ ИЗ ПРОШЛЫХ ПОСТОВ:</span> <span class="cm">не повторяй провальное</span>
+
+ГОЛОС:
+<span class="ph">{ваш «Голос автора»}</span>
+<span class="lbl">ПРИМЕРЫ УДАЧНЫХ ПОСТОВ / АНТИ-ПРИМЕРЫ:</span> <span class="ph">{ваши примеры}</span>
+<span class="lbl">ПРАВИЛА ПЛОЩАДКИ (<span class="ph">канал</span>):</span> <span class="ph">{язык; длина; лимит; формат; тон-правила}</span>
+<span class="lbl">ВАЖНО: сам пост выведи целиком на языке — <span class="ph">{язык}</span>.</span> <span class="cm">← последней строкой, доминирует</span></div>
+
+  <p class="sec-sub" style="margin-top:6px">«Правила площадки» собираются из реестра форматов и ваших переопределений. Дефолты, если вы ничего не меняли:</p>
+  <table>
+    <thead><tr><th style="width:16%">Площадка</th><th style="width:12%">Лимит</th><th style="width:14%">Медиа</th><th style="width:58%">Подсказка длины / формата по умолчанию</th></tr></thead>
+    <tbody>
+      <tr><td>LinkedIn</td><td>2000</td><td>текст</td><td>средний пост, 4–8 коротких абзацев; сильный хук в первой строке</td></tr>
+      <tr><td>Telegram</td><td>2000</td><td>текст</td><td>коротко, одна мысль; без длинных абзацев, ссылка в конце; разговорно</td></tr>
+      <tr><td>Reels (IG)</td><td>500</td><td>видео</td><td>сценарий до 40 сек; крючок в первые 3 секунды, короткие фразы под озвучку</td></tr>
+      <tr><td>YouTube Shorts</td><td>800</td><td>видео</td><td>сценарий 45–60 сек (~130–170 слов): крючок → суть → пример → вывод</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="no">03</span> Приоритеты: что кого перебивает</h2>
+  <p class="sec-sub">Когда поля конфликтуют, порядок разрешения зашит в промпт — это важнее любой красоты:</p>
+  <div class="rules">
+    <div class="rule"><div class="n">Приоритет 1</div><h4>Честность › всё</h4><p>Факты из идеи (даты, ссылки, числа, имена) переносятся дословно. Нет факта — не выдумывать: лучше без факта, чем придуманный.</p></div>
+    <div class="rule"><div class="n">Приоритет 2</div><h4>Голос › формула</h4><p>Ваш «Голос автора» и prefs выше hook-формулы. Формула задаёт каркас, но не заменяет вашу манеру речи.</p></div>
+    <div class="rule"><div class="n">Приоритет 3</div><h4>Язык поста › механика</h4><p>Жёсткая строка языка стоит последней и доминирует: стратегия и формулы могут быть на другом языке — это кухня, не образец языка поста.</p></div>
+  </div>
+
+  <div class="note"><b>Что это значит для вас как копирайтера.</b> Хотите изменить результат — правьте <b>поля</b>, а не спорьте с моделью в переписке. Сильнее всего на текст влияют «Голос автора» (везде) и «Тон и правила под площадку» + «Примеры» (точечно под соцсеть). Факты всегда берутся из «Идеи» как есть.</div>
+
+  <div class="foot"><span>слаживание · уклад ИИ</span><span>Анатомия промпта Гермеса — 2 / 3</span></div>
+</div>
+
+<!-- ============ PAGE 3 — LINKEDIN LAYER + POST-PROCESS ============ -->
+<div class="page">
+  <div class="rh">
+    <div class="logo"><span class="mark"><svg viewBox="0 0 48 48" fill="none"><path d="M13 22 C13 37 35 37 35 22" stroke="url(#lm3)" stroke-width="3.6" stroke-linecap="round"/><circle cx="14" cy="18.5" r="7" fill="#B85C3C"/><circle cx="34" cy="18.5" r="7" fill="#3D7A3E"/><defs><linearGradient id="lm3" x1="13" y1="0" x2="35" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#B85C3C"/><stop offset="1" stop-color="#3D7A3E"/></linearGradient></defs></svg></span>слаживание<span class="green">.</span></div>
+    <div class="tag">04 · LinkedIn-слой</div>
+  </div>
+
+  <h2><span class="no">04</span> LinkedIn-слой: как он меняет пост</h2>
+  <p class="sec-sub">Только когда площадка — <b>LinkedIn</b>, в промпт добавляются два блока, которых нет у других каналов. Именно они делают LinkedIn-пост плотнее и «острее» на том же голосе.</p>
+
+  <ul class="tight">
+    <li><b>Курс поста.</b> Задаёт цель: пост существует, чтобы привести нужного читателя (ЛПР) <b>к разговору</b> — в личку, на диагностику. Вовлечение (лайки/комменты/репосты) — средство, никогда не цель. <b>Запрещено, даже если поднимает охват:</b> приманки на комменты, листиклы и «фреймворки» ради сохранений, провокации ради охвата, CTA «подпишись/лайкни».</li>
+    <li><b>Библиотека hook-формул.</b> 14 каркасов первой строки и структуры (2026, по мотивам открытой LinkedIn-практики). Модель <b>про себя</b> выбирает ОДНУ формулу под цель и тему — и собирает пост по её скелету, но <b>вашим голосом</b>.</li>
+  </ul>
+
+  <p class="sec-sub" style="margin:8px 0 2px"><b>Как модель выбирает формулу</b> — по цели поста (сама цель — средство приблизить читателя к разговору):</p>
+  <div class="lane">
+    <div class="chip"><span class="k">comments</span> Confession · Contrarian · Permission · Curiosity-Gap</div>
+    <div class="chip"><span class="k">reposts</span> Named Gratitude · R.I.P.</div>
+    <div class="chip"><span class="k">likes</span> Emotional Cold-Open · Bait-and-Switch · Status-Strip</div>
+    <div class="chip"><span class="k">saves</span> Explain-to-Kids · Money Ledger</div>
+  </div>
+
+  <div class="formulas">
+    <div><span class="fc">F1</span> Platform-Risk — анафора «X может отнять…», нагнетание потери</div>
+    <div><span class="fc">F2</span> R.I.P. — «умерла категория, причина смерти…»</div>
+    <div><span class="fc">F3</span> Year-over-Year — «в {год} я…, в {год} я…»</div>
+    <div><span class="fc">F4</span> Time-Anchor Confession — исповедь + цифры + вопрос-зеркало</div>
+    <div><span class="fc">F5</span> Self-Proving Meta — тезис, проверяемый действием читателя</div>
+    <div><span class="fc">F7</span> Money Ledger — некруглая сумма, построчный реестр</div>
+    <div><span class="fc">F9</span> Curiosity-Gap — «система сделала то, чего не программировали»</div>
+    <div><span class="fc">F10</span> Contrarian + Receipts — «священная корова умирает» + пруфы</div>
+    <div><span class="fc">F11</span> Emotional Cold-Open — вход в пик истории без разгона</div>
+    <div><span class="fc">F12</span> Permission Slip — «не знаю, кому это нужно, но…»</div>
+    <div><span class="fc">F13</span> Bait-and-Switch — фейк-плохая новость → разворот в апгрейд</div>
+    <div><span class="fc">F14</span> Named Gratitude — «{Имя}, спасибо за {конкретику}»</div>
+    <div><span class="fc">F15</span> Explain-to-Kids — жаргон, объяснённый детям</div>
+    <div><span class="fc">F16</span> Status-Strip Humility — «снаружи титул, дома это не выживает»</div>
+  </div>
+
+  <div class="rules" style="grid-template-columns:1fr 1fr">
+    <div class="rule"><div class="n">Micro-rules (усилители хука)</div><h4>Что реально двигает раскрытие</h4><p>«How I» сильнее «How to» (×2–3) · конкретное число в первой фразе (+35% раскрытий) · реальный провал в первых 3 строках (×8.5).</p></div>
+    <div class="rule" style="border-left-color:var(--clay)"><div class="n">Скрытая кухня</div><h4>Читатель её не видит</h4><p>Разбор цели и формулы модель держит «про себя»; в конце пишет служебную строку <code>META: goal=…; formula=F#</code>, которую система <b>срезает</b> перед показом. F6 и F8 выключены намеренно — приманка на комменты и «фреймворк ради сохранений» противоречат курсу поста.</p></div>
+  </div>
+
+  <div class="warn"><b>Итог влияния для копирайтера.</b> На <b>LinkedIn</b> ваш голос собирается по каркасу сильного хука и держит курс на разговор — пост звучит плотнее и осознаннее. На <b>других площадках этих двух блоков нет</b>: там пост ближе к вашим фактам и голосу, короче и спокойнее. Поэтому один «Голос автора» на LinkedIn выходит острее, а в Telegram — мягче. Голос вы задаёте один раз; LinkedIn-слой лишь по-другому его упаковывает.</div>
+
+  <h2><span class="no">05</span> После модели: причёсывание и ваше «ок»</h2>
+  <div class="lane">
+    <div class="chip"><span class="k">1</span> Срез служебной META-строки</div><span class="arrow">→</span>
+    <div class="chip"><span class="k">2</span> Убрать «следы машины»: <b>·</b> <b>#</b> длинные тире, стрелки, буллеты</div><span class="arrow">→</span>
+    <div class="chip"><span class="k">3</span> Жёсткий лимит площадки</div><span class="arrow">→</span>
+    <div class="chip"><span class="k">4</span> Превью человеку</div><span class="arrow">→</span>
+    <div class="chip"><span class="k">5</span> Публикация</div>
+  </div>
+  <ul class="tight" style="margin-top:8px">
+    <li><b>Проверка перед вами.</b> Черновик сканируется на чужие имена, личные данные и секреты; лишнее можно убрать одной кнопкой. <b>Пост не уходит сам — публикуете вы</b>, по своей команде.</li>
+    <li><b>Модели.</b> Сам пост и идеи пишет <code>Claude Sonnet 4.6</code>; недельный стратегический разбор ленты — <code>Claude Opus 4.8</code>. Публичный текст под именем человека собирается только по фактам и голосу, без домыслов.</li>
+  </ul>
+
+  <div class="foot"><span>слаживание · уклад ИИ — люди и агенты делают работу вместе</span><span>Анатомия промпта Гермеса — 3 / 3</span></div>
+</div>
+
+</body>
+</html>
