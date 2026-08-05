@@ -26,6 +26,13 @@ THRESHOLD = 20  # изменённых строк кода → нетривиа�
 CODE_EXT = (".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".py",
             ".html", ".css", ".scss", ".sql", ".sh")
 SKIP_NAMES = ("STATE.md",)  # рабочее состояние — не код
+# Документы, а не рантайм: гайды/эксплейнеры/ТЗ из скилла make-guide и референсы
+# лежат в docs/ с расширением .html — по CLAUDE.md «правки только в доках проходят
+# без ревью», но по расширению они попадали в CODE_EXT. Один клиентский ТЗ-референс
+# на 76 КБ давал ~1030 «строк кода» и валил коммит журнала роадмапа на каждом
+# «Халас» (грабля всплыла 03.08 и 06.08.2026). Считаем их доками ПО МЕСТУ.
+# Хеш они по-прежнему меняют — маркер остаётся привязан ко всему набору.
+DOC_DIRS = ("docs/",)
 
 
 def git(repo, *args):
@@ -35,6 +42,8 @@ def git(repo, *args):
 
 def is_code(path):
     if os.path.basename(path) in SKIP_NAMES:
+        return False
+    if path.startswith(DOC_DIRS) and path.endswith((".html", ".md")):
         return False
     return path.endswith(CODE_EXT)
 
