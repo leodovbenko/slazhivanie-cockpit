@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Первый агент — точка входа, память команды, приносит сам · Слаживание</title>
-  <meta name="description" content="Первый агент платформы Слаживание: отвечает по памяти компании — голос, текст, фото, документы в Telegram и кабинете — и работает фоном: утренний бриф, сводка дня, задачи, календарь, связь с агентами флота.">
+  <meta name="description" content="Первый агент платформы Слаживание: отвечает по памяти компании — голос, текст, фото, документы в Telegram и кабинете, текст в VK Teams — и работает фоном: утренний бриф, сводка дня, задачи, календарь, связь с агентами флота.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="canonical" href="https://slazhivanie.ru/agent-first.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Слаживание">
   <meta property="og:title" content="Первый агент — точка входа, память команды, приносит сам · Слаживание">
-  <meta property="og:description" content="Первый агент платформы Слаживание: отвечает по памяти компании — голос, текст, фото, документы в Telegram и кабинете — и работает фоном: утренний бриф, сводка дня, задачи, календарь, связь с агентами флота.">
+  <meta property="og:description" content="Первый агент платформы Слаживание: отвечает по памяти компании — голос, текст, фото, документы в Telegram и кабинете, текст в VK Teams — и работает фоном: утренний бриф, сводка дня, задачи, календарь, связь с агентами флота.">
   <meta property="og:url" content="https://slazhivanie.ru/agent-first.html">
   <meta property="og:image" content="https://slazhivanie.ru/og.png?v=2">
   <meta property="og:image:width" content="1200">
@@ -554,8 +554,9 @@
           <div class="ic" aria-hidden="true"><svg fill="none" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 15a4 4 0 004-4V6a4 4 0 10-8 0v5a4 4 0 004 4z"/><path d="M19 11a7 7 0 01-14 0M12 18v3" stroke-linecap="round"/></svg></div>
           <h3>Разговор на любом входе</h3>
           <ul>
-            <li><b>Голос, текст, фото, документ</b> — понимает всё, что вы ему кинули</li>
-            <li>Живёт в <b>Telegram</b>: в личке и в группах команды</li>
+            <li><b>Голос, текст, фото, документ</b> — понимает всё, что вы ему кинули; в VK Teams — текст</li>
+            <li>Живёт в <b>Telegram</b> — в личке и в группах — и в <b>VK Teams</b> (Мессенджер VK WorkSpace), там пока только в групповых чатах</li>
+            <li>Один агент с двумя адресами: <b>память, знания и характер общие</b></li>
             <li>Тот же разговор — в <b>чате кабинета</b>, история едина</li>
           </ul>
         </div>
@@ -574,7 +575,7 @@
           <ul>
             <li><b>Задачи из встреч и чатов</b> — сами встают на доску</li>
             <li><b>Ставит встречу словами</b>: «поставь нам в четверг» — событие в календаре</li>
-            <li><b>«Календарь наоборот»</b>: свободные окна — слотами-кнопками прямо в чате</li>
+            <li><b>«Календарь наоборот»</b>: свободные окна — слотами-кнопками в Telegram</li>
           </ul>
         </div>
         <div class="card">
@@ -621,8 +622,8 @@
       <div class="hands-group">
         <h3><span class="gdot" aria-hidden="true"></span>Принимает и понимает</h3>
         <div class="hands">
-          <div class="hand"><b>Разговор в Telegram</b><span>Личка и группы команды — агент читает и отвечает там, где ему разрешили говорить.</span><code>ingest.messaging</code></div>
-          <div class="hand"><b>Голос, текст, фото, документы</b><span>Надиктовали, написали, сфотографировали доску, кинули файл — всё это вход.</span><code>ingest.voice-text</code></div>
+          <div class="hand"><b>Разговор в Telegram и VK Teams</b><span>Агент читает и отвечает там, где ему разрешили говорить: в Telegram — личка и группы команды, в VK Teams — групповые чаты. Токен своего бота вы вставляете в кабинете; для VK Teams есть поле адреса API, если мессенджер развёрнут внутри компании.</span><code>ingest.messaging</code></div>
+          <div class="hand"><b>Голос, текст, фото, документы</b><span>Надиктовали, написали, сфотографировали доску, кинули файл — всё это вход. Голос, фото и файлы — в Telegram и кабинете, в VK Teams — текст.</span><code>ingest.voice-text</code></div>
           <div class="hand"><b>Видит календарь</b><span>Знает ваши встречи и свободные окна — и отвечает «что у меня сегодня».</span><code>ingest.calendar</code></div>
           <div class="hand"><b>Ставит событие словами</b><span>«Поставь нам встречу в четверг» — событие встаёт в календарь без формочек.</span><code>calendar.write</code></div>
           <div class="hand"><b>Принимает записи встреч</b><span>tl;dv, Read.ai, Контур.Толк — запись пришла, агент разобрал её в саммари.</span><code>ingest.meetings</code></div>
@@ -635,7 +636,7 @@
         <h3><span class="gdot" aria-hidden="true"></span>Помнит и поднимает</h3>
         <div class="hands">
           <div class="hand"><b>Общая память компании</b><span>Факты и договорённости из рабочего потока оседают в памяти, доступной всем агентам.</span><code>persist.memory</code></div>
-          <div class="hand"><b>Поднимает историю чата</b><span>«О чём договаривались во вторник?» — достаёт из своих чатов, только там, где он есть.</span><code>read.chat-history</code></div>
+          <div class="hand"><b>Поднимает историю чата</b><span>«О чём договаривались во вторник?» — достаёт из своих чатов, только там, где он есть. Из VK Teams — фактами, без дословных цитат переписки.</span><code>read.chat-history</code></div>
           <div class="hand"><b>Ревизия устаревшего</b><span>Сверяет память с реальностью и показывает цитатой, какое знание протухло.</span><code>audit.knowledge-freshness</code></div>
           <div class="hand"><b>Отвечает по встречам</b><span>Что было на встрече, о чём договорились — по любой встрече, которую он видел.</span><code>read.meetings</code></div>
           <div class="hand"><b>Знает, кто есть в команде</b><span>Состав команды — часть контекста: с кем связать, кому адресован вопрос.</span><code>read.team-roster</code></div>
@@ -651,8 +652,8 @@
           <div class="hand"><b>Задачи из встречи</b><span>Поручения, прозвучавшие на встрече, превращаются в задачи на доске.</span><code>task.from-meeting</code></div>
           <div class="hand"><b>Задачи из чата — открытые петли</b><span>Договорились в чате и забыли? Агент выловил и поставил на контроль.</span><code>task.from-chat</code></div>
           <div class="hand"><b>Доска задач вживую</b><span>Задачи видны в кабинете и по вопросу в чате: что открыто, что в работе, что висит.</span><code>task.tracker · read.tasks</code></div>
-          <div class="hand"><b>«Календарь наоборот»</b><span>Свободные окна — слотами-кнопками в чате плюс постоянная ссылка для людей извне.</span><code>notify.meeting</code></div>
-          <div class="hand"><b>Напоминания словами</b><span>«Напомни мне в пятницу про отчёт» — напомнит, куда вы и писали.</span><code>notify.user-reminder · notify.open-loops</code></div>
+          <div class="hand"><b>«Календарь наоборот»</b><span>Свободные окна — слотами-кнопками в Telegram плюс постоянная ссылка для людей извне.</span><code>notify.meeting</code></div>
+          <div class="hand"><b>Напоминания словами</b><span>«Напомни мне в пятницу про отчёт» — напомнит в Telegram.</span><code>notify.user-reminder · notify.open-loops</code></div>
         </div>
       </div>
 
@@ -679,12 +680,16 @@
             <p>Основной вход. Личный диалог с агентом плюс группы команды, где он говорит или тихо слушает.</p>
           </div>
           <div class="screen-card">
+            <h3>VK Teams: групповые чаты</h3>
+            <p>Второй адрес того же агента: в рабочей группе отвечает на обращение по имени и шлёт туда же сводки. Текстом и словами — кнопок под сообщениями в VK пока нет, личка тоже: там мы ещё не умеем подтвердить, кто вы.</p>
+          </div>
+          <div class="screen-card">
             <h3>Чат в кабинете</h3>
             <p>Тот же агент в вебе — с зеркалом реплик: что отвечено в Telegram, видно и здесь.</p>
           </div>
           <div class="screen-card">
             <h3>«Первый агент — координатор»</h3>
-            <p>Раздел кабинета про самого агента: что умеет, что подключено, как настроен.</p>
+            <p>Раздел кабинета про самого агента: что умеет, что подключено, как настроен. Здесь же вставляют токены ботов — телеграмного и VK Teams.</p>
           </div>
           <div class="screen-card">
             <h3>Раздел «Встречи»</h3>
