@@ -1,4 +1,5 @@
 {
+  "_comment": "Гейты разработки (guardrail, verify, декларация) с 08.08.2026 регистрируются НЕ здесь, а на уровне пользователя (~/.claude/settings.json), и файлы их канонически живут в ~/slazhivanie/.claude/hooks. Причина: зарегистрированные здесь, они не доезжали до воркдеревьев платформы — а по CLAUDE.md вся разработка идёт именно там, и за 6–7.08.2026 туда ушло 169 коммитов мимо verify-ревью. Ставит их bash ~/slazhivanie/scripts/install-hooks.sh, копируя из origin/main; pre-push сверяет содержимое, так что копия не может тихо устареть. Регистрировать здесь повторно НЕЛЬЗЯ: хук отработал бы дважды, причём вторая копия — устаревшая (кокпитный guardrail.py не ловил curl|bash и деструктивный SQL), а расхождение копий и есть тот класс, ради которого всё переносилось. Файлы .claude/hooks/*.py тут пока лежат как история — снести их отдельным коммитом.",
   "defaultMode": "acceptEdits",
   "permissions": {
     "allow": [
@@ -13,27 +14,6 @@
       "mcp__claude_ai_Google_Drive__get_file_metadata",
       "mcp__claude_ai_Buildin_Dxbx__API-search",
       "mcp__claude_ai_Buildin_Dxbx__API-semanticSearch"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guardrail.py\""
-          },
-          {
-            "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/verify-gate.py\""
-          },
-          {
-            "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/declaration-gate.py\""
-          }
-        ]
-      }
     ]
   }
 }
