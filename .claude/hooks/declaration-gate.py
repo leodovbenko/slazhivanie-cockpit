@@ -62,8 +62,16 @@ def is_git_commit(cmd):
     return False
 
 
-def resolve_repo(cmd):
-    repo = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+def resolve_repo(cmd, payload_cwd=None):
+    """Целевой репозиторий коммита — тот же порядок, что в verify-gate.py.
+
+    Приоритет: явный `git -C` / `cd` в команде → фактический cwd shell (payload.cwd,
+    иначе os.getcwd()). CLAUDE_PROJECT_DIR первым НЕ ставим: `cd` в другой репозиторий
+    в предыдущем вызове Bash тогда теряется, и два гейта на одном коммите смотрят разные
+    репозитории (verify — правильный, declaration — папку проекта). Расхождение поймано
+    ревью 07.08.2026. Оба гейта зарегистрированы в кокпите (.claude/settings.json) и через
+    `cd`/`git -C` обслуживают коммиты в обоих репозиториях, поэтому резолв правим парой:
+    меняешь здесь — сверь verify-gate.py, там та же функция."""
     m = re.search(r'git\s+-C\s+' + _PATH, cmd)
     if m:
         repo = _first(m.groups())
@@ -71,6 +79,8 @@ def resolve_repo(cmd):
         cds = re.findall(r'(?:^|[\s;&|])cd\s+' + _PATH, cmd)
         if cds:
             repo = _first(cds[-1])
+        else:
+            repo = payload_cwd or os.getcwd()
     return os.path.expanduser(os.path.expandvars(repo))
 
 
@@ -185,7 +195,7 @@ scan = re.sub(r"'[^']*'", "''", scan)
 if not is_git_commit(scan):
     allow()
 
-repo = resolve_repo(cmd)
+repo = resolve_repo(cmd, data.get("cwd"))
 try:
     if git(repo, "rev-parse", "HEAD").returncode != 0:
         allow()
@@ -212,8 +222,12 @@ privacy_msg = (
 
 if code_signal and not decl_signal:
     h = diff_hash(repo)
-    marker = os.path.join(marker_dir(), "decl-" + h + ".ok") if h else None
-    if marker and os.path.isfile(marker):
+    # Смотрим в ДВА адреса, как verify-gate: marker_dir() (CLAUDE_PROJECT_DIR главной сессии) и
+    # <repo>/.claude/verify — туда кладёт decl-mark.sh, когда у ревьюера CLAUDE_PROJECT_DIR пуст.
+    # Без второго адреса коммит в ~/slazhivanie ловил вечный deny: маркер настоящий, но не там.
+    places = [os.path.join(marker_dir(), "decl-" + h + ".ok"),
+              os.path.join(repo, ".claude", "verify", "decl-" + h + ".ok")] if h else []
+    if any(os.path.isfile(p) for p in places):
         # ложняк уже осознанно помечен — пропускаем, но приватность всё равно шепнём
         note(privacy_msg) if privacy_smell else allow()
     reason = (
